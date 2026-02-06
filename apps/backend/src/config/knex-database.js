@@ -1,0 +1,72 @@
+import knex from 'knex'
+import logger from '../logger.js'
+import knexConfig from './knexfile.js'
+
+class KnexDatabaseService {
+    constructor() {
+        this.knex = null
+    }
+
+    async init() {
+        if (this.knex) {
+            logger.info('Base de données déjà initialisée, réutilisation de la connexion existante')
+            return
+        }
+
+        try {
+            const environment = process.env.NODE_ENV || 'development'
+            const knexEnvironment = environment === 'dev' ? 'development' : environment
+            const config = knexConfig[knexEnvironment]
+
+            if (!config) {
+                throw new Error(`Configuration de base de données non trouvée pour l'environnement: ${environment} (mappé vers: ${knexEnvironment}). Environnements disponibles: ${Object.keys(knexConfig).join(', ')}`)
+            }
+
+            let postgresUri = ''
+            if (typeof config.connection === 'string') {
+                postgresUri = config.connection.replace(/:([^:@/]+)@/, ':****@')
+            } else {
+                const user = config.connection.user || ''
+                const password = config.connection.password ? '****' : ''
+                const host = config.connection.host || 'localhost'
+                const port = config.connection.port || 5432
+                const database = config.connection.database || ''
+                postgresUri = `postgresql://${user}${password ? ':' + password : ''}@${host}:${port}/${database}`
+            }
+            logger.info(`PostgreSQL URI: ${postgresUri}`)
+
+            this.knex = knex(config)
+
+            await this.knex.raw('SELECT 1')
+
+            const connectionInfo = typeof config.connection === 'string'
+                ? config.connection.split('@')[1] || config.connection
+                : `${config.connection.host}:${config.connection.port}/${config.connection.database}`
+
+            logger.info(`Base de données PostgreSQL initialisée avec Knex: ${connectionInfo}`)
+        } catch (error) {
+            logger.error('Erreur lors de l\'initialisation de la base de données:', error)
+            throw error
+        }
+    }
+
+    getKnex() {
+        return this.knex
+    }
+
+    resetConnection() {
+        if (this.knex) {
+            this.knex.destroy()
+            this.knex = null
+        }
+    }
+
+    async close() {
+        if (this.knex) {
+            await this.knex.destroy()
+            logger.info('Connexion à la base de données fermée')
+        }
+    }
+}
+
+export default new KnexDatabaseService()

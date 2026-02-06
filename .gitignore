@@ -1,0 +1,66 @@
+# Dependencies
+node_modules/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+*.lcov
+.nyc_output
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional caches
+.npm
+.eslintcache
+
+# Output of 'npm pack'
+*.tgz
+
+# dotenv environment variables
+.env
+.env.test
+.env.local
+.env.production
+
+# Build outputs
+dist/
+build/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temporary folders
+tmp/
+temp/
+.cache/
+.parcel-cache/
+
+# Database (local dev)
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Test outputs
+test-results/
+
+# Keep frontend src/lib/ from being ignored
+!apps/frontend/src/lib/

@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+apps/frontend/dist/
+
+# Environment files
+.env
+.env.*
+!.env.example
+env.local
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.vscode/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Test and coverage
+test/
+tests/
+coverage/
+*.test.js
+*.spec.js
+.nyc_output/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+compose*.yml
+.dockerignore
+
+# Logs
+logs/
+*.log
+
+# Temporary
+tmp/
+temp/
+.cache/
+.parcel-cache/
+
+# Database (local dev)
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Misc
+.eslintcache
+.prettierrc
+scripts/

@@ -1,0 +1,40 @@
+{
+  "name": "@immo-ia/backend",
+  "version": "0.1.0",
+  "description": "ImmoIA backend - Gestion de copropriété",
+  "type": "module",
+  "main": "src/index.js",
+  "author": {
+    "name": "Damien BATTISTELLA"
+  },
+  "scripts": {
+    "start": "node --env-file=.env src/index.js",
+    "dev": "nodemon --env-file=.env src/index.js",
+    "knex": "node --env-file=.env ../../node_modules/.bin/knex --knexfile src/config/knexfile.js",
+    "migrate:latest": "npm run knex -- migrate:latest",
+    "migrate:rollback": "npm run knex -- migrate:rollback",
+    "migrate:make": "npm run knex -- migrate:make",
+    "seed:run": "npm run knex -- seed:run",
+    "seed:make": "npm run knex -- seed:make",
+    "db:reset": "npm run knex -- migrate:rollback --all && npm run knex -- migrate:latest && npm run knex -- seed:run",
+    "lint": "eslint src/ --quiet"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "better-auth": "^1.4.17",
+    "connect-history-api-fallback": "^2.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "date-fns": "^4.1.0",
+    "express": "^5.2.1",
+    "knex": "^3.1.0",
+    "method-override": "^3.0.0",
+    "node-cache": "^5.1.2",
+    "node-cron": "^4.2.1",
+    "pg": "^8.17.2",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.2"
+  }
+}

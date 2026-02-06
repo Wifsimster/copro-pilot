@@ -1,0 +1,44 @@
+{
+    "name": "immo-ia",
+    "version": "0.1.0",
+    "description": "ImmoIA - Plateforme de gestion de copropriété pour syndic professionnel",
+    "private": true,
+    "type": "module",
+    "workspaces": [
+        "packages/*",
+        "apps/*"
+    ],
+    "scripts": {
+        "iw": "npm install --workspaces --include-workspace-root",
+        "build": "npm run build --workspaces",
+        "start": "npm run start --workspaces",
+        "lint": "npm run lint --workspaces",
+        "clean": "npm run clean --workspaces",
+        "bootstrap": "npm run iw && npm run build",
+        "frontend:build": "npm run build --workspace=immo-ia-frontend",
+        "dev:backend": "npm run start --workspace=@immo-ia/backend",
+        "dev:frontend": "npm run start --workspace=immo-ia-frontend"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.19.0",
+        "concurrently": "^9.2.1",
+        "eslint": "^9.39.2",
+        "nodemon": "^3.1.11",
+        "prettier": "^3.8.1",
+        "typescript-eslint": "^8.54.0"
+    },
+    "engines": {
+        "node": ">=24.0.0"
+    },
+    "keywords": [
+        "monorepo",
+        "frontend",
+        "backend",
+        "nodejs",
+        "copropriete",
+        "syndic",
+        "immo-ia"
+    ],
+    "author": "Damien BATTISTELLA",
+    "license": "MIT"
+}

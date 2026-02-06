@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@plugin "@tailwindcss/forms";
+
+@theme {
+    /* ============================================
+       ImmoIA — Primary Brand Colors
+       ============================================ */
+    --primary-color: #1e40af;
+
+    --color-primary-color: var(--primary-color);
+    --color-input-border-color: #ccc7c7;
+
+    /* ============================================
+       Semantic Colors
+       ============================================ */
+    --color-info-color: #019bae;
+    --color-success-color: #11b776;
+    --color-warning-color: #ff9334;
+    --color-error-color: #f75f51;
+
+    /* ============================================
+       Light Theme Colors
+       ============================================ */
+    --color-text: #374151;
+    --color-text-light: #6b7280;
+    --color-text-muted: #9ca3af;
+    --color-bg: #ffffff;
+    --color-bg-secondary: #f9fafb;
+    --color-bg-tertiary: #f3f4f6;
+    --color-border: #e5e7eb;
+    --color-border-light: #f3f4f6;
+
+    /* ============================================
+       Dark Theme Colors
+       ============================================ */
+    --color-text-dark: #fafafa;
+    --color-text-light-dark: #e4e4e7;
+    --color-text-muted-dark: #a1a1aa;
+    --color-bg-dark: #18181b;
+    --color-bg-secondary-dark: #27272a;
+    --color-bg-tertiary-dark: #3f3f46;
+    --color-border-dark: #52525b;
+    --color-border-light-dark: #3f3f46;
+
+    /* ============================================
+       shadcn/ui Component Variables (Light Mode)
+       ============================================ */
+    --color-background: #ffffff;
+    --color-foreground: #0a0a0a;
+    --color-card: #ffffff;
+    --color-card-foreground: #0a0a0a;
+    --color-popover: #ffffff;
+    --color-popover-foreground: #0a0a0a;
+    --color-primary: #1e40af;
+    --color-primary-foreground: #ffffff;
+    --color-secondary: #f5f5f5;
+    --color-secondary-foreground: #171717;
+    --color-muted: #f5f5f5;
+    --color-muted-foreground: #737373;
+    --color-accent: #f5f5f5;
+    --color-accent-foreground: #171717;
+    --color-destructive: #ef4444;
+    --color-destructive-foreground: #ffffff;
+    --color-border: #e5e5e5;
+    --color-input: #e5e5e5;
+    --color-ring: #1e40af;
+}
+
+@layer base {
+    * {
+        font-family: Inter, system-ui, -apple-system, sans-serif;
+        border-color: var(--color-border);
+    }
+
+    button {
+        @apply cursor-pointer;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 5px;
+        border: 2px solid #f1f5f9;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    .dark ::-webkit-scrollbar-track {
+        background: #27272a;
+    }
+
+    .dark ::-webkit-scrollbar-thumb {
+        background: #52525b;
+        border-color: #27272a;
+    }
+
+    .dark ::-webkit-scrollbar-thumb:hover {
+        background: #71717a;
+    }
+
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 #f1f5f9;
+    }
+
+    .dark * {
+        scrollbar-color: #52525b #27272a;
+    }
+
+    /* Dark Mode Variable Overrides */
+    .dark {
+        --color-background: #18181b;
+        --color-foreground: #fafafa;
+        --color-card: #18181b;
+        --color-card-foreground: #fafafa;
+        --color-popover: #27272a;
+        --color-popover-foreground: #fafafa;
+        --color-primary: #1e40af;
+        --color-primary-foreground: #ffffff;
+        --color-secondary: #27272a;
+        --color-secondary-foreground: #fafafa;
+        --color-muted: #27272a;
+        --color-muted-foreground: #a1a1aa;
+        --color-accent: #27272a;
+        --color-accent-foreground: #fafafa;
+        --color-destructive: #7f1d1d;
+        --color-destructive-foreground: #fafafa;
+        --color-border: #3f3f46;
+        --color-input: #3f3f46;
+        --color-ring: #3b82f6;
+    }
+}
+
+@layer utilities {
+    .text-themed {
+        color: #374151;
+    }
+    .dark .text-themed {
+        color: #e4e4e7;
+    }
+
+    .text-themed-muted {
+        color: #6b7280;
+    }
+    .dark .text-themed-muted {
+        color: #a1a1aa;
+    }
+
+    .border-themed {
+        border-color: #e5e7eb;
+    }
+    .dark .border-themed {
+        border-color: #52525b;
+    }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
+
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+}

@@ -1,0 +1,64 @@
+import { ReactNode, useEffect, useState } from 'react'
+import { Navigate, useLocation } from 'react-router-dom'
+import { useAuthStore } from '@/store/authStore'
+
+interface ProtectedRouteProps {
+  children: ReactNode
+  requiresAdmin?: boolean
+}
+
+export function ProtectedRoute({ children, requiresAdmin = false }: ProtectedRouteProps) {
+  const location = useLocation()
+  const { isAuthenticated, isLoading, user, validateToken, isInitialized } = useAuthStore()
+  const [isValidating, setIsValidating] = useState(!isInitialized)
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (!isInitialized) {
+        setIsValidating(true)
+        await validateToken()
+        setIsValidating(false)
+      }
+    }
+    checkAuth()
+  }, [isInitialized, validateToken])
+
+  if (isLoading || isValidating) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-zinc-900">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+          <p className="text-gray-600 dark:text-zinc-400">Chargement...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />
+  }
+
+  if (requiresAdmin && user?.role !== 'admin') {
+    return <Navigate to="/" replace />
+  }
+
+  return <>{children}</>
+}
+
+export function PublicRoute({ children }: { children: ReactNode }) {
+  const { isAuthenticated, isLoading } = useAuthStore()
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-950">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+      </div>
+    )
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />
+  }
+
+  return <>{children}</>
+}
