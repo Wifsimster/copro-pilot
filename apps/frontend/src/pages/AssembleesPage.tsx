@@ -1,0 +1,167 @@
+import { useState } from 'react'
+import { useCoproprietes } from '@/hooks/useCoproprietes'
+import { useAssembleesByCopropriete, useCreateAssemblee, useDeleteAssemblee } from '@/hooks/useAssemblees'
+import type { AssembleeGenerale } from '@/types'
+import { Calendar, Plus, Trash2, Eye, ChevronDown, MapPin, Clock } from 'lucide-react'
+import { Link } from 'react-router-dom'
+
+const TYPE_LABELS: Record<string, string> = {
+  ordinaire: 'Ordinaire',
+  extraordinaire: 'Extraordinaire',
+}
+
+const STATUT_LABELS: Record<string, string> = {
+  planifiee: 'Planifiée',
+  convoquee: 'Convoquée',
+  en_cours: 'En cours',
+  terminee: 'Terminée',
+  annulee: 'Annulée',
+}
+
+const STATUT_COLORS: Record<string, string> = {
+  planifiee: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+  convoquee: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  en_cours: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+  terminee: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  annulee: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+}
+
+export default function AssembleesPage() {
+  const { data: coproprietes, isLoading: loadingCopros } = useCoproprietes()
+  const [selectedCoproId, setSelectedCoproId] = useState<number | undefined>()
+  const { data: assemblees, isLoading: loadingAGs } = useAssembleesByCopropriete(selectedCoproId)
+  const createAG = useCreateAssemblee()
+  const deleteAG = useDeleteAssemblee()
+
+  const handleCreate = async () => {
+    if (!selectedCoproId) return
+    await createAG.mutateAsync({
+      copropriete_id: selectedCoproId,
+      date: new Date().toISOString().split('T')[0],
+      type: 'ordinaire',
+    })
+  }
+
+  if (loadingCopros) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Assemblées Générales</h1>
+          <p className="text-gray-500 dark:text-zinc-400">Gestion des AG, résolutions et votes</p>
+        </div>
+      </div>
+
+      {/* Copropriété selector */}
+      <div className="relative">
+        <select
+          value={selectedCoproId || ''}
+          onChange={(e) => setSelectedCoproId(e.target.value ? parseInt(e.target.value) : undefined)}
+          className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
+        >
+          <option value="">Sélectionner une copropriété...</option>
+          {coproprietes?.map((c) => (
+            <option key={c.id} value={c.id}>{c.nom}</option>
+          ))}
+        </select>
+        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+      </div>
+
+      {!selectedCoproId ? (
+        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
+          <Calendar className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
+          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Sélectionnez une copropriété</h3>
+          <p className="mt-2 text-gray-500 dark:text-zinc-400">Choisissez une copropriété pour voir ses assemblées générales.</p>
+        </div>
+      ) : (
+        <div>
+          <div className="mb-4 flex justify-end">
+            <button
+              onClick={handleCreate}
+              disabled={createAG.isPending}
+              className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            >
+              <Plus className="h-4 w-4" />
+              Nouvelle AG
+            </button>
+          </div>
+
+          {loadingAGs ? (
+            <div className="flex justify-center py-8">
+              <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+            </div>
+          ) : !assemblees || assemblees.length === 0 ? (
+            <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
+              <Calendar className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
+              <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucune assemblée générale</h3>
+              <p className="mt-2 text-gray-500 dark:text-zinc-400">Planifiez votre première AG.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {assemblees.map((ag: AssembleeGenerale) => (
+                <div
+                  key={ag.id}
+                  className="group rounded-xl border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUT_COLORS[ag.statut]}`}>
+                          {STATUT_LABELS[ag.statut]}
+                        </span>
+                        <span className="text-xs text-gray-500 dark:text-zinc-400">
+                          {TYPE_LABELS[ag.type]}
+                        </span>
+                      </div>
+                      <h3 className="mt-2 font-semibold text-gray-900 dark:text-white">
+                        AG du {new Date(ag.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      </h3>
+                    </div>
+                    <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                      <Link
+                        to={`/assemblees/${ag.id}`}
+                        className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-blue-600 dark:hover:bg-zinc-700"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Link>
+                      <button
+                        onClick={() => {
+                          if (window.confirm('Supprimer cette AG ?')) deleteAG.mutate(ag.id)
+                        }}
+                        className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-red-600 dark:hover:bg-zinc-700"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="mt-3 space-y-1">
+                    {ag.heure && (
+                      <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-zinc-400">
+                        <Clock className="h-3.5 w-3.5" />
+                        {ag.heure}
+                      </div>
+                    )}
+                    {ag.lieu && (
+                      <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-zinc-400">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {ag.lieu}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}

@@ -8,6 +8,9 @@ const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
 const CoproprietesPage = lazy(() => import('@/pages/CoproprietesPage'))
 const CoproprieteDetailPage = lazy(() => import('@/pages/CoproprieteDetailPage'))
 const CoproprietairesPage = lazy(() => import('@/pages/CoproprietairesPage'))
+const ChargesPage = lazy(() => import('@/pages/ChargesPage'))
+const AssembleesPage = lazy(() => import('@/pages/AssembleesPage'))
+const TravauxPage = lazy(() => import('@/pages/TravauxPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function PageLoader() {
@@ -63,11 +66,18 @@ export const router = createHashRouter([
         path: '/coproprietaires',
         element: <CoproprietairesPage />,
       },
-      // Future routes:
-      // { path: '/charges', element: <ChargesPage /> },
-      // { path: '/assemblees', element: <AssembleesPage /> },
-      // { path: '/travaux', element: <TravauxPage /> },
-      // { path: '/documents', element: <DocumentsPage /> },
+      {
+        path: '/charges',
+        element: <ChargesPage />,
+      },
+      {
+        path: '/assemblees',
+        element: <AssembleesPage />,
+      },
+      {
+        path: '/travaux',
+        element: <TravauxPage />,
+      },
     ],
   },
 

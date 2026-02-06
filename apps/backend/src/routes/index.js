@@ -3,20 +3,47 @@ import healthRoutes from './health.js'
 import coproprietesRoutes from './coproprietes.js'
 import coproprietairesRoutes from './coproprietaires.js'
 import lotsRoutes from './lots.js'
+import partiesCommunesRoutes from './parties-communes.js'
+import clesRepartitionRoutes from './cles-repartition.js'
+import locatairesRoutes from './locataires.js'
+import mutationsRoutes from './mutations.js'
+// Module 3 — Comptabilité & Charges
+import budgetsRoutes from './budgets.js'
+import appelsFondsRoutes from './appels-fonds.js'
+import paiementsRoutes from './paiements.js'
+import fondsTravauxRoutes from './fonds-travaux.js'
+// Module 4 — Assemblées Générales
+import assembleesRoutes from './assemblees.js'
+// Module 5 — Travaux & Incidents
+import incidentsRoutes from './incidents.js'
+import interventionsRoutes from './interventions.js'
+import carnetEntretienRoutes from './carnet-entretien.js'
 
 const router = Router()
 
-// API routes
+// API routes — Module 1 & 2
 router.use('/health', healthRoutes)
 router.use('/coproprietes', coproprietesRoutes)
 router.use('/coproprietaires', coproprietairesRoutes)
 router.use('/lots', lotsRoutes)
+router.use('/parties-communes', partiesCommunesRoutes)
+router.use('/cles-repartition', clesRepartitionRoutes)
+router.use('/locataires', locatairesRoutes)
+router.use('/mutations', mutationsRoutes)
 
-// Future routes:
-// router.use('/charges', chargesRoutes)
-// router.use('/assemblees', assembleesRoutes)
-// router.use('/travaux', travauxRoutes)
-// router.use('/documents', documentsRoutes)
+// Module 3 — Comptabilité & Charges
+router.use('/budgets', budgetsRoutes)
+router.use('/appels-fonds', appelsFondsRoutes)
+router.use('/paiements', paiementsRoutes)
+router.use('/fonds-travaux', fondsTravauxRoutes)
+
+// Module 4 — Assemblées Générales
+router.use('/assemblees', assembleesRoutes)
+
+// Module 5 — Travaux & Incidents
+router.use('/incidents', incidentsRoutes)
+router.use('/interventions', interventionsRoutes)
+router.use('/carnet-entretien', carnetEntretienRoutes)
 
 // Root health check
 router.get('/', (req, res) => {
