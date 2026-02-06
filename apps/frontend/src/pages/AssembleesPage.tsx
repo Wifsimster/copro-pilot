@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { useAssembleesByCopropriete, useCreateAssemblee, useDeleteAssemblee } from '@/hooks/useAssemblees'
+import { AssembleeFormDialog } from '@/components/assemblees/AssembleeFormDialog'
 import type { AssembleeGenerale } from '@/types'
 import { Calendar, Plus, Trash2, Eye, ChevronDown, MapPin, Clock } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -11,11 +12,11 @@ const TYPE_LABELS: Record<string, string> = {
 }
 
 const STATUT_LABELS: Record<string, string> = {
-  planifiee: 'Planifiée',
-  convoquee: 'Convoquée',
+  planifiee: 'Planifiee',
+  convoquee: 'Convoquee',
   en_cours: 'En cours',
-  terminee: 'Terminée',
-  annulee: 'Annulée',
+  terminee: 'Terminee',
+  annulee: 'Annulee',
 }
 
 const STATUT_COLORS: Record<string, string> = {
@@ -29,18 +30,10 @@ const STATUT_COLORS: Record<string, string> = {
 export default function AssembleesPage() {
   const { data: coproprietes, isLoading: loadingCopros } = useCoproprietes()
   const [selectedCoproId, setSelectedCoproId] = useState<number | undefined>()
+  const [showDialog, setShowDialog] = useState(false)
   const { data: assemblees, isLoading: loadingAGs } = useAssembleesByCopropriete(selectedCoproId)
   const createAG = useCreateAssemblee()
   const deleteAG = useDeleteAssemblee()
-
-  const handleCreate = async () => {
-    if (!selectedCoproId) return
-    await createAG.mutateAsync({
-      copropriete_id: selectedCoproId,
-      date: new Date().toISOString().split('T')[0],
-      type: 'ordinaire',
-    })
-  }
 
   if (loadingCopros) {
     return (
@@ -54,19 +47,19 @@ export default function AssembleesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Assemblées Générales</h1>
-          <p className="text-gray-500 dark:text-zinc-400">Gestion des AG, résolutions et votes</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Assemblees Generales</h1>
+          <p className="text-gray-500 dark:text-zinc-400">Gestion des AG, resolutions et votes</p>
         </div>
       </div>
 
-      {/* Copropriété selector */}
+      {/* Copropriete selector */}
       <div className="relative">
         <select
           value={selectedCoproId || ''}
           onChange={(e) => setSelectedCoproId(e.target.value ? parseInt(e.target.value) : undefined)}
           className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
         >
-          <option value="">Sélectionner une copropriété...</option>
+          <option value="">Selectionner une copropriete...</option>
           {coproprietes?.map((c) => (
             <option key={c.id} value={c.id}>{c.nom}</option>
           ))}
@@ -77,16 +70,15 @@ export default function AssembleesPage() {
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
           <Calendar className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Sélectionnez une copropriété</h3>
-          <p className="mt-2 text-gray-500 dark:text-zinc-400">Choisissez une copropriété pour voir ses assemblées générales.</p>
+          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Selectionnez une copropriete</h3>
+          <p className="mt-2 text-gray-500 dark:text-zinc-400">Choisissez une copropriete pour voir ses assemblees generales.</p>
         </div>
       ) : (
         <div>
           <div className="mb-4 flex justify-end">
             <button
-              onClick={handleCreate}
-              disabled={createAG.isPending}
-              className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+              onClick={() => setShowDialog(true)}
+              className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
             >
               <Plus className="h-4 w-4" />
               Nouvelle AG
@@ -100,8 +92,8 @@ export default function AssembleesPage() {
           ) : !assemblees || assemblees.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
               <Calendar className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
-              <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucune assemblée générale</h3>
-              <p className="mt-2 text-gray-500 dark:text-zinc-400">Planifiez votre première AG.</p>
+              <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucune assemblee generale</h3>
+              <p className="mt-2 text-gray-500 dark:text-zinc-400">Planifiez votre premiere AG.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -160,6 +152,17 @@ export default function AssembleesPage() {
               ))}
             </div>
           )}
+
+          <AssembleeFormDialog
+            open={showDialog}
+            onOpenChange={setShowDialog}
+            coproprieteId={selectedCoproId}
+            onSubmit={async (data) => {
+              await createAG.mutateAsync(data)
+              setShowDialog(false)
+            }}
+            isLoading={createAG.isPending}
+          />
         </div>
       )}
     </div>

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useAssemblee, useUpdateAssemblee, useCreateResolution, useUpdateResolution, useDeleteResolution } from '@/hooks/useAssemblees'
+import { useAssemblee, useCreateResolution, useUpdateResolution, useDeleteResolution } from '@/hooks/useAssemblees'
 import type { Resolution } from '@/types'
-import { ArrowLeft, Plus, Trash2, Pencil, Vote, Users, FileText } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, Vote, Users, FileText } from 'lucide-react'
 
 const STATUT_LABELS: Record<string, string> = {
   planifiee: 'Planifiée',
@@ -45,7 +45,6 @@ export default function AssembleeDetailPage() {
   const { id } = useParams<{ id: string }>()
   const agId = id ? parseInt(id) : undefined
   const { data: ag, isLoading } = useAssemblee(agId)
-  const updateAG = useUpdateAssemblee()
   const createResolution = useCreateResolution()
   const updateResolution = useUpdateResolution()
   const deleteResolution = useDeleteResolution()

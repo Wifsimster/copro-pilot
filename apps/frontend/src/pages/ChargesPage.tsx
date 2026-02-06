@@ -2,13 +2,15 @@ import { useState } from 'react'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { useBudgetsByCopropriete, useCreateBudget, useDeleteBudget } from '@/hooks/useBudgets'
 import { useAppelsFondsByCopropriete, useCreateAppelFonds, useDeleteAppelFonds } from '@/hooks/useAppelsFonds'
+import { BudgetFormDialog } from '@/components/charges/BudgetFormDialog'
+import { AppelFondsFormDialog } from '@/components/charges/AppelFondsFormDialog'
 import type { BudgetPrevisionnel, AppelFonds } from '@/types'
 import { Receipt, Plus, Trash2, ChevronDown, FileText, Banknote } from 'lucide-react'
 
 const STATUT_BUDGET_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
-  vote: 'Voté',
-  approuve: 'Approuvé',
+  vote: 'Vote',
+  approuve: 'Approuve',
 }
 
 const STATUT_BUDGET_COLORS: Record<string, string> = {
@@ -19,8 +21,8 @@ const STATUT_BUDGET_COLORS: Record<string, string> = {
 
 const STATUT_APPEL_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
-  emis: 'Émis',
-  cloture: 'Clôturé',
+  emis: 'Emis',
+  cloture: 'Cloture',
 }
 
 const STATUT_APPEL_COLORS: Record<string, string> = {
@@ -33,6 +35,8 @@ export default function ChargesPage() {
   const { data: coproprietes, isLoading: loadingCopros } = useCoproprietes()
   const [selectedCoproId, setSelectedCoproId] = useState<number | undefined>()
   const [activeTab, setActiveTab] = useState<'budgets' | 'appels'>('budgets')
+  const [showBudgetDialog, setShowBudgetDialog] = useState(false)
+  const [showAppelDialog, setShowAppelDialog] = useState(false)
 
   const { data: budgets, isLoading: loadingBudgets } = useBudgetsByCopropriete(selectedCoproId)
   const { data: appels, isLoading: loadingAppels } = useAppelsFondsByCopropriete(selectedCoproId)
@@ -40,26 +44,6 @@ export default function ChargesPage() {
   const deleteBudget = useDeleteBudget()
   const createAppel = useCreateAppelFonds()
   const deleteAppel = useDeleteAppelFonds()
-
-  const handleCreateBudget = async () => {
-    if (!selectedCoproId) return
-    const annee = new Date().getFullYear()
-    await createBudget.mutateAsync({ copropriete_id: selectedCoproId, annee, montant_total: 0 })
-  }
-
-  const handleCreateAppel = async () => {
-    if (!selectedCoproId) return
-    const now = new Date()
-    const trimestre = Math.ceil((now.getMonth() + 1) / 3)
-    await createAppel.mutateAsync({
-      copropriete_id: selectedCoproId,
-      trimestre,
-      annee: now.getFullYear(),
-      montant_total: 0,
-      date_emission: now.toISOString().split('T')[0],
-      date_echeance: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    })
-  }
 
   if (loadingCopros) {
     return (
@@ -73,19 +57,19 @@ export default function ChargesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Charges & Comptabilité</h1>
-          <p className="text-gray-500 dark:text-zinc-400">Budgets prévisionnels et appels de fonds</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Charges & Comptabilite</h1>
+          <p className="text-gray-500 dark:text-zinc-400">Budgets previsionnels et appels de fonds</p>
         </div>
       </div>
 
-      {/* Copropriété selector */}
+      {/* Copropriete selector */}
       <div className="relative">
         <select
           value={selectedCoproId || ''}
           onChange={(e) => setSelectedCoproId(e.target.value ? parseInt(e.target.value) : undefined)}
           className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
         >
-          <option value="">Sélectionner une copropriété...</option>
+          <option value="">Selectionner une copropriete...</option>
           {coproprietes?.map((c) => (
             <option key={c.id} value={c.id}>{c.nom}</option>
           ))}
@@ -96,8 +80,8 @@ export default function ChargesPage() {
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
           <Receipt className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Sélectionnez une copropriété</h3>
-          <p className="mt-2 text-gray-500 dark:text-zinc-400">Choisissez une copropriété pour voir ses charges.</p>
+          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Selectionnez une copropriete</h3>
+          <p className="mt-2 text-gray-500 dark:text-zinc-400">Choisissez une copropriete pour voir ses charges.</p>
         </div>
       ) : (
         <>
@@ -131,11 +115,10 @@ export default function ChargesPage() {
           {activeTab === 'budgets' && (
             <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
               <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Budgets prévisionnels</h2>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Budgets previsionnels</h2>
                 <button
-                  onClick={handleCreateBudget}
-                  disabled={createBudget.isPending}
-                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+                  onClick={() => setShowBudgetDialog(true)}
+                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
                 >
                   <Plus className="h-4 w-4" />
                   Nouveau budget
@@ -149,14 +132,14 @@ export default function ChargesPage() {
               ) : !budgets || budgets.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <FileText className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun budget enregistré</p>
+                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun budget enregistre</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Année</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Annee</th>
                         <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Montant total</th>
                         <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
                         <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
@@ -190,6 +173,17 @@ export default function ChargesPage() {
                   </table>
                 </div>
               )}
+
+              <BudgetFormDialog
+                open={showBudgetDialog}
+                onOpenChange={setShowBudgetDialog}
+                coproprieteId={selectedCoproId}
+                onSubmit={async (data) => {
+                  await createBudget.mutateAsync(data)
+                  setShowBudgetDialog(false)
+                }}
+                isLoading={createBudget.isPending}
+              />
             </div>
           )}
 
@@ -199,9 +193,8 @@ export default function ChargesPage() {
               <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Appels de fonds</h2>
                 <button
-                  onClick={handleCreateAppel}
-                  disabled={createAppel.isPending}
-                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+                  onClick={() => setShowAppelDialog(true)}
+                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
                 >
                   <Plus className="h-4 w-4" />
                   Nouvel appel
@@ -215,17 +208,17 @@ export default function ChargesPage() {
               ) : !appels || appels.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <Banknote className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun appel de fonds enregistré</p>
+                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun appel de fonds enregistre</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Période</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Periode</th>
                         <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Montant</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Émission</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Échéance</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Emission</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Echeance</th>
                         <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
                         <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
                       </tr>
@@ -264,6 +257,17 @@ export default function ChargesPage() {
                   </table>
                 </div>
               )}
+
+              <AppelFondsFormDialog
+                open={showAppelDialog}
+                onOpenChange={setShowAppelDialog}
+                coproprieteId={selectedCoproId}
+                onSubmit={async (data) => {
+                  await createAppel.mutateAsync(data)
+                  setShowAppelDialog(false)
+                }}
+                isLoading={createAppel.isPending}
+              />
             </div>
           )}
         </>

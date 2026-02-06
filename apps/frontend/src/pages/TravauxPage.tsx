@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { useIncidentsByCopropriete, useCreateIncident, useDeleteIncident } from '@/hooks/useIncidents'
 import { useInterventionsByCopropriete, useCreateIntervention, useDeleteIntervention } from '@/hooks/useInterventions'
+import { IncidentFormDialog } from '@/components/incidents/IncidentFormDialog'
+import { InterventionFormDialog } from '@/components/incidents/InterventionFormDialog'
 import type { Incident, Intervention } from '@/types'
 import { Wrench, Plus, Trash2, ChevronDown, AlertTriangle, Hammer } from 'lucide-react'
 
@@ -22,8 +24,8 @@ const URGENCE_COLORS: Record<string, string> = {
 const STATUT_INCIDENT_LABELS: Record<string, string> = {
   ouvert: 'Ouvert',
   en_cours: 'En cours',
-  resolu: 'Résolu',
-  ferme: 'Fermé',
+  resolu: 'Resolu',
+  ferme: 'Ferme',
 }
 
 const STATUT_INCIDENT_COLORS: Record<string, string> = {
@@ -35,10 +37,10 @@ const STATUT_INCIDENT_COLORS: Record<string, string> = {
 
 const STATUT_INTERVENTION_LABELS: Record<string, string> = {
   en_attente: 'En attente',
-  planifiee: 'Planifiée',
+  planifiee: 'Planifiee',
   en_cours: 'En cours',
-  terminee: 'Terminée',
-  annulee: 'Annulée',
+  terminee: 'Terminee',
+  annulee: 'Annulee',
 }
 
 const STATUT_INTERVENTION_COLORS: Record<string, string> = {
@@ -53,6 +55,8 @@ export default function TravauxPage() {
   const { data: coproprietes, isLoading: loadingCopros } = useCoproprietes()
   const [selectedCoproId, setSelectedCoproId] = useState<number | undefined>()
   const [activeTab, setActiveTab] = useState<'incidents' | 'interventions'>('incidents')
+  const [showIncidentDialog, setShowIncidentDialog] = useState(false)
+  const [showInterventionDialog, setShowInterventionDialog] = useState(false)
 
   const { data: incidents, isLoading: loadingIncidents } = useIncidentsByCopropriete(selectedCoproId)
   const { data: interventions, isLoading: loadingInterventions } = useInterventionsByCopropriete(selectedCoproId)
@@ -60,24 +64,6 @@ export default function TravauxPage() {
   const deleteIncident = useDeleteIncident()
   const createIntervention = useCreateIntervention()
   const deleteIntervention = useDeleteIntervention()
-
-  const handleCreateIncident = async () => {
-    if (!selectedCoproId) return
-    await createIncident.mutateAsync({
-      copropriete_id: selectedCoproId,
-      titre: 'Nouvel incident',
-      date_signalement: new Date().toISOString().split('T')[0],
-      urgence: 'moyenne',
-    })
-  }
-
-  const handleCreateIntervention = async () => {
-    if (!selectedCoproId) return
-    await createIntervention.mutateAsync({
-      copropriete_id: selectedCoproId,
-      description: 'Nouvelle intervention',
-    })
-  }
 
   if (loadingCopros) {
     return (
@@ -96,14 +82,14 @@ export default function TravauxPage() {
         </div>
       </div>
 
-      {/* Copropriété selector */}
+      {/* Copropriete selector */}
       <div className="relative">
         <select
           value={selectedCoproId || ''}
           onChange={(e) => setSelectedCoproId(e.target.value ? parseInt(e.target.value) : undefined)}
           className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
         >
-          <option value="">Sélectionner une copropriété...</option>
+          <option value="">Selectionner une copropriete...</option>
           {coproprietes?.map((c) => (
             <option key={c.id} value={c.id}>{c.nom}</option>
           ))}
@@ -114,8 +100,8 @@ export default function TravauxPage() {
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
           <Wrench className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Sélectionnez une copropriété</h3>
-          <p className="mt-2 text-gray-500 dark:text-zinc-400">Choisissez une copropriété pour voir ses travaux et incidents.</p>
+          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Selectionnez une copropriete</h3>
+          <p className="mt-2 text-gray-500 dark:text-zinc-400">Choisissez une copropriete pour voir ses travaux et incidents.</p>
         </div>
       ) : (
         <>
@@ -151,9 +137,8 @@ export default function TravauxPage() {
               <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Incidents</h2>
                 <button
-                  onClick={handleCreateIncident}
-                  disabled={createIncident.isPending}
-                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+                  onClick={() => setShowIncidentDialog(true)}
+                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
                 >
                   <Plus className="h-4 w-4" />
                   Signaler un incident
@@ -167,7 +152,7 @@ export default function TravauxPage() {
               ) : !incidents || incidents.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <AlertTriangle className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun incident signalé</p>
+                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun incident signale</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -175,7 +160,7 @@ export default function TravauxPage() {
                     <thead>
                       <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
                         <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Titre</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Catégorie</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Categorie</th>
                         <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Urgence</th>
                         <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
                         <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Date</th>
@@ -216,6 +201,17 @@ export default function TravauxPage() {
                   </table>
                 </div>
               )}
+
+              <IncidentFormDialog
+                open={showIncidentDialog}
+                onOpenChange={setShowIncidentDialog}
+                coproprieteId={selectedCoproId}
+                onSubmit={async (data) => {
+                  await createIncident.mutateAsync(data)
+                  setShowIncidentDialog(false)
+                }}
+                isLoading={createIncident.isPending}
+              />
             </div>
           )}
 
@@ -225,9 +221,8 @@ export default function TravauxPage() {
               <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Interventions</h2>
                 <button
-                  onClick={handleCreateIntervention}
-                  disabled={createIntervention.isPending}
-                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+                  onClick={() => setShowInterventionDialog(true)}
+                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
                 >
                   <Plus className="h-4 w-4" />
                   Nouvelle intervention
@@ -241,7 +236,7 @@ export default function TravauxPage() {
               ) : !interventions || interventions.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <Hammer className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune intervention enregistrée</p>
+                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune intervention enregistree</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -294,6 +289,17 @@ export default function TravauxPage() {
                   </table>
                 </div>
               )}
+
+              <InterventionFormDialog
+                open={showInterventionDialog}
+                onOpenChange={setShowInterventionDialog}
+                coproprieteId={selectedCoproId}
+                onSubmit={async (data) => {
+                  await createIntervention.mutateAsync(data)
+                  setShowInterventionDialog(false)
+                }}
+                isLoading={createIntervention.isPending}
+              />
             </div>
           )}
         </>

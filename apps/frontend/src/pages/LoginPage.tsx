@@ -1,10 +1,29 @@
 import { useState, useMemo } from 'react'
 import { useAuthStore } from '@/store/authStore'
-import { Building2, Eye, EyeOff, AlertCircle, Loader2, Shield, KeyRound, Users, BarChart3 } from 'lucide-react'
+import {
+  Building2,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  Loader2,
+  Shield,
+  KeyRound,
+  Users,
+  BarChart3,
+  Moon,
+  Sun,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { Toggle } from '@/components/ui/toggle'
 
 function MicrosoftIcon({ className }: { className?: string }) {
   return (
@@ -14,6 +33,40 @@ function MicrosoftIcon({ className }: { className?: string }) {
       <rect x="1" y="11" width="9" height="9" fill="#00A4EF" />
       <rect x="11" y="11" width="9" height="9" fill="#FFB900" />
     </svg>
+  )
+}
+
+function ThemeToggle() {
+  const [isDark, setIsDark] = useState(
+    document.documentElement.classList.contains('dark')
+  )
+
+  const toggle = () => {
+    const next = !isDark
+    setIsDark(next)
+    document.documentElement.classList.toggle('dark', next)
+    localStorage.setItem('theme', next ? 'dark' : 'light')
+  }
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Toggle
+            variant="outline"
+            size="sm"
+            pressed={isDark}
+            onPressedChange={toggle}
+            aria-label={isDark ? 'Passer en mode clair' : 'Passer en mode sombre'}
+          >
+            {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+          </Toggle>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          {isDark ? 'Mode clair' : 'Mode sombre'}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   )
 }
 
@@ -158,13 +211,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-background">
       {/* Left Panel — Branding */}
-      <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-white flex-col justify-between p-10">
+      <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 dark:from-blue-950 dark:via-indigo-950 dark:to-slate-950 text-white flex-col justify-between p-10">
         {/* Decorative circles */}
-        <div className="absolute -top-24 -left-24 size-96 rounded-full bg-white/5" />
-        <div className="absolute -bottom-32 -right-32 size-[500px] rounded-full bg-white/5" />
-        <div className="absolute top-1/2 left-1/3 size-64 rounded-full bg-white/[0.03]" />
+        <div className="absolute -top-24 -left-24 size-96 rounded-full bg-white/5 dark:bg-white/[0.03]" />
+        <div className="absolute -bottom-32 -right-32 size-[500px] rounded-full bg-white/5 dark:bg-white/[0.03]" />
+        <div className="absolute top-1/2 left-1/3 size-64 rounded-full bg-white/[0.03] dark:bg-white/[0.02]" />
 
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-2">
@@ -173,7 +226,9 @@ export default function LoginPage() {
             </div>
             <span className="text-2xl font-bold tracking-tight">ImmoIA</span>
           </div>
-          <p className="text-blue-200 text-sm mt-1">Plateforme de gestion de copropriété</p>
+          <p className="text-blue-200 dark:text-blue-300/60 text-sm mt-1">
+            Plateforme de gestion de copropriété
+          </p>
         </div>
 
         <div className="relative z-10 space-y-8">
@@ -184,35 +239,40 @@ export default function LoginPage() {
             {features.map((f) => (
               <div
                 key={f.title}
-                className="rounded-xl bg-white/10 backdrop-blur-sm p-4 space-y-2 border border-white/10"
+                className="rounded-xl bg-white/10 dark:bg-white/5 backdrop-blur-sm p-4 space-y-2 border border-white/10 dark:border-white/[0.06]"
               >
-                <f.icon className="size-5 text-blue-200" />
+                <f.icon className="size-5 text-blue-200 dark:text-blue-300/70" />
                 <p className="font-semibold text-sm">{f.title}</p>
-                <p className="text-xs text-blue-200/80 leading-relaxed">{f.desc}</p>
+                <p className="text-xs text-blue-200/80 dark:text-blue-300/50 leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <p className="relative z-10 text-xs text-blue-300/60">
+        <p className="relative z-10 text-xs text-blue-300/60 dark:text-blue-400/40">
           &copy; {new Date().getFullYear()} ImmoIA. Tous droits réservés.
         </p>
       </div>
 
       {/* Right Panel — Forms */}
-      <div className="flex flex-1 items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50/50 dark:from-zinc-950 dark:to-zinc-900 p-6 sm:p-10">
+      <div className="relative flex flex-1 items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50/50 dark:from-background dark:to-background p-6 sm:p-10">
+        {/* Theme toggle — top right */}
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+          <ThemeToggle />
+        </div>
+
         <div className="w-full max-w-[420px] space-y-8">
           {/* Mobile logo */}
           <div className="flex flex-col items-center gap-3 lg:hidden">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-700 text-white shadow-lg shadow-blue-700/25">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-700 dark:bg-blue-600 text-white shadow-lg shadow-blue-700/25 dark:shadow-blue-900/40">
               <Building2 className="h-7 w-7" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">ImmoIA</h1>
+            <h1 className="text-2xl font-bold text-foreground">ImmoIA</h1>
           </div>
 
           {/* Header */}
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-2xl font-bold text-foreground">
               {activeTab === 'signin' ? 'Bon retour !' : 'Créer un compte'}
             </h2>
             <p className="text-sm text-muted-foreground">
@@ -264,9 +324,7 @@ export default function LoginPage() {
                 />
               </div>
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="signin-password">Mot de passe</Label>
-                </div>
+                <Label htmlFor="signin-password">Mot de passe</Label>
                 <PasswordInput
                   id="signin-password"
                   value={signInPassword}
@@ -357,7 +415,9 @@ export default function LoginPage() {
                       autoComplete="new-password"
                     />
                     {signUpConfirm && signUpPassword !== signUpConfirm && (
-                      <p className="text-xs text-red-500">Les mots de passe ne correspondent pas</p>
+                      <p className="text-xs text-red-500 dark:text-red-400">
+                        Les mots de passe ne correspondent pas
+                      </p>
                     )}
                   </div>
 
@@ -389,7 +449,7 @@ export default function LoginPage() {
               <Separator />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-gradient-to-br from-slate-50 to-blue-50/50 dark:from-zinc-950 dark:to-zinc-900 px-3 text-muted-foreground">
+              <span className="bg-slate-50 dark:bg-background px-3 text-muted-foreground">
                 ou continuer avec
               </span>
             </div>
