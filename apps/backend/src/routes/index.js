@@ -18,6 +18,8 @@ import assembleesRoutes from './assemblees.js'
 import incidentsRoutes from './incidents.js'
 import interventionsRoutes from './interventions.js'
 import carnetEntretienRoutes from './carnet-entretien.js'
+// Stats
+import statsRoutes from './stats.js'
 
 const router = Router()
 
@@ -44,6 +46,9 @@ router.use('/assemblees', assembleesRoutes)
 router.use('/incidents', incidentsRoutes)
 router.use('/interventions', interventionsRoutes)
 router.use('/carnet-entretien', carnetEntretienRoutes)
+
+// Stats
+router.use('/stats', statsRoutes)
 
 // Root health check
 router.get('/', (req, res) => {

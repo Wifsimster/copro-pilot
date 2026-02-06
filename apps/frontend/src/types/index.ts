@@ -65,6 +65,83 @@ export interface Coproprietaire {
 }
 
 // ============================================
+// Parties Communes Types
+// ============================================
+
+export interface PartieCommune {
+  id: number
+  copropriete_id: number
+  nom: string
+  categorie: 'generales' | 'speciales'
+  description: string | null
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
+// Clé de Répartition Types
+// ============================================
+
+export interface CleRepartition {
+  id: number
+  copropriete_id: number
+  nom: string
+  description: string | null
+  quote_parts?: LotCleRepartition[]
+  created_at: string
+  updated_at: string
+}
+
+export interface LotCleRepartition {
+  id: number
+  lot_id: number
+  cle_repartition_id: number
+  quote_part: number
+  lot_numero?: string
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
+// Locataire Types
+// ============================================
+
+export interface Locataire {
+  id: number
+  lot_id: number
+  nom: string
+  prenom: string
+  email: string | null
+  telephone: string | null
+  date_entree: string | null
+  date_sortie: string | null
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
+// Mutation Types
+// ============================================
+
+export type TypeMutation = 'vente' | 'donation' | 'succession' | 'autre'
+
+export interface Mutation {
+  id: number
+  lot_id: number
+  ancien_proprietaire_id: number | null
+  nouveau_proprietaire_id: number | null
+  date_mutation: string
+  type: TypeMutation
+  notes: string | null
+  ancien_nom?: string
+  ancien_prenom?: string
+  nouveau_nom?: string
+  nouveau_prenom?: string
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
 // Charges & Budget Types
 // ============================================
 

@@ -1,21 +1,15 @@
 import { createAuthClient } from 'better-auth/react'
 import { adminClient } from 'better-auth/client/plugins'
 
-/**
- * Get absolute API URL for Better Auth
- */
-function getAbsoluteApiUrl(): string {
-  const apiUrl = import.meta.env.VITE_BACKEND_URL || '/api'
-
-  if (apiUrl.startsWith('http://') || apiUrl.startsWith('https://')) {
-    return `${apiUrl}/auth`
+function getBaseURL() {
+  if (import.meta.env.VITE_BACKEND_URL) {
+    return `${import.meta.env.VITE_BACKEND_URL}/auth`
   }
-
-  return `${window.location.origin}${apiUrl}/auth`
+  return `${window.location.origin}/api/auth`
 }
 
 export const authClient = createAuthClient({
-  baseURL: getAbsoluteApiUrl(),
+  baseURL: getBaseURL(),
   fetchOptions: {
     credentials: 'include',
   },
