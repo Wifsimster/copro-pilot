@@ -5,6 +5,9 @@ import { lazy, Suspense } from 'react'
 
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
+const CoproprietesPage = lazy(() => import('@/pages/CoproprietesPage'))
+const CoproprieteDetailPage = lazy(() => import('@/pages/CoproprieteDetailPage'))
+const CoproprietairesPage = lazy(() => import('@/pages/CoproprietairesPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function PageLoader() {
@@ -48,9 +51,19 @@ export const router = createHashRouter([
         path: '/',
         element: <DashboardPage />,
       },
+      {
+        path: '/coproprietes',
+        element: <CoproprietesPage />,
+      },
+      {
+        path: '/coproprietes/:id',
+        element: <CoproprieteDetailPage />,
+      },
+      {
+        path: '/coproprietaires',
+        element: <CoproprietairesPage />,
+      },
       // Future routes:
-      // { path: '/coproprietes', element: <CoproprietesPage /> },
-      // { path: '/coproprietaires', element: <CoproprietairesPage /> },
       // { path: '/charges', element: <ChargesPage /> },
       // { path: '/assemblees', element: <AssembleesPage /> },
       // { path: '/travaux', element: <TravauxPage /> },

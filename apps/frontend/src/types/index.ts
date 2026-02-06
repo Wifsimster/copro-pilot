@@ -24,6 +24,7 @@ export interface Copropriete {
   ville: string
   date_creation: string
   nombre_lots: number
+  numero_immatriculation: string | null
   created_at: string
   updated_at: string
 }
