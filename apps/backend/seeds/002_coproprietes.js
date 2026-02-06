@@ -1,0 +1,75 @@
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
+ */
+export async function seed(knex) {
+  const existing = await knex('coproprietes').count('id as cnt').first()
+  if (existing.cnt > 0) {
+    return
+  }
+
+  const now = new Date()
+
+  await knex('coproprietes').insert([
+    {
+      nom: 'Résidence Les Jardins du Parc',
+      adresse: '12 avenue des Tilleuls',
+      code_postal: '75016',
+      ville: 'Paris',
+      date_creation: '2005-03-15',
+      nombre_lots: 48,
+      numero_immatriculation: 'W751012345',
+      notes: 'Copropriété avec espaces verts et parking souterrain',
+      created_at: now,
+      updated_at: now
+    },
+    {
+      nom: 'Le Clos Saint-Michel',
+      adresse: '8 rue de la République',
+      code_postal: '69003',
+      ville: 'Lyon',
+      date_creation: '2012-07-22',
+      nombre_lots: 32,
+      numero_immatriculation: 'W690054321',
+      notes: 'Résidence récente avec ascenseur et local vélos',
+      created_at: now,
+      updated_at: now
+    },
+    {
+      nom: 'Domaine de la Corniche',
+      adresse: '45 boulevard du Littoral',
+      code_postal: '13008',
+      ville: 'Marseille',
+      date_creation: '1998-11-03',
+      nombre_lots: 65,
+      numero_immatriculation: 'W130098765',
+      notes: 'Vue mer, piscine collective, gardien sur place',
+      created_at: now,
+      updated_at: now
+    },
+    {
+      nom: 'Les Terrasses de Garonne',
+      adresse: '23 quai des Chartrons',
+      code_postal: '33000',
+      ville: 'Bordeaux',
+      date_creation: '2018-02-10',
+      nombre_lots: 24,
+      numero_immatriculation: 'W330067890',
+      notes: 'Bâtiment BBC avec toiture végétalisée',
+      created_at: now,
+      updated_at: now
+    },
+    {
+      nom: 'Résidence du Vieux-Lille',
+      adresse: '5 place aux Oignons',
+      code_postal: '59800',
+      ville: 'Lille',
+      date_creation: '1985-09-28',
+      nombre_lots: 18,
+      numero_immatriculation: 'W590011223',
+      notes: 'Immeuble classé, ravalement prévu en 2026',
+      created_at: now,
+      updated_at: now
+    }
+  ])
+}
