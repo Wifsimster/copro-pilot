@@ -82,30 +82,28 @@ async function initializeDatabase() {
 
 // Validate required environment variables
 function validateEnvironment() {
-  const requiredSecrets = {
-    'BETTER_AUTH_SECRET': 'Better Auth secret for encryption and signing',
-    'MICROSOFT_TENANT_ID': 'Microsoft Azure AD tenant ID',
-    'MICROSOFT_CLIENT_ID': 'Microsoft Azure AD client ID',
-    'MICROSOFT_CLIENT_SECRET': 'Microsoft Azure AD client secret'
-  }
-
   const missing = []
 
   if (!process.env.BETTER_AUTH_SECRET && !process.env.AUTH_SECRET) {
     missing.push('BETTER_AUTH_SECRET')
   }
 
-  const oauthEnvVars = ['MICROSOFT_TENANT_ID', 'MICROSOFT_CLIENT_ID', 'MICROSOFT_CLIENT_SECRET']
-  const missingOAuth = oauthEnvVars.filter(varName => !process.env[varName])
-  missing.push(...missingOAuth)
-
   if (missing.length > 0) {
     logger.error('Missing required environment variables:')
     missing.forEach(varName => {
-      logger.error(`   - ${varName}: ${requiredSecrets[varName] || 'Required secret'}`)
+      logger.error(`   - ${varName}`)
     })
     logger.error('These secrets should be defined in your .env file.')
     process.exit(1)
+  }
+
+  const oauthEnvVars = ['MICROSOFT_TENANT_ID', 'MICROSOFT_CLIENT_ID', 'MICROSOFT_CLIENT_SECRET']
+  const missingOAuth = oauthEnvVars.filter(varName => !process.env[varName])
+  if (missingOAuth.length > 0) {
+    logger.warn('Microsoft OAuth env vars missing (OAuth login will be disabled):')
+    missingOAuth.forEach(varName => {
+      logger.warn(`   - ${varName}`)
+    })
   }
 }
 

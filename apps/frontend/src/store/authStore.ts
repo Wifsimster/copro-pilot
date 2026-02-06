@@ -15,6 +15,8 @@ interface AuthActions {
   setAuth: (user: User) => void
   clearAuth: () => void
   login: (returnUrl?: string) => Promise<void>
+  signIn: (email: string, password: string) => Promise<void>
+  signUp: (name: string, email: string, password: string) => Promise<void>
   logout: () => Promise<void>
   validateToken: () => Promise<boolean>
   initializeAuth: () => Promise<void>
@@ -100,6 +102,46 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       })
     } catch (error) {
       logger.error('Login failed:', error)
+      throw error
+    } finally {
+      set({ isLoading: false })
+    }
+  },
+
+  signIn: async (email: string, password: string) => {
+    try {
+      set({ isLoading: true })
+      const result = await authClient.signIn.email({ email, password })
+      if (result.error) {
+        throw new Error(result.error.message || 'Erreur de connexion')
+      }
+      if (result.data?.user) {
+        const userData = transformUser(result.data.user as SessionUser)
+        get().setAuth(userData)
+        window.location.href = '/#/'
+      }
+    } catch (error) {
+      logger.error('Sign in failed:', error)
+      throw error
+    } finally {
+      set({ isLoading: false })
+    }
+  },
+
+  signUp: async (name: string, email: string, password: string) => {
+    try {
+      set({ isLoading: true })
+      const result = await authClient.signUp.email({ name, email, password })
+      if (result.error) {
+        throw new Error(result.error.message || "Erreur lors de l'inscription")
+      }
+      if (result.data?.user) {
+        const userData = transformUser(result.data.user as SessionUser)
+        get().setAuth(userData)
+        window.location.href = '/#/'
+      }
+    } catch (error) {
+      logger.error('Sign up failed:', error)
       throw error
     } finally {
       set({ isLoading: false })
