@@ -1,14 +1,19 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { CalendarDays, MapPin, FileText } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -83,60 +88,81 @@ export function AssembleeFormDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>
+            Planifiez une assemblee generale. Les champs marques d'un * sont obligatoires.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="date">Date *</Label>
-              <Input id="date" type="date" {...register('date')} />
-              {errors.date && <p className="mt-1 text-sm text-red-500">{errors.date.message}</p>}
+
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
+          {/* Date & type section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <CalendarDays className="size-4" />
+              <span>Date et type</span>
             </div>
-            <div>
-              <Label htmlFor="heure">Heure</Label>
-              <Input id="heure" type="time" {...register('heure')} />
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="date">Date *</Label>
+                <Input id="date" type="date" {...register('date')} />
+                {errors.date && (
+                  <p className="text-sm text-destructive">{errors.date.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="heure">Heure</Label>
+                <Input id="heure" type="time" {...register('heure')} />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="type">Type *</Label>
+                <Select value={currentType} onValueChange={(val) => setValue('type', val as AGFormData['type'])}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ordinaire">Ordinaire</SelectItem>
+                    <SelectItem value="extraordinaire">Extraordinaire</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lieu" className="flex items-center gap-1.5">
+                  <MapPin className="size-3.5 text-muted-foreground" />
+                  Lieu
+                </Label>
+                <Input id="lieu" {...register('lieu')} placeholder="Salle des fetes..." />
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="type">Type *</Label>
-              <Select value={currentType} onValueChange={(val) => setValue('type', val as AGFormData['type'])}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ordinaire">Ordinaire</SelectItem>
-                  <SelectItem value="extraordinaire">Extraordinaire</SelectItem>
-                </SelectContent>
-              </Select>
+          <Separator />
+
+          {/* Agenda section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <FileText className="size-4" />
+              <span>Ordre du jour</span>
             </div>
-            <div>
-              <Label htmlFor="lieu">Lieu</Label>
-              <Input id="lieu" {...register('lieu')} placeholder="Salle des fetes..." />
+
+            <div className="space-y-2">
+              <Label htmlFor="ordre_du_jour">Ordre du jour</Label>
+              <Input id="ordre_du_jour" {...register('ordre_du_jour')} placeholder="Points a l'ordre du jour..." />
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="ordre_du_jour">Ordre du jour</Label>
-            <Input id="ordre_du_jour" {...register('ordre_du_jour')} placeholder="Points a l'ordre du jour..." />
-          </div>
+          <Separator />
 
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
-            >
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Annuler
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
-            >
+            </Button>
+            <Button type="submit" disabled={isLoading}>
               {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

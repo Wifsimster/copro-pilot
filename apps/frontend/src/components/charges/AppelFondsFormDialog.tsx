@@ -1,14 +1,19 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { Receipt, CalendarDays } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -83,64 +88,88 @@ export function AppelFondsFormDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>
+            Creez un appel de fonds trimestriel. Les champs marques d'un * sont obligatoires.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <Label htmlFor="trimestre">Trimestre *</Label>
-              <Select value={String(currentTrimestre)} onValueChange={(val) => setValue('trimestre', Number(val))}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">T1</SelectItem>
-                  <SelectItem value="2">T2</SelectItem>
-                  <SelectItem value="3">T3</SelectItem>
-                  <SelectItem value="4">T4</SelectItem>
-                </SelectContent>
-              </Select>
+
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
+          {/* Period & amount section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Receipt className="size-4" />
+              <span>Periode et montant</span>
             </div>
-            <div>
-              <Label htmlFor="annee">Annee *</Label>
-              <Input id="annee" type="number" {...register('annee')} />
-              {errors.annee && <p className="mt-1 text-sm text-red-500">{errors.annee.message}</p>}
-            </div>
-            <div>
-              <Label htmlFor="montant_total">Montant (EUR) *</Label>
-              <Input id="montant_total" type="number" step="0.01" {...register('montant_total')} placeholder="12500" />
-              {errors.montant_total && <p className="mt-1 text-sm text-red-500">{errors.montant_total.message}</p>}
+
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="trimestre">Trimestre *</Label>
+                <Select value={String(currentTrimestre)} onValueChange={(val) => setValue('trimestre', Number(val))}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">T1</SelectItem>
+                    <SelectItem value="2">T2</SelectItem>
+                    <SelectItem value="3">T3</SelectItem>
+                    <SelectItem value="4">T4</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="annee">Annee *</Label>
+                <Input id="annee" type="number" {...register('annee')} />
+                {errors.annee && (
+                  <p className="text-sm text-destructive">{errors.annee.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="montant_total">Montant (EUR) *</Label>
+                <Input id="montant_total" type="number" step="0.01" {...register('montant_total')} placeholder="12500" />
+                {errors.montant_total && (
+                  <p className="text-sm text-destructive">{errors.montant_total.message}</p>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="date_emission">Date d'emission *</Label>
-              <Input id="date_emission" type="date" {...register('date_emission')} />
-              {errors.date_emission && <p className="mt-1 text-sm text-red-500">{errors.date_emission.message}</p>}
+          <Separator />
+
+          {/* Dates section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <CalendarDays className="size-4" />
+              <span>Dates</span>
             </div>
-            <div>
-              <Label htmlFor="date_echeance">Date d'echeance *</Label>
-              <Input id="date_echeance" type="date" {...register('date_echeance')} />
-              {errors.date_echeance && <p className="mt-1 text-sm text-red-500">{errors.date_echeance.message}</p>}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="date_emission">Date d'emission *</Label>
+                <Input id="date_emission" type="date" {...register('date_emission')} />
+                {errors.date_emission && (
+                  <p className="text-sm text-destructive">{errors.date_emission.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="date_echeance">Date d'echeance *</Label>
+                <Input id="date_echeance" type="date" {...register('date_echeance')} />
+                {errors.date_echeance && (
+                  <p className="text-sm text-destructive">{errors.date_echeance.message}</p>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
-            >
+          <Separator />
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Annuler
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
-            >
+            </Button>
+            <Button type="submit" disabled={isLoading}>
               {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

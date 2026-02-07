@@ -2,77 +2,95 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@plugin "@tailwindcss/forms";
+/* ============================================
+   Light Theme — CSS Variables
+   ============================================ */
+:root {
+    --radius: 0.625rem;
+    --background: #ffffff;
+    --foreground: #0a0a0a;
+    --card: #ffffff;
+    --card-foreground: #0a0a0a;
+    --popover: #ffffff;
+    --popover-foreground: #0a0a0a;
+    --primary: #1e40af;
+    --primary-foreground: #ffffff;
+    --secondary: #f5f5f5;
+    --secondary-foreground: #171717;
+    --muted: #f5f5f5;
+    --muted-foreground: #737373;
+    --accent: #f5f5f5;
+    --accent-foreground: #171717;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e5e5e5;
+    --input: #e5e5e5;
+    --ring: #1e40af;
+}
 
-@theme {
-    /* ============================================
-       ImmoIA — Primary Brand Colors
-       ============================================ */
-    --primary-color: #1e40af;
+/* ============================================
+   Dark Theme — CSS Variables
+   ============================================ */
+.dark {
+    --background: #09090b;
+    --foreground: #fafafa;
+    --card: #18181b;
+    --card-foreground: #fafafa;
+    --popover: #27272a;
+    --popover-foreground: #fafafa;
+    --primary: #2563eb;
+    --primary-foreground: #ffffff;
+    --secondary: #27272a;
+    --secondary-foreground: #fafafa;
+    --muted: #27272a;
+    --muted-foreground: #a1a1aa;
+    --accent: #27272a;
+    --accent-foreground: #fafafa;
+    --destructive: #ef4444;
+    --destructive-foreground: #fafafa;
+    --border: #27272a;
+    --input: #27272a;
+    --ring: #3b82f6;
+}
 
-    --color-primary-color: var(--primary-color);
-    --color-input-border-color: #ccc7c7;
-
-    /* ============================================
-       Semantic Colors
-       ============================================ */
-    --color-info-color: #019bae;
-    --color-success-color: #11b776;
-    --color-warning-color: #ff9334;
-    --color-error-color: #f75f51;
-
-    /* ============================================
-       Light Theme Colors
-       ============================================ */
-    --color-text: #374151;
-    --color-text-light: #6b7280;
-    --color-text-muted: #9ca3af;
-    --color-bg: #ffffff;
-    --color-bg-secondary: #f9fafb;
-    --color-bg-tertiary: #f3f4f6;
-    --color-border: #e5e7eb;
-    --color-border-light: #f3f4f6;
-
-    /* ============================================
-       Dark Theme Colors
-       ============================================ */
-    --color-text-dark: #fafafa;
-    --color-text-light-dark: #e4e4e7;
-    --color-text-muted-dark: #a1a1aa;
-    --color-bg-dark: #18181b;
-    --color-bg-secondary-dark: #27272a;
-    --color-bg-tertiary-dark: #3f3f46;
-    --color-border-dark: #52525b;
-    --color-border-light-dark: #3f3f46;
-
-    /* ============================================
-       shadcn/ui Component Variables (Light Mode)
-       ============================================ */
-    --color-background: #ffffff;
-    --color-foreground: #0a0a0a;
-    --color-card: #ffffff;
-    --color-card-foreground: #0a0a0a;
-    --color-popover: #ffffff;
-    --color-popover-foreground: #0a0a0a;
-    --color-primary: #1e40af;
-    --color-primary-foreground: #ffffff;
-    --color-secondary: #f5f5f5;
-    --color-secondary-foreground: #171717;
-    --color-muted: #f5f5f5;
-    --color-muted-foreground: #737373;
-    --color-accent: #f5f5f5;
-    --color-accent-foreground: #171717;
-    --color-destructive: #ef4444;
-    --color-destructive-foreground: #ffffff;
-    --color-border: #e5e5e5;
-    --color-input: #e5e5e5;
-    --color-ring: #1e40af;
+/* ============================================
+   Map CSS variables to Tailwind utilities
+   ============================================ */
+@theme inline {
+    --radius: var(--radius);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
 }
 
 @layer base {
-    * {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
         font-family: Inter, system-ui, -apple-system, sans-serif;
-        border-color: var(--color-border);
+        border-color: var(--border);
+    }
+
+    body {
+        @apply bg-background text-foreground;
     }
 
     button {
@@ -121,65 +139,9 @@
     .dark * {
         scrollbar-color: #52525b #27272a;
     }
-
-    /* Dark Mode Variable Overrides */
-    .dark {
-        --color-background: #18181b;
-        --color-foreground: #fafafa;
-        --color-card: #18181b;
-        --color-card-foreground: #fafafa;
-        --color-popover: #27272a;
-        --color-popover-foreground: #fafafa;
-        --color-primary: #1e40af;
-        --color-primary-foreground: #ffffff;
-        --color-secondary: #27272a;
-        --color-secondary-foreground: #fafafa;
-        --color-muted: #27272a;
-        --color-muted-foreground: #a1a1aa;
-        --color-accent: #27272a;
-        --color-accent-foreground: #fafafa;
-        --color-destructive: #7f1d1d;
-        --color-destructive-foreground: #fafafa;
-        --color-border: #3f3f46;
-        --color-input: #3f3f46;
-        --color-ring: #3b82f6;
-    }
 }
 
 @layer utilities {
-    .text-themed {
-        color: #374151;
-    }
-    .dark .text-themed {
-        color: #e4e4e7;
-    }
-
-    .text-themed-muted {
-        color: #6b7280;
-    }
-    .dark .text-themed-muted {
-        color: #a1a1aa;
-    }
-
-    .border-themed {
-        border-color: #e5e7eb;
-    }
-    .dark .border-themed {
-        border-color: #52525b;
-    }
-
-    .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border-width: 0;
-    }
-
     .scrollbar-hide {
         -ms-overflow-style: none;
         scrollbar-width: none;

@@ -1,14 +1,19 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { SplitSquareHorizontal } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import type { CleRepartition } from '@/types'
 
 const schema = z.object({
@@ -42,21 +47,42 @@ export function CleRepartitionFormDialog({ open, onOpenChange, coproprieteId, on
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Nouvelle cle de repartition</DialogTitle>
+          <DialogDescription>
+            Definissez une cle de repartition pour les charges. Les champs marques d'un * sont obligatoires.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
-          <div>
-            <Label htmlFor="nom">Nom *</Label>
-            <Input id="nom" {...register('nom')} placeholder="Charges generales, Ascenseur..." />
-            {errors.nom && <p className="mt-1 text-sm text-red-500">{errors.nom.message}</p>}
+
+        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-5">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <SplitSquareHorizontal className="size-4" />
+              <span>Informations</span>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="nom">Nom *</Label>
+              <Input id="nom" {...register('nom')} placeholder="Charges generales, Ascenseur..." />
+              {errors.nom && (
+                <p className="text-sm text-destructive">{errors.nom.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Input id="description" {...register('description')} placeholder="Description..." />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <Input id="description" {...register('description')} placeholder="Description..." />
-          </div>
-          <div className="flex justify-end gap-3 pt-4">
-            <button type="button" onClick={() => onOpenChange(false)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700">Annuler</button>
-            <button type="submit" disabled={isLoading} className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50">{isLoading ? 'Enregistrement...' : 'Enregistrer'}</button>
-          </div>
+
+          <Separator />
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Annuler
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

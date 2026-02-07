@@ -1,14 +1,19 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { ClipboardList, Banknote } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import type { CarnetEntretien } from '@/types'
 
 const schema = z.object({
@@ -60,42 +65,78 @@ export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, o
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Nouvelle entree au carnet</DialogTitle>
+          <DialogDescription>
+            Ajoutez une entree au carnet d'entretien. Les champs marques d'un * sont obligatoires.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
-          <div>
-            <Label htmlFor="titre">Titre *</Label>
-            <Input id="titre" {...register('titre')} placeholder="Ravalement facade..." />
-            {errors.titre && <p className="mt-1 text-sm text-red-500">{errors.titre.message}</p>}
-          </div>
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <Input id="description" {...register('description')} placeholder="Details..." />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="prestataire">Prestataire</Label>
-              <Input id="prestataire" {...register('prestataire')} />
+
+        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-5">
+          {/* Entry details section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <ClipboardList className="size-4" />
+              <span>Entretien</span>
             </div>
-            <div>
-              <Label htmlFor="categorie">Categorie</Label>
-              <Input id="categorie" {...register('categorie')} placeholder="Toiture, Plomberie..." />
+
+            <div className="space-y-2">
+              <Label htmlFor="titre">Titre *</Label>
+              <Input id="titre" {...register('titre')} placeholder="Ravalement facade..." />
+              {errors.titre && (
+                <p className="text-sm text-destructive">{errors.titre.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Input id="description" {...register('description')} placeholder="Details..." />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="prestataire">Prestataire</Label>
+                <Input id="prestataire" {...register('prestataire')} placeholder="Nom du prestataire" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="categorie">Categorie</Label>
+                <Input id="categorie" {...register('categorie')} placeholder="Toiture, Plomberie..." />
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="montant">Montant (EUR)</Label>
-              <Input id="montant" type="number" step="0.01" {...register('montant')} />
+
+          <Separator />
+
+          {/* Cost & date section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Banknote className="size-4" />
+              <span>Cout et date</span>
             </div>
-            <div>
-              <Label htmlFor="date_realisation">Date de realisation *</Label>
-              <Input id="date_realisation" type="date" {...register('date_realisation')} />
-              {errors.date_realisation && <p className="mt-1 text-sm text-red-500">{errors.date_realisation.message}</p>}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="montant">Montant (EUR)</Label>
+                <Input id="montant" type="number" step="0.01" {...register('montant')} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="date_realisation">Date de realisation *</Label>
+                <Input id="date_realisation" type="date" {...register('date_realisation')} />
+                {errors.date_realisation && (
+                  <p className="text-sm text-destructive">{errors.date_realisation.message}</p>
+                )}
+              </div>
             </div>
           </div>
-          <div className="flex justify-end gap-3 pt-4">
-            <button type="button" onClick={() => onOpenChange(false)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700">Annuler</button>
-            <button type="submit" disabled={isLoading} className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50">{isLoading ? 'Enregistrement...' : 'Enregistrer'}</button>
-          </div>
+
+          <Separator />
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Annuler
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

@@ -1,14 +1,19 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { Home, Ruler, FileText } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -28,11 +33,11 @@ const TYPE_OPTIONS: { value: TypeLot; label: string }[] = [
 ]
 
 const lotSchema = z.object({
-  numero: z.string().min(1, 'Le numéro est obligatoire'),
+  numero: z.string().min(1, 'Le numero est obligatoire'),
   type: z.enum(['appartement', 'cave', 'parking', 'commerce', 'bureau', 'autre']),
-  surface: z.coerce.number().positive('La surface doit être positive').optional().or(z.literal('')),
+  surface: z.coerce.number().positive('La surface doit etre positive').optional().or(z.literal('')),
   etage: z.coerce.number().optional().or(z.literal('')),
-  tantiemes: z.coerce.number().min(1, 'Les tantièmes sont obligatoires'),
+  tantiemes: z.coerce.number().min(1, 'Les tantiemes sont obligatoires'),
   description: z.string().optional(),
 })
 
@@ -94,71 +99,104 @@ export function LotFormDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>
+            Renseignez les informations du lot. Les champs marques d'un * sont obligatoires.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="numero">Numéro *</Label>
-              <Input id="numero" {...register('numero')} placeholder="A101" />
-              {errors.numero && <p className="mt-1 text-sm text-red-500">{errors.numero.message}</p>}
+
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
+          {/* Identification section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Home className="size-4" />
+              <span>Identification</span>
             </div>
-            <div>
-              <Label htmlFor="type">Type *</Label>
-              <Select value={currentType} onValueChange={(val) => setValue('type', val as TypeLot)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {TYPE_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.type && <p className="mt-1 text-sm text-red-500">{errors.type.message}</p>}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="numero">Numero *</Label>
+                <Input id="numero" {...register('numero')} placeholder="A101" />
+                {errors.numero && (
+                  <p className="text-sm text-destructive">{errors.numero.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="type">Type *</Label>
+                <Select value={currentType} onValueChange={(val) => setValue('type', val as TypeLot)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TYPE_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.type && (
+                  <p className="text-sm text-destructive">{errors.type.message}</p>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <Label htmlFor="surface">Surface (m²)</Label>
-              <Input id="surface" type="number" step="0.01" {...register('surface')} placeholder="45" />
-              {errors.surface && <p className="mt-1 text-sm text-red-500">{errors.surface.message}</p>}
+          <Separator />
+
+          {/* Characteristics section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Ruler className="size-4" />
+              <span>Caracteristiques</span>
             </div>
-            <div>
-              <Label htmlFor="etage">Étage</Label>
-              <Input id="etage" type="number" {...register('etage')} placeholder="3" />
-              {errors.etage && <p className="mt-1 text-sm text-red-500">{errors.etage.message}</p>}
-            </div>
-            <div>
-              <Label htmlFor="tantiemes">Tantièmes *</Label>
-              <Input id="tantiemes" type="number" {...register('tantiemes')} placeholder="150" />
-              {errors.tantiemes && <p className="mt-1 text-sm text-red-500">{errors.tantiemes.message}</p>}
+
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="surface">Surface (m²)</Label>
+                <Input id="surface" type="number" step="0.01" {...register('surface')} placeholder="45" />
+                {errors.surface && (
+                  <p className="text-sm text-destructive">{errors.surface.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="etage">Etage</Label>
+                <Input id="etage" type="number" {...register('etage')} placeholder="3" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="tantiemes">Tantiemes *</Label>
+                <Input id="tantiemes" type="number" {...register('tantiemes')} placeholder="150" />
+                {errors.tantiemes && (
+                  <p className="text-sm text-destructive">{errors.tantiemes.message}</p>
+                )}
+              </div>
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <Input id="description" {...register('description')} placeholder="Appartement 3 pièces, balcon..." />
+          <Separator />
+
+          {/* Description section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <FileText className="size-4" />
+              <span>Description</span>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Input id="description" {...register('description')} placeholder="Appartement 3 pieces, balcon..." />
+            </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
-            >
+          <Separator />
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Annuler
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
-            >
+            </Button>
+            <Button type="submit" disabled={isLoading}>
               {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

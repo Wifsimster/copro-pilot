@@ -1,14 +1,19 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { Vote, FileText } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -59,35 +64,68 @@ export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmi
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Resolution #{numero}</DialogTitle>
+          <DialogDescription>
+            Ajoutez une resolution a l'ordre du jour. Les champs marques d'un * sont obligatoires.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
-          <div>
-            <Label htmlFor="titre">Titre *</Label>
-            <Input id="titre" {...register('titre')} placeholder="Approbation des comptes..." />
-            {errors.titre && <p className="mt-1 text-sm text-red-500">{errors.titre.message}</p>}
+
+        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-5">
+          {/* Resolution details section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <FileText className="size-4" />
+              <span>Contenu</span>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="titre">Titre *</Label>
+              <Input id="titre" {...register('titre')} placeholder="Approbation des comptes..." />
+              {errors.titre && (
+                <p className="text-sm text-destructive">{errors.titre.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Input id="description" {...register('description')} placeholder="Details de la resolution..." />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <Input id="description" {...register('description')} placeholder="Details de la resolution..." />
+
+          <Separator />
+
+          {/* Vote section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Vote className="size-4" />
+              <span>Regles de vote</span>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="majorite">Majorite requise *</Label>
+              <Select value={currentMajorite} onValueChange={(val) => setValue('majorite', val as FormData['majorite'])}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="article_24">Article 24 (majorite simple)</SelectItem>
+                  <SelectItem value="article_25">Article 25 (majorite absolue)</SelectItem>
+                  <SelectItem value="article_26">Article 26 (double majorite)</SelectItem>
+                  <SelectItem value="unanimite">Unanimite</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div>
-            <Label htmlFor="majorite">Majorite requise *</Label>
-            <Select value={currentMajorite} onValueChange={(val) => setValue('majorite', val as FormData['majorite'])}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="article_24">Article 24 (majorite simple)</SelectItem>
-                <SelectItem value="article_25">Article 25 (majorite absolue)</SelectItem>
-                <SelectItem value="article_26">Article 26 (double majorite)</SelectItem>
-                <SelectItem value="unanimite">Unanimite</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex justify-end gap-3 pt-4">
-            <button type="button" onClick={() => onOpenChange(false)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700">Annuler</button>
-            <button type="submit" disabled={isLoading} className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50">{isLoading ? 'Enregistrement...' : 'Enregistrer'}</button>
-          </div>
+
+          <Separator />
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Annuler
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

@@ -1,14 +1,19 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { Building2, MapPin, Info } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import type { Copropriete } from '@/types'
 
 const coproprieteSchema = z.object({
@@ -37,7 +42,7 @@ export function CoproprieteFormDialog({
   onSubmit,
   isLoading,
   defaultValues,
-  title = 'Nouvelle copropriété',
+  title = 'Nouvelle copropriete',
 }: CoproprieteFormDialogProps) {
   const {
     register,
@@ -66,60 +71,102 @@ export function CoproprieteFormDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>
+            Renseignez les informations de la copropriete. Les champs marques d'un * sont obligatoires.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-          <div>
-            <Label htmlFor="nom">Nom *</Label>
-            <Input id="nom" {...register('nom')} placeholder="Résidence Les Tilleuls" />
-            {errors.nom && <p className="mt-1 text-sm text-red-500">{errors.nom.message}</p>}
-          </div>
 
-          <div>
-            <Label htmlFor="adresse">Adresse *</Label>
-            <Input id="adresse" {...register('adresse')} placeholder="12 rue de la Paix" />
-            {errors.adresse && <p className="mt-1 text-sm text-red-500">{errors.adresse.message}</p>}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="code_postal">Code postal *</Label>
-              <Input id="code_postal" {...register('code_postal')} placeholder="75001" />
-              {errors.code_postal && <p className="mt-1 text-sm text-red-500">{errors.code_postal.message}</p>}
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
+          {/* General info section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Building2 className="size-4" />
+              <span>Informations generales</span>
             </div>
-            <div>
-              <Label htmlFor="ville">Ville *</Label>
-              <Input id="ville" {...register('ville')} placeholder="Paris" />
-              {errors.ville && <p className="mt-1 text-sm text-red-500">{errors.ville.message}</p>}
+
+            <div className="space-y-2">
+              <Label htmlFor="nom">Nom *</Label>
+              <Input id="nom" {...register('nom')} placeholder="Residence Les Tilleuls" />
+              {errors.nom && (
+                <p className="text-sm text-destructive">{errors.nom.message}</p>
+              )}
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="nombre_lots">Nombre de lots</Label>
-              <Input id="nombre_lots" type="number" {...register('nombre_lots')} />
+          <Separator />
+
+          {/* Address section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <MapPin className="size-4" />
+              <span>Adresse</span>
             </div>
-            <div>
-              <Label htmlFor="numero_immatriculation">N° immatriculation</Label>
-              <Input id="numero_immatriculation" {...register('numero_immatriculation')} placeholder="AB1234567" />
+
+            <div className="space-y-2">
+              <Label htmlFor="adresse">Adresse *</Label>
+              <Input id="adresse" {...register('adresse')} placeholder="12 rue de la Paix" />
+              {errors.adresse && (
+                <p className="text-sm text-destructive">{errors.adresse.message}</p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="code_postal">Code postal *</Label>
+                <Input id="code_postal" {...register('code_postal')} placeholder="75001" />
+                {errors.code_postal && (
+                  <p className="text-sm text-destructive">{errors.code_postal.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="ville">Ville *</Label>
+                <Input id="ville" {...register('ville')} placeholder="Paris" />
+                {errors.ville && (
+                  <p className="text-sm text-destructive">{errors.ville.message}</p>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
-            <button
+          <Separator />
+
+          {/* Additional info section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Info className="size-4" />
+              <span>Informations complementaires</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="nombre_lots">Nombre de lots</Label>
+                <Input id="nombre_lots" type="number" {...register('nombre_lots')} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="numero_immatriculation">N° immatriculation</Label>
+                <Input
+                  id="numero_immatriculation"
+                  {...register('numero_immatriculation')}
+                  placeholder="AB1234567"
+                />
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          <DialogFooter>
+            <Button
               type="button"
+              variant="outline"
               onClick={() => onOpenChange(false)}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
             >
               Annuler
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
-            >
+            </Button>
+            <Button type="submit" disabled={isLoading}>
               {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

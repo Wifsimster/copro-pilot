@@ -1,14 +1,19 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { PiggyBank } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import type { FondsTravaux } from '@/types'
 
 const schema = z.object({
@@ -43,29 +48,54 @@ export function FondsTravauxFormDialog({ open, onOpenChange, coproprieteId, onSu
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Nouveau fonds travaux</DialogTitle>
+          <DialogDescription>
+            Definissez le fonds travaux annuel. Les champs marques d'un * sont obligatoires.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
-          <div>
-            <Label htmlFor="annee">Annee *</Label>
-            <Input id="annee" type="number" {...register('annee')} />
-            {errors.annee && <p className="mt-1 text-sm text-red-500">{errors.annee.message}</p>}
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="cotisation_annuelle">Cotisation annuelle (EUR) *</Label>
-              <Input id="cotisation_annuelle" type="number" step="0.01" {...register('cotisation_annuelle')} />
-              {errors.cotisation_annuelle && <p className="mt-1 text-sm text-red-500">{errors.cotisation_annuelle.message}</p>}
+
+        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-5">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <PiggyBank className="size-4" />
+              <span>Fonds travaux</span>
             </div>
-            <div>
-              <Label htmlFor="solde">Solde (EUR) *</Label>
-              <Input id="solde" type="number" step="0.01" {...register('solde')} />
-              {errors.solde && <p className="mt-1 text-sm text-red-500">{errors.solde.message}</p>}
+
+            <div className="space-y-2">
+              <Label htmlFor="annee">Annee *</Label>
+              <Input id="annee" type="number" {...register('annee')} />
+              {errors.annee && (
+                <p className="text-sm text-destructive">{errors.annee.message}</p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="cotisation_annuelle">Cotisation annuelle (EUR) *</Label>
+                <Input id="cotisation_annuelle" type="number" step="0.01" {...register('cotisation_annuelle')} />
+                {errors.cotisation_annuelle && (
+                  <p className="text-sm text-destructive">{errors.cotisation_annuelle.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="solde">Solde (EUR) *</Label>
+                <Input id="solde" type="number" step="0.01" {...register('solde')} />
+                {errors.solde && (
+                  <p className="text-sm text-destructive">{errors.solde.message}</p>
+                )}
+              </div>
             </div>
           </div>
-          <div className="flex justify-end gap-3 pt-4">
-            <button type="button" onClick={() => onOpenChange(false)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700">Annuler</button>
-            <button type="submit" disabled={isLoading} className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50">{isLoading ? 'Enregistrement...' : 'Enregistrer'}</button>
-          </div>
+
+          <Separator />
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Annuler
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

@@ -1,14 +1,19 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { Wrench, Banknote } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import type { Intervention } from '@/types'
 
 const interventionSchema = z.object({
@@ -70,46 +75,64 @@ export function InterventionFormDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>
+            Planifiez une intervention. Les champs marques d'un * sont obligatoires.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-          <div>
-            <Label htmlFor="description">Description *</Label>
-            <Input id="description" {...register('description')} placeholder="Reparation de la fuite..." />
-            {errors.description && <p className="mt-1 text-sm text-red-500">{errors.description.message}</p>}
-          </div>
 
-          <div>
-            <Label htmlFor="prestataire">Prestataire</Label>
-            <Input id="prestataire" {...register('prestataire')} placeholder="Nom du prestataire..." />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="montant_devis">Montant devis (EUR)</Label>
-              <Input id="montant_devis" type="number" step="0.01" {...register('montant_devis')} placeholder="1500" />
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
+          {/* Intervention details section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Wrench className="size-4" />
+              <span>Intervention</span>
             </div>
-            <div>
-              <Label htmlFor="date_prevue">Date prevue</Label>
-              <Input id="date_prevue" type="date" {...register('date_prevue')} />
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description *</Label>
+              <Input id="description" {...register('description')} placeholder="Reparation de la fuite..." />
+              {errors.description && (
+                <p className="text-sm text-destructive">{errors.description.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="prestataire">Prestataire</Label>
+              <Input id="prestataire" {...register('prestataire')} placeholder="Nom du prestataire..." />
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
-            >
+          <Separator />
+
+          {/* Cost & date section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Banknote className="size-4" />
+              <span>Devis et planning</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="montant_devis">Montant devis (EUR)</Label>
+                <Input id="montant_devis" type="number" step="0.01" {...register('montant_devis')} placeholder="1500" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="date_prevue">Date prevue</Label>
+                <Input id="date_prevue" type="date" {...register('date_prevue')} />
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Annuler
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
-            >
+            </Button>
+            <Button type="submit" disabled={isLoading}>
               {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

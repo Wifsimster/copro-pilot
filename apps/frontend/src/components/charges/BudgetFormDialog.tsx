@@ -1,14 +1,19 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { Calculator, FileText } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import type { BudgetPrevisionnel } from '@/types'
 
 const budgetSchema = z.object({
@@ -66,42 +71,62 @@ export function BudgetFormDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>
+            Definissez le budget previsionnel. Les champs marques d'un * sont obligatoires.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="annee">Annee *</Label>
-              <Input id="annee" type="number" {...register('annee')} />
-              {errors.annee && <p className="mt-1 text-sm text-red-500">{errors.annee.message}</p>}
+
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
+          {/* Budget section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Calculator className="size-4" />
+              <span>Budget</span>
             </div>
-            <div>
-              <Label htmlFor="montant_total">Montant total (EUR) *</Label>
-              <Input id="montant_total" type="number" step="0.01" {...register('montant_total')} placeholder="50000" />
-              {errors.montant_total && <p className="mt-1 text-sm text-red-500">{errors.montant_total.message}</p>}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="annee">Annee *</Label>
+                <Input id="annee" type="number" {...register('annee')} />
+                {errors.annee && (
+                  <p className="text-sm text-destructive">{errors.annee.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="montant_total">Montant total (EUR) *</Label>
+                <Input id="montant_total" type="number" step="0.01" {...register('montant_total')} placeholder="50000" />
+                {errors.montant_total && (
+                  <p className="text-sm text-destructive">{errors.montant_total.message}</p>
+                )}
+              </div>
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="notes">Notes</Label>
-            <Input id="notes" {...register('notes')} placeholder="Notes supplementaires..." />
+          <Separator />
+
+          {/* Notes section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <FileText className="size-4" />
+              <span>Notes</span>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="notes">Notes</Label>
+              <Input id="notes" {...register('notes')} placeholder="Notes supplementaires..." />
+            </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
-            >
+          <Separator />
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Annuler
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
-            >
+            </Button>
+            <Button type="submit" disabled={isLoading}>
               {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
