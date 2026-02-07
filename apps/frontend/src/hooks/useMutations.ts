@@ -27,6 +27,17 @@ export function useCreateMutation() {
   })
 }
 
+export function useUpdateMutation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<Mutation> }) => mutationsApi.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: MUTATIONS_QUERY_KEY })
+      queryClient.invalidateQueries({ queryKey: LOTS_QUERY_KEY })
+    },
+  })
+}
+
 export function useDeleteMutation() {
   const queryClient = useQueryClient()
   return useMutation({

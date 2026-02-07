@@ -1,6 +1,6 @@
 # Architecture technique
 
-Ce document présente l'architecture d'ImmoIA. Il vous permet de comprendre comment les composants de la plateforme interagissent entre eux.
+Ce document présente l'architecture de CoproPilot. Il vous permet de comprendre comment les composants de la plateforme interagissent entre eux.
 
 ## Vue d'ensemble
 

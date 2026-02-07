@@ -53,7 +53,7 @@ router.use('/stats', statsRoutes)
 // Root health check
 router.get('/', (req, res) => {
     res.json({
-        service: 'ImmoIA Backend',
+        service: 'CoproPilot Backend',
         version: '0.1.0',
         status: 'running',
         timestamp: new Date().toISOString()

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useCopropriete, useUpdateCopropriete } from '@/hooks/useCoproprietes'
-import { useLotsByCopropriete, useCreateLot, useDeleteLot } from '@/hooks/useLots'
-import { usePartiesCommunesByCopropriete, useCreatePartieCommune, useDeletePartieCommune } from '@/hooks/usePartiesCommunes'
-import { useClesRepartitionByCopropriete, useCreateCleRepartition, useDeleteCleRepartition } from '@/hooks/useClesRepartition'
-import { useLocatairesByLot, useCreateLocataire, useDeleteLocataire } from '@/hooks/useLocataires'
-import { useMutationsByLot, useCreateMutation, useDeleteMutation } from '@/hooks/useMutations'
+import { useLotsByCopropriete, useCreateLot, useUpdateLot, useDeleteLot } from '@/hooks/useLots'
+import { usePartiesCommunesByCopropriete, useCreatePartieCommune, useUpdatePartieCommune, useDeletePartieCommune } from '@/hooks/usePartiesCommunes'
+import { useClesRepartitionByCopropriete, useCreateCleRepartition, useUpdateCleRepartition, useDeleteCleRepartition } from '@/hooks/useClesRepartition'
+import { useLocatairesByLot, useCreateLocataire, useUpdateLocataire, useDeleteLocataire } from '@/hooks/useLocataires'
+import { useMutationsByLot, useCreateMutation, useUpdateMutation, useDeleteMutation } from '@/hooks/useMutations'
 import type { LotWithProprietaire } from '@/api/lots'
 import type { PartieCommune, CleRepartition, Locataire, Mutation } from '@/types'
 import { ArrowLeft, Plus, Trash2, Pencil, Home, DoorOpen, Key, UserCheck, ArrowRightLeft } from 'lucide-react'
@@ -47,15 +47,20 @@ export default function CoproprieteDetailPage() {
   const { data: partiesCommunes } = usePartiesCommunesByCopropriete(coproprieteId)
   const { data: clesRepartition } = useClesRepartitionByCopropriete(coproprieteId)
   const createLot = useCreateLot()
+  const updateLot = useUpdateLot()
   const deleteLot = useDeleteLot()
   const createPC = useCreatePartieCommune()
+  const updatePC = useUpdatePartieCommune()
   const deletePC = useDeletePartieCommune()
   const createCle = useCreateCleRepartition()
+  const updateCle = useUpdateCleRepartition()
   const deleteCle = useDeleteCleRepartition()
   const updateCopropriete = useUpdateCopropriete()
   const createLocataire = useCreateLocataire()
+  const updateLocataire = useUpdateLocataire()
   const deleteLocataire = useDeleteLocataire()
   const createMutation = useCreateMutation()
+  const updateMutation = useUpdateMutation()
   const deleteMutation = useDeleteMutation()
   const [showCreateLot, setShowCreateLot] = useState(false)
   const [showEditCopro, setShowEditCopro] = useState(false)
@@ -63,6 +68,11 @@ export default function CoproprieteDetailPage() {
   const [showCreateCle, setShowCreateCle] = useState(false)
   const [showCreateLocataire, setShowCreateLocataire] = useState(false)
   const [showCreateMutation, setShowCreateMutation] = useState(false)
+  const [editingLot, setEditingLot] = useState<LotWithProprietaire | null>(null)
+  const [editingPC, setEditingPC] = useState<PartieCommune | null>(null)
+  const [editingCle, setEditingCle] = useState<CleRepartition | null>(null)
+  const [editingLocataire, setEditingLocataire] = useState<Locataire | null>(null)
+  const [editingMutation, setEditingMutation] = useState<Mutation | null>(null)
   const [activeTab, setActiveTab] = useState<Tab>('lots')
   const [selectedLotId, setSelectedLotId] = useState<number | undefined>()
 
@@ -212,12 +222,20 @@ export default function CoproprieteDetailPage() {
                         }
                       </td>
                       <td className="px-4 py-3">
-                        <button
-                          onClick={() => handleDeleteLot(lot.id, lot.numero)}
-                          className="rounded p-1 text-gray-400 hover:text-red-600"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setEditingLot(lot)}
+                            className="rounded p-1 text-gray-400 hover:text-blue-600"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteLot(lot.id, lot.numero)}
+                            className="rounded p-1 text-gray-400 hover:text-red-600"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -273,12 +291,20 @@ export default function CoproprieteDetailPage() {
                       </td>
                       <td className="max-w-xs truncate px-4 py-3 text-gray-600 dark:text-zinc-300">{pc.description || '—'}</td>
                       <td className="px-4 py-3">
-                        <button
-                          onClick={() => { if (window.confirm(`Supprimer "${pc.nom}" ?`)) deletePC.mutate(pc.id) }}
-                          className="rounded p-1 text-gray-400 hover:text-red-600"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setEditingPC(pc)}
+                            className="rounded p-1 text-gray-400 hover:text-blue-600"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => { if (window.confirm(`Supprimer "${pc.nom}" ?`)) deletePC.mutate(pc.id) }}
+                            className="rounded p-1 text-gray-400 hover:text-red-600"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -324,12 +350,20 @@ export default function CoproprieteDetailPage() {
                       <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{cle.nom}</td>
                       <td className="max-w-xs truncate px-4 py-3 text-gray-600 dark:text-zinc-300">{cle.description || '—'}</td>
                       <td className="px-4 py-3">
-                        <button
-                          onClick={() => { if (window.confirm(`Supprimer "${cle.nom}" ?`)) deleteCle.mutate(cle.id) }}
-                          className="rounded p-1 text-gray-400 hover:text-red-600"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setEditingCle(cle)}
+                            className="rounded p-1 text-gray-400 hover:text-blue-600"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => { if (window.confirm(`Supprimer "${cle.nom}" ?`)) deleteCle.mutate(cle.id) }}
+                            className="rounded p-1 text-gray-400 hover:text-red-600"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -400,12 +434,20 @@ export default function CoproprieteDetailPage() {
                       <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{loc.date_entree ? new Date(loc.date_entree).toLocaleDateString('fr-FR') : '—'}</td>
                       <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{loc.date_sortie ? new Date(loc.date_sortie).toLocaleDateString('fr-FR') : '—'}</td>
                       <td className="px-4 py-3">
-                        <button
-                          onClick={() => { if (window.confirm('Supprimer ce locataire ?')) deleteLocataire.mutate(loc.id) }}
-                          className="rounded p-1 text-gray-400 hover:text-red-600"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setEditingLocataire(loc)}
+                            className="rounded p-1 text-gray-400 hover:text-blue-600"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => { if (window.confirm('Supprimer ce locataire ?')) deleteLocataire.mutate(loc.id) }}
+                            className="rounded p-1 text-gray-400 hover:text-red-600"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -484,12 +526,20 @@ export default function CoproprieteDetailPage() {
                         {m.nouveau_nom ? `${m.nouveau_prenom} ${m.nouveau_nom}` : '—'}
                       </td>
                       <td className="px-4 py-3">
-                        <button
-                          onClick={() => { if (window.confirm('Supprimer cette mutation ?')) deleteMutation.mutate(m.id) }}
-                          className="rounded p-1 text-gray-400 hover:text-red-600"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setEditingMutation(m)}
+                            className="rounded p-1 text-gray-400 hover:text-blue-600"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => { if (window.confirm('Supprimer cette mutation ?')) deleteMutation.mutate(m.id) }}
+                            className="rounded p-1 text-gray-400 hover:text-red-600"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -502,11 +552,21 @@ export default function CoproprieteDetailPage() {
 
       {/* Dialogs */}
       <LotFormDialog
-        open={showCreateLot}
-        onOpenChange={setShowCreateLot}
+        open={showCreateLot || !!editingLot}
+        onOpenChange={(open) => { if (!open) { setShowCreateLot(false); setEditingLot(null) } }}
         coproprieteId={coproprieteId!}
-        onSubmit={async (data) => { await createLot.mutateAsync(data); setShowCreateLot(false) }}
-        isLoading={createLot.isPending}
+        defaultValues={editingLot || undefined}
+        title={editingLot ? 'Modifier le lot' : 'Nouveau lot'}
+        onSubmit={async (data) => {
+          if (editingLot) {
+            await updateLot.mutateAsync({ id: editingLot.id, data })
+            setEditingLot(null)
+          } else {
+            await createLot.mutateAsync(data)
+            setShowCreateLot(false)
+          }
+        }}
+        isLoading={editingLot ? updateLot.isPending : createLot.isPending}
       />
       <CoproprieteFormDialog
         open={showEditCopro}
@@ -517,34 +577,74 @@ export default function CoproprieteDetailPage() {
         isLoading={updateCopropriete.isPending}
       />
       <PartieCommuneFormDialog
-        open={showCreatePC}
-        onOpenChange={setShowCreatePC}
+        open={showCreatePC || !!editingPC}
+        onOpenChange={(open) => { if (!open) { setShowCreatePC(false); setEditingPC(null) } }}
         coproprieteId={coproprieteId!}
-        onSubmit={async (data) => { await createPC.mutateAsync(data); setShowCreatePC(false) }}
-        isLoading={createPC.isPending}
+        defaultValues={editingPC || undefined}
+        title={editingPC ? 'Modifier la partie commune' : 'Nouvelle partie commune'}
+        onSubmit={async (data) => {
+          if (editingPC) {
+            await updatePC.mutateAsync({ id: editingPC.id, data })
+            setEditingPC(null)
+          } else {
+            await createPC.mutateAsync(data)
+            setShowCreatePC(false)
+          }
+        }}
+        isLoading={editingPC ? updatePC.isPending : createPC.isPending}
       />
       <CleRepartitionFormDialog
-        open={showCreateCle}
-        onOpenChange={setShowCreateCle}
+        open={showCreateCle || !!editingCle}
+        onOpenChange={(open) => { if (!open) { setShowCreateCle(false); setEditingCle(null) } }}
         coproprieteId={coproprieteId!}
-        onSubmit={async (data) => { await createCle.mutateAsync(data); setShowCreateCle(false) }}
-        isLoading={createCle.isPending}
+        defaultValues={editingCle || undefined}
+        title={editingCle ? 'Modifier la cle de repartition' : 'Nouvelle cle de repartition'}
+        onSubmit={async (data) => {
+          if (editingCle) {
+            await updateCle.mutateAsync({ id: editingCle.id, data })
+            setEditingCle(null)
+          } else {
+            await createCle.mutateAsync(data)
+            setShowCreateCle(false)
+          }
+        }}
+        isLoading={editingCle ? updateCle.isPending : createCle.isPending}
       />
       {selectedLotId && (
         <>
           <LocataireFormDialog
-            open={showCreateLocataire}
-            onOpenChange={setShowCreateLocataire}
+            open={showCreateLocataire || !!editingLocataire}
+            onOpenChange={(open) => { if (!open) { setShowCreateLocataire(false); setEditingLocataire(null) } }}
             lotId={selectedLotId}
-            onSubmit={async (data) => { await createLocataire.mutateAsync(data); setShowCreateLocataire(false) }}
-            isLoading={createLocataire.isPending}
+            defaultValues={editingLocataire || undefined}
+            title={editingLocataire ? 'Modifier le locataire' : 'Nouveau locataire'}
+            onSubmit={async (data) => {
+              if (editingLocataire) {
+                await updateLocataire.mutateAsync({ id: editingLocataire.id, data })
+                setEditingLocataire(null)
+              } else {
+                await createLocataire.mutateAsync(data)
+                setShowCreateLocataire(false)
+              }
+            }}
+            isLoading={editingLocataire ? updateLocataire.isPending : createLocataire.isPending}
           />
           <MutationFormDialog
-            open={showCreateMutation}
-            onOpenChange={setShowCreateMutation}
+            open={showCreateMutation || !!editingMutation}
+            onOpenChange={(open) => { if (!open) { setShowCreateMutation(false); setEditingMutation(null) } }}
             lotId={selectedLotId}
-            onSubmit={async (data) => { await createMutation.mutateAsync(data); setShowCreateMutation(false) }}
-            isLoading={createMutation.isPending}
+            defaultValues={editingMutation || undefined}
+            title={editingMutation ? 'Modifier la mutation' : 'Nouvelle mutation'}
+            onSubmit={async (data) => {
+              if (editingMutation) {
+                await updateMutation.mutateAsync({ id: editingMutation.id, data })
+                setEditingMutation(null)
+              } else {
+                await createMutation.mutateAsync(data)
+                setShowCreateMutation(false)
+              }
+            }}
+            isLoading={editingMutation ? updateMutation.isPending : createMutation.isPending}
           />
         </>
       )}

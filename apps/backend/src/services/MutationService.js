@@ -22,6 +22,17 @@ class MutationService {
         }
     }
 
+    async update(id, data) {
+        try {
+            const result = await MutationModel.update(id, data)
+            logger.info(`[MutationService] Mutation mise à jour (ID: ${id})`)
+            return result
+        } catch (error) {
+            logger.error(`[MutationService] Error updating mutation ${id}: ${error.message}`)
+            throw error
+        }
+    }
+
     async delete(id) {
         try {
             await MutationModel.delete(id)

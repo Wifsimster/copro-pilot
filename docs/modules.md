@@ -1,12 +1,12 @@
 # Guide des modules fonctionnels
 
-Ce document décrit les modules d'ImmoIA et leurs fonctionnalités. Chaque module correspond à un domaine métier du syndic de copropriété.
+Ce document décrit les modules de CoproPilot et leurs fonctionnalités. Chaque module correspond à un domaine métier du syndic de copropriété.
 
 ## Carte des modules
 
 ```mermaid
 graph TD
-    A[ImmoIA] --> B[Patrimoine]
+    A[CoproPilot] --> B[Patrimoine]
     A --> C[Comptabilité]
     A --> D[Assemblées Générales]
     A --> E[Travaux & Incidents]

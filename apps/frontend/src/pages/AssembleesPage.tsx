@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
-import { useAssembleesByCopropriete, useCreateAssemblee, useDeleteAssemblee } from '@/hooks/useAssemblees'
+import { useAssembleesByCopropriete, useCreateAssemblee, useUpdateAssemblee, useDeleteAssemblee } from '@/hooks/useAssemblees'
 import { AssembleeFormDialog } from '@/components/assemblees/AssembleeFormDialog'
 import type { AssembleeGenerale } from '@/types'
-import { Calendar, Plus, Trash2, Eye, ChevronDown, MapPin, Clock } from 'lucide-react'
+import { Calendar, Plus, Trash2, Pencil, Eye, ChevronDown, MapPin, Clock } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 const TYPE_LABELS: Record<string, string> = {
@@ -33,7 +33,9 @@ export default function AssembleesPage() {
   const [showDialog, setShowDialog] = useState(false)
   const { data: assemblees, isLoading: loadingAGs } = useAssembleesByCopropriete(selectedCoproId)
   const createAG = useCreateAssemblee()
+  const updateAG = useUpdateAssemblee()
   const deleteAG = useDeleteAssemblee()
+  const [editingAG, setEditingAG] = useState<AssembleeGenerale | null>(null)
 
   if (loadingCopros) {
     return (
@@ -124,6 +126,12 @@ export default function AssembleesPage() {
                         <Eye className="h-4 w-4" />
                       </Link>
                       <button
+                        onClick={() => setEditingAG(ag)}
+                        className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-blue-600 dark:hover:bg-zinc-700"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
                         onClick={() => {
                           if (window.confirm('Supprimer cette AG ?')) deleteAG.mutate(ag.id)
                         }}
@@ -154,14 +162,21 @@ export default function AssembleesPage() {
           )}
 
           <AssembleeFormDialog
-            open={showDialog}
-            onOpenChange={setShowDialog}
+            open={showDialog || !!editingAG}
+            onOpenChange={(open) => { if (!open) { setShowDialog(false); setEditingAG(null) } }}
             coproprieteId={selectedCoproId}
+            defaultValues={editingAG || undefined}
+            title={editingAG ? 'Modifier l\'assemblee generale' : 'Nouvelle assemblee generale'}
             onSubmit={async (data) => {
-              await createAG.mutateAsync(data)
-              setShowDialog(false)
+              if (editingAG) {
+                await updateAG.mutateAsync({ id: editingAG.id, data })
+                setEditingAG(null)
+              } else {
+                await createAG.mutateAsync(data)
+                setShowDialog(false)
+              }
             }}
-            isLoading={createAG.isPending}
+            isLoading={editingAG ? updateAG.isPending : createAG.isPending}
           />
         </div>
       )}

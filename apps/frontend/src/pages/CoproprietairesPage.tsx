@@ -1,14 +1,16 @@
 import { useState } from 'react'
-import { useCoproprietaires, useCreateCoproprietaire, useDeleteCoproprietaire } from '@/hooks/useCoproprietaires'
+import { useCoproprietaires, useCreateCoproprietaire, useUpdateCoproprietaire, useDeleteCoproprietaire } from '@/hooks/useCoproprietaires'
 import type { Coproprietaire } from '@/types'
-import { Users, Plus, Trash2, Mail, Phone } from 'lucide-react'
+import { Users, Plus, Trash2, Pencil, Mail, Phone } from 'lucide-react'
 import { CoproprietaireFormDialog } from '@/components/coproprietaires/CoproprietaireFormDialog'
 
 export default function CoproprietairesPage() {
   const { data: coproprietaires, isLoading } = useCoproprietaires()
   const createCoproprietaire = useCreateCoproprietaire()
+  const updateCoproprietaire = useUpdateCoproprietaire()
   const deleteCoproprietaire = useDeleteCoproprietaire()
   const [showCreate, setShowCreate] = useState(false)
+  const [editingCopro, setEditingCopro] = useState<Coproprietaire | null>(null)
   const [search, setSearch] = useState('')
 
   const filtered = coproprietaires?.filter((c: Coproprietaire) => {
@@ -104,6 +106,13 @@ export default function CoproprietairesPage() {
                 </div>
                 <div className="flex gap-1">
                   <button
+                    onClick={() => setEditingCopro(copro)}
+                    className="rounded p-1 text-gray-400 hover:text-blue-600"
+                    title="Modifier"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                  <button
                     onClick={() => handleDelete(copro.id, copro.nom, copro.prenom)}
                     className="rounded p-1 text-gray-400 hover:text-red-600"
                     title="Supprimer"
@@ -136,13 +145,20 @@ export default function CoproprietairesPage() {
       )}
 
       <CoproprietaireFormDialog
-        open={showCreate}
-        onOpenChange={setShowCreate}
+        open={showCreate || !!editingCopro}
+        onOpenChange={(open) => { if (!open) { setShowCreate(false); setEditingCopro(null) } }}
+        defaultValues={editingCopro || undefined}
+        title={editingCopro ? 'Modifier le coproprietaire' : 'Nouveau coproprietaire'}
         onSubmit={async (data) => {
-          await createCoproprietaire.mutateAsync(data)
-          setShowCreate(false)
+          if (editingCopro) {
+            await updateCoproprietaire.mutateAsync({ id: editingCopro.id, data })
+            setEditingCopro(null)
+          } else {
+            await createCoproprietaire.mutateAsync(data)
+            setShowCreate(false)
+          }
         }}
-        isLoading={createCoproprietaire.isPending}
+        isLoading={editingCopro ? updateCoproprietaire.isPending : createCoproprietaire.isPending}
       />
     </div>
   )

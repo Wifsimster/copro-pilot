@@ -30,12 +30,18 @@ interface Props {
   coproprieteId: number
   onSubmit: (data: Partial<FondsTravaux>) => Promise<void>
   isLoading?: boolean
+  defaultValues?: Partial<FondsTravaux>
+  title?: string
 }
 
-export function FondsTravauxFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading }: Props) {
+export function FondsTravauxFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading, defaultValues, title = 'Nouveau fonds travaux' }: Props) {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { annee: new Date().getFullYear(), cotisation_annuelle: 0, solde: 0 },
+    defaultValues: {
+      annee: defaultValues?.annee || new Date().getFullYear(),
+      cotisation_annuelle: defaultValues?.cotisation_annuelle || 0,
+      solde: defaultValues?.solde || 0,
+    },
   })
 
   const onFormSubmit = async (data: FormData) => {
@@ -47,7 +53,7 @@ export function FondsTravauxFormDialog({ open, onOpenChange, coproprieteId, onSu
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Nouveau fonds travaux</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             Definissez le fonds travaux annuel. Les champs marques d'un * sont obligatoires.
           </DialogDescription>

@@ -1,8 +1,8 @@
-# CLAUDE.md — ImmoIA
+# CLAUDE.md — CoproPilot
 
 ## Présentation
 
-ImmoIA est une plateforme monorepo de gestion de copropriété pour syndics professionnels. Elle est composée d'un backend Express et d'un frontend React, communiquant via une API REST sous le préfixe `/api`.
+CoproPilot est une plateforme monorepo de gestion de copropriété pour syndics professionnels. Elle est composée d'un backend Express et d'un frontend React, communiquant via une API REST sous le préfixe `/api`.
 
 ## Stack technique
 
@@ -15,7 +15,7 @@ ImmoIA est une plateforme monorepo de gestion de copropriété pour syndics prof
 ## Structure du projet
 
 ```
-immo-ia/
+copro-pilot/
 ├── apps/
 │   ├── backend/                 # API Express
 │   │   ├── migrations/          # Migrations Knex

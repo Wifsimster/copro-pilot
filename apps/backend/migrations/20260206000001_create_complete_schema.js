@@ -1,5 +1,5 @@
 /**
- * Migration initiale — Schéma complet ImmoIA
+ * Migration initiale — Schéma complet CoproPilot
  * Tables Better Auth (user, session, account, verification)
  * Tables métier : coproprietes, coproprietaires, lots, parties_communes,
  *   cles_repartition, lot_cles_repartition, locataires, mutations

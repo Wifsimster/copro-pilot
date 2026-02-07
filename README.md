@@ -1,4 +1,4 @@
-# ImmoIA
+# CoproPilot
 
 Plateforme de gestion de copropriété conçue pour les syndics professionnels. Elle centralise la gestion des immeubles, des copropriétaires, des charges, des assemblées générales et des travaux.
 

@@ -47,7 +47,7 @@ const fileFormat = winston.format.combine(
 const logger = winston.createLogger({
   level,
   format: fileFormat,
-  defaultMeta: { service: 'immo-ia-backend' },
+  defaultMeta: { service: 'copro-pilot-backend' },
   transports: [
     new winston.transports.Console({
       format: consoleFormat

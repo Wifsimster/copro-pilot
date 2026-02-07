@@ -33,18 +33,20 @@ interface Props {
   coproprieteId: number
   onSubmit: (data: Partial<CarnetEntretien>) => Promise<void>
   isLoading?: boolean
+  defaultValues?: Partial<CarnetEntretien>
+  title?: string
 }
 
-export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading }: Props) {
+export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading, defaultValues, title = 'Nouvelle entree au carnet' }: Props) {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      titre: '',
-      description: '',
-      prestataire: '',
-      montant: '',
-      date_realisation: new Date().toISOString().split('T')[0],
-      categorie: '',
+      titre: defaultValues?.titre || '',
+      description: defaultValues?.description || '',
+      prestataire: defaultValues?.prestataire || '',
+      montant: defaultValues?.montant ?? '',
+      date_realisation: defaultValues?.date_realisation || new Date().toISOString().split('T')[0],
+      categorie: defaultValues?.categorie || '',
     },
   })
 
@@ -64,7 +66,7 @@ export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, o
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Nouvelle entree au carnet</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             Ajoutez une entree au carnet d'entretien. Les champs marques d'un * sont obligatoires.
           </DialogDescription>

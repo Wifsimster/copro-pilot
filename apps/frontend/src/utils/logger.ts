@@ -3,18 +3,18 @@ const isDevelopment = import.meta.env.DEV
 const logger = {
   info: (...args: unknown[]) => {
     if (isDevelopment) {
-      console.info('[ImmoIA]', ...args)
+      console.info('[CoproPilot]', ...args)
     }
   },
   warn: (...args: unknown[]) => {
-    console.warn('[ImmoIA]', ...args)
+    console.warn('[CoproPilot]', ...args)
   },
   error: (...args: unknown[]) => {
-    console.error('[ImmoIA]', ...args)
+    console.error('[CoproPilot]', ...args)
   },
   debug: (...args: unknown[]) => {
     if (isDevelopment) {
-      console.debug('[ImmoIA]', ...args)
+      console.debug('[CoproPilot]', ...args)
     }
   },
 }

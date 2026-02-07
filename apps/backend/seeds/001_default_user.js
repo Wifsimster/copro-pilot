@@ -21,7 +21,7 @@ function hashPassword(password) {
  * @returns { Promise<void> }
  */
 export async function seed(knex) {
-  const email = 'admin@immo-ia.local'
+  const email = 'admin@copropilot.local'
 
   const existing = await knex('user').where({ email }).first()
   if (existing) {

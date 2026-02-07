@@ -1,8 +1,8 @@
-# AGENT.md — ImmoIA
+# AGENT.md — CoproPilot
 
 ## Objectif du projet
 
-ImmoIA est une plateforme de gestion de copropriété pour syndics professionnels. Le projet est un monorepo Node.js avec un backend Express (API REST) et un frontend React (SPA). L'objectif est de couvrir l'ensemble des besoins d'un syndic : gestion des immeubles, copropriétaires, comptabilité, assemblées générales et travaux.
+CoproPilot est une plateforme de gestion de copropriété pour syndics professionnels. Le projet est un monorepo Node.js avec un backend Express (API REST) et un frontend React (SPA). L'objectif est de couvrir l'ensemble des besoins d'un syndic : gestion des immeubles, copropriétaires, comptabilité, assemblées générales et travaux.
 
 ## Structure monorepo
 

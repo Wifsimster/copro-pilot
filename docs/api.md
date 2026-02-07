@@ -1,12 +1,12 @@
 # Référence API
 
-Ce document répertorie tous les points d'accès de l'API (Interface de Programmation Applicative) d'ImmoIA. Toutes les requêtes sont préfixées par `/api`.
+Ce document répertorie tous les points d'accès de l'API (Interface de Programmation Applicative) de CoproPilot. Toutes les requêtes sont préfixées par `/api`.
 
 ## Structure de l'API
 
 ```mermaid
 graph TD
-    A[API ImmoIA] --> B[Patrimoine]
+    A[API CoproPilot] --> B[Patrimoine]
     A --> C[Comptabilité]
     A --> D[Assemblées générales]
     A --> E[Travaux & Incidents]

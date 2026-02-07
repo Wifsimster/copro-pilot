@@ -25,6 +25,16 @@ export function useCreateCleRepartition() {
   })
 }
 
+export function useUpdateCleRepartition() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<CleRepartition> }) => clesRepartitionApi.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: CLES_REPARTITION_QUERY_KEY })
+    },
+  })
+}
+
 export function useDeleteCleRepartition() {
   const queryClient = useQueryClient()
   return useMutation({

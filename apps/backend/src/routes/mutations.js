@@ -6,6 +6,7 @@ const router = Router()
 
 router.get('/lot/:lotId', requireAuth(), MutationController.getAllByLot)
 router.post('/', requireAuth(), MutationController.create)
+router.put('/:id', requireAuth(), MutationController.update)
 router.delete('/:id', requireAuth(), MutationController.delete)
 
 export default router

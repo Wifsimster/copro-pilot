@@ -23,7 +23,7 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler.js'
 import { toNodeHandler } from 'better-auth/node'
 
 // Application configuration
-const APP_NAME = 'immo-ia-backend'
+const APP_NAME = 'copro-pilot-backend'
 
 const args = process.argv.slice(2)
 const argPort = args.find(e => e.startsWith('--port'))
@@ -251,7 +251,7 @@ async function main() {
       }
     })
 
-    logger.info(`ImmoIA Backend started successfully!`)
+    logger.info(`CoproPilot Backend started successfully!`)
     logger.info(`Server running on port ${port}`)
     logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`)
 

@@ -1,7 +1,7 @@
 {
-  "name": "immo-ia-frontend",
+  "name": "copro-pilot-frontend",
   "version": "0.1.0",
-  "description": "ImmoIA frontend - Gestion de copropriété",
+  "description": "CoproPilot frontend - Gestion de copropriété",
   "type": "module",
   "author": {
     "name": "Damien BATTISTELLA"

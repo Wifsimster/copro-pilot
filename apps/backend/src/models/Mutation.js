@@ -45,6 +45,32 @@ export class MutationModel {
         return result
     }
 
+    static async update(id, data) {
+        const db = getDb()
+        const [result] = await db('mutations')
+            .where('id', id)
+            .update({
+                ancien_proprietaire_id: data.ancien_proprietaire_id || null,
+                nouveau_proprietaire_id: data.nouveau_proprietaire_id || null,
+                date_mutation: data.date_mutation,
+                type: data.type,
+                notes: data.notes || null,
+                updated_at: db.fn.now(),
+            })
+            .returning('*')
+
+        if (data.nouveau_proprietaire_id && result.lot_id) {
+            await db('lots')
+                .where('id', result.lot_id)
+                .update({
+                    coproprietaire_id: data.nouveau_proprietaire_id,
+                    updated_at: db.fn.now(),
+                })
+        }
+
+        return result
+    }
+
     static async delete(id) {
         const db = getDb()
         return db('mutations').where('id', id).del()

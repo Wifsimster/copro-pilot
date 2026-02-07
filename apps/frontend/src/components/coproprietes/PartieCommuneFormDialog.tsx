@@ -37,12 +37,18 @@ interface Props {
   coproprieteId: number
   onSubmit: (data: Partial<PartieCommune>) => Promise<void>
   isLoading?: boolean
+  defaultValues?: Partial<PartieCommune>
+  title?: string
 }
 
-export function PartieCommuneFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading }: Props) {
+export function PartieCommuneFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading, defaultValues, title = 'Nouvelle partie commune' }: Props) {
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { nom: '', categorie: 'generales', description: '' },
+    defaultValues: {
+      nom: defaultValues?.nom || '',
+      categorie: (defaultValues?.categorie as FormData['categorie']) || 'generales',
+      description: defaultValues?.description || '',
+    },
   })
 
   const currentCategorie = watch('categorie')
@@ -56,7 +62,7 @@ export function PartieCommuneFormDialog({ open, onOpenChange, coproprieteId, onS
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Nouvelle partie commune</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             Renseignez les informations de la partie commune. Les champs marques d'un * sont obligatoires.
           </DialogDescription>

@@ -12,11 +12,13 @@ import {
   BarChart3,
   Moon,
   Sun,
+  Check,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Tooltip,
   TooltipContent,
@@ -53,6 +55,7 @@ function ThemeToggle() {
       <Tooltip>
         <TooltipTrigger asChild>
           <Toggle
+            data-slot="theme-toggle"
             variant="outline"
             size="sm"
             pressed={isDark}
@@ -88,7 +91,7 @@ function PasswordInput({
   const [show, setShow] = useState(false)
 
   return (
-    <div className="relative">
+    <div data-slot="password-input" className="relative">
       <Input
         id={id}
         type={show ? 'text' : 'password'}
@@ -133,7 +136,7 @@ function PasswordStrength({ password }: { password: string }) {
   if (!password) return null
 
   return (
-    <div className="space-y-1.5">
+    <div data-slot="password-strength" className="space-y-1.5">
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((i) => (
           <div
@@ -161,9 +164,7 @@ const features = [
 export default function LoginPage() {
   const { login, signIn, signUp, isLoading } = useAuthStore()
 
-  const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin')
-
-  const [signInEmail, setSignInEmail] = useState('admin@immo-ia.local')
+  const [signInEmail, setSignInEmail] = useState('admin@copropilot.local')
   const [signInPassword, setSignInPassword] = useState('admin')
   const [signInError, setSignInError] = useState('')
 
@@ -213,7 +214,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen bg-background">
       {/* Left Panel — Branding */}
-      <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 dark:from-blue-950 dark:via-indigo-950 dark:to-slate-950 text-white flex-col justify-between p-10">
+      <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] relative overflow-hidden bg-gradient-to-br from-primary via-primary/85 to-indigo-900 dark:from-primary/80 dark:via-primary/50 dark:to-slate-950 text-white flex-col justify-between p-10">
         {/* Decorative circles */}
         <div className="absolute -top-24 -left-24 size-96 rounded-full bg-white/5 dark:bg-white/[0.03]" />
         <div className="absolute -bottom-32 -right-32 size-[500px] rounded-full bg-white/5 dark:bg-white/[0.03]" />
@@ -221,12 +222,12 @@ export default function LoginPage() {
 
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-2">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm">
-              <Building2 className="h-6 w-6" />
+            <div className="flex size-11 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm">
+              <Building2 className="size-6" />
             </div>
-            <span className="text-2xl font-bold tracking-tight">ImmoIA</span>
+            <span className="text-2xl font-bold tracking-tight">CoproPilot</span>
           </div>
-          <p className="text-blue-200 dark:text-blue-300/60 text-sm mt-1">
+          <p className="text-primary-foreground/70 text-sm mt-1">
             Plateforme de gestion de copropriété
           </p>
         </div>
@@ -241,21 +242,21 @@ export default function LoginPage() {
                 key={f.title}
                 className="rounded-xl bg-white/10 dark:bg-white/5 backdrop-blur-sm p-4 space-y-2 border border-white/10 dark:border-white/[0.06]"
               >
-                <f.icon className="size-5 text-blue-200 dark:text-blue-300/70" />
+                <f.icon className="size-5 text-primary-foreground/70" />
                 <p className="font-semibold text-sm">{f.title}</p>
-                <p className="text-xs text-blue-200/80 dark:text-blue-300/50 leading-relaxed">{f.desc}</p>
+                <p className="text-xs text-primary-foreground/50 leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <p className="relative z-10 text-xs text-blue-300/60 dark:text-blue-400/40">
-          &copy; {new Date().getFullYear()} ImmoIA. Tous droits réservés.
+        <p className="relative z-10 text-xs text-primary-foreground/40">
+          &copy; {new Date().getFullYear()} CoproPilot. Tous droits réservés.
         </p>
       </div>
 
       {/* Right Panel — Forms */}
-      <div className="relative flex flex-1 items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50/50 dark:from-background dark:to-background p-6 sm:p-10">
+      <div className="relative flex flex-1 items-center justify-center bg-secondary/50 dark:bg-background p-6 sm:p-10">
         {/* Theme toggle — top right */}
         <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
           <ThemeToggle />
@@ -264,184 +265,162 @@ export default function LoginPage() {
         <div className="w-full max-w-[420px] space-y-8">
           {/* Mobile logo */}
           <div className="flex flex-col items-center gap-3 lg:hidden">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-700 dark:bg-blue-600 text-white shadow-lg shadow-blue-700/25 dark:shadow-blue-900/40">
-              <Building2 className="h-7 w-7" />
+            <div className="flex size-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
+              <Building2 className="size-7" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground">ImmoIA</h1>
+            <h1 className="text-2xl font-bold text-foreground">CoproPilot</h1>
           </div>
 
-          {/* Header */}
-          <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-foreground">
-              {activeTab === 'signin' ? 'Bon retour !' : 'Créer un compte'}
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              {activeTab === 'signin'
-                ? 'Connectez-vous pour accéder à votre espace'
-                : 'Remplissez le formulaire pour commencer'}
-            </p>
-          </div>
+          {/* Tabs — signin / signup */}
+          <Tabs defaultValue="signin" className="w-full space-y-6">
+            {/* Header — changes with active tab via CSS */}
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-foreground">
+                Bienvenue
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Connectez-vous ou créez un compte pour continuer
+              </p>
+            </div>
 
-          {/* Tab Switch */}
-          <div className="flex rounded-lg bg-muted p-1">
-            <button
-              type="button"
-              onClick={() => setActiveTab('signin')}
-              className={`flex-1 rounded-md py-2 text-sm font-medium transition-all ${
-                activeTab === 'signin'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Connexion
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('signup')}
-              className={`flex-1 rounded-md py-2 text-sm font-medium transition-all ${
-                activeTab === 'signup'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Inscription
-            </button>
-          </div>
+            <TabsList className="w-full">
+              <TabsTrigger value="signin" className="flex-1">Connexion</TabsTrigger>
+              <TabsTrigger value="signup" className="flex-1">Inscription</TabsTrigger>
+            </TabsList>
 
-          {/* Sign In Form */}
-          {activeTab === 'signin' && (
-            <form onSubmit={handleSignIn} className="space-y-5">
-              <div className="space-y-2">
-                <Label htmlFor="signin-email">Adresse email</Label>
-                <Input
-                  id="signin-email"
-                  type="email"
-                  placeholder="vous@exemple.com"
-                  value={signInEmail}
-                  onChange={(e) => setSignInEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="signin-password">Mot de passe</Label>
-                <PasswordInput
-                  id="signin-password"
-                  value={signInPassword}
-                  onChange={(e) => setSignInPassword(e.target.value)}
-                  autoComplete="current-password"
-                />
-              </div>
-
-              {signInError && (
-                <div className="flex items-start gap-2 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 p-3 text-sm text-red-700 dark:text-red-400">
-                  <AlertCircle className="size-4 mt-0.5 shrink-0" />
-                  <span>{signInError}</span>
+            {/* Sign In */}
+            <TabsContent value="signin">
+              <form onSubmit={handleSignIn} className="space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="signin-email">Adresse email</Label>
+                  <Input
+                    id="signin-email"
+                    type="email"
+                    placeholder="vous@exemple.com"
+                    value={signInEmail}
+                    onChange={(e) => setSignInEmail(e.target.value)}
+                    required
+                    autoComplete="email"
+                  />
                 </div>
-              )}
+                <div className="space-y-2">
+                  <Label htmlFor="signin-password">Mot de passe</Label>
+                  <PasswordInput
+                    id="signin-password"
+                    value={signInPassword}
+                    onChange={(e) => setSignInPassword(e.target.value)}
+                    autoComplete="current-password"
+                  />
+                </div>
 
-              <Button type="submit" className="w-full h-10" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin" />
-                    Connexion...
-                  </>
-                ) : (
-                  'Se connecter'
+                {signInError && (
+                  <div className="flex items-start gap-2 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
+                    <AlertCircle className="size-4 mt-0.5 shrink-0" />
+                    <span>{signInError}</span>
+                  </div>
                 )}
-              </Button>
-            </form>
-          )}
 
-          {/* Sign Up Form */}
-          {activeTab === 'signup' && (
-            <form onSubmit={handleSignUp} className="space-y-5">
-              {signUpSuccess ? (
-                <div className="flex flex-col items-center gap-4 py-8 text-center">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
-                    <svg className="size-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-foreground">Compte créé avec succès !</p>
-                    <p className="text-sm text-muted-foreground mt-1">Vous êtes maintenant connecté.</p>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name">Nom complet</Label>
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      placeholder="Jean Dupont"
-                      value={signUpName}
-                      onChange={(e) => setSignUpName(e.target.value)}
-                      required
-                      autoComplete="name"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Adresse email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="vous@exemple.com"
-                      value={signUpEmail}
-                      onChange={(e) => setSignUpEmail(e.target.value)}
-                      required
-                      autoComplete="email"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Mot de passe</Label>
-                    <PasswordInput
-                      id="signup-password"
-                      value={signUpPassword}
-                      onChange={(e) => setSignUpPassword(e.target.value)}
-                      minLength={8}
-                      autoComplete="new-password"
-                    />
-                    <PasswordStrength password={signUpPassword} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-confirm">Confirmer le mot de passe</Label>
-                    <PasswordInput
-                      id="signup-confirm"
-                      value={signUpConfirm}
-                      onChange={(e) => setSignUpConfirm(e.target.value)}
-                      minLength={8}
-                      autoComplete="new-password"
-                    />
-                    {signUpConfirm && signUpPassword !== signUpConfirm && (
-                      <p className="text-xs text-red-500 dark:text-red-400">
-                        Les mots de passe ne correspondent pas
-                      </p>
-                    )}
-                  </div>
-
-                  {signUpError && (
-                    <div className="flex items-start gap-2 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 p-3 text-sm text-red-700 dark:text-red-400">
-                      <AlertCircle className="size-4 mt-0.5 shrink-0" />
-                      <span>{signUpError}</span>
-                    </div>
+                <Button type="submit" className="w-full h-10" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" />
+                      Connexion...
+                    </>
+                  ) : (
+                    'Se connecter'
                   )}
+                </Button>
+              </form>
+            </TabsContent>
 
-                  <Button type="submit" className="w-full h-10" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="size-4 animate-spin" />
-                        Inscription...
-                      </>
-                    ) : (
-                      "S'inscrire"
+            {/* Sign Up */}
+            <TabsContent value="signup">
+              <form onSubmit={handleSignUp} className="space-y-5">
+                {signUpSuccess ? (
+                  <div className="flex flex-col items-center gap-4 py-8 text-center">
+                    <div className="flex size-14 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
+                      <Check className="size-7" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">Compte créé avec succès !</p>
+                      <p className="text-sm text-muted-foreground mt-1">Vous êtes maintenant connecté.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-name">Nom complet</Label>
+                      <Input
+                        id="signup-name"
+                        type="text"
+                        placeholder="Jean Dupont"
+                        value={signUpName}
+                        onChange={(e) => setSignUpName(e.target.value)}
+                        required
+                        autoComplete="name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email">Adresse email</Label>
+                      <Input
+                        id="signup-email"
+                        type="email"
+                        placeholder="vous@exemple.com"
+                        value={signUpEmail}
+                        onChange={(e) => setSignUpEmail(e.target.value)}
+                        required
+                        autoComplete="email"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password">Mot de passe</Label>
+                      <PasswordInput
+                        id="signup-password"
+                        value={signUpPassword}
+                        onChange={(e) => setSignUpPassword(e.target.value)}
+                        minLength={8}
+                        autoComplete="new-password"
+                      />
+                      <PasswordStrength password={signUpPassword} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-confirm">Confirmer le mot de passe</Label>
+                      <PasswordInput
+                        id="signup-confirm"
+                        value={signUpConfirm}
+                        onChange={(e) => setSignUpConfirm(e.target.value)}
+                        minLength={8}
+                        autoComplete="new-password"
+                      />
+                      {signUpConfirm && signUpPassword !== signUpConfirm && (
+                        <p className="text-xs text-destructive">
+                          Les mots de passe ne correspondent pas
+                        </p>
+                      )}
+                    </div>
+
+                    {signUpError && (
+                      <div className="flex items-start gap-2 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
+                        <AlertCircle className="size-4 mt-0.5 shrink-0" />
+                        <span>{signUpError}</span>
+                      </div>
                     )}
-                  </Button>
-                </>
-              )}
-            </form>
-          )}
+
+                    <Button type="submit" className="w-full h-10" disabled={isLoading}>
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="size-4 animate-spin" />
+                          Inscription...
+                        </>
+                      ) : (
+                        "S'inscrire"
+                      )}
+                    </Button>
+                  </>
+                )}
+              </form>
+            </TabsContent>
+          </Tabs>
 
           {/* Divider */}
           <div className="relative">
@@ -449,7 +428,7 @@ export default function LoginPage() {
               <Separator />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-slate-50 dark:bg-background px-3 text-muted-foreground">
+              <span className="bg-background px-3 text-muted-foreground">
                 ou continuer avec
               </span>
             </div>

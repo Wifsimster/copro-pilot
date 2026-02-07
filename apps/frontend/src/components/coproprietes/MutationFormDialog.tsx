@@ -1,14 +1,19 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { ArrowLeftRight, StickyNote } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -35,18 +40,20 @@ interface Props {
   lotId: number
   onSubmit: (data: Partial<Mutation>) => Promise<void>
   isLoading?: boolean
+  defaultValues?: Partial<Mutation>
+  title?: string
 }
 
-export function MutationFormDialog({ open, onOpenChange, lotId, onSubmit, isLoading }: Props) {
+export function MutationFormDialog({ open, onOpenChange, lotId, onSubmit, isLoading, defaultValues, title = 'Nouvelle mutation' }: Props) {
   const { data: coproprietaires } = useCoproprietaires()
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      type: 'vente',
-      date_mutation: new Date().toISOString().split('T')[0],
-      ancien_proprietaire_id: 0,
-      nouveau_proprietaire_id: 0,
-      notes: '',
+      type: (defaultValues?.type as FormData['type']) || 'vente',
+      date_mutation: defaultValues?.date_mutation || new Date().toISOString().split('T')[0],
+      ancien_proprietaire_id: defaultValues?.ancien_proprietaire_id || 0,
+      nouveau_proprietaire_id: defaultValues?.nouveau_proprietaire_id || 0,
+      notes: defaultValues?.notes || '',
     },
   })
 
@@ -68,63 +75,99 @@ export function MutationFormDialog({ open, onOpenChange, lotId, onSubmit, isLoad
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Nouvelle mutation</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>
+            Renseignez les informations de la mutation. Les champs marques d'un * sont obligatoires.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="type">Type *</Label>
-              <Select value={currentType} onValueChange={(val) => setValue('type', val as FormData['type'])}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="vente">Vente</SelectItem>
-                  <SelectItem value="donation">Donation</SelectItem>
-                  <SelectItem value="succession">Succession</SelectItem>
-                  <SelectItem value="autre">Autre</SelectItem>
-                </SelectContent>
-              </Select>
+
+        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-5">
+          {/* Mutation details section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <ArrowLeftRight className="size-4" />
+              <span>Mutation</span>
             </div>
-            <div>
-              <Label htmlFor="date_mutation">Date *</Label>
-              <Input id="date_mutation" type="date" {...register('date_mutation')} />
-              {errors.date_mutation && <p className="mt-1 text-sm text-red-500">{errors.date_mutation.message}</p>}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="type">Type *</Label>
+                <Select value={currentType} onValueChange={(val) => setValue('type', val as FormData['type'])}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="vente">Vente</SelectItem>
+                    <SelectItem value="donation">Donation</SelectItem>
+                    <SelectItem value="succession">Succession</SelectItem>
+                    <SelectItem value="autre">Autre</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="date_mutation">Date *</Label>
+                <Input id="date_mutation" type="date" {...register('date_mutation')} />
+                {errors.date_mutation && (
+                  <p className="text-sm text-destructive">{errors.date_mutation.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="ancien_proprietaire_id">Ancien proprietaire</Label>
+              <select
+                {...register('ancien_proprietaire_id')}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              >
+                <option value={0}>— Aucun —</option>
+                {coproprietaires?.map((c) => (
+                  <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="nouveau_proprietaire_id">Nouveau proprietaire *</Label>
+              <select
+                {...register('nouveau_proprietaire_id')}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              >
+                <option value={0}>— Selectionner —</option>
+                {coproprietaires?.map((c) => (
+                  <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>
+                ))}
+              </select>
+              {errors.nouveau_proprietaire_id && (
+                <p className="text-sm text-destructive">{errors.nouveau_proprietaire_id.message}</p>
+              )}
             </div>
           </div>
-          <div>
-            <Label htmlFor="ancien_proprietaire_id">Ancien proprietaire</Label>
-            <select
-              {...register('ancien_proprietaire_id')}
-              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
-            >
-              <option value={0}>— Aucun —</option>
-              {coproprietaires?.map((c) => (
-                <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>
-              ))}
-            </select>
+
+          <Separator />
+
+          {/* Notes section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <StickyNote className="size-4" />
+              <span>Informations complementaires</span>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="notes">Notes</Label>
+              <Input id="notes" {...register('notes')} placeholder="Informations complementaires..." />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="nouveau_proprietaire_id">Nouveau proprietaire *</Label>
-            <select
-              {...register('nouveau_proprietaire_id')}
-              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
-            >
-              <option value={0}>— Selectionner —</option>
-              {coproprietaires?.map((c) => (
-                <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>
-              ))}
-            </select>
-            {errors.nouveau_proprietaire_id && <p className="mt-1 text-sm text-red-500">{errors.nouveau_proprietaire_id.message}</p>}
-          </div>
-          <div>
-            <Label htmlFor="notes">Notes</Label>
-            <Input id="notes" {...register('notes')} placeholder="Informations complementaires..." />
-          </div>
-          <div className="flex justify-end gap-3 pt-4">
-            <button type="button" onClick={() => onOpenChange(false)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700">Annuler</button>
-            <button type="submit" disabled={isLoading} className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50">{isLoading ? 'Enregistrement...' : 'Enregistrer'}</button>
-          </div>
+
+          <Separator />
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Annuler
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
+            </Button>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

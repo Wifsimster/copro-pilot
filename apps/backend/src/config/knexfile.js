@@ -12,8 +12,8 @@ const getPostgresConnection = () => {
     return {
         host: process.env.POSTGRES_HOST || 'localhost',
         port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
-        database: process.env.POSTGRES_DB || 'immo_ia',
-        user: process.env.POSTGRES_USER || 'immo_ia',
+        database: process.env.POSTGRES_DB || 'copro_pilot',
+        user: process.env.POSTGRES_USER || 'copro_pilot',
         password: process.env.POSTGRES_PASSWORD || ''
     }
 }

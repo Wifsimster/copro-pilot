@@ -1,7 +1,7 @@
 {
-  "name": "@immo-ia/backend",
+  "name": "@copro-pilot/backend",
   "version": "0.1.0",
-  "description": "ImmoIA backend - Gestion de copropriété",
+  "description": "CoproPilot backend - Gestion de copropriété",
   "type": "module",
   "main": "src/index.js",
   "author": {

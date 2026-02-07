@@ -1,12 +1,12 @@
 # Schéma des données
 
-Ce document décrit les données stockées par ImmoIA. Chaque table est présentée en langage métier, sans détail technique.
+Ce document décrit les données stockées par CoproPilot. Chaque table est présentée en langage métier, sans détail technique.
 
 ## Organisation des données
 
 ```mermaid
 graph TD
-    A[Données ImmoIA] --> B[Authentification]
+    A[Données CoproPilot] --> B[Authentification]
     A --> C[Patrimoine]
     A --> D[Comptabilité]
     A --> E[Assemblées générales]

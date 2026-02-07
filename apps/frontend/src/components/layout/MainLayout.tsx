@@ -71,7 +71,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
             <Building2 className="h-5 w-5" />
           </div>
-          <span className="text-lg font-bold text-gray-900 dark:text-white">ImmoIA</span>
+          <span className="text-lg font-bold text-gray-900 dark:text-white">CoproPilot</span>
           <button
             onClick={() => setSidebarOpen(false)}
             className="ml-auto lg:hidden"
@@ -136,7 +136,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span className="ml-3 text-lg font-bold text-gray-900 dark:text-white">ImmoIA</span>
+          <span className="ml-3 text-lg font-bold text-gray-900 dark:text-white">CoproPilot</span>
         </header>
 
         {/* Page content */}

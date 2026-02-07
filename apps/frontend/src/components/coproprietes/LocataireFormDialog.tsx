@@ -32,12 +32,20 @@ interface Props {
   lotId: number
   onSubmit: (data: Partial<Locataire>) => Promise<void>
   isLoading?: boolean
+  defaultValues?: Partial<Locataire>
+  title?: string
 }
 
-export function LocataireFormDialog({ open, onOpenChange, lotId, onSubmit, isLoading }: Props) {
+export function LocataireFormDialog({ open, onOpenChange, lotId, onSubmit, isLoading, defaultValues, title = 'Nouveau locataire' }: Props) {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { nom: '', prenom: '', email: '', telephone: '', date_entree: '' },
+    defaultValues: {
+      nom: defaultValues?.nom || '',
+      prenom: defaultValues?.prenom || '',
+      email: defaultValues?.email || '',
+      telephone: defaultValues?.telephone || '',
+      date_entree: defaultValues?.date_entree || '',
+    },
   })
 
   const onFormSubmit = async (data: FormData) => {
@@ -55,7 +63,7 @@ export function LocataireFormDialog({ open, onOpenChange, lotId, onSubmit, isLoa
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Nouveau locataire</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             Renseignez les informations du locataire. Les champs marques d'un * sont obligatoires.
           </DialogDescription>

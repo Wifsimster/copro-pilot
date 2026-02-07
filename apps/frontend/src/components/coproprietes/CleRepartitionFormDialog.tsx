@@ -29,12 +29,17 @@ interface Props {
   coproprieteId: number
   onSubmit: (data: Partial<CleRepartition>) => Promise<void>
   isLoading?: boolean
+  defaultValues?: Partial<CleRepartition>
+  title?: string
 }
 
-export function CleRepartitionFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading }: Props) {
+export function CleRepartitionFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading, defaultValues, title = 'Nouvelle cle de repartition' }: Props) {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { nom: '', description: '' },
+    defaultValues: {
+      nom: defaultValues?.nom || '',
+      description: defaultValues?.description || '',
+    },
   })
 
   const onFormSubmit = async (data: FormData) => {
@@ -46,7 +51,7 @@ export function CleRepartitionFormDialog({ open, onOpenChange, coproprieteId, on
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Nouvelle cle de repartition</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             Definissez une cle de repartition pour les charges. Les champs marques d'un * sont obligatoires.
           </DialogDescription>

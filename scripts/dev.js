@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-console.log('Starting ImmoIA Monorepo in development mode...\n')
+console.log('Starting CoproPilot Monorepo in development mode...\n')
 
 const workspaces = [
     'apps/backend',

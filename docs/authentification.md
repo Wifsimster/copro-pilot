@@ -1,10 +1,10 @@
 # Authentification et sécurité
 
-Ce document décrit les mécanismes d'authentification et de protection des données d'ImmoIA.
+Ce document décrit les mécanismes d'authentification et de protection des données de CoproPilot.
 
 ## Méthodes de connexion
 
-ImmoIA propose deux méthodes de connexion :
+CoproPilot propose deux méthodes de connexion :
 
 - **Email et mot de passe** — Connexion classique avec un compte créé sur la plateforme.
 - **Microsoft SSO** — Connexion via votre compte Microsoft professionnel (Azure AD).
@@ -103,7 +103,7 @@ Les rôles sont définis lors de la création du compte. Seul un administrateur 
 
 ## Protection des données
 
-ImmoIA met en place plusieurs mesures de sécurité :
+CoproPilot met en place plusieurs mesures de sécurité :
 
 - **CORS** (Cross-Origin Resource Sharing) — Seules les origines autorisées peuvent communiquer avec l'API. Les requêtes provenant d'autres sites sont bloquées.
 - **Sessions sécurisées** — Chaque session a une durée de vie limitée. Le jeton de session est stocké dans un cookie sécurisé.

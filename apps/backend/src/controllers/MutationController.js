@@ -27,6 +27,17 @@ export class MutationController {
         }
     }
 
+    static async update(req, res) {
+        try {
+            const { id } = req.params
+            const result = await mutationService.update(id, req.body)
+            res.json({ data: result, message: 'Mutation mise à jour avec succès' })
+        } catch (error) {
+            logger.error(`[MutationController] Error updating: ${error.message}`)
+            res.status(500).json({ error: 'Impossible de mettre à jour la mutation' })
+        }
+    }
+
     static async delete(req, res) {
         try {
             const { id } = req.params
