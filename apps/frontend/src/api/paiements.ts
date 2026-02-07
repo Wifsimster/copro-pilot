@@ -14,6 +14,9 @@ export const paiementsApi = {
   create: (data: Partial<Paiement>) =>
     api.post<ApiResponse<Paiement>>('/paiements', data),
 
+  update: (id: number, data: Partial<Paiement>) =>
+    api.put<ApiResponse<Paiement>>(`/paiements/${id}`, data),
+
   delete: (id: number) =>
     api.delete<{ message: string }>(`/paiements/${id}`),
 

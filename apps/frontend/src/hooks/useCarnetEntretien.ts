@@ -25,6 +25,16 @@ export function useCreateCarnetEntretien() {
   })
 }
 
+export function useUpdateCarnetEntretien() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<CarnetEntretien> }) => carnetEntretienApi.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: CARNET_ENTRETIEN_QUERY_KEY })
+    },
+  })
+}
+
 export function useDeleteCarnetEntretien() {
   const queryClient = useQueryClient()
   return useMutation({

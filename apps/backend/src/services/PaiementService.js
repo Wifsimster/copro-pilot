@@ -40,6 +40,17 @@ class PaiementService {
         }
     }
 
+    async update(id, data) {
+        try {
+            const result = await PaiementModel.update(id, data)
+            logger.info(`[PaiementService] Paiement mis à jour (ID: ${id})`)
+            return result
+        } catch (error) {
+            logger.error(`[PaiementService] Error updating paiement ${id}: ${error.message}`)
+            throw error
+        }
+    }
+
     async delete(id) {
         try {
             const existing = await PaiementModel.getById(id)

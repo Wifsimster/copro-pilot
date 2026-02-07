@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { useIncidentsByCopropriete, useCreateIncident, useUpdateIncident, useDeleteIncident } from '@/hooks/useIncidents'
 import { useInterventionsByCopropriete, useCreateIntervention, useUpdateIntervention, useDeleteIntervention } from '@/hooks/useInterventions'
-import { useCarnetEntretienByCopropriete, useCreateCarnetEntretien, useDeleteCarnetEntretien } from '@/hooks/useCarnetEntretien'
+import { useCarnetEntretienByCopropriete, useCreateCarnetEntretien, useUpdateCarnetEntretien, useDeleteCarnetEntretien } from '@/hooks/useCarnetEntretien'
 import { IncidentFormDialog } from '@/components/incidents/IncidentFormDialog'
 import { InterventionFormDialog } from '@/components/incidents/InterventionFormDialog'
 import { CarnetEntretienFormDialog } from '@/components/incidents/CarnetEntretienFormDialog'
@@ -75,7 +75,9 @@ export default function TravauxPage() {
   const updateIntervention = useUpdateIntervention()
   const deleteIntervention = useDeleteIntervention()
   const createCarnet = useCreateCarnetEntretien()
+  const updateCarnet = useUpdateCarnetEntretien()
   const deleteCarnet = useDeleteCarnetEntretien()
+  const [editingCarnet, setEditingCarnet] = useState<CarnetEntretien | null>(null)
 
   if (loadingCopros) {
     return (
@@ -392,14 +394,22 @@ export default function TravauxPage() {
                             {new Date(entree.date_realisation).toLocaleDateString('fr-FR')}
                           </td>
                           <td className="px-4 py-3">
-                            <button
-                              onClick={() => {
-                                if (window.confirm('Supprimer cette entree ?')) deleteCarnet.mutate(entree.id)
-                              }}
-                              className="rounded p-1 text-gray-400 hover:text-red-600"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => { setEditingCarnet(entree); setShowCarnetDialog(true) }}
+                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (window.confirm('Supprimer cette entree ?')) deleteCarnet.mutate(entree.id)
+                                }}
+                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -410,13 +420,20 @@ export default function TravauxPage() {
 
               <CarnetEntretienFormDialog
                 open={showCarnetDialog}
-                onOpenChange={setShowCarnetDialog}
+                onOpenChange={(open) => { setShowCarnetDialog(open); if (!open) setEditingCarnet(null) }}
                 coproprieteId={selectedCoproId}
+                defaultValues={editingCarnet || undefined}
+                title={editingCarnet ? 'Modifier l\'entree' : 'Nouvelle entree au carnet'}
                 onSubmit={async (data) => {
-                  await createCarnet.mutateAsync(data)
+                  if (editingCarnet) {
+                    await updateCarnet.mutateAsync({ id: editingCarnet.id, data })
+                  } else {
+                    await createCarnet.mutateAsync(data)
+                  }
                   setShowCarnetDialog(false)
+                  setEditingCarnet(null)
                 }}
-                isLoading={createCarnet.isPending}
+                isLoading={editingCarnet ? updateCarnet.isPending : createCarnet.isPending}
               />
             </div>
           )}

@@ -139,4 +139,15 @@ export class AssembleeGeneraleController {
             res.status(500).json({ error: 'Impossible d\'enregistrer la présence' })
         }
     }
+
+    static async deletePresence(req, res) {
+        try {
+            const { presenceId } = req.params
+            await assembleeGeneraleService.deletePresence(presenceId)
+            res.json({ message: 'Présence supprimée avec succès' })
+        } catch (error) {
+            logger.error(`[AGController] Error deleting présence: ${error.message}`)
+            res.status(500).json({ error: 'Impossible de supprimer la présence' })
+        }
+    }
 }

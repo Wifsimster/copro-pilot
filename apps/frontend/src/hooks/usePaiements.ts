@@ -36,6 +36,16 @@ export function useCreatePaiement() {
   })
 }
 
+export function useUpdatePaiement() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<Paiement> }) => paiementsApi.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: PAIEMENTS_QUERY_KEY })
+    },
+  })
+}
+
 export function useDeletePaiement() {
   const queryClient = useQueryClient()
   return useMutation({

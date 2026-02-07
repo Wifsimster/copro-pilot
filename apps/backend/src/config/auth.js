@@ -91,14 +91,17 @@ export async function initializeAuth() {
             }
 
             const backendPort = process.env.PORT || '3001'
-            const backendOrigins = [
-                `http://localhost:${backendPort}`,
-                `http://127.0.0.1:${backendPort}`
-            ]
-            backendOrigins.forEach(origin => {
-                if (!trustedOrigins.includes(origin)) {
-                    trustedOrigins.push(origin)
-                }
+            const devPorts = [backendPort, '3000', '3001', '3002', '5173']
+            devPorts.forEach(port => {
+                const origins = [
+                    `http://localhost:${port}`,
+                    `http://127.0.0.1:${port}`
+                ]
+                origins.forEach(origin => {
+                    if (!trustedOrigins.includes(origin)) {
+                        trustedOrigins.push(origin)
+                    }
+                })
             })
         } catch (error) {
             logger.warn('Could not parse baseURL for trusted origins:', error.message)

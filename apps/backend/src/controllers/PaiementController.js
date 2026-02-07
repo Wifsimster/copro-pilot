@@ -50,6 +50,17 @@ export class PaiementController {
         }
     }
 
+    static async update(req, res) {
+        try {
+            const { id } = req.params
+            const result = await paiementService.update(id, req.body)
+            res.json({ data: result, message: 'Paiement mis à jour avec succès' })
+        } catch (error) {
+            logger.error(`[PaiementController] Error updating: ${error.message}`)
+            res.status(500).json({ error: 'Impossible de mettre à jour le paiement' })
+        }
+    }
+
     static async delete(req, res) {
         try {
             const { id } = req.params

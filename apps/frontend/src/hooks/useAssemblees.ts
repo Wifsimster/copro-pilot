@@ -97,3 +97,13 @@ export function useSetPresence() {
     },
   })
 }
+
+export function useDeletePresence() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => assembleesApi.deletePresence(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ASSEMBLEES_QUERY_KEY })
+    },
+  })
+}

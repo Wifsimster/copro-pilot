@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { useBudgetsByCopropriete, useCreateBudget, useUpdateBudget, useDeleteBudget } from '@/hooks/useBudgets'
 import { useAppelsFondsByCopropriete, useCreateAppelFonds, useUpdateAppelFonds, useDeleteAppelFonds } from '@/hooks/useAppelsFonds'
-import { useFondsTravauxByCopropriete, useCreateFondsTravaux, useDeleteFondsTravaux } from '@/hooks/useFondsTravaux'
+import { useFondsTravauxByCopropriete, useCreateFondsTravaux, useUpdateFondsTravaux, useDeleteFondsTravaux } from '@/hooks/useFondsTravaux'
 import { BudgetFormDialog } from '@/components/charges/BudgetFormDialog'
 import { AppelFondsFormDialog } from '@/components/charges/AppelFondsFormDialog'
 import { FondsTravauxFormDialog } from '@/components/charges/FondsTravauxFormDialog'
@@ -44,6 +44,7 @@ export default function ChargesPage() {
   const [showFondsDialog, setShowFondsDialog] = useState(false)
   const [editingBudget, setEditingBudget] = useState<BudgetPrevisionnel | null>(null)
   const [editingAppel, setEditingAppel] = useState<AppelFonds | null>(null)
+  const [editingFonds, setEditingFonds] = useState<FondsTravaux | null>(null)
 
   const { data: budgets, isLoading: loadingBudgets } = useBudgetsByCopropriete(selectedCoproId)
   const { data: appels, isLoading: loadingAppels } = useAppelsFondsByCopropriete(selectedCoproId)
@@ -55,6 +56,7 @@ export default function ChargesPage() {
   const updateAppel = useUpdateAppelFonds()
   const deleteAppel = useDeleteAppelFonds()
   const createFonds = useCreateFondsTravaux()
+  const updateFonds = useUpdateFondsTravaux()
   const deleteFonds = useDeleteFondsTravaux()
 
   if (loadingCopros) {
@@ -356,14 +358,22 @@ export default function ChargesPage() {
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <button
-                              onClick={() => {
-                                if (window.confirm('Supprimer ce fonds travaux ?')) deleteFonds.mutate(fonds.id)
-                              }}
-                              className="rounded p-1 text-gray-400 hover:text-red-600"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => { setEditingFonds(fonds); setShowFondsDialog(true) }}
+                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (window.confirm('Supprimer ce fonds travaux ?')) deleteFonds.mutate(fonds.id)
+                                }}
+                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -374,13 +384,20 @@ export default function ChargesPage() {
 
               <FondsTravauxFormDialog
                 open={showFondsDialog}
-                onOpenChange={setShowFondsDialog}
+                onOpenChange={(open) => { setShowFondsDialog(open); if (!open) setEditingFonds(null) }}
                 coproprieteId={selectedCoproId}
+                defaultValues={editingFonds || undefined}
+                title={editingFonds ? 'Modifier le fonds travaux' : 'Nouveau fonds travaux'}
                 onSubmit={async (data) => {
-                  await createFonds.mutateAsync(data)
+                  if (editingFonds) {
+                    await updateFonds.mutateAsync({ id: editingFonds.id, data })
+                  } else {
+                    await createFonds.mutateAsync(data)
+                  }
                   setShowFondsDialog(false)
+                  setEditingFonds(null)
                 }}
-                isLoading={createFonds.isPending}
+                isLoading={editingFonds ? updateFonds.isPending : createFonds.isPending}
               />
             </div>
           )}

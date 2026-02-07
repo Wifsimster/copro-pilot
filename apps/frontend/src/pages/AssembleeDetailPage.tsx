@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useAssemblee, useCreateResolution, useUpdateResolution, useDeleteResolution } from '@/hooks/useAssemblees'
+import { useAssemblee, useCreateResolution, useUpdateResolution, useDeleteResolution, useSetPresence, useDeletePresence } from '@/hooks/useAssemblees'
 import { ResolutionFormDialog } from '@/components/assemblees/ResolutionFormDialog'
+import { PresenceFormDialog } from '@/components/assemblees/PresenceFormDialog'
 import type { Resolution } from '@/types'
 import { ArrowLeft, Plus, Trash2, Vote, Users, FileText } from 'lucide-react'
 
@@ -49,8 +50,11 @@ export default function AssembleeDetailPage() {
   const createResolution = useCreateResolution()
   const updateResolution = useUpdateResolution()
   const deleteResolution = useDeleteResolution()
+  const setPresence = useSetPresence()
+  const deletePresence = useDeletePresence()
   const [activeTab, setActiveTab] = useState<Tab>('resolutions')
   const [showResolutionDialog, setShowResolutionDialog] = useState(false)
+  const [showPresenceDialog, setShowPresenceDialog] = useState(false)
 
   if (isLoading) {
     return (
@@ -267,6 +271,13 @@ export default function AssembleeDetailPage() {
         <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
           <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Feuille de presence</h2>
+            <button
+              onClick={() => setShowPresenceDialog(true)}
+              className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+            >
+              <Plus className="h-4 w-4" />
+              Ajouter
+            </button>
           </div>
 
           {(!ag.presences || ag.presences.length === 0) ? (
@@ -283,6 +294,7 @@ export default function AssembleeDetailPage() {
                     <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
                     <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Represente par</th>
                     <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Tantiemes</th>
+                    <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -306,11 +318,34 @@ export default function AssembleeDetailPage() {
                         {p.represente_par_nom ? `${p.represente_par_prenom} ${p.represente_par_nom}` : '—'}
                       </td>
                       <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{p.tantiemes}</td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => {
+                            if (window.confirm('Retirer cette presence ?')) deletePresence.mutate(p.id)
+                          }}
+                          className="rounded p-1 text-gray-400 hover:text-red-600"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+          )}
+
+          {agId && (
+            <PresenceFormDialog
+              open={showPresenceDialog}
+              onOpenChange={setShowPresenceDialog}
+              agId={agId}
+              onSubmit={async (data) => {
+                await setPresence.mutateAsync(data)
+                setShowPresenceDialog(false)
+              }}
+              isLoading={setPresence.isPending}
+            />
           )}
         </div>
       )}

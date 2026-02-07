@@ -14,6 +14,7 @@ router.post('/presences', requireAuth(), AssembleeGeneraleController.setPresence
 router.put('/:id', requireAuth(), AssembleeGeneraleController.update)
 router.put('/resolutions/:resolutionId', requireAuth(), AssembleeGeneraleController.updateResolution)
 router.delete('/:id', requireAuth(), AssembleeGeneraleController.delete)
+router.delete('/presences/:presenceId', requireAuth(), AssembleeGeneraleController.deletePresence)
 router.delete('/resolutions/:resolutionId', requireAuth(), AssembleeGeneraleController.deleteResolution)
 
 export default router

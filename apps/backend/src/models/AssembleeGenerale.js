@@ -133,4 +133,9 @@ export class AssembleeGeneraleModel {
             .returning('*')
         return result
     }
+
+    static async deletePresence(id) {
+        const db = getDb()
+        return db('presences_ag').where('id', id).del()
+    }
 }

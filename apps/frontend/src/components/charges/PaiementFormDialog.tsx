@@ -40,17 +40,19 @@ interface Props {
   coproprietaireId: number
   onSubmit: (data: Partial<Paiement>) => Promise<void>
   isLoading?: boolean
+  defaultValues?: Partial<Paiement>
+  title?: string
 }
 
-export function PaiementFormDialog({ open, onOpenChange, appelFondsId, coproprietaireId, onSubmit, isLoading }: Props) {
+export function PaiementFormDialog({ open, onOpenChange, appelFondsId, coproprietaireId, onSubmit, isLoading, defaultValues, title = 'Nouveau paiement' }: Props) {
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      montant: 0,
-      date_paiement: new Date().toISOString().split('T')[0],
-      mode: 'virement',
-      reference: '',
-      notes: '',
+      montant: defaultValues?.montant || 0,
+      date_paiement: defaultValues?.date_paiement || new Date().toISOString().split('T')[0],
+      mode: (defaultValues?.mode as FormData['mode']) || 'virement',
+      reference: defaultValues?.reference || '',
+      notes: defaultValues?.notes || '',
     },
   })
 
@@ -71,7 +73,7 @@ export function PaiementFormDialog({ open, onOpenChange, appelFondsId, coproprie
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Nouveau paiement</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             Enregistrez un paiement. Les champs marques d'un * sont obligatoires.
           </DialogDescription>

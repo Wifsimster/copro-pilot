@@ -34,4 +34,7 @@ export const assembleesApi = {
 
   setPresence: (data: Partial<PresenceAG>) =>
     api.post<ApiResponse<PresenceAG>>('/assemblees/presences', data),
+
+  deletePresence: (id: number) =>
+    api.delete<{ message: string }>(`/assemblees/presences/${id}`),
 }

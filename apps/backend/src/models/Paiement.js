@@ -40,6 +40,22 @@ export class PaiementModel {
         return result
     }
 
+    static async update(id, data) {
+        const db = getDb()
+        const [result] = await db('paiements')
+            .where('id', id)
+            .update({
+                montant: data.montant,
+                date_paiement: data.date_paiement,
+                mode: data.mode,
+                reference: data.reference || null,
+                notes: data.notes || null,
+                updated_at: db.fn.now(),
+            })
+            .returning('*')
+        return result
+    }
+
     static async delete(id) {
         const db = getDb()
         return db('paiements').where('id', id).del()

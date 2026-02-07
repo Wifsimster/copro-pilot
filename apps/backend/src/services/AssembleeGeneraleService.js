@@ -124,6 +124,17 @@ class AssembleeGeneraleService {
             throw error
         }
     }
+
+    async deletePresence(id) {
+        try {
+            await AssembleeGeneraleModel.deletePresence(id)
+            logger.info(`[AGService] Présence supprimée (ID: ${id})`)
+            return true
+        } catch (error) {
+            logger.error(`[AGService] Error deleting présence ${id}: ${error.message}`)
+            throw error
+        }
+    }
 }
 
 export const assembleeGeneraleService = new AssembleeGeneraleService()
