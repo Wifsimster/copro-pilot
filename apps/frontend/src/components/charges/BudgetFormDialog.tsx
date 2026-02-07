@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Calculator, FileText, Tag } from 'lucide-react'
+import { Calculator, FileText } from 'lucide-react'
 import {
   Dialog,
   DialogContent,

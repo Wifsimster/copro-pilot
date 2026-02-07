@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Wrench, Banknote, Tag } from 'lucide-react'
+import { Wrench, Banknote } from 'lucide-react'
 import {
   Dialog,
   DialogContent,

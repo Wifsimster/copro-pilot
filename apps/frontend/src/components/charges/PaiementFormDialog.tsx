@@ -1,7 +1,8 @@
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Banknote, FileText } from 'lucide-react'
+import { Banknote, FileText, Users } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -36,15 +37,28 @@ type FormData = z.infer<typeof schema>
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  appelFondsId: number
-  coproprietaireId: number
+  appelFondsId?: number
+  coproprietaireId?: number
+  coproprietaires?: Array<{ id: number; nom: string; prenom: string }>
+  appelsFonds?: Array<{ id: number; trimestre: number; annee: number; montant_total: number }>
   onSubmit: (data: Partial<Paiement>) => Promise<void>
   isLoading?: boolean
   defaultValues?: Partial<Paiement>
   title?: string
 }
 
-export function PaiementFormDialog({ open, onOpenChange, appelFondsId, coproprietaireId, onSubmit, isLoading, defaultValues, title = 'Nouveau paiement' }: Props) {
+export function PaiementFormDialog({
+  open, onOpenChange, appelFondsId, coproprietaireId,
+  coproprietaires, appelsFonds,
+  onSubmit, isLoading, defaultValues, title = 'Nouveau paiement',
+}: Props) {
+  const [selectedCoproId, setSelectedCoproId] = useState<number>(0)
+  const [selectedAppelId, setSelectedAppelId] = useState<number | null>(null)
+  const [coproError, setCoproError] = useState('')
+
+  const showCoproSelect = !coproprietaireId && !!coproprietaires
+  const showAppelSelect = !appelFondsId && !!appelsFonds
+
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -56,13 +70,34 @@ export function PaiementFormDialog({ open, onOpenChange, appelFondsId, coproprie
     },
   })
 
+  useEffect(() => {
+    if (open) {
+      reset({
+        montant: defaultValues?.montant || 0,
+        date_paiement: defaultValues?.date_paiement || new Date().toISOString().split('T')[0],
+        mode: (defaultValues?.mode as FormData['mode']) || 'virement',
+        reference: defaultValues?.reference || '',
+        notes: defaultValues?.notes || '',
+      })
+      setSelectedCoproId(defaultValues?.coproprietaire_id || coproprietaireId || 0)
+      setSelectedAppelId(defaultValues?.appel_fonds_id || appelFondsId || null)
+      setCoproError('')
+    }
+  }, [open, defaultValues, coproprietaireId, appelFondsId, reset])
+
   const currentMode = watch('mode')
 
   const onFormSubmit = async (data: FormData) => {
+    const finalCoproId = coproprietaireId || selectedCoproId
+    if (!finalCoproId) {
+      setCoproError('Le coproprietaire est obligatoire')
+      return
+    }
+    setCoproError('')
     await onSubmit({
       ...data,
-      appel_fonds_id: appelFondsId,
-      coproprietaire_id: coproprietaireId,
+      coproprietaire_id: finalCoproId,
+      appel_fonds_id: appelFondsId || selectedAppelId || null,
       reference: data.reference || null,
       notes: data.notes || null,
     })
@@ -80,6 +115,64 @@ export function PaiementFormDialog({ open, onOpenChange, appelFondsId, coproprie
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-5">
+          {(showCoproSelect || showAppelSelect) && (
+            <>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                  <Users className="size-4" />
+                  <span>Attribution</span>
+                </div>
+
+                {showCoproSelect && (
+                  <div className="space-y-2">
+                    <Label>Coproprietaire *</Label>
+                    <Select
+                      value={selectedCoproId ? String(selectedCoproId) : ''}
+                      onValueChange={(val) => { setSelectedCoproId(parseInt(val)); setCoproError('') }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selectionner un coproprietaire..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {coproprietaires!.map((c) => (
+                          <SelectItem key={c.id} value={String(c.id)}>
+                            {c.prenom} {c.nom}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {coproError && (
+                      <p className="text-sm text-destructive">{coproError}</p>
+                    )}
+                  </div>
+                )}
+
+                {showAppelSelect && (
+                  <div className="space-y-2">
+                    <Label>Appel de fonds</Label>
+                    <Select
+                      value={selectedAppelId ? String(selectedAppelId) : 'none'}
+                      onValueChange={(val) => setSelectedAppelId(val === 'none' ? null : parseInt(val))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Aucun (paiement libre)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Aucun (paiement libre)</SelectItem>
+                        {appelsFonds!.map((a) => (
+                          <SelectItem key={a.id} value={String(a.id)}>
+                            T{a.trimestre} {a.annee} — {Number(a.montant_total).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
+              <Separator />
+            </>
+          )}
+
           {/* Payment details section */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">

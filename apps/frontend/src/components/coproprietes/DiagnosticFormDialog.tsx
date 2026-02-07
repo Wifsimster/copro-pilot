@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -90,6 +91,20 @@ export function DiagnosticFormDialog({
       observations: defaultValues?.observations || '',
     },
   })
+
+  useEffect(() => {
+    if (open) {
+      reset({
+        type: defaultValues?.type || 'dpe',
+        prestataire: defaultValues?.prestataire || '',
+        date_realisation: defaultValues?.date_realisation || new Date().toISOString().split('T')[0],
+        date_validite: defaultValues?.date_validite || '',
+        statut: defaultValues?.statut || 'valide',
+        document_url: defaultValues?.document_url || '',
+        observations: defaultValues?.observations || '',
+      })
+    }
+  }, [open, defaultValues, reset])
 
   const currentType = watch('type')
   const currentStatut = watch('statut')

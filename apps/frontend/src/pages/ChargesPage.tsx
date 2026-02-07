@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
+import { useCoproprietaires } from '@/hooks/useCoproprietaires'
 import { useBudgetsByCopropriete, useCreateBudget, useUpdateBudget, useDeleteBudget } from '@/hooks/useBudgets'
 import { useAppelsFondsByCopropriete, useCreateAppelFonds, useUpdateAppelFonds, useDeleteAppelFonds } from '@/hooks/useAppelsFonds'
 import { useFondsTravauxByCopropriete, useCreateFondsTravaux, useUpdateFondsTravaux, useDeleteFondsTravaux } from '@/hooks/useFondsTravaux'
@@ -58,6 +59,7 @@ export default function ChargesPage() {
   const [showPaiementDialog, setShowPaiementDialog] = useState(false)
   const [editingPaiement, setEditingPaiement] = useState<Paiement | null>(null)
 
+  const { data: coproprietaires } = useCoproprietaires()
   const { data: budgets, isLoading: loadingBudgets } = useBudgetsByCopropriete(selectedCoproId)
   const { data: appels, isLoading: loadingAppels } = useAppelsFondsByCopropriete(selectedCoproId)
   const { data: fondsTravaux, isLoading: loadingFonds } = useFondsTravauxByCopropriete(selectedCoproId)
@@ -324,6 +326,108 @@ export default function ChargesPage() {
                   setEditingAppel(null)
                 }}
                 isLoading={editingAppel ? updateAppel.isPending : createAppel.isPending}
+              />
+            </div>
+          )}
+
+          {/* Paiements tab */}
+          {activeTab === 'paiements' && (
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Paiements</h2>
+                <button
+                  onClick={() => setShowPaiementDialog(true)}
+                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                >
+                  <Plus className="h-4 w-4" />
+                  Nouveau paiement
+                </button>
+              </div>
+
+              {loadingPaiements ? (
+                <div className="flex justify-center py-8">
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                </div>
+              ) : !paiements || paiements.length === 0 ? (
+                <div className="flex flex-col items-center py-12">
+                  <CreditCard className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
+                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun paiement enregistre</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Coproprietaire</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Montant</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Date</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Mode</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Reference</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paiements.map((paiement: Paiement) => (
+                        <tr key={paiement.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
+                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                            {paiement.prenom} {paiement.nom}
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                            {Number(paiement.montant).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                            {new Date(paiement.date_paiement).toLocaleDateString('fr-FR')}
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                            {MODE_PAIEMENT_LABELS[paiement.mode] || paiement.mode}
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                            {paiement.reference || '—'}
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => { setEditingPaiement(paiement); setShowPaiementDialog(true) }}
+                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (window.confirm('Supprimer ce paiement ?')) deletePaiement.mutate(paiement.id)
+                                }}
+                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              <PaiementFormDialog
+                open={showPaiementDialog}
+                onOpenChange={(open) => { setShowPaiementDialog(open); if (!open) setEditingPaiement(null) }}
+                coproprietaireId={editingPaiement?.coproprietaire_id}
+                appelFondsId={editingPaiement?.appel_fonds_id || undefined}
+                coproprietaires={coproprietaires || []}
+                appelsFonds={appels || []}
+                defaultValues={editingPaiement || undefined}
+                title={editingPaiement ? 'Modifier le paiement' : 'Nouveau paiement'}
+                onSubmit={async (data) => {
+                  if (editingPaiement) {
+                    await updatePaiement.mutateAsync({ id: editingPaiement.id, data })
+                  } else {
+                    await createPaiement.mutateAsync(data)
+                  }
+                  setShowPaiementDialog(false)
+                  setEditingPaiement(null)
+                }}
+                isLoading={editingPaiement ? updatePaiement.isPending : createPaiement.isPending}
               />
             </div>
           )}
