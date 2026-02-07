@@ -18,6 +18,10 @@ import assembleesRoutes from './assemblees.js'
 import incidentsRoutes from './incidents.js'
 import interventionsRoutes from './interventions.js'
 import carnetEntretienRoutes from './carnet-entretien.js'
+// Module 6 — Documents
+import documentsRoutes from './documents.js'
+// Diagnostics techniques
+import diagnosticsRoutes from './diagnostics.js'
 // Stats
 import statsRoutes from './stats.js'
 
@@ -46,6 +50,12 @@ router.use('/assemblees', assembleesRoutes)
 router.use('/incidents', incidentsRoutes)
 router.use('/interventions', interventionsRoutes)
 router.use('/carnet-entretien', carnetEntretienRoutes)
+
+// Module 6 — Documents
+router.use('/documents', documentsRoutes)
+
+// Diagnostics techniques
+router.use('/diagnostics', diagnosticsRoutes)
 
 // Stats
 router.use('/stats', statsRoutes)

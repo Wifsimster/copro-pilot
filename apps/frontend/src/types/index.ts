@@ -346,6 +346,47 @@ export interface CarnetEntretien {
 }
 
 // ============================================
+// Diagnostic Types
+// ============================================
+
+export type TypeDiagnostic = 'dpe' | 'amiante' | 'plomb' | 'dtg' | 'ppt' | 'gaz' | 'electricite' | 'autre'
+export type StatutDiagnostic = 'valide' | 'expire' | 'a_renouveler'
+
+export interface Diagnostic {
+  id: number
+  copropriete_id: number
+  type: TypeDiagnostic
+  prestataire: string | null
+  date_realisation: string
+  date_validite: string | null
+  document_url: string | null
+  observations: string | null
+  statut: StatutDiagnostic
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
+// Document Types
+// ============================================
+
+export type CategorieDocument = 'pv_ag' | 'contrat' | 'facture' | 'devis' | 'reglement' | 'assurance' | 'diagnostic' | 'courrier' | 'autre'
+
+export interface Document {
+  id: number
+  copropriete_id: number
+  nom: string
+  categorie: CategorieDocument
+  fichier_nom: string
+  fichier_path: string
+  mime_type: string | null
+  taille: number | null
+  description: string | null
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
 // API Response Types
 // ============================================
 

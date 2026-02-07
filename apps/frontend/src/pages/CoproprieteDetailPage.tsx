@@ -6,15 +6,17 @@ import { usePartiesCommunesByCopropriete, useCreatePartieCommune, useUpdateParti
 import { useClesRepartitionByCopropriete, useCreateCleRepartition, useUpdateCleRepartition, useDeleteCleRepartition } from '@/hooks/useClesRepartition'
 import { useLocatairesByLot, useCreateLocataire, useUpdateLocataire, useDeleteLocataire } from '@/hooks/useLocataires'
 import { useMutationsByLot, useCreateMutation, useUpdateMutation, useDeleteMutation } from '@/hooks/useMutations'
+import { useDiagnosticsByCopropriete, useCreateDiagnostic, useUpdateDiagnostic, useDeleteDiagnostic } from '@/hooks/useDiagnostics'
 import type { LotWithProprietaire } from '@/api/lots'
-import type { PartieCommune, CleRepartition, Locataire, Mutation } from '@/types'
-import { ArrowLeft, Plus, Trash2, Pencil, Home, DoorOpen, Key, UserCheck, ArrowRightLeft } from 'lucide-react'
+import type { PartieCommune, CleRepartition, Locataire, Mutation, Diagnostic } from '@/types'
+import { ArrowLeft, Plus, Trash2, Pencil, Home, DoorOpen, Key, UserCheck, ArrowRightLeft, ClipboardCheck } from 'lucide-react'
 import { LotFormDialog } from '@/components/coproprietes/LotFormDialog'
 import { CoproprieteFormDialog } from '@/components/coproprietes/CoproprieteFormDialog'
 import { PartieCommuneFormDialog } from '@/components/coproprietes/PartieCommuneFormDialog'
 import { CleRepartitionFormDialog } from '@/components/coproprietes/CleRepartitionFormDialog'
 import { LocataireFormDialog } from '@/components/coproprietes/LocataireFormDialog'
 import { MutationFormDialog } from '@/components/coproprietes/MutationFormDialog'
+import { DiagnosticFormDialog } from '@/components/coproprietes/DiagnosticFormDialog'
 
 const TYPE_LABELS: Record<string, string> = {
   appartement: 'Appartement',
@@ -37,7 +39,30 @@ const TYPE_MUTATION_LABELS: Record<string, string> = {
   autre: 'Autre',
 }
 
-type Tab = 'lots' | 'parties-communes' | 'cles-repartition' | 'locataires' | 'mutations'
+const TYPE_DIAGNOSTIC_LABELS: Record<string, string> = {
+  dpe: 'DPE',
+  amiante: 'Amiante',
+  plomb: 'Plomb',
+  dtg: 'DTG',
+  ppt: 'PPT',
+  gaz: 'Gaz',
+  electricite: 'Electricite',
+  autre: 'Autre',
+}
+
+const STATUT_DIAGNOSTIC_STYLES: Record<string, string> = {
+  valide: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  expire: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+  a_renouveler: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+}
+
+const STATUT_DIAGNOSTIC_LABELS: Record<string, string> = {
+  valide: 'Valide',
+  expire: 'Expire',
+  a_renouveler: 'A renouveler',
+}
+
+type Tab = 'lots' | 'parties-communes' | 'cles-repartition' | 'locataires' | 'mutations' | 'diagnostics'
 
 export default function CoproprieteDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -62,17 +87,23 @@ export default function CoproprieteDetailPage() {
   const createMutation = useCreateMutation()
   const updateMutation = useUpdateMutation()
   const deleteMutation = useDeleteMutation()
+  const { data: diagnostics } = useDiagnosticsByCopropriete(coproprieteId)
+  const createDiagnostic = useCreateDiagnostic()
+  const updateDiagnostic = useUpdateDiagnostic()
+  const deleteDiagnostic = useDeleteDiagnostic()
   const [showCreateLot, setShowCreateLot] = useState(false)
   const [showEditCopro, setShowEditCopro] = useState(false)
   const [showCreatePC, setShowCreatePC] = useState(false)
   const [showCreateCle, setShowCreateCle] = useState(false)
   const [showCreateLocataire, setShowCreateLocataire] = useState(false)
   const [showCreateMutation, setShowCreateMutation] = useState(false)
+  const [showCreateDiagnostic, setShowCreateDiagnostic] = useState(false)
   const [editingLot, setEditingLot] = useState<LotWithProprietaire | null>(null)
   const [editingPC, setEditingPC] = useState<PartieCommune | null>(null)
   const [editingCle, setEditingCle] = useState<CleRepartition | null>(null)
   const [editingLocataire, setEditingLocataire] = useState<Locataire | null>(null)
   const [editingMutation, setEditingMutation] = useState<Mutation | null>(null)
+  const [editingDiagnostic, setEditingDiagnostic] = useState<Diagnostic | null>(null)
   const [activeTab, setActiveTab] = useState<Tab>('lots')
   const [selectedLotId, setSelectedLotId] = useState<number | undefined>()
 
@@ -110,6 +141,7 @@ export default function CoproprieteDetailPage() {
     { id: 'cles-repartition' as Tab, label: 'Cles de repartition', icon: Key, count: clesRepartition?.length || 0 },
     { id: 'locataires' as Tab, label: 'Locataires', icon: UserCheck },
     { id: 'mutations' as Tab, label: 'Mutations', icon: ArrowRightLeft },
+    { id: 'diagnostics' as Tab, label: 'Diagnostics', icon: ClipboardCheck, count: diagnostics?.length || 0 },
   ]
 
   return (
@@ -550,6 +582,81 @@ export default function CoproprieteDetailPage() {
         </div>
       )}
 
+      {/* Diagnostics tab */}
+      {activeTab === 'diagnostics' && (
+        <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+          <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Diagnostics techniques</h2>
+            <button
+              onClick={() => setShowCreateDiagnostic(true)}
+              className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+            >
+              <Plus className="h-4 w-4" />
+              Ajouter
+            </button>
+          </div>
+
+          {(!diagnostics || diagnostics.length === 0) ? (
+            <div className="flex flex-col items-center py-12">
+              <ClipboardCheck className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
+              <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun diagnostic enregistre</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
+                    <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Type</th>
+                    <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Prestataire</th>
+                    <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Realisation</th>
+                    <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Validite</th>
+                    <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
+                    <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {diagnostics.map((diag: Diagnostic) => (
+                    <tr key={diag.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
+                      <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                        {TYPE_DIAGNOSTIC_LABELS[diag.type] || diag.type}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{diag.prestataire || '—'}</td>
+                      <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                        {new Date(diag.date_realisation).toLocaleDateString('fr-FR')}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                        {diag.date_validite ? new Date(diag.date_validite).toLocaleDateString('fr-FR') : '—'}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUT_DIAGNOSTIC_STYLES[diag.statut] || ''}`}>
+                          {STATUT_DIAGNOSTIC_LABELS[diag.statut] || diag.statut}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setEditingDiagnostic(diag)}
+                            className="rounded p-1 text-gray-400 hover:text-blue-600"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => { if (window.confirm('Supprimer ce diagnostic ?')) deleteDiagnostic.mutate(diag.id) }}
+                            className="rounded p-1 text-gray-400 hover:text-red-600"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Dialogs */}
       <LotFormDialog
         open={showCreateLot || !!editingLot}
@@ -648,6 +755,23 @@ export default function CoproprieteDetailPage() {
           />
         </>
       )}
+      <DiagnosticFormDialog
+        open={showCreateDiagnostic || !!editingDiagnostic}
+        onOpenChange={(open) => { if (!open) { setShowCreateDiagnostic(false); setEditingDiagnostic(null) } }}
+        coproprieteId={coproprieteId!}
+        defaultValues={editingDiagnostic || undefined}
+        title={editingDiagnostic ? 'Modifier le diagnostic' : 'Nouveau diagnostic'}
+        onSubmit={async (data) => {
+          if (editingDiagnostic) {
+            await updateDiagnostic.mutateAsync({ id: editingDiagnostic.id, data })
+            setEditingDiagnostic(null)
+          } else {
+            await createDiagnostic.mutateAsync(data)
+            setShowCreateDiagnostic(false)
+          }
+        }}
+        isLoading={editingDiagnostic ? updateDiagnostic.isPending : createDiagnostic.isPending}
+      />
     </div>
   )
 }
