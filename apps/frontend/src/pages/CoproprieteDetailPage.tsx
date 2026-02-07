@@ -5,7 +5,7 @@ import { useLotsByCopropriete, useCreateLot, useDeleteLot } from '@/hooks/useLot
 import { usePartiesCommunesByCopropriete, useCreatePartieCommune, useDeletePartieCommune } from '@/hooks/usePartiesCommunes'
 import { useClesRepartitionByCopropriete, useCreateCleRepartition, useDeleteCleRepartition } from '@/hooks/useClesRepartition'
 import { useLocatairesByLot, useCreateLocataire, useDeleteLocataire } from '@/hooks/useLocataires'
-import { useMutationsByLot, useDeleteMutation } from '@/hooks/useMutations'
+import { useMutationsByLot, useCreateMutation, useDeleteMutation } from '@/hooks/useMutations'
 import type { LotWithProprietaire } from '@/api/lots'
 import type { PartieCommune, CleRepartition, Locataire, Mutation } from '@/types'
 import { ArrowLeft, Plus, Trash2, Pencil, Home, DoorOpen, Key, UserCheck, ArrowRightLeft } from 'lucide-react'
@@ -14,6 +14,7 @@ import { CoproprieteFormDialog } from '@/components/coproprietes/CoproprieteForm
 import { PartieCommuneFormDialog } from '@/components/coproprietes/PartieCommuneFormDialog'
 import { CleRepartitionFormDialog } from '@/components/coproprietes/CleRepartitionFormDialog'
 import { LocataireFormDialog } from '@/components/coproprietes/LocataireFormDialog'
+import { MutationFormDialog } from '@/components/coproprietes/MutationFormDialog'
 
 const TYPE_LABELS: Record<string, string> = {
   appartement: 'Appartement',
@@ -54,12 +55,14 @@ export default function CoproprieteDetailPage() {
   const updateCopropriete = useUpdateCopropriete()
   const createLocataire = useCreateLocataire()
   const deleteLocataire = useDeleteLocataire()
+  const createMutation = useCreateMutation()
   const deleteMutation = useDeleteMutation()
   const [showCreateLot, setShowCreateLot] = useState(false)
   const [showEditCopro, setShowEditCopro] = useState(false)
   const [showCreatePC, setShowCreatePC] = useState(false)
   const [showCreateCle, setShowCreateCle] = useState(false)
   const [showCreateLocataire, setShowCreateLocataire] = useState(false)
+  const [showCreateMutation, setShowCreateMutation] = useState(false)
   const [activeTab, setActiveTab] = useState<Tab>('lots')
   const [selectedLotId, setSelectedLotId] = useState<number | undefined>()
 
@@ -417,7 +420,18 @@ export default function CoproprieteDetailPage() {
       {activeTab === 'mutations' && (
         <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
           <div className="border-b border-gray-200 p-4 dark:border-zinc-700">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Mutations par lot</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Mutations par lot</h2>
+              {selectedLotId && (
+                <button
+                  onClick={() => setShowCreateMutation(true)}
+                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                >
+                  <Plus className="h-4 w-4" />
+                  Nouvelle mutation
+                </button>
+              )}
+            </div>
             <div className="mt-3">
               <select
                 value={selectedLotId || ''}
@@ -517,13 +531,22 @@ export default function CoproprieteDetailPage() {
         isLoading={createCle.isPending}
       />
       {selectedLotId && (
-        <LocataireFormDialog
-          open={showCreateLocataire}
-          onOpenChange={setShowCreateLocataire}
-          lotId={selectedLotId}
-          onSubmit={async (data) => { await createLocataire.mutateAsync(data); setShowCreateLocataire(false) }}
-          isLoading={createLocataire.isPending}
-        />
+        <>
+          <LocataireFormDialog
+            open={showCreateLocataire}
+            onOpenChange={setShowCreateLocataire}
+            lotId={selectedLotId}
+            onSubmit={async (data) => { await createLocataire.mutateAsync(data); setShowCreateLocataire(false) }}
+            isLoading={createLocataire.isPending}
+          />
+          <MutationFormDialog
+            open={showCreateMutation}
+            onOpenChange={setShowCreateMutation}
+            lotId={selectedLotId}
+            onSubmit={async (data) => { await createMutation.mutateAsync(data); setShowCreateMutation(false) }}
+            isLoading={createMutation.isPending}
+          />
+        </>
       )}
     </div>
   )

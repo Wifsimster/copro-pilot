@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
-import { useBudgetsByCopropriete, useCreateBudget, useDeleteBudget } from '@/hooks/useBudgets'
-import { useAppelsFondsByCopropriete, useCreateAppelFonds, useDeleteAppelFonds } from '@/hooks/useAppelsFonds'
+import { useBudgetsByCopropriete, useCreateBudget, useUpdateBudget, useDeleteBudget } from '@/hooks/useBudgets'
+import { useAppelsFondsByCopropriete, useCreateAppelFonds, useUpdateAppelFonds, useDeleteAppelFonds } from '@/hooks/useAppelsFonds'
 import { useFondsTravauxByCopropriete, useCreateFondsTravaux, useDeleteFondsTravaux } from '@/hooks/useFondsTravaux'
 import { BudgetFormDialog } from '@/components/charges/BudgetFormDialog'
 import { AppelFondsFormDialog } from '@/components/charges/AppelFondsFormDialog'
 import { FondsTravauxFormDialog } from '@/components/charges/FondsTravauxFormDialog'
 import type { BudgetPrevisionnel, AppelFonds, FondsTravaux } from '@/types'
-import { Receipt, Plus, Trash2, ChevronDown, FileText, Banknote, PiggyBank } from 'lucide-react'
+import { Receipt, Plus, Trash2, Pencil, ChevronDown, FileText, Banknote, PiggyBank } from 'lucide-react'
 
 const STATUT_BUDGET_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
@@ -42,13 +42,17 @@ export default function ChargesPage() {
   const [showBudgetDialog, setShowBudgetDialog] = useState(false)
   const [showAppelDialog, setShowAppelDialog] = useState(false)
   const [showFondsDialog, setShowFondsDialog] = useState(false)
+  const [editingBudget, setEditingBudget] = useState<BudgetPrevisionnel | null>(null)
+  const [editingAppel, setEditingAppel] = useState<AppelFonds | null>(null)
 
   const { data: budgets, isLoading: loadingBudgets } = useBudgetsByCopropriete(selectedCoproId)
   const { data: appels, isLoading: loadingAppels } = useAppelsFondsByCopropriete(selectedCoproId)
   const { data: fondsTravaux, isLoading: loadingFonds } = useFondsTravauxByCopropriete(selectedCoproId)
   const createBudget = useCreateBudget()
+  const updateBudget = useUpdateBudget()
   const deleteBudget = useDeleteBudget()
   const createAppel = useCreateAppelFonds()
+  const updateAppel = useUpdateAppelFonds()
   const deleteAppel = useDeleteAppelFonds()
   const createFonds = useCreateFondsTravaux()
   const deleteFonds = useDeleteFondsTravaux()
@@ -162,14 +166,22 @@ export default function ChargesPage() {
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <button
-                              onClick={() => {
-                                if (window.confirm('Supprimer ce budget ?')) deleteBudget.mutate(budget.id)
-                              }}
-                              className="rounded p-1 text-gray-400 hover:text-red-600"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => { setEditingBudget(budget); setShowBudgetDialog(true) }}
+                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (window.confirm('Supprimer ce budget ?')) deleteBudget.mutate(budget.id)
+                                }}
+                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -180,13 +192,20 @@ export default function ChargesPage() {
 
               <BudgetFormDialog
                 open={showBudgetDialog}
-                onOpenChange={setShowBudgetDialog}
+                onOpenChange={(open) => { setShowBudgetDialog(open); if (!open) setEditingBudget(null) }}
                 coproprieteId={selectedCoproId}
+                defaultValues={editingBudget || undefined}
+                title={editingBudget ? 'Modifier le budget' : 'Nouveau budget'}
                 onSubmit={async (data) => {
-                  await createBudget.mutateAsync(data)
+                  if (editingBudget) {
+                    await updateBudget.mutateAsync({ id: editingBudget.id, data })
+                  } else {
+                    await createBudget.mutateAsync(data)
+                  }
                   setShowBudgetDialog(false)
+                  setEditingBudget(null)
                 }}
-                isLoading={createBudget.isPending}
+                isLoading={editingBudget ? updateBudget.isPending : createBudget.isPending}
               />
             </div>
           )}
@@ -246,14 +265,22 @@ export default function ChargesPage() {
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <button
-                              onClick={() => {
-                                if (window.confirm('Supprimer cet appel de fonds ?')) deleteAppel.mutate(appel.id)
-                              }}
-                              className="rounded p-1 text-gray-400 hover:text-red-600"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => { setEditingAppel(appel); setShowAppelDialog(true) }}
+                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (window.confirm('Supprimer cet appel de fonds ?')) deleteAppel.mutate(appel.id)
+                                }}
+                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -264,13 +291,20 @@ export default function ChargesPage() {
 
               <AppelFondsFormDialog
                 open={showAppelDialog}
-                onOpenChange={setShowAppelDialog}
+                onOpenChange={(open) => { setShowAppelDialog(open); if (!open) setEditingAppel(null) }}
                 coproprieteId={selectedCoproId}
+                defaultValues={editingAppel || undefined}
+                title={editingAppel ? 'Modifier l\'appel de fonds' : 'Nouvel appel de fonds'}
                 onSubmit={async (data) => {
-                  await createAppel.mutateAsync(data)
+                  if (editingAppel) {
+                    await updateAppel.mutateAsync({ id: editingAppel.id, data })
+                  } else {
+                    await createAppel.mutateAsync(data)
+                  }
                   setShowAppelDialog(false)
+                  setEditingAppel(null)
                 }}
-                isLoading={createAppel.isPending}
+                isLoading={editingAppel ? updateAppel.isPending : createAppel.isPending}
               />
             </div>
           )}

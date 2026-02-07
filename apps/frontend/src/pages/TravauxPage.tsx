@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
-import { useIncidentsByCopropriete, useCreateIncident, useDeleteIncident } from '@/hooks/useIncidents'
-import { useInterventionsByCopropriete, useCreateIntervention, useDeleteIntervention } from '@/hooks/useInterventions'
+import { useIncidentsByCopropriete, useCreateIncident, useUpdateIncident, useDeleteIncident } from '@/hooks/useIncidents'
+import { useInterventionsByCopropriete, useCreateIntervention, useUpdateIntervention, useDeleteIntervention } from '@/hooks/useInterventions'
 import { useCarnetEntretienByCopropriete, useCreateCarnetEntretien, useDeleteCarnetEntretien } from '@/hooks/useCarnetEntretien'
 import { IncidentFormDialog } from '@/components/incidents/IncidentFormDialog'
 import { InterventionFormDialog } from '@/components/incidents/InterventionFormDialog'
 import { CarnetEntretienFormDialog } from '@/components/incidents/CarnetEntretienFormDialog'
 import type { Incident, Intervention, CarnetEntretien } from '@/types'
-import { Wrench, Plus, Trash2, ChevronDown, AlertTriangle, Hammer, BookOpen } from 'lucide-react'
+import { Wrench, Plus, Trash2, Pencil, ChevronDown, AlertTriangle, Hammer, BookOpen } from 'lucide-react'
 
 const URGENCE_LABELS: Record<string, string> = {
   faible: 'Faible',
@@ -62,13 +62,17 @@ export default function TravauxPage() {
   const [showIncidentDialog, setShowIncidentDialog] = useState(false)
   const [showInterventionDialog, setShowInterventionDialog] = useState(false)
   const [showCarnetDialog, setShowCarnetDialog] = useState(false)
+  const [editingIncident, setEditingIncident] = useState<Incident | null>(null)
+  const [editingIntervention, setEditingIntervention] = useState<Intervention | null>(null)
 
   const { data: incidents, isLoading: loadingIncidents } = useIncidentsByCopropriete(selectedCoproId)
   const { data: interventions, isLoading: loadingInterventions } = useInterventionsByCopropriete(selectedCoproId)
   const { data: carnetEntretien, isLoading: loadingCarnet } = useCarnetEntretienByCopropriete(selectedCoproId)
   const createIncident = useCreateIncident()
+  const updateIncident = useUpdateIncident()
   const deleteIncident = useDeleteIncident()
   const createIntervention = useCreateIntervention()
+  const updateIntervention = useUpdateIntervention()
   const deleteIntervention = useDeleteIntervention()
   const createCarnet = useCreateCarnetEntretien()
   const deleteCarnet = useDeleteCarnetEntretien()
@@ -190,14 +194,22 @@ export default function TravauxPage() {
                             {new Date(incident.date_signalement).toLocaleDateString('fr-FR')}
                           </td>
                           <td className="px-4 py-3">
-                            <button
-                              onClick={() => {
-                                if (window.confirm('Supprimer cet incident ?')) deleteIncident.mutate(incident.id)
-                              }}
-                              className="rounded p-1 text-gray-400 hover:text-red-600"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => { setEditingIncident(incident); setShowIncidentDialog(true) }}
+                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (window.confirm('Supprimer cet incident ?')) deleteIncident.mutate(incident.id)
+                                }}
+                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -208,13 +220,20 @@ export default function TravauxPage() {
 
               <IncidentFormDialog
                 open={showIncidentDialog}
-                onOpenChange={setShowIncidentDialog}
+                onOpenChange={(open) => { setShowIncidentDialog(open); if (!open) setEditingIncident(null) }}
                 coproprieteId={selectedCoproId}
+                defaultValues={editingIncident || undefined}
+                title={editingIncident ? 'Modifier l\'incident' : 'Signaler un incident'}
                 onSubmit={async (data) => {
-                  await createIncident.mutateAsync(data)
+                  if (editingIncident) {
+                    await updateIncident.mutateAsync({ id: editingIncident.id, data })
+                  } else {
+                    await createIncident.mutateAsync(data)
+                  }
                   setShowIncidentDialog(false)
+                  setEditingIncident(null)
                 }}
-                isLoading={createIncident.isPending}
+                isLoading={editingIncident ? updateIncident.isPending : createIncident.isPending}
               />
             </div>
           )}
@@ -278,14 +297,22 @@ export default function TravauxPage() {
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <button
-                              onClick={() => {
-                                if (window.confirm('Supprimer cette intervention ?')) deleteIntervention.mutate(inter.id)
-                              }}
-                              className="rounded p-1 text-gray-400 hover:text-red-600"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => { setEditingIntervention(inter); setShowInterventionDialog(true) }}
+                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (window.confirm('Supprimer cette intervention ?')) deleteIntervention.mutate(inter.id)
+                                }}
+                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -296,13 +323,20 @@ export default function TravauxPage() {
 
               <InterventionFormDialog
                 open={showInterventionDialog}
-                onOpenChange={setShowInterventionDialog}
+                onOpenChange={(open) => { setShowInterventionDialog(open); if (!open) setEditingIntervention(null) }}
                 coproprieteId={selectedCoproId}
+                defaultValues={editingIntervention || undefined}
+                title={editingIntervention ? 'Modifier l\'intervention' : 'Nouvelle intervention'}
                 onSubmit={async (data) => {
-                  await createIntervention.mutateAsync(data)
+                  if (editingIntervention) {
+                    await updateIntervention.mutateAsync({ id: editingIntervention.id, data })
+                  } else {
+                    await createIntervention.mutateAsync(data)
+                  }
                   setShowInterventionDialog(false)
+                  setEditingIntervention(null)
                 }}
-                isLoading={createIntervention.isPending}
+                isLoading={editingIntervention ? updateIntervention.isPending : createIntervention.isPending}
               />
             </div>
           )}
