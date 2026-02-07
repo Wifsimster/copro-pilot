@@ -10,14 +10,16 @@ Plateforme de gestion de copropriété conçue pour les syndics professionnels. 
 - [Environnements](#environnements)
 - [Déploiement](#déploiement)
 - [Stack technique](#stack-technique)
+- [Documentation complémentaire](#documentation-complémentaire)
 
 ## À quoi sert ce produit ?
 
-- Gérer vos copropriétés et leurs lots (appartements, caves, parkings, etc.)
-- Administrer l'annuaire des copropriétaires et locataires
-- Suivre la comptabilité : budgets prévisionnels, appels de fonds, paiements
-- Organiser les assemblées générales avec gestion des résolutions et votes
-- Déclarer et suivre les incidents et interventions de maintenance
+- Centraliser la gestion de vos copropriétés dans un seul outil
+- Administrer l'annuaire des copropriétaires, locataires et mutations
+- Suivre la comptabilité : budgets prévisionnels, appels de fonds et paiements
+- Organiser vos assemblées générales avec résolutions, votes et feuilles de présence
+- Déclarer et suivre les incidents, interventions et le carnet d'entretien
+- Visualiser l'activité de votre parc immobilier via un tableau de bord
 
 ## Fonctionnalités principales
 
@@ -25,11 +27,11 @@ Plateforme de gestion de copropriété conçue pour les syndics professionnels. 
 - **Annuaire copropriétaires** — Coordonnées, historique des mutations et lots associés
 - **Gestion des locataires** — Suivi des occupants par lot avec dates d'entrée et de sortie
 - **Comptabilité & charges** — Budgets prévisionnels, appels de fonds trimestriels, suivi des paiements et fonds de travaux
-- **Assemblées générales** — Planification, convocations, résolutions, votes et feuilles de présence
+- **Assemblées générales** — Planification, résolutions, votes et feuilles de présence
 - **Travaux & incidents** — Déclaration d'incidents, suivi des interventions et carnet d'entretien
-- **Authentification sécurisée** — Connexion via Microsoft Azure AD (SSO)
+- **Tableau de bord** — Indicateurs clés, incidents récents et prochaines assemblées
+- **Authentification sécurisée** — Connexion par email ou via Microsoft Azure AD (SSO)
 - **Mode sombre** — Interface adaptable selon vos préférences visuelles
-- **Tableau de bord** — Vue d'ensemble avec indicateurs clés
 
 ## Comment ça fonctionne
 
@@ -66,7 +68,7 @@ graph LR
     F -->|docker compose| G[Application en ligne]
 ```
 
-Le déploiement repose sur Docker. Le Dockerfile effectue un build multi-étapes : il compile le frontend en fichiers statiques, puis construit l'image de production contenant le backend Node.js et les fichiers compilés du frontend. Docker Compose orchestre l'application et la base de données PostgreSQL.
+Le déploiement repose sur Docker. Le Dockerfile effectue un build multi-étapes : il compile le frontend en fichiers statiques, puis construit l'image de production. Docker Compose orchestre l'application et la base de données PostgreSQL.
 
 ## Stack technique
 
@@ -75,3 +77,15 @@ Le déploiement repose sur Docker. Le Dockerfile effectue un build multi-étapes
 - **Base de données :** PostgreSQL 18
 - **Infrastructure :** Docker, Docker Compose
 - **Qualité de code :** ESLint, Prettier
+
+## Documentation complémentaire
+
+Une documentation technique détaillée est disponible dans le répertoire `docs/`.
+
+| Document | Description |
+|---|---|
+| [Architecture](docs/architecture.md) | Vue d'ensemble de l'architecture, couches backend et frontend, déploiement Docker |
+| [Modules fonctionnels](docs/modules.md) | Guide des cinq modules métier avec diagrammes de flux |
+| [Schéma des données](docs/donnees.md) | Description des 24 tables de la base de données et de leurs relations |
+| [Référence API](docs/api.md) | Liste complète des points d'accès de l'API REST |
+| [Authentification](docs/authentification.md) | Mécanismes de connexion, rôles et protection des données |
