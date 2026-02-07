@@ -11,6 +11,15 @@ class MutationService {
         }
     }
 
+    async getById(id) {
+        try {
+            return await MutationModel.getById(id)
+        } catch (error) {
+            logger.error(`[MutationService] Error getting mutation ${id}: ${error.message}`)
+            throw error
+        }
+    }
+
     async create(data) {
         try {
             const result = await MutationModel.create(data)

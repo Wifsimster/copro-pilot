@@ -3,11 +3,13 @@ import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { useBudgetsByCopropriete, useCreateBudget, useUpdateBudget, useDeleteBudget } from '@/hooks/useBudgets'
 import { useAppelsFondsByCopropriete, useCreateAppelFonds, useUpdateAppelFonds, useDeleteAppelFonds } from '@/hooks/useAppelsFonds'
 import { useFondsTravauxByCopropriete, useCreateFondsTravaux, useUpdateFondsTravaux, useDeleteFondsTravaux } from '@/hooks/useFondsTravaux'
+import { usePaiementsByCopropriete, useCreatePaiement, useUpdatePaiement, useDeletePaiement } from '@/hooks/usePaiements'
 import { BudgetFormDialog } from '@/components/charges/BudgetFormDialog'
 import { AppelFondsFormDialog } from '@/components/charges/AppelFondsFormDialog'
 import { FondsTravauxFormDialog } from '@/components/charges/FondsTravauxFormDialog'
-import type { BudgetPrevisionnel, AppelFonds, FondsTravaux } from '@/types'
-import { Receipt, Plus, Trash2, Pencil, ChevronDown, FileText, Banknote, PiggyBank } from 'lucide-react'
+import { PaiementFormDialog } from '@/components/charges/PaiementFormDialog'
+import type { BudgetPrevisionnel, AppelFonds, FondsTravaux, Paiement } from '@/types'
+import { Receipt, Plus, Trash2, Pencil, ChevronDown, FileText, Banknote, PiggyBank, CreditCard } from 'lucide-react'
 
 const STATUT_BUDGET_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
@@ -33,7 +35,15 @@ const STATUT_APPEL_COLORS: Record<string, string> = {
   cloture: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
 }
 
-type Tab = 'budgets' | 'appels' | 'fonds-travaux'
+const MODE_PAIEMENT_LABELS: Record<string, string> = {
+  virement: 'Virement',
+  cheque: 'Cheque',
+  prelevement: 'Prelevement',
+  especes: 'Especes',
+  autre: 'Autre',
+}
+
+type Tab = 'budgets' | 'appels' | 'paiements' | 'fonds-travaux'
 
 export default function ChargesPage() {
   const { data: coproprietes, isLoading: loadingCopros } = useCoproprietes()
@@ -45,10 +55,13 @@ export default function ChargesPage() {
   const [editingBudget, setEditingBudget] = useState<BudgetPrevisionnel | null>(null)
   const [editingAppel, setEditingAppel] = useState<AppelFonds | null>(null)
   const [editingFonds, setEditingFonds] = useState<FondsTravaux | null>(null)
+  const [showPaiementDialog, setShowPaiementDialog] = useState(false)
+  const [editingPaiement, setEditingPaiement] = useState<Paiement | null>(null)
 
   const { data: budgets, isLoading: loadingBudgets } = useBudgetsByCopropriete(selectedCoproId)
   const { data: appels, isLoading: loadingAppels } = useAppelsFondsByCopropriete(selectedCoproId)
   const { data: fondsTravaux, isLoading: loadingFonds } = useFondsTravauxByCopropriete(selectedCoproId)
+  const { data: paiements, isLoading: loadingPaiements } = usePaiementsByCopropriete(selectedCoproId)
   const createBudget = useCreateBudget()
   const updateBudget = useUpdateBudget()
   const deleteBudget = useDeleteBudget()
@@ -58,6 +71,9 @@ export default function ChargesPage() {
   const createFonds = useCreateFondsTravaux()
   const updateFonds = useUpdateFondsTravaux()
   const deleteFonds = useDeleteFondsTravaux()
+  const createPaiement = useCreatePaiement()
+  const updatePaiement = useUpdatePaiement()
+  const deletePaiement = useDeletePaiement()
 
   if (loadingCopros) {
     return (
@@ -104,6 +120,7 @@ export default function ChargesPage() {
             {([
               { key: 'budgets' as Tab, label: 'Budgets', icon: FileText },
               { key: 'appels' as Tab, label: 'Appels de fonds', icon: Banknote },
+              { key: 'paiements' as Tab, label: 'Paiements', icon: CreditCard },
               { key: 'fonds-travaux' as Tab, label: 'Fonds travaux', icon: PiggyBank },
             ]).map((tab) => (
               <button

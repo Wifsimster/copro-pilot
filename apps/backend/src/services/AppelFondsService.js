@@ -79,6 +79,30 @@ class AppelFondsService {
             throw error
         }
     }
+
+    async updateLigne(id, data) {
+        try {
+            const result = await AppelFondsModel.updateLigne(id, data)
+            if (!result) return null
+            logger.info(`[AppelFondsService] Ligne d'appel mise à jour (ID: ${id})`)
+            return result
+        } catch (error) {
+            logger.error(`[AppelFondsService] Error updating ligne ${id}: ${error.message}`)
+            throw error
+        }
+    }
+
+    async deleteLigne(id) {
+        try {
+            const deleted = await AppelFondsModel.deleteLigne(id)
+            if (!deleted) return false
+            logger.info(`[AppelFondsService] Ligne d'appel supprimée (ID: ${id})`)
+            return true
+        } catch (error) {
+            logger.error(`[AppelFondsService] Error deleting ligne ${id}: ${error.message}`)
+            throw error
+        }
+    }
 }
 
 export const appelFondsService = new AppelFondsService()

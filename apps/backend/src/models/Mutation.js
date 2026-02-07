@@ -19,6 +19,22 @@ export class MutationModel {
             .orderBy('mutations.date_mutation', 'desc')
     }
 
+    static async getById(id) {
+        const db = getDb()
+        return db('mutations')
+            .select(
+                'mutations.*',
+                'ancien.nom as ancien_nom',
+                'ancien.prenom as ancien_prenom',
+                'nouveau.nom as nouveau_nom',
+                'nouveau.prenom as nouveau_prenom'
+            )
+            .leftJoin('coproprietaires as ancien', 'mutations.ancien_proprietaire_id', 'ancien.id')
+            .leftJoin('coproprietaires as nouveau', 'mutations.nouveau_proprietaire_id', 'nouveau.id')
+            .where('mutations.id', id)
+            .first()
+    }
+
     static async create(data) {
         const db = getDb()
         const [result] = await db('mutations')

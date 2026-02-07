@@ -4,6 +4,17 @@ import type { Paiement } from '@/types'
 
 export const PAIEMENTS_QUERY_KEY = ['paiements'] as const
 
+export function usePaiementsByCopropriete(coproprieteId: number | undefined) {
+  return useQuery({
+    queryKey: [...PAIEMENTS_QUERY_KEY, 'copropriete', coproprieteId],
+    queryFn: async () => {
+      const response = await paiementsApi.getAllByCopropriete(coproprieteId!)
+      return response.data
+    },
+    enabled: !!coproprieteId,
+  })
+}
+
 export function usePaiementsByCoproprietaire(coproprietaireId: number | undefined) {
   return useQuery({
     queryKey: [...PAIEMENTS_QUERY_KEY, 'coproprietaire', coproprietaireId],

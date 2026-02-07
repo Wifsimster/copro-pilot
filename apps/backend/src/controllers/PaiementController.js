@@ -2,6 +2,17 @@ import { paiementService } from '../services/PaiementService.js'
 import logger from '../logger.js'
 
 export class PaiementController {
+    static async getAllByCopropriete(req, res) {
+        try {
+            const { coproprieteId } = req.params
+            const paiements = await paiementService.getAllByCopropriete(coproprieteId)
+            res.json({ data: paiements })
+        } catch (error) {
+            logger.error(`[PaiementController] Error: ${error.message}`)
+            res.status(500).json({ error: 'Impossible de récupérer les paiements' })
+        }
+    }
+
     static async getAllByCoproprietaire(req, res) {
         try {
             const { coproprietaireId } = req.params

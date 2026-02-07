@@ -5,6 +5,7 @@ import { requireAuth } from '../middleware/auth.js'
 const router = Router()
 
 router.get('/lot/:lotId', requireAuth(), MutationController.getAllByLot)
+router.get('/:id', requireAuth(), MutationController.getById)
 router.post('/', requireAuth(), MutationController.create)
 router.put('/:id', requireAuth(), MutationController.update)
 router.delete('/:id', requireAuth(), MutationController.delete)

@@ -13,6 +13,18 @@ export class MutationController {
         }
     }
 
+    static async getById(req, res) {
+        try {
+            const { id } = req.params
+            const mutation = await mutationService.getById(id)
+            if (!mutation) return res.status(404).json({ error: 'Mutation non trouvée' })
+            res.json({ data: mutation })
+        } catch (error) {
+            logger.error(`[MutationController] Error: ${error.message}`)
+            res.status(500).json({ error: 'Impossible de récupérer la mutation' })
+        }
+    }
+
     static async create(req, res) {
         try {
             const { lot_id, date_mutation } = req.body

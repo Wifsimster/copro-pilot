@@ -6,9 +6,15 @@ export interface DashboardStats {
     coproprietaires: number
     incidents_ouverts: number
     prochaines_ag: number
+    lots: number
+    locataires: number
+    budgets: number
+    impayes: number
+    fonds_travaux: number
   }
   recent_incidents: Array<{
     id: number
+    copropriete_id: number
     titre: string
     urgence: string
     statut: string

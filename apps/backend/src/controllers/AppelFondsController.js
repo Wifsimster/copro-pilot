@@ -87,4 +87,28 @@ export class AppelFondsController {
             res.status(500).json({ error: 'Impossible de créer la ligne d\'appel' })
         }
     }
+
+    static async updateLigne(req, res) {
+        try {
+            const { ligneId } = req.params
+            const result = await appelFondsService.updateLigne(ligneId, req.body)
+            if (!result) return res.status(404).json({ error: 'Ligne d\'appel non trouvée' })
+            res.json({ data: result, message: 'Ligne d\'appel mise à jour avec succès' })
+        } catch (error) {
+            logger.error(`[AppelFondsController] Error updating ligne: ${error.message}`)
+            res.status(500).json({ error: 'Impossible de mettre à jour la ligne d\'appel' })
+        }
+    }
+
+    static async deleteLigne(req, res) {
+        try {
+            const { ligneId } = req.params
+            const deleted = await appelFondsService.deleteLigne(ligneId)
+            if (!deleted) return res.status(404).json({ error: 'Ligne d\'appel non trouvée' })
+            res.json({ message: 'Ligne d\'appel supprimée avec succès' })
+        } catch (error) {
+            logger.error(`[AppelFondsController] Error deleting ligne: ${error.message}`)
+            res.status(500).json({ error: 'Impossible de supprimer la ligne d\'appel' })
+        }
+    }
 }

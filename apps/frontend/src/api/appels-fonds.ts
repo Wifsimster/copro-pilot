@@ -22,4 +22,10 @@ export const appelsFondsApi = {
 
   createLigne: (data: Partial<AppelFondsLigne>) =>
     api.post<ApiResponse<AppelFondsLigne>>('/appels-fonds/lignes', data),
+
+  updateLigne: (id: number, data: Partial<AppelFondsLigne>) =>
+    api.put<ApiResponse<AppelFondsLigne>>(`/appels-fonds/lignes/${id}`, data),
+
+  deleteLigne: (id: number) =>
+    api.delete<{ message: string }>(`/appels-fonds/lignes/${id}`),
 }

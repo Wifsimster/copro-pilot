@@ -22,11 +22,15 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import type { Resolution, TypeMajorite } from '@/types'
+import { useEffect } from 'react'
 
 const schema = z.object({
   titre: z.string().min(1, 'Le titre est obligatoire'),
   description: z.string().optional(),
   majorite: z.enum(['article_24', 'article_25', 'article_26', 'unanimite']),
+  voix_pour: z.coerce.number().min(0).optional(),
+  voix_contre: z.coerce.number().min(0).optional(),
+  abstentions: z.coerce.number().min(0).optional(),
 })
 
 type FormData = z.infer<typeof schema>
@@ -38,23 +42,48 @@ interface Props {
   numero: number
   onSubmit: (data: Partial<Resolution>) => Promise<void>
   isLoading?: boolean
+  defaultValues?: Partial<Resolution>
+  title?: string
 }
 
-export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmit, isLoading }: Props) {
+export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmit, isLoading, defaultValues, title }: Props) {
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { titre: '', description: '', majorite: 'article_24' },
+    defaultValues: {
+      titre: defaultValues?.titre ?? '',
+      description: defaultValues?.description ?? '',
+      majorite: defaultValues?.majorite ?? 'article_24',
+      voix_pour: defaultValues?.voix_pour ?? 0,
+      voix_contre: defaultValues?.voix_contre ?? 0,
+      abstentions: defaultValues?.abstentions ?? 0,
+    },
   })
+
+  useEffect(() => {
+    if (open) {
+      reset({
+        titre: defaultValues?.titre ?? '',
+        description: defaultValues?.description ?? '',
+        majorite: defaultValues?.majorite ?? 'article_24',
+        voix_pour: defaultValues?.voix_pour ?? 0,
+        voix_contre: defaultValues?.voix_contre ?? 0,
+        abstentions: defaultValues?.abstentions ?? 0,
+      })
+    }
+  }, [open, defaultValues, reset])
 
   const currentMajorite = watch('majorite')
 
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({
       ag_id: agId,
-      numero,
+      numero: defaultValues?.numero ?? numero,
       titre: data.titre,
       description: data.description || null,
       majorite: data.majorite as TypeMajorite,
+      voix_pour: data.voix_pour ?? 0,
+      voix_contre: data.voix_contre ?? 0,
+      abstentions: data.abstentions ?? 0,
     })
     reset()
   }
@@ -63,7 +92,7 @@ export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmi
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Resolution #{numero}</DialogTitle>
+          <DialogTitle>{title ?? `Resolution #${defaultValues?.numero ?? numero}`}</DialogTitle>
           <DialogDescription>
             Ajoutez une resolution a l'ordre du jour. Les champs marques d'un * sont obligatoires.
           </DialogDescription>
@@ -113,6 +142,21 @@ export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmi
                   <SelectItem value="unanimite">Unanimite</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="voix_pour">Voix pour</Label>
+                <Input id="voix_pour" type="number" {...register('voix_pour')} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="voix_contre">Voix contre</Label>
+                <Input id="voix_contre" type="number" {...register('voix_contre')} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="abstentions">Abstentions</Label>
+                <Input id="abstentions" type="number" {...register('abstentions')} />
+              </div>
             </div>
           </div>
 

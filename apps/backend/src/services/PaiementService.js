@@ -2,6 +2,15 @@ import { PaiementModel } from '../models/Paiement.js'
 import logger from '../logger.js'
 
 class PaiementService {
+    async getAllByCopropriete(coproprieteId) {
+        try {
+            return await PaiementModel.getAllByCopropriete(coproprieteId)
+        } catch (error) {
+            logger.error(`[PaiementService] Error getting paiements by copropriete: ${error.message}`)
+            throw error
+        }
+    }
+
     async getAllByCoproprietaire(coproprietaireId) {
         try {
             return await PaiementModel.getAllByCoproprietaire(coproprietaireId)

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { useIncidentsByCopropriete, useCreateIncident, useUpdateIncident, useDeleteIncident } from '@/hooks/useIncidents'
 import { useInterventionsByCopropriete, useCreateIntervention, useUpdateIntervention, useDeleteIntervention } from '@/hooks/useInterventions'
@@ -56,8 +57,12 @@ const STATUT_INTERVENTION_COLORS: Record<string, string> = {
 type Tab = 'incidents' | 'interventions' | 'carnet'
 
 export default function TravauxPage() {
+  const [searchParams] = useSearchParams()
   const { data: coproprietes, isLoading: loadingCopros } = useCoproprietes()
-  const [selectedCoproId, setSelectedCoproId] = useState<number | undefined>()
+  const [selectedCoproId, setSelectedCoproId] = useState<number | undefined>(() => {
+    const param = searchParams.get('copropriete')
+    return param ? parseInt(param) : undefined
+  })
   const [activeTab, setActiveTab] = useState<Tab>('incidents')
   const [showIncidentDialog, setShowIncidentDialog] = useState(false)
   const [showInterventionDialog, setShowInterventionDialog] = useState(false)

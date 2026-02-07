@@ -3,6 +3,16 @@ import knexDatabase from '../config/knex-database.js'
 const getDb = () => knexDatabase.getKnex()
 
 export class PaiementModel {
+    static async getAllByCopropriete(coproprieteId) {
+        const db = getDb()
+        return db('paiements')
+            .select('paiements.*', 'coproprietaires.nom', 'coproprietaires.prenom')
+            .join('coproprietaires', 'paiements.coproprietaire_id', 'coproprietaires.id')
+            .join('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
+            .where('appels_fonds.copropriete_id', coproprieteId)
+            .orderBy('paiements.date_paiement', 'desc')
+    }
+
     static async getAllByCoproprietaire(coproprietaireId) {
         const db = getDb()
         return db('paiements')

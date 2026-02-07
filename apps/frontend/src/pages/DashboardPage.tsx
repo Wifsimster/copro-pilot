@@ -9,6 +9,10 @@ import {
   Calendar,
   Plus,
   ArrowRight,
+  Home,
+  UserCheck,
+  PiggyBank,
+  Receipt,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -41,6 +45,10 @@ function timeAgo(dateStr: string): string {
   if (diffDays < 30) return `il y a ${diffDays} j`
   const diffMonths = Math.floor(diffDays / 30)
   return `il y a ${diffMonths} mois`
+}
+
+function formatEuro(value: number): string {
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(value)
 }
 
 function timeUntil(dateStr: string): string {
@@ -201,6 +209,41 @@ export default function DashboardPage() {
     },
   ]
 
+  const financeCards = [
+    {
+      key: 'lots',
+      label: 'Lots',
+      value: stats?.counts.lots ?? '—',
+      icon: Home,
+      color: 'bg-cyan-500',
+      link: '/coproprietes',
+    },
+    {
+      key: 'locataires',
+      label: 'Locataires',
+      value: stats?.counts.locataires ?? '—',
+      icon: UserCheck,
+      color: 'bg-teal-500',
+      link: '/coproprietes',
+    },
+    {
+      key: 'impayes',
+      label: 'Appels en cours',
+      value: stats ? formatEuro(stats.counts.impayes) : '—',
+      icon: Receipt,
+      color: 'bg-amber-500',
+      link: '/charges',
+    },
+    {
+      key: 'fonds_travaux',
+      label: 'Fonds travaux',
+      value: stats ? formatEuro(stats.counts.fonds_travaux) : '—',
+      icon: PiggyBank,
+      color: 'bg-emerald-500',
+      link: '/charges',
+    },
+  ]
+
   const quickActions = [
     {
       label: 'Signaler un incident',
@@ -230,6 +273,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Stat cards skeleton */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <StatCardSkeleton key={i} />
+          ))}
+        </div>
+
+        {/* Finance cards skeleton */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <StatCardSkeleton key={i} />
@@ -310,12 +360,44 @@ export default function DashboardPage() {
         ))}
       </div>
 
+      {/* Finance & property cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {financeCards.map((stat, i) => (
+          <motion.div
+            key={stat.key}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.2 + i * 0.05 }}
+          >
+            <Link to={stat.link} className="block">
+              <Card className="py-0 transition-shadow hover:shadow-md">
+                <CardContent className="flex items-center gap-4 p-6">
+                  <div
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ${stat.color} text-white`}
+                  >
+                    <stat.icon className="h-6 w-6" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm text-muted-foreground">
+                      {stat.label}
+                    </p>
+                    <p className="text-2xl font-bold text-foreground">
+                      {stat.value}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </motion.div>
+        ))}
+      </div>
+
       {/* Quick actions */}
       <motion.div
         className="flex flex-wrap gap-3"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.3, delay: 0.25 }}
+        transition={{ duration: 0.3, delay: 0.45 }}
       >
         {quickActions.map((qa) => (
           <Button
@@ -363,7 +445,7 @@ export default function DashboardPage() {
                 {stats.recent_incidents.map((incident) => (
                   <Link
                     key={incident.id}
-                    to="/travaux"
+                    to={`/travaux?copropriete=${incident.copropriete_id}`}
                     className={`flex items-center justify-between border-l-3 px-4 py-3 transition-colors hover:bg-accent/50 ${URGENCE_BORDER[incident.urgence] ?? ''}`}
                   >
                     <div className="min-w-0 flex-1">

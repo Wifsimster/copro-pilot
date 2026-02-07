@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/select'
 import { useCoproprietaires } from '@/hooks/useCoproprietaires'
 import type { PresenceAG } from '@/types'
+import { useEffect } from 'react'
 
 const schema = z.object({
   coproprietaire_id: z.coerce.number().positive('Le coproprietaire est obligatoire'),
@@ -39,19 +40,32 @@ interface Props {
   agId: number
   onSubmit: (data: Partial<PresenceAG>) => Promise<void>
   isLoading?: boolean
+  defaultValues?: Partial<PresenceAG>
+  title?: string
 }
 
-export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoading }: Props) {
+export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoading, defaultValues, title = 'Ajouter une presence' }: Props) {
   const { data: coproprietaires } = useCoproprietaires()
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      coproprietaire_id: 0,
-      statut: 'present',
-      represente_par_id: 0,
-      tantiemes: 0,
+      coproprietaire_id: defaultValues?.coproprietaire_id ?? 0,
+      statut: defaultValues?.statut ?? 'present',
+      represente_par_id: defaultValues?.represente_par_id ?? 0,
+      tantiemes: defaultValues?.tantiemes ?? 0,
     },
   })
+
+  useEffect(() => {
+    if (open) {
+      reset({
+        coproprietaire_id: defaultValues?.coproprietaire_id ?? 0,
+        statut: defaultValues?.statut ?? 'present',
+        represente_par_id: defaultValues?.represente_par_id ?? 0,
+        tantiemes: defaultValues?.tantiemes ?? 0,
+      })
+    }
+  }, [open, defaultValues, reset])
 
   const currentStatut = watch('statut')
 
@@ -72,7 +86,7 @@ export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoadi
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Ajouter une presence</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             Enregistrez la presence d'un coproprietaire. Les champs marques d'un * sont obligatoires.
           </DialogDescription>

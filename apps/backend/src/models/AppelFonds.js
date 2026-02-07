@@ -73,4 +73,18 @@ export class AppelFondsModel {
             .returning('*')
         return result
     }
+
+    static async updateLigne(id, data) {
+        const db = getDb()
+        const [result] = await db('appels_fonds_lignes')
+            .where('id', id)
+            .update({ ...data, updated_at: db.fn.now() })
+            .returning('*')
+        return result
+    }
+
+    static async deleteLigne(id) {
+        const db = getDb()
+        return db('appels_fonds_lignes').where('id', id).del()
+    }
 }

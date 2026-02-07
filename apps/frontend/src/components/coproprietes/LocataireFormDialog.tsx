@@ -22,6 +22,7 @@ const schema = z.object({
   email: z.string().email('Email invalide').optional().or(z.literal('')),
   telephone: z.string().optional(),
   date_entree: z.string().optional(),
+  date_sortie: z.string().optional(),
 })
 
 type FormData = z.infer<typeof schema>
@@ -45,6 +46,7 @@ export function LocataireFormDialog({ open, onOpenChange, lotId, onSubmit, isLoa
       email: defaultValues?.email || '',
       telephone: defaultValues?.telephone || '',
       date_entree: defaultValues?.date_entree || '',
+      date_sortie: defaultValues?.date_sortie || '',
     },
   })
 
@@ -55,6 +57,7 @@ export function LocataireFormDialog({ open, onOpenChange, lotId, onSubmit, isLoa
       email: data.email || null,
       telephone: data.telephone || null,
       date_entree: data.date_entree || null,
+      date_sortie: data.date_sortie || null,
     })
     reset()
   }
@@ -128,9 +131,15 @@ export function LocataireFormDialog({ open, onOpenChange, lotId, onSubmit, isLoa
               <span>Bail</span>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="date_entree">Date d'entree</Label>
-              <Input id="date_entree" type="date" {...register('date_entree')} />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="date_entree">Date d'entree</Label>
+                <Input id="date_entree" type="date" {...register('date_entree')} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="date_sortie">Date de sortie</Label>
+                <Input id="date_sortie" type="date" {...register('date_sortie')} />
+              </div>
             </div>
           </div>
 

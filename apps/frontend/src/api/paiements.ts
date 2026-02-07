@@ -2,6 +2,9 @@ import { api } from './api'
 import type { Paiement, SoldeCoproprietaire, ApiResponse } from '@/types'
 
 export const paiementsApi = {
+  getAllByCopropriete: (coproprieteId: number) =>
+    api.get<{ data: Paiement[] }>(`/paiements/copropriete/${coproprieteId}`),
+
   getAllByCoproprietaire: (coproprietaireId: number) =>
     api.get<{ data: Paiement[] }>(`/paiements/coproprietaire/${coproprietaireId}`),
 

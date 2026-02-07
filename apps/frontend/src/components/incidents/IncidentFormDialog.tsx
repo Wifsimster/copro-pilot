@@ -28,6 +28,7 @@ const incidentSchema = z.object({
   description: z.string().optional(),
   categorie: z.string().optional(),
   urgence: z.enum(['faible', 'moyenne', 'haute', 'critique']),
+  statut: z.enum(['ouvert', 'en_cours', 'resolu', 'ferme']),
   date_signalement: z.string().min(1, 'La date est obligatoire'),
 })
 
@@ -66,11 +67,13 @@ export function IncidentFormDialog({
       description: defaultValues?.description || '',
       categorie: defaultValues?.categorie || '',
       urgence: defaultValues?.urgence || 'moyenne',
+      statut: defaultValues?.statut || 'ouvert',
       date_signalement: defaultValues?.date_signalement || new Date().toISOString().split('T')[0],
     },
   })
 
   const currentUrgence = watch('urgence')
+  const currentStatut = watch('statut')
 
   const handleFormSubmit = async (data: IncidentFormData) => {
     await onSubmit({
@@ -142,6 +145,21 @@ export function IncidentFormDialog({
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="statut">Statut *</Label>
+              <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as IncidentFormData['statut'])}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ouvert">Ouvert</SelectItem>
+                  <SelectItem value="en_cours">En cours</SelectItem>
+                  <SelectItem value="resolu">Resolu</SelectItem>
+                  <SelectItem value="ferme">Ferme</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

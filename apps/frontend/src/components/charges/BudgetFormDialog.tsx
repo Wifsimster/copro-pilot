@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Calculator, FileText } from 'lucide-react'
+import { Calculator, FileText, Tag } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -14,11 +14,19 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import type { BudgetPrevisionnel } from '@/types'
 
 const budgetSchema = z.object({
   annee: z.coerce.number().min(2000).max(2100),
   montant_total: z.coerce.number().min(0, 'Le montant doit etre positif'),
+  statut: z.enum(['brouillon', 'vote', 'approuve']),
   notes: z.string().optional(),
 })
 
@@ -47,15 +55,20 @@ export function BudgetFormDialog({
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<BudgetFormData>({
     resolver: zodResolver(budgetSchema),
     defaultValues: {
       annee: defaultValues?.annee || new Date().getFullYear(),
       montant_total: defaultValues?.montant_total || 0,
+      statut: defaultValues?.statut || 'brouillon',
       notes: defaultValues?.notes || '',
     },
   })
+
+  const currentStatut = watch('statut')
 
   const handleFormSubmit = async (data: BudgetFormData) => {
     await onSubmit({
@@ -99,6 +112,20 @@ export function BudgetFormDialog({
                   <p className="text-sm text-destructive">{errors.montant_total.message}</p>
                 )}
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="statut">Statut *</Label>
+              <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as BudgetFormData['statut'])}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="brouillon">Brouillon</SelectItem>
+                  <SelectItem value="vote">Vote</SelectItem>
+                  <SelectItem value="approuve">Approuve</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

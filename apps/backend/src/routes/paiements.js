@@ -4,6 +4,7 @@ import { requireAuth } from '../middleware/auth.js'
 
 const router = Router()
 
+router.get('/copropriete/:coproprieteId', requireAuth(), PaiementController.getAllByCopropriete)
 router.get('/coproprietaire/:coproprietaireId', requireAuth(), PaiementController.getAllByCoproprietaire)
 router.get('/appel-fonds/:appelFondsId', requireAuth(), PaiementController.getAllByAppelFonds)
 router.get('/solde/:coproprietaireId', requireAuth(), PaiementController.getSoldeCoproprietaire)

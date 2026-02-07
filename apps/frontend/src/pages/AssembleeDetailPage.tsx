@@ -3,8 +3,8 @@ import { useParams, Link } from 'react-router-dom'
 import { useAssemblee, useCreateResolution, useUpdateResolution, useDeleteResolution, useSetPresence, useDeletePresence } from '@/hooks/useAssemblees'
 import { ResolutionFormDialog } from '@/components/assemblees/ResolutionFormDialog'
 import { PresenceFormDialog } from '@/components/assemblees/PresenceFormDialog'
-import type { Resolution } from '@/types'
-import { ArrowLeft, Plus, Trash2, Vote, Users, FileText } from 'lucide-react'
+import type { Resolution, PresenceAG } from '@/types'
+import { ArrowLeft, Plus, Trash2, Pencil, Vote, Users, FileText } from 'lucide-react'
 
 const STATUT_LABELS: Record<string, string> = {
   planifiee: 'Planifiee',
@@ -55,6 +55,8 @@ export default function AssembleeDetailPage() {
   const [activeTab, setActiveTab] = useState<Tab>('resolutions')
   const [showResolutionDialog, setShowResolutionDialog] = useState(false)
   const [showPresenceDialog, setShowPresenceDialog] = useState(false)
+  const [editingResolution, setEditingResolution] = useState<Resolution | null>(null)
+  const [editingPresence, setEditingPresence] = useState<PresenceAG | null>(null)
 
   if (isLoading) {
     return (
@@ -236,6 +238,12 @@ export default function AssembleeDetailPage() {
                         </div>
                       )}
                       <button
+                        onClick={() => setEditingResolution(res)}
+                        className="rounded p-1 text-gray-400 hover:text-blue-600"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
                         onClick={() => {
                           if (window.confirm('Supprimer cette resolution ?')) deleteResolution.mutate(res.id)
                         }}
@@ -252,15 +260,22 @@ export default function AssembleeDetailPage() {
 
           {agId && (
             <ResolutionFormDialog
-              open={showResolutionDialog}
-              onOpenChange={setShowResolutionDialog}
+              open={showResolutionDialog || !!editingResolution}
+              onOpenChange={(open) => { setShowResolutionDialog(open); if (!open) setEditingResolution(null) }}
               agId={agId}
               numero={nextNumero}
+              defaultValues={editingResolution ?? undefined}
+              title={editingResolution ? `Modifier la resolution #${editingResolution.numero}` : undefined}
               onSubmit={async (data) => {
-                await createResolution.mutateAsync(data)
+                if (editingResolution) {
+                  await updateResolution.mutateAsync({ id: editingResolution.id, data })
+                } else {
+                  await createResolution.mutateAsync(data)
+                }
                 setShowResolutionDialog(false)
+                setEditingResolution(null)
               }}
-              isLoading={createResolution.isPending}
+              isLoading={editingResolution ? updateResolution.isPending : createResolution.isPending}
             />
           )}
         </div>
@@ -319,14 +334,22 @@ export default function AssembleeDetailPage() {
                       </td>
                       <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{p.tantiemes}</td>
                       <td className="px-4 py-3">
-                        <button
-                          onClick={() => {
-                            if (window.confirm('Retirer cette presence ?')) deletePresence.mutate(p.id)
-                          }}
-                          className="rounded p-1 text-gray-400 hover:text-red-600"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => setEditingPresence(p)}
+                            className="rounded p-1 text-gray-400 hover:text-blue-600"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (window.confirm('Retirer cette presence ?')) deletePresence.mutate(p.id)
+                            }}
+                            className="rounded p-1 text-gray-400 hover:text-red-600"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -337,12 +360,15 @@ export default function AssembleeDetailPage() {
 
           {agId && (
             <PresenceFormDialog
-              open={showPresenceDialog}
-              onOpenChange={setShowPresenceDialog}
+              open={showPresenceDialog || !!editingPresence}
+              onOpenChange={(open) => { setShowPresenceDialog(open); if (!open) setEditingPresence(null) }}
               agId={agId}
+              defaultValues={editingPresence ?? undefined}
+              title={editingPresence ? 'Modifier la presence' : 'Ajouter une presence'}
               onSubmit={async (data) => {
                 await setPresence.mutateAsync(data)
                 setShowPresenceDialog(false)
+                setEditingPresence(null)
               }}
               isLoading={setPresence.isPending}
             />
