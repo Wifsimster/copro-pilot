@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { useIncidentsByCopropriete, useCreateIncident, useDeleteIncident } from '@/hooks/useIncidents'
 import { useInterventionsByCopropriete, useCreateIntervention, useDeleteIntervention } from '@/hooks/useInterventions'
+import { useCarnetEntretienByCopropriete, useCreateCarnetEntretien, useDeleteCarnetEntretien } from '@/hooks/useCarnetEntretien'
 import { IncidentFormDialog } from '@/components/incidents/IncidentFormDialog'
 import { InterventionFormDialog } from '@/components/incidents/InterventionFormDialog'
-import type { Incident, Intervention } from '@/types'
-import { Wrench, Plus, Trash2, ChevronDown, AlertTriangle, Hammer } from 'lucide-react'
+import { CarnetEntretienFormDialog } from '@/components/incidents/CarnetEntretienFormDialog'
+import type { Incident, Intervention, CarnetEntretien } from '@/types'
+import { Wrench, Plus, Trash2, ChevronDown, AlertTriangle, Hammer, BookOpen } from 'lucide-react'
 
 const URGENCE_LABELS: Record<string, string> = {
   faible: 'Faible',
@@ -51,19 +53,25 @@ const STATUT_INTERVENTION_COLORS: Record<string, string> = {
   annulee: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
 }
 
+type Tab = 'incidents' | 'interventions' | 'carnet'
+
 export default function TravauxPage() {
   const { data: coproprietes, isLoading: loadingCopros } = useCoproprietes()
   const [selectedCoproId, setSelectedCoproId] = useState<number | undefined>()
-  const [activeTab, setActiveTab] = useState<'incidents' | 'interventions'>('incidents')
+  const [activeTab, setActiveTab] = useState<Tab>('incidents')
   const [showIncidentDialog, setShowIncidentDialog] = useState(false)
   const [showInterventionDialog, setShowInterventionDialog] = useState(false)
+  const [showCarnetDialog, setShowCarnetDialog] = useState(false)
 
   const { data: incidents, isLoading: loadingIncidents } = useIncidentsByCopropriete(selectedCoproId)
   const { data: interventions, isLoading: loadingInterventions } = useInterventionsByCopropriete(selectedCoproId)
+  const { data: carnetEntretien, isLoading: loadingCarnet } = useCarnetEntretienByCopropriete(selectedCoproId)
   const createIncident = useCreateIncident()
   const deleteIncident = useDeleteIncident()
   const createIntervention = useCreateIntervention()
   const deleteIntervention = useDeleteIntervention()
+  const createCarnet = useCreateCarnetEntretien()
+  const deleteCarnet = useDeleteCarnetEntretien()
 
   if (loadingCopros) {
     return (
@@ -78,7 +86,7 @@ export default function TravauxPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Travaux & Incidents</h1>
-          <p className="text-gray-500 dark:text-zinc-400">Suivi des incidents et interventions</p>
+          <p className="text-gray-500 dark:text-zinc-400">Suivi des incidents, interventions et carnet d'entretien</p>
         </div>
       </div>
 
@@ -107,28 +115,24 @@ export default function TravauxPage() {
         <>
           {/* Tabs */}
           <div className="flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-zinc-800">
-            <button
-              onClick={() => setActiveTab('incidents')}
-              className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === 'incidents'
-                  ? 'bg-white text-gray-900 shadow dark:bg-zinc-700 dark:text-white'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-zinc-400'
-              }`}
-            >
-              <AlertTriangle className="h-4 w-4" />
-              Incidents
-            </button>
-            <button
-              onClick={() => setActiveTab('interventions')}
-              className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === 'interventions'
-                  ? 'bg-white text-gray-900 shadow dark:bg-zinc-700 dark:text-white'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-zinc-400'
-              }`}
-            >
-              <Hammer className="h-4 w-4" />
-              Interventions
-            </button>
+            {([
+              { key: 'incidents' as Tab, label: 'Incidents', icon: AlertTriangle },
+              { key: 'interventions' as Tab, label: 'Interventions', icon: Hammer },
+              { key: 'carnet' as Tab, label: "Carnet d'entretien", icon: BookOpen },
+            ]).map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                  activeTab === tab.key
+                    ? 'bg-white text-gray-900 shadow dark:bg-zinc-700 dark:text-white'
+                    : 'text-gray-500 hover:text-gray-700 dark:text-zinc-400'
+                }`}
+              >
+                <tab.icon className="h-4 w-4" />
+                {tab.label}
+              </button>
+            ))}
           </div>
 
           {/* Incidents tab */}
@@ -299,6 +303,86 @@ export default function TravauxPage() {
                   setShowInterventionDialog(false)
                 }}
                 isLoading={createIntervention.isPending}
+              />
+            </div>
+          )}
+
+          {/* Carnet d'entretien tab */}
+          {activeTab === 'carnet' && (
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Carnet d'entretien</h2>
+                <button
+                  onClick={() => setShowCarnetDialog(true)}
+                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                >
+                  <Plus className="h-4 w-4" />
+                  Nouvelle entree
+                </button>
+              </div>
+
+              {loadingCarnet ? (
+                <div className="flex justify-center py-8">
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                </div>
+              ) : !carnetEntretien || carnetEntretien.length === 0 ? (
+                <div className="flex flex-col items-center py-12">
+                  <BookOpen className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
+                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune entree dans le carnet</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Titre</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Categorie</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Prestataire</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Montant</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Date</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {carnetEntretien.map((entree: CarnetEntretien) => (
+                        <tr key={entree.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
+                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{entree.titre}</td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{entree.categorie || '—'}</td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{entree.prestataire || '—'}</td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                            {entree.montant
+                              ? Number(entree.montant).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
+                              : '—'}
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                            {new Date(entree.date_realisation).toLocaleDateString('fr-FR')}
+                          </td>
+                          <td className="px-4 py-3">
+                            <button
+                              onClick={() => {
+                                if (window.confirm('Supprimer cette entree ?')) deleteCarnet.mutate(entree.id)
+                              }}
+                              className="rounded p-1 text-gray-400 hover:text-red-600"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              <CarnetEntretienFormDialog
+                open={showCarnetDialog}
+                onOpenChange={setShowCarnetDialog}
+                coproprieteId={selectedCoproId}
+                onSubmit={async (data) => {
+                  await createCarnet.mutateAsync(data)
+                  setShowCarnetDialog(false)
+                }}
+                isLoading={createCarnet.isPending}
               />
             </div>
           )}

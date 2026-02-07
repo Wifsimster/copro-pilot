@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { useBudgetsByCopropriete, useCreateBudget, useDeleteBudget } from '@/hooks/useBudgets'
 import { useAppelsFondsByCopropriete, useCreateAppelFonds, useDeleteAppelFonds } from '@/hooks/useAppelsFonds'
+import { useFondsTravauxByCopropriete, useCreateFondsTravaux, useDeleteFondsTravaux } from '@/hooks/useFondsTravaux'
 import { BudgetFormDialog } from '@/components/charges/BudgetFormDialog'
 import { AppelFondsFormDialog } from '@/components/charges/AppelFondsFormDialog'
-import type { BudgetPrevisionnel, AppelFonds } from '@/types'
-import { Receipt, Plus, Trash2, ChevronDown, FileText, Banknote } from 'lucide-react'
+import { FondsTravauxFormDialog } from '@/components/charges/FondsTravauxFormDialog'
+import type { BudgetPrevisionnel, AppelFonds, FondsTravaux } from '@/types'
+import { Receipt, Plus, Trash2, ChevronDown, FileText, Banknote, PiggyBank } from 'lucide-react'
 
 const STATUT_BUDGET_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
@@ -31,19 +33,25 @@ const STATUT_APPEL_COLORS: Record<string, string> = {
   cloture: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
 }
 
+type Tab = 'budgets' | 'appels' | 'fonds-travaux'
+
 export default function ChargesPage() {
   const { data: coproprietes, isLoading: loadingCopros } = useCoproprietes()
   const [selectedCoproId, setSelectedCoproId] = useState<number | undefined>()
-  const [activeTab, setActiveTab] = useState<'budgets' | 'appels'>('budgets')
+  const [activeTab, setActiveTab] = useState<Tab>('budgets')
   const [showBudgetDialog, setShowBudgetDialog] = useState(false)
   const [showAppelDialog, setShowAppelDialog] = useState(false)
+  const [showFondsDialog, setShowFondsDialog] = useState(false)
 
   const { data: budgets, isLoading: loadingBudgets } = useBudgetsByCopropriete(selectedCoproId)
   const { data: appels, isLoading: loadingAppels } = useAppelsFondsByCopropriete(selectedCoproId)
+  const { data: fondsTravaux, isLoading: loadingFonds } = useFondsTravauxByCopropriete(selectedCoproId)
   const createBudget = useCreateBudget()
   const deleteBudget = useDeleteBudget()
   const createAppel = useCreateAppelFonds()
   const deleteAppel = useDeleteAppelFonds()
+  const createFonds = useCreateFondsTravaux()
+  const deleteFonds = useDeleteFondsTravaux()
 
   if (loadingCopros) {
     return (
@@ -58,7 +66,7 @@ export default function ChargesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Charges & Comptabilite</h1>
-          <p className="text-gray-500 dark:text-zinc-400">Budgets previsionnels et appels de fonds</p>
+          <p className="text-gray-500 dark:text-zinc-400">Budgets previsionnels, appels de fonds et fonds travaux</p>
         </div>
       </div>
 
@@ -87,28 +95,24 @@ export default function ChargesPage() {
         <>
           {/* Tabs */}
           <div className="flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-zinc-800">
-            <button
-              onClick={() => setActiveTab('budgets')}
-              className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === 'budgets'
-                  ? 'bg-white text-gray-900 shadow dark:bg-zinc-700 dark:text-white'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-zinc-400'
-              }`}
-            >
-              <FileText className="h-4 w-4" />
-              Budgets
-            </button>
-            <button
-              onClick={() => setActiveTab('appels')}
-              className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === 'appels'
-                  ? 'bg-white text-gray-900 shadow dark:bg-zinc-700 dark:text-white'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-zinc-400'
-              }`}
-            >
-              <Banknote className="h-4 w-4" />
-              Appels de fonds
-            </button>
+            {([
+              { key: 'budgets' as Tab, label: 'Budgets', icon: FileText },
+              { key: 'appels' as Tab, label: 'Appels de fonds', icon: Banknote },
+              { key: 'fonds-travaux' as Tab, label: 'Fonds travaux', icon: PiggyBank },
+            ]).map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                  activeTab === tab.key
+                    ? 'bg-white text-gray-900 shadow dark:bg-zinc-700 dark:text-white'
+                    : 'text-gray-500 hover:text-gray-700 dark:text-zinc-400'
+                }`}
+              >
+                <tab.icon className="h-4 w-4" />
+                {tab.label}
+              </button>
+            ))}
           </div>
 
           {/* Budgets tab */}
@@ -267,6 +271,82 @@ export default function ChargesPage() {
                   setShowAppelDialog(false)
                 }}
                 isLoading={createAppel.isPending}
+              />
+            </div>
+          )}
+
+          {/* Fonds travaux tab */}
+          {activeTab === 'fonds-travaux' && (
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Fonds travaux</h2>
+                <button
+                  onClick={() => setShowFondsDialog(true)}
+                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                >
+                  <Plus className="h-4 w-4" />
+                  Nouveau fonds
+                </button>
+              </div>
+
+              {loadingFonds ? (
+                <div className="flex justify-center py-8">
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                </div>
+              ) : !fondsTravaux || fondsTravaux.length === 0 ? (
+                <div className="flex flex-col items-center py-12">
+                  <PiggyBank className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
+                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun fonds travaux enregistre</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Annee</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Cotisation annuelle</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Solde</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {fondsTravaux.map((fonds: FondsTravaux) => (
+                        <tr key={fonds.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
+                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{fonds.annee}</td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                            {Number(fonds.cotisation_annuelle).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                            <span className={Number(fonds.solde) >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>
+                              {Number(fonds.solde).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <button
+                              onClick={() => {
+                                if (window.confirm('Supprimer ce fonds travaux ?')) deleteFonds.mutate(fonds.id)
+                              }}
+                              className="rounded p-1 text-gray-400 hover:text-red-600"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              <FondsTravauxFormDialog
+                open={showFondsDialog}
+                onOpenChange={setShowFondsDialog}
+                coproprieteId={selectedCoproId}
+                onSubmit={async (data) => {
+                  await createFonds.mutateAsync(data)
+                  setShowFondsDialog(false)
+                }}
+                isLoading={createFonds.isPending}
               />
             </div>
           )}

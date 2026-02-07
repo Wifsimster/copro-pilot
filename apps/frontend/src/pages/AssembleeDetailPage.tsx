@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useAssemblee, useCreateResolution, useUpdateResolution, useDeleteResolution } from '@/hooks/useAssemblees'
+import { ResolutionFormDialog } from '@/components/assemblees/ResolutionFormDialog'
 import type { Resolution } from '@/types'
 import { ArrowLeft, Plus, Trash2, Vote, Users, FileText } from 'lucide-react'
 
 const STATUT_LABELS: Record<string, string> = {
-  planifiee: 'Planifiée',
-  convoquee: 'Convoquée',
+  planifiee: 'Planifiee',
+  convoquee: 'Convoquee',
   en_cours: 'En cours',
-  terminee: 'Terminée',
-  annulee: 'Annulée',
+  terminee: 'Terminee',
+  annulee: 'Annulee',
 }
 
 const STATUT_COLORS: Record<string, string> = {
@@ -24,13 +25,13 @@ const MAJORITE_LABELS: Record<string, string> = {
   article_24: 'Art. 24',
   article_25: 'Art. 25',
   article_26: 'Art. 26',
-  unanimite: 'Unanimité',
+  unanimite: 'Unanimite',
 }
 
 const RESULTAT_LABELS: Record<string, string> = {
-  adoptee: 'Adoptée',
-  rejetee: 'Rejetée',
-  ajournee: 'Ajournée',
+  adoptee: 'Adoptee',
+  rejetee: 'Rejetee',
+  ajournee: 'Ajournee',
 }
 
 const RESULTAT_COLORS: Record<string, string> = {
@@ -49,6 +50,7 @@ export default function AssembleeDetailPage() {
   const updateResolution = useUpdateResolution()
   const deleteResolution = useDeleteResolution()
   const [activeTab, setActiveTab] = useState<Tab>('resolutions')
+  const [showResolutionDialog, setShowResolutionDialog] = useState(false)
 
   if (isLoading) {
     return (
@@ -61,26 +63,15 @@ export default function AssembleeDetailPage() {
   if (!ag) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500 dark:text-zinc-400">Assemblée générale non trouvée</p>
+        <p className="text-gray-500 dark:text-zinc-400">Assemblee generale non trouvee</p>
         <Link to="/assemblees" className="mt-4 inline-block text-blue-600 hover:underline">
-          Retour aux assemblées
+          Retour aux assemblees
         </Link>
       </div>
     )
   }
 
-  const handleCreateResolution = async () => {
-    if (!agId) return
-    const titre = window.prompt('Titre de la résolution :')
-    if (!titre) return
-    const nextNumero = (ag.resolutions?.length || 0) + 1
-    await createResolution.mutateAsync({
-      ag_id: agId,
-      numero: nextNumero,
-      titre,
-      majorite: 'article_24',
-    })
-  }
+  const nextNumero = (ag.resolutions?.length || 0) + 1
 
   const handleSetResultat = async (resId: number, resultat: string) => {
     await updateResolution.mutateAsync({ id: resId, data: { resultat } as Partial<Resolution> })
@@ -123,19 +114,19 @@ export default function AssembleeDetailPage() {
       {/* Info cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
         <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-          <p className="text-sm text-gray-500 dark:text-zinc-400">Résolutions</p>
+          <p className="text-sm text-gray-500 dark:text-zinc-400">Resolutions</p>
           <p className="text-2xl font-bold text-gray-900 dark:text-white">{ag.resolutions?.length || 0}</p>
         </div>
         <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-          <p className="text-sm text-gray-500 dark:text-zinc-400">Présents</p>
+          <p className="text-sm text-gray-500 dark:text-zinc-400">Presents</p>
           <p className="text-2xl font-bold text-gray-900 dark:text-white">{presenceStats?.presents || 0}</p>
         </div>
         <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-          <p className="text-sm text-gray-500 dark:text-zinc-400">Représentés</p>
+          <p className="text-sm text-gray-500 dark:text-zinc-400">Representes</p>
           <p className="text-2xl font-bold text-gray-900 dark:text-white">{presenceStats?.representes || 0}</p>
         </div>
         <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-          <p className="text-sm text-gray-500 dark:text-zinc-400">Tantièmes représentés</p>
+          <p className="text-sm text-gray-500 dark:text-zinc-400">Tantiemes representes</p>
           <p className="text-2xl font-bold text-gray-900 dark:text-white">{presenceStats?.totalTantiemes || 0}</p>
         </div>
       </div>
@@ -159,7 +150,7 @@ export default function AssembleeDetailPage() {
           }`}
         >
           <Vote className="h-4 w-4" />
-          Résolutions
+          Resolutions
         </button>
         <button
           onClick={() => setActiveTab('presences')}
@@ -170,7 +161,7 @@ export default function AssembleeDetailPage() {
           }`}
         >
           <Users className="h-4 w-4" />
-          Présences
+          Presences
         </button>
       </div>
 
@@ -178,9 +169,9 @@ export default function AssembleeDetailPage() {
       {activeTab === 'resolutions' && (
         <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
           <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Résolutions</h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Resolutions</h2>
             <button
-              onClick={handleCreateResolution}
+              onClick={() => setShowResolutionDialog(true)}
               disabled={createResolution.isPending}
               className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
             >
@@ -192,7 +183,7 @@ export default function AssembleeDetailPage() {
           {(!ag.resolutions || ag.resolutions.length === 0) ? (
             <div className="flex flex-col items-center py-12">
               <FileText className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-              <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune résolution enregistrée</p>
+              <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune resolution enregistree</p>
             </div>
           ) : (
             <div className="divide-y divide-gray-100 dark:divide-zinc-700/50">
@@ -242,7 +233,7 @@ export default function AssembleeDetailPage() {
                       )}
                       <button
                         onClick={() => {
-                          if (window.confirm('Supprimer cette résolution ?')) deleteResolution.mutate(res.id)
+                          if (window.confirm('Supprimer cette resolution ?')) deleteResolution.mutate(res.id)
                         }}
                         className="rounded p-1 text-gray-400 hover:text-red-600"
                       >
@@ -254,6 +245,20 @@ export default function AssembleeDetailPage() {
               ))}
             </div>
           )}
+
+          {agId && (
+            <ResolutionFormDialog
+              open={showResolutionDialog}
+              onOpenChange={setShowResolutionDialog}
+              agId={agId}
+              numero={nextNumero}
+              onSubmit={async (data) => {
+                await createResolution.mutateAsync(data)
+                setShowResolutionDialog(false)
+              }}
+              isLoading={createResolution.isPending}
+            />
+          )}
         </div>
       )}
 
@@ -261,23 +266,23 @@ export default function AssembleeDetailPage() {
       {activeTab === 'presences' && (
         <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
           <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Feuille de présence</h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Feuille de presence</h2>
           </div>
 
           {(!ag.presences || ag.presences.length === 0) ? (
             <div className="flex flex-col items-center py-12">
               <Users className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-              <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune présence enregistrée</p>
+              <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune presence enregistree</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
-                    <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Copropriétaire</th>
+                    <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Coproprietaire</th>
                     <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
-                    <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Représenté par</th>
-                    <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Tantièmes</th>
+                    <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Represente par</th>
+                    <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Tantiemes</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -294,7 +299,7 @@ export default function AssembleeDetailPage() {
                             ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
                             : 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300'
                         }`}>
-                          {p.statut === 'present' ? 'Présent' : p.statut === 'represente' ? 'Représenté' : 'Absent'}
+                          {p.statut === 'present' ? 'Present' : p.statut === 'represente' ? 'Represente' : 'Absent'}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
