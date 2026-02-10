@@ -150,6 +150,7 @@ class PvGenerationService {
     for (const p of presences) {
       if (yPos > 730) {
         doc.addPage()
+        doc.x = 50
         yPos = 50
       }
       const nom = `${p.coproprietaire_prenom || ''} ${p.coproprietaire_nom || ''}`.trim()
@@ -177,6 +178,7 @@ class PvGenerationService {
     const resolutions = ag.resolutions || []
     if (resolutions.length === 0) return
 
+    doc.x = 50
     doc
       .fontSize(13)
       .font('Helvetica-Bold')
@@ -196,6 +198,7 @@ class PvGenerationService {
     for (const res of resolutions) {
       if (doc.y > 680) {
         doc.addPage()
+        doc.x = 50
       }
 
       // Resolution header
@@ -243,6 +246,7 @@ class PvGenerationService {
       doc.addPage()
     }
 
+    doc.x = 50
     doc
       .fontSize(13)
       .font('Helvetica-Bold')
