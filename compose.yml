@@ -17,7 +17,7 @@ services:
 
   copro-pilot:
     image: wifsimster/copro-pilot:latest
-    container_name: copro-pilot-app
+    container_name: copro-pilot
     env_file:
       - .env
     ports:

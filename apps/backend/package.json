@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node --env-file=.env src/index.js",
     "dev": "nodemon --env-file=.env src/index.js",
-    "knex": "node --env-file=.env ../../node_modules/.bin/knex --knexfile src/config/knexfile.js",
+    "knex": "npx knex --knexfile src/config/knexfile.js",
     "migrate:latest": "npm run knex -- migrate:latest",
     "migrate:rollback": "npm run knex -- migrate:rollback",
     "migrate:make": "npm run knex -- migrate:make",
