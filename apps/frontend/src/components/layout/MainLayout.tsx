@@ -17,6 +17,7 @@ import {
   Handshake,
   Shield,
   Scale,
+  HardHat,
   LogOut,
   Menu,
   X,
@@ -43,6 +44,7 @@ const navigation = [
   { name: 'Contrats', href: '/contrats', icon: Handshake },
   { name: 'Assurances', href: '/assurances', icon: Shield },
   { name: 'Contentieux', href: '/contentieux', icon: Scale },
+  { name: 'Employes', href: '/employes', icon: HardHat },
 ]
 
 export function MainLayout({ children }: MainLayoutProps) {

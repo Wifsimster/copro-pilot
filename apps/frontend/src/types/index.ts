@@ -641,6 +641,44 @@ export interface Procedure {
 }
 
 // ============================================
+// Reglement de Copropriete Types
+// ============================================
+
+export type DestinationImmeuble = 'habitation' | 'commerce' | 'mixte'
+export type CategorieArticle = 'parties_privatives' | 'parties_communes' | 'charges' | 'usage' | 'travaux' | 'conseil_syndical' | 'ag' | 'autre'
+
+export interface ReglementCopropriete {
+  id: number
+  copropriete_id: number
+  date_etablissement: string
+  date_derniere_modification: string | null
+  notaire: string | null
+  destination_immeuble: DestinationImmeuble
+  restrictions_usage: string | null
+  conditions_travaux: string | null
+  composition_conseil_syndical: string | null
+  modalites_convocation_ag: string | null
+  document_url: string | null
+  notes: string | null
+  articles?: ArticleReglement[]
+  created_at: string
+  updated_at: string
+}
+
+export interface ArticleReglement {
+  id: number
+  reglement_id: number
+  numero: string
+  titre: string
+  contenu: string | null
+  categorie: CategorieArticle
+  ordre: number
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
 // API Response Types
 // ============================================
 
@@ -664,4 +702,28 @@ export interface ApiError {
   error: string
   message?: string
   details?: string[]
+}
+
+// ============================================
+// Employe Syndicat Types
+// ============================================
+
+export type TypeContrat = 'cdi' | 'cdd' | 'interim' | 'saisonnier'
+export type StatutEmploye = 'actif' | 'inactif'
+
+export interface EmployeSyndicat {
+  id: number
+  copropriete_id: number
+  nom: string
+  prenom: string
+  poste: string
+  type_contrat: TypeContrat
+  date_embauche: string
+  date_fin: string | null
+  salaire_brut: number | null
+  logement_fonction: boolean
+  statut: StatutEmploye
+  notes: string | null
+  created_at: string
+  updated_at: string
 }

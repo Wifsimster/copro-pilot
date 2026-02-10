@@ -36,6 +36,10 @@ import proceduresRoutes from './procedures.js'
 // Contrats & Prestataires
 import prestatairesRoutes from './prestataires.js'
 import contratsRoutes from './contrats.js'
+// Employes du syndicat
+import employesSyndicatRoutes from './employes-syndicat.js'
+// Règlement de copropriété
+import reglementsCoproprieteRoutes from './reglements-copropriete.js'
 // Stats
 import statsRoutes from './stats.js'
 
@@ -89,6 +93,12 @@ router.use('/procedures', proceduresRoutes)
 // Contrats & Prestataires
 router.use('/prestataires', prestatairesRoutes)
 router.use('/contrats', contratsRoutes)
+
+// Employes du syndicat
+router.use('/employes-syndicat', employesSyndicatRoutes)
+
+// Règlement de copropriété
+router.use('/reglements-copropriete', reglementsCoproprieteRoutes)
 
 // Stats
 router.use('/stats', statsRoutes)
