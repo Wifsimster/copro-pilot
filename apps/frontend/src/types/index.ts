@@ -781,6 +781,13 @@ export interface DonneesDeclarees {
     type_chauffage: string | null
     energie_chauffage: string | null
   }
+  gouvernance?: {
+    syndic_nom: string
+    contrat_date_debut: string
+    contrat_date_fin: string
+    remuneration_forfait: number | null
+    contrat_statut: string
+  } | null
   lots: {
     total: number
     total_tantiemes: number
@@ -795,7 +802,22 @@ export interface DonneesDeclarees {
     appels_fonds_montant: number
     fonds_travaux_cotisation: number | null
     fonds_travaux_solde: number | null
+    total_impayes?: number
   }
+  assemblee_generale?: {
+    derniere_ag_date: string
+    derniere_ag_type: string
+  } | null
+  procedures?: {
+    nombre_actives: number
+    montant_total_reclame: number
+  }
+  diagnostics?: {
+    type: string
+    statut: string
+    date_realisation: string | null
+    date_validite: string | null
+  }[]
   personnel: {
     nombre_employes: number
     employes: {

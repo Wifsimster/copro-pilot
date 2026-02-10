@@ -60,6 +60,11 @@ export class DeclarationRegistreModel {
             appelsFonds,
             fondsTravaux,
             employes,
+            contratSyndic,
+            derniereAG,
+            impayesTotal,
+            proceduresActives,
+            diagnostics,
         ] = await Promise.all([
             // Copropriete info
             db('coproprietes').where('id', coproprieteId).first(),
@@ -113,6 +118,42 @@ export class DeclarationRegistreModel {
             db('employes_syndicat')
                 .where('copropriete_id', coproprieteId)
                 .where('statut', 'actif'),
+
+            // Active syndic contract
+            db('contrats_syndic')
+                .where('copropriete_id', coproprieteId)
+                .where('statut', 'en_cours')
+                .first(),
+
+            // Last completed AG
+            db('assemblees_generales')
+                .where('copropriete_id', coproprieteId)
+                .where('statut', 'terminee')
+                .orderBy('date', 'desc')
+                .first(),
+
+            // Impayes (emitted appels not paid)
+            db('appels_fonds')
+                .where('copropriete_id', coproprieteId)
+                .where('statut', 'emis')
+                .sum('montant_total as total')
+                .first(),
+
+            // Active legal procedures
+            db('procedures')
+                .where('copropriete_id', coproprieteId)
+                .whereIn('statut', ['en_preparation', 'en_cours', 'audience_fixee'])
+                .select(
+                    db.raw('count(*) as nombre'),
+                    db.raw('sum(montant_reclame) as montant_total')
+                )
+                .first(),
+
+            // Diagnostics
+            db('diagnostics')
+                .where('copropriete_id', coproprieteId)
+                .select('type', 'statut', 'date_realisation', 'date_validite')
+                .orderBy('type', 'asc'),
         ])
 
         if (!copropriete) return null
@@ -131,6 +172,15 @@ export class DeclarationRegistreModel {
                 type_chauffage: copropriete.type_chauffage,
                 energie_chauffage: copropriete.energie_chauffage,
             },
+            gouvernance: contratSyndic
+                ? {
+                    syndic_nom: contratSyndic.syndic_nom,
+                    contrat_date_debut: contratSyndic.date_debut,
+                    contrat_date_fin: contratSyndic.date_fin,
+                    remuneration_forfait: contratSyndic.remuneration_forfait ? Number(contratSyndic.remuneration_forfait) : null,
+                    contrat_statut: contratSyndic.statut,
+                }
+                : null,
             lots: {
                 total: Number(lotsStats?.total || 0),
                 total_tantiemes: Number(lotsStats?.total_tantiemes || 0),
@@ -145,7 +195,24 @@ export class DeclarationRegistreModel {
                 appels_fonds_montant: Number(appelsFonds?.montant_total || 0),
                 fonds_travaux_cotisation: fondsTravaux ? Number(fondsTravaux.cotisation_annuelle || 0) : null,
                 fonds_travaux_solde: fondsTravaux ? Number(fondsTravaux.solde || 0) : null,
+                total_impayes: Number(impayesTotal?.total || 0),
             },
+            assemblee_generale: derniereAG
+                ? {
+                    derniere_ag_date: derniereAG.date,
+                    derniere_ag_type: derniereAG.type,
+                }
+                : null,
+            procedures: {
+                nombre_actives: Number(proceduresActives?.nombre || 0),
+                montant_total_reclame: Number(proceduresActives?.montant_total || 0),
+            },
+            diagnostics: diagnostics.map(d => ({
+                type: d.type,
+                statut: d.statut,
+                date_realisation: d.date_realisation,
+                date_validite: d.date_validite,
+            })),
             personnel: {
                 nombre_employes: employes.length,
                 employes: employes.map(e => ({
