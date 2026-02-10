@@ -149,14 +149,14 @@ async function main() {
 
     app.use(cors({
       origin: process.env.NODE_ENV === 'development'
-        ? ['http://localhost:5173', 'http://127.0.0.1:5173']
+        ? ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000']
         : frontendUrl,
       credentials: true
     }))
 
     // Better Auth handler before express.json()
     if (auth) {
-      app.use('/api/auth', toNodeHandler(auth))
+      app.all('/api/auth/*splat', toNodeHandler(auth))
       logger.info('[Auth] Better Auth handler mounted at /api/auth')
     }
 
