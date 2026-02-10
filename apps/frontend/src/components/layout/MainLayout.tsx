@@ -13,6 +13,7 @@ import {
   Landmark,
   UsersRound,
   Handshake,
+  Shield,
   LogOut,
   Menu,
   X,
@@ -36,6 +37,7 @@ const navigation = [
   { name: 'Comptes bancaires', href: '/comptes-bancaires', icon: Landmark },
   { name: 'Conseil syndical', href: '/conseil-syndical', icon: UsersRound },
   { name: 'Contrats', href: '/contrats', icon: Handshake },
+  { name: 'Assurances', href: '/assurances', icon: Shield },
 ]
 
 export function MainLayout({ children }: MainLayoutProps) {

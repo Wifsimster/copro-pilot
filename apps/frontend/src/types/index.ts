@@ -550,6 +550,97 @@ export interface FicheSynthetique {
 }
 
 // ============================================
+// Assurance & Sinistre Types
+// ============================================
+
+export type TypeAssurance = 'multirisque_immeuble' | 'responsabilite_civile' | 'dommages_ouvrage' | 'protection_juridique' | 'autre'
+export type StatutAssurance = 'actif' | 'expire' | 'resilie'
+export type StatutSinistre = 'declare' | 'en_instruction' | 'accepte' | 'refuse' | 'clos'
+
+export interface Assurance {
+  id: number
+  copropriete_id: number
+  compagnie: string
+  numero_police: string | null
+  type: TypeAssurance
+  date_debut: string
+  date_fin: string | null
+  prime_annuelle: number | null
+  franchise: number | null
+  statut: StatutAssurance
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface Sinistre {
+  id: number
+  assurance_id: number | null
+  incident_id: number | null
+  copropriete_id: number
+  numero_sinistre: string | null
+  date_sinistre: string
+  date_declaration: string | null
+  description: string | null
+  montant_estime: number | null
+  montant_indemnise: number | null
+  statut: StatutSinistre
+  notes: string | null
+  assurance_compagnie?: string
+  assurance_numero_police?: string
+  incident_titre?: string
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
+// Contentieux Types
+// ============================================
+
+export type TypeRelance = 'amiable' | 'mise_en_demeure' | 'contentieux'
+export type StatutRelance = 'brouillon' | 'envoyee' | 'accusee_reception' | 'sans_effet'
+
+export interface Relance {
+  id: number
+  copropriete_id: number
+  coproprietaire_id: number
+  type: TypeRelance
+  date_relance: string
+  montant_du: number
+  mode_envoi: string | null
+  statut: StatutRelance
+  notes: string | null
+  coproprietaire_nom?: string
+  coproprietaire_prenom?: string
+  created_at: string
+  updated_at: string
+}
+
+export type StatutProcedure = 'en_preparation' | 'en_cours' | 'audience_fixee' | 'juge' | 'execute' | 'clos'
+
+export interface Procedure {
+  id: number
+  copropriete_id: number
+  coproprietaire_id: number
+  avocat: string | null
+  tribunal: string | null
+  reference_dossier: string | null
+  date_assignation: string | null
+  date_audience: string | null
+  date_jugement: string | null
+  montant_reclame: number | null
+  montant_obtenu: number | null
+  frais_procedure: number | null
+  statut: StatutProcedure
+  decision: string | null
+  notes: string | null
+  coproprietaire_nom?: string
+  coproprietaire_prenom?: string
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
 // API Response Types
 // ============================================
 
