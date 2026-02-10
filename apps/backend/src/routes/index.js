@@ -30,6 +30,9 @@ import conseilSyndicalRoutes from './conseil-syndical.js'
 // Assurances & Sinistres
 import assurancesRoutes from './assurances.js'
 import sinistresRoutes from './sinistres.js'
+// Contentieux & Recouvrement
+import relancesRoutes from './relances.js'
+import proceduresRoutes from './procedures.js'
 // Contrats & Prestataires
 import prestatairesRoutes from './prestataires.js'
 import contratsRoutes from './contrats.js'
@@ -78,6 +81,10 @@ router.use('/conseil-syndical', conseilSyndicalRoutes)
 // Assurances & Sinistres
 router.use('/assurances', assurancesRoutes)
 router.use('/sinistres', sinistresRoutes)
+
+// Contentieux & Recouvrement
+router.use('/relances', relancesRoutes)
+router.use('/procedures', proceduresRoutes)
 
 // Contrats & Prestataires
 router.use('/prestataires', prestatairesRoutes)

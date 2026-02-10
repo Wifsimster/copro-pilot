@@ -18,6 +18,7 @@ const ComptesBancairesPage = lazy(() => import('@/pages/ComptesBancairesPage'))
 const ConseilSyndicalPage = lazy(() => import('@/pages/ConseilSyndicalPage'))
 const ContratsPage = lazy(() => import('@/pages/ContratsPage'))
 const AssurancesPage = lazy(() => import('@/pages/AssurancesPage'))
+const ContentieuxPage = lazy(() => import('@/pages/ContentieuxPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function PageLoader() {
@@ -112,6 +113,10 @@ export const router = createHashRouter([
       {
         path: '/assurances',
         element: <AssurancesPage />,
+      },
+      {
+        path: '/contentieux',
+        element: <ContentieuxPage />,
       },
     ],
   },
