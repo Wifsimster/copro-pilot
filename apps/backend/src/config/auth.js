@@ -17,15 +17,17 @@ function getDatabase() {
 
     const connection = knex.client.config.connection
 
-    const pool = new Pool({
+    if (typeof connection === 'string') {
+        return new Pool({ connectionString: connection })
+    }
+
+    return new Pool({
         host: connection.host,
         port: connection.port,
         database: connection.database,
         user: connection.user,
         password: connection.password
     })
-
-    return pool
 }
 
 /**
