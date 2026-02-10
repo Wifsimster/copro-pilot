@@ -14,7 +14,6 @@ interface AuthState {
 interface AuthActions {
   setAuth: (user: User) => void
   clearAuth: () => void
-  login: (returnUrl?: string) => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
   signUp: (name: string, email: string, password: string) => Promise<void>
   logout: () => Promise<void>
@@ -91,21 +90,6 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   clearAuth: () => {
     set({ user: null, isAuthenticated: false })
     clearUserFromStorage()
-  },
-
-  login: async (returnUrl = '/') => {
-    try {
-      set({ isLoading: true })
-      await authClient.signIn.social({
-        provider: 'microsoft',
-        callbackURL: returnUrl
-      })
-    } catch (error) {
-      logger.error('Login failed:', error)
-      throw error
-    } finally {
-      set({ isLoading: false })
-    }
   },
 
   signIn: async (email: string, password: string) => {

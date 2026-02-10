@@ -108,19 +108,6 @@ export async function initializeAuth() {
         }
     }
 
-    const socialProviders = {}
-    if (process.env.MICROSOFT_CLIENT_ID && process.env.MICROSOFT_CLIENT_SECRET && process.env.MICROSOFT_TENANT_ID) {
-        socialProviders.microsoft = {
-            clientId: process.env.MICROSOFT_CLIENT_ID,
-            clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
-            scope: ['user.read'],
-            tenantId: process.env.MICROSOFT_TENANT_ID
-        }
-        logger.info('Microsoft OAuth provider configured')
-    } else {
-        logger.warn('Microsoft OAuth not configured (missing MICROSOFT_CLIENT_ID, MICROSOFT_CLIENT_SECRET, or MICROSOFT_TENANT_ID)')
-    }
-
     authInstance = betterAuth({
         secret: secret,
         database: db,
@@ -129,7 +116,6 @@ export async function initializeAuth() {
         emailAndPassword: {
             enabled: true
         },
-        socialProviders,
         plugins: [
             admin({
                 async isAdmin(user) {

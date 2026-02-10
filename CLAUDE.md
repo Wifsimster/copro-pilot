@@ -131,7 +131,6 @@ Voir `apps/backend/.env.example`. Variables requises :
 
 - `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` (ou `POSTGRES_URI`)
 - `BETTER_AUTH_SECRET` — Secret pour Better Auth
-- `MICROSOFT_TENANT_ID`, `MICROSOFT_CLIENT_ID`, `MICROSOFT_CLIENT_SECRET` — OAuth Azure AD
 - `BASE_URL` — URL frontend (CORS + auth)
 - `PORT` — Port du backend (défaut : 3001)
 
@@ -140,5 +139,5 @@ Voir `apps/backend/.env.example`. Variables requises :
 - Le backend utilise `--env-file=.env` (fonctionnalité native Node.js 24, pas dotenv)
 - Les migrations s'exécutent automatiquement au démarrage du serveur
 - En production, le backend sert les fichiers statiques du frontend depuis `/frontend-dist`
-- L'authentification utilise Better Auth avec le provider Microsoft (Azure AD)
+- L'authentification utilise Better Auth (email/mot de passe)
 - Le frontend utilise un `HashRouter` (URLs avec `#`)

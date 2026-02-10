@@ -17,7 +17,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Tooltip,
@@ -26,17 +25,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { Toggle } from '@/components/ui/toggle'
-
-function MicrosoftIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="1" y="1" width="9" height="9" fill="#F25022" />
-      <rect x="11" y="1" width="9" height="9" fill="#7FBA00" />
-      <rect x="1" y="11" width="9" height="9" fill="#00A4EF" />
-      <rect x="11" y="11" width="9" height="9" fill="#FFB900" />
-    </svg>
-  )
-}
 
 function ThemeToggle() {
   const [isDark, setIsDark] = useState(
@@ -162,7 +150,7 @@ const features = [
 ]
 
 export default function LoginPage() {
-  const { login, signIn, signUp, isLoading } = useAuthStore()
+  const { signIn, signUp, isLoading } = useAuthStore()
 
   const [signInEmail, setSignInEmail] = useState('admin@copropilot.local')
   const [signInPassword, setSignInPassword] = useState('admin')
@@ -205,10 +193,6 @@ export default function LoginPage() {
     } catch (error) {
       setSignUpError(error instanceof Error ? error.message : "Erreur lors de l'inscription")
     }
-  }
-
-  const handleMicrosoftLogin = async () => {
-    await login('/')
   }
 
   return (
@@ -421,29 +405,6 @@ export default function LoginPage() {
               </form>
             </TabsContent>
           </Tabs>
-
-          {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-3 text-muted-foreground">
-                ou continuer avec
-              </span>
-            </div>
-          </div>
-
-          {/* Microsoft SSO */}
-          <Button
-            variant="outline"
-            className="w-full h-10 gap-3"
-            onClick={handleMicrosoftLogin}
-            disabled={isLoading}
-          >
-            <MicrosoftIcon className="size-4" />
-            {isLoading ? 'Connexion...' : 'Microsoft'}
-          </Button>
 
           {/* Footer note */}
           <p className="text-center text-xs text-muted-foreground leading-relaxed">

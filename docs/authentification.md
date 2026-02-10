@@ -2,12 +2,9 @@
 
 Ce document décrit les mécanismes d'authentification et de protection des données de CoproPilot.
 
-## Méthodes de connexion
+## Méthode de connexion
 
-CoproPilot propose deux méthodes de connexion :
-
-- **Email et mot de passe** — Connexion classique avec un compte créé sur la plateforme.
-- **Microsoft SSO** — Connexion via votre compte Microsoft professionnel (Azure AD).
+CoproPilot utilise une connexion par **email et mot de passe** avec un compte créé sur la plateforme.
 
 ---
 
@@ -32,34 +29,6 @@ sequenceDiagram
 - L'application envoie les identifiants au serveur backend.
 - Le serveur vérifie que le compte existe et que le mot de passe est correct.
 - Si la vérification réussit, une session est créée et l'utilisateur accède à la plateforme.
-
----
-
-## Connexion Microsoft SSO
-
-SSO (Single Sign-On) signifie "authentification unique". Vous utilisez votre compte Microsoft professionnel pour vous connecter.
-
-```mermaid
-sequenceDiagram
-    participant U as Utilisateur
-    participant A as Application Web
-    participant M as Microsoft Azure AD
-    participant S as Serveur Backend
-
-    U->>A: Clique sur "Se connecter avec Microsoft"
-    A->>M: Redirige vers Microsoft
-    M->>U: Demande les identifiants Microsoft
-    U->>M: S'authentifie
-    M-->>S: Envoie le jeton d'autorisation
-    S-->>A: Session créée
-    A-->>U: Accès autorisé
-```
-
-- L'utilisateur clique sur le bouton de connexion Microsoft.
-- L'application redirige vers la page de connexion Microsoft.
-- L'utilisateur s'authentifie avec son compte Microsoft professionnel.
-- Microsoft envoie un jeton d'autorisation au serveur backend.
-- Le serveur crée une session et l'utilisateur accède à la plateforme.
 
 ---
 
