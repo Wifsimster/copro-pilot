@@ -8,6 +8,7 @@ router.get('/copropriete/:coproprieteId', requireAuth(), AssembleeGeneraleContro
 router.get('/:id', requireAuth(), AssembleeGeneraleController.getById)
 router.get('/:id/resolutions', requireAuth(), AssembleeGeneraleController.getResolutions)
 router.get('/:id/presences', requireAuth(), AssembleeGeneraleController.getPresences)
+router.post('/:id/generer-pv', requireAuth(), AssembleeGeneraleController.genererPv)
 router.post('/', requireAuth(), AssembleeGeneraleController.create)
 router.post('/resolutions', requireAuth(), AssembleeGeneraleController.createResolution)
 router.post('/presences', requireAuth(), AssembleeGeneraleController.setPresence)

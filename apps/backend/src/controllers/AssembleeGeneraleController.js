@@ -150,4 +150,20 @@ export class AssembleeGeneraleController {
             res.status(500).json({ error: 'Impossible de supprimer la présence' })
         }
     }
+
+    // Génération PV
+    static async genererPv(req, res) {
+        try {
+            const { id } = req.params
+            const pdfDoc = await assembleeGeneraleService.genererPv(id)
+            if (!pdfDoc) return res.status(404).json({ error: 'Assemblée générale non trouvée' })
+
+            res.setHeader('Content-Type', 'application/pdf')
+            res.setHeader('Content-Disposition', `attachment; filename="pv-ag-${id}.pdf"`)
+            pdfDoc.pipe(res)
+        } catch (error) {
+            logger.error(`[AGController] Error generating PV: ${error.message}`)
+            res.status(500).json({ error: 'Impossible de générer le procès-verbal' })
+        }
+    }
 }

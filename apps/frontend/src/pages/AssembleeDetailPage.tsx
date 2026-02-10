@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useAssemblee, useCreateResolution, useUpdateResolution, useDeleteResolution, useSetPresence, useDeletePresence } from '@/hooks/useAssemblees'
+import { useAssemblee, useCreateResolution, useUpdateResolution, useDeleteResolution, useSetPresence, useDeletePresence, useGenererPv } from '@/hooks/useAssemblees'
 import { ResolutionFormDialog } from '@/components/assemblees/ResolutionFormDialog'
 import { PresenceFormDialog } from '@/components/assemblees/PresenceFormDialog'
 import type { Resolution, PresenceAG } from '@/types'
-import { ArrowLeft, Plus, Trash2, Pencil, Vote, Users, FileText } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, Pencil, Vote, Users, FileText, Download, Loader2 } from 'lucide-react'
 
 const STATUT_LABELS: Record<string, string> = {
   planifiee: 'Planifiee',
@@ -52,6 +52,7 @@ export default function AssembleeDetailPage() {
   const deleteResolution = useDeleteResolution()
   const setPresence = useSetPresence()
   const deletePresence = useDeletePresence()
+  const genererPv = useGenererPv()
   const [activeTab, setActiveTab] = useState<Tab>('resolutions')
   const [showResolutionDialog, setShowResolutionDialog] = useState(false)
   const [showPresenceDialog, setShowPresenceDialog] = useState(false)
@@ -115,6 +116,20 @@ export default function AssembleeDetailPage() {
             {ag.lieu && ` — ${ag.lieu}`}
           </p>
         </div>
+        {ag.statut === 'terminee' && agId && (
+          <button
+            onClick={() => genererPv.mutate(agId)}
+            disabled={genererPv.isPending}
+            className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            {genererPv.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
+            Generer le PV
+          </button>
+        )}
       </div>
 
       {/* Info cards */}

@@ -49,11 +49,11 @@ export async function seed(knex) {
 
   // --- Résolutions (4-5 per past AG) ---
   const RESOLUTIONS = [
-    { titre: 'Approbation des comptes de l\'exercice écoulé', majorite: 'article_24', resultat: 'adoptee', pour: 850, contre: 50, abst: 100 },
-    { titre: 'Vote du budget prévisionnel', majorite: 'article_24', resultat: 'adoptee', pour: 780, contre: 120, abst: 100 },
-    { titre: 'Ravalement de façade', majorite: 'article_25', resultat: 'adoptee', pour: 600, contre: 300, abst: 100 },
-    { titre: 'Remplacement de la chaudière collective', majorite: 'article_25', resultat: 'rejetee', pour: 400, contre: 500, abst: 100 },
-    { titre: 'Élection des membres du conseil syndical', majorite: 'article_24', resultat: 'adoptee', pour: 900, contre: 30, abst: 70 }
+    { titre: 'Approbation des comptes de l\'exercice écoulé', description: 'Présentation des comptes de charges générales et spéciales de l\'exercice clos au 31 décembre. Le conseil syndical confirme avoir vérifié les comptes et les pièces justificatives.', majorite: 'article_24', resultat: 'adoptee', pour: 850, contre: 50, abst: 100 },
+    { titre: 'Vote du budget prévisionnel', description: 'Le budget prévisionnel pour l\'exercice à venir est présenté, détaillant les charges courantes, les provisions pour travaux, et les honoraires du syndic.', majorite: 'article_24', resultat: 'adoptee', pour: 780, contre: 120, abst: 100 },
+    { titre: 'Ravalement de façade', description: 'Suite au diagnostic technique réalisé par le cabinet ABC Expertise, il est proposé de procéder au ravalement complet des façades. Trois devis ont été présentés.', majorite: 'article_25', resultat: 'adoptee', pour: 600, contre: 300, abst: 100 },
+    { titre: 'Remplacement de la chaudière collective', description: 'Proposition de remplacement de la chaudière collective vétuste par un modèle à condensation haute performance. Coût estimé : 45 000 EUR HT.', majorite: 'article_25', resultat: 'rejetee', pour: 400, contre: 500, abst: 100 },
+    { titre: 'Élection des membres du conseil syndical', description: 'Renouvellement des membres du conseil syndical pour un mandat de trois ans. Trois candidatures ont été reçues.', majorite: 'article_24', resultat: 'adoptee', pour: 900, contre: 30, abst: 70 }
   ]
 
   const resData = []
@@ -65,7 +65,7 @@ export async function seed(knex) {
         ag_id: ag.id,
         numero: r + 1,
         titre: res.titre,
-        description: `Résolution n°${r + 1} soumise au vote`,
+        description: res.description || `Résolution n°${r + 1} soumise au vote`,
         majorite: res.majorite,
         resultat: res.resultat,
         voix_pour: res.pour,

@@ -1,4 +1,6 @@
 import { AssembleeGeneraleModel } from '../models/AssembleeGenerale.js'
+import { CoproprieteModel } from '../models/Copropriete.js'
+import { pvGenerationService } from './PvGenerationService.js'
 import logger from '../logger.js'
 
 class AssembleeGeneraleService {
@@ -132,6 +134,21 @@ class AssembleeGeneraleService {
             return true
         } catch (error) {
             logger.error(`[AGService] Error deleting présence ${id}: ${error.message}`)
+            throw error
+        }
+    }
+
+    // Génération PV
+    async genererPv(agId) {
+        try {
+            const ag = await this.getById(agId)
+            if (!ag) return null
+            const copropriete = await CoproprieteModel.getById(ag.copropriete_id)
+            const pdfDoc = pvGenerationService.generatePdf(ag, copropriete)
+            logger.info(`[AGService] PV généré pour AG ${agId}`)
+            return pdfDoc
+        } catch (error) {
+            logger.error(`[AGService] Error generating PV for AG ${agId}: ${error.message}`)
             throw error
         }
     }

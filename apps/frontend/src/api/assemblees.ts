@@ -37,4 +37,17 @@ export const assembleesApi = {
 
   deletePresence: (id: number) =>
     api.delete<{ message: string }>(`/assemblees/presences/${id}`),
+
+  genererPv: async (agId: number) => {
+    const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || '/api'
+    const response = await fetch(`${API_BASE_URL}/assemblees/${agId}/generer-pv`, {
+      method: 'POST',
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => ({}))
+      throw new Error(errorBody.error || `HTTP ${response.status}`)
+    }
+    return response.blob()
+  },
 }

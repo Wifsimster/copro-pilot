@@ -235,7 +235,7 @@ export default function LoginPage() {
         </div>
 
         <p className="relative z-10 text-xs text-primary-foreground/40">
-          &copy; {new Date().getFullYear()} CoproPilot. Tous droits réservés.
+          &copy; {new Date().getFullYear()} CoproPilot. Tous droits réservés. &middot; v{__APP_VERSION__}
         </p>
       </div>
 
@@ -409,6 +409,9 @@ export default function LoginPage() {
           {/* Footer note */}
           <p className="text-center text-xs text-muted-foreground leading-relaxed">
             En continuant, vous acceptez les conditions d&apos;utilisation et la politique de confidentialité.
+          </p>
+          <p className="text-center text-xs text-muted-foreground/60 lg:hidden">
+            v{__APP_VERSION__}
           </p>
         </div>
       </div>

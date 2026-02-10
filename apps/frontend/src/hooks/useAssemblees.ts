@@ -107,3 +107,19 @@ export function useDeletePresence() {
     },
   })
 }
+
+export function useGenererPv() {
+  return useMutation({
+    mutationFn: async (agId: number) => {
+      const blob = await assembleesApi.genererPv(agId)
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `pv-ag-${agId}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    },
+  })
+}
