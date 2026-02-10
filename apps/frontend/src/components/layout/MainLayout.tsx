@@ -20,6 +20,7 @@ import {
   HardHat,
   BookOpen,
   ClipboardList,
+  Stamp,
   LogOut,
   Menu,
   X,
@@ -49,6 +50,7 @@ const navigation = [
   { name: 'Employes', href: '/employes', icon: HardHat },
   { name: 'Reglement', href: '/reglements', icon: BookOpen },
   { name: 'Immatriculation', href: '/immatriculation', icon: ClipboardList },
+  { name: 'Contrat syndic', href: '/contrats-syndic', icon: Stamp },
 ]
 
 export function MainLayout({ children }: MainLayoutProps) {

@@ -787,3 +787,36 @@ export interface DonneesDeclarees {
     }[]
   }
 }
+
+// Contrats de syndic
+export interface ContratSyndic {
+  id: number
+  copropriete_id: number
+  syndic_nom: string
+  date_debut: string
+  date_fin: string
+  remuneration_forfait: number | null
+  prestations_incluses: string | null
+  prestations_particulieres: string | null
+  conditions_execution: string | null
+  statut: 'en_cours' | 'expire' | 'resilie' | 'en_attente'
+  ag_designation_id: number | null
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+// Propositions de syndic (mise en concurrence)
+export interface PropositionSyndic {
+  id: number
+  copropriete_id: number
+  syndic_nom: string
+  date_reception: string
+  montant_propose: number | null
+  prestations_proposees: string | null
+  document_url: string | null
+  retenue: boolean
+  notes: string | null
+  created_at: string
+  updated_at: string
+}

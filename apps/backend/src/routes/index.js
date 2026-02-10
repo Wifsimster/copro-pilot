@@ -42,6 +42,9 @@ import employesSyndicatRoutes from './employes-syndicat.js'
 import reglementsCoproprieteRoutes from './reglements-copropriete.js'
 // Immatriculation / Registre national
 import declarationsRegistreRoutes from './declarations-registre.js'
+// Contrat de syndic & Mise en concurrence
+import contratsSyndicRoutes from './contrats-syndic.js'
+import propositionsSyndicRoutes from './propositions-syndic.js'
 // Stats
 import statsRoutes from './stats.js'
 
@@ -104,6 +107,10 @@ router.use('/reglements-copropriete', reglementsCoproprieteRoutes)
 
 // Immatriculation / Registre national
 router.use('/declarations-registre', declarationsRegistreRoutes)
+
+// Contrat de syndic & Mise en concurrence
+router.use('/contrats-syndic', contratsSyndicRoutes)
+router.use('/propositions-syndic', propositionsSyndicRoutes)
 
 // Stats
 router.use('/stats', statsRoutes)
