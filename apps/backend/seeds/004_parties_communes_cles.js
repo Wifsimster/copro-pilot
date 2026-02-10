@@ -78,7 +78,6 @@ export async function seed(knex) {
   for (const lot of lots) {
     const clesForCopro = clesByCopro[lot.copropriete_id]
     if (!clesForCopro) continue
-    // All lots get "Générale"
     lotClesData.push({
       lot_id: lot.id,
       cle_repartition_id: clesForCopro['Générale'],
@@ -87,11 +86,12 @@ export async function seed(knex) {
       updated_at: now
     })
   }
-  await knex('lot_cles_repartition').insert(lotClesData)
+  // Insert in batches (can be large with many lots)
+  for (let i = 0; i < lotClesData.length; i += 500) {
+    await knex('lot_cles_repartition').insert(lotClesData.slice(i, i + 500))
+  }
 
-  // --- Locataires (20 locataires on random lots of type 'appartement') ---
-  const apptLots = await knex('lots').select('id').where('type', 'appartement').orderBy('id').limit(20)
-
+  // --- Locataires (5 per copropriete, distributed across coproprietes) ---
   const LOCATAIRES_NOMS = [
     { nom: 'Perrot', prenom: 'Lucas' }, { nom: 'Giraud', prenom: 'Emma' },
     { nom: 'Faure', prenom: 'Hugo' }, { nom: 'Barbier', prenom: 'Léa' },
@@ -102,42 +102,93 @@ export async function seed(knex) {
     { nom: 'Brun', prenom: 'Gabriel' }, { nom: 'Renard', prenom: 'Inès' },
     { nom: 'Gaillard', prenom: 'Adam' }, { nom: 'Berger', prenom: 'Zoé' },
     { nom: 'Lacroix', prenom: 'Arthur' }, { nom: 'Poirier', prenom: 'Louise' },
-    { nom: 'Bourgeois', prenom: 'Paul' }, { nom: 'Legrand', prenom: 'Lina' }
+    { nom: 'Bourgeois', prenom: 'Paul' }, { nom: 'Legrand', prenom: 'Lina' },
+    { nom: 'Tessier', prenom: 'Théo' }, { nom: 'Dufour', prenom: 'Margaux' },
+    { nom: 'Marchand', prenom: 'Enzo' }, { nom: 'Blanchard', prenom: 'Élise' },
+    { nom: 'Renaud', prenom: 'Bastien' }, { nom: 'Fabre', prenom: 'Juliette' },
+    { nom: 'Riviere', prenom: 'Clément' }, { nom: 'Leclerc', prenom: 'Lucie' },
+    { nom: 'Carpentier', prenom: 'Victor' }, { nom: 'Brunet', prenom: 'Amandine' },
+    { nom: 'Rey', prenom: 'Damien' }, { nom: 'Collet', prenom: 'Sarah' },
+    { nom: 'Pons', prenom: 'Adrien' }, { nom: 'Martel', prenom: 'Charlotte' },
+    { nom: 'Maillard', prenom: 'Maxime' }, { nom: 'Aubry', prenom: 'Marine' },
+    { nom: 'Lecomte', prenom: 'Romain' }, { nom: 'Prevost', prenom: 'Estelle' },
+    { nom: 'Chartier', prenom: 'Quentin' }, { nom: 'Barre', prenom: 'Noémie' },
+    { nom: 'Fernandez', prenom: 'Léo' }, { nom: 'Boucher', prenom: 'Agathe' },
+    { nom: 'Delorme', prenom: 'Ethan' }, { nom: 'Guyot', prenom: 'Diane' },
+    { nom: 'Da Costa', prenom: 'Mathis' }, { nom: 'Perez', prenom: 'Amélie' },
+    { nom: 'Hubert', prenom: 'Alexandre' }, { nom: 'Deschamps', prenom: 'Virginie' },
+    { nom: 'Boulanger', prenom: 'Benoît' }, { nom: 'Guillaume', prenom: 'Pauline' }
   ]
 
-  const locatairesData = apptLots.map((lot, i) => {
-    const l = LOCATAIRES_NOMS[i]
-    return {
-      lot_id: lot.id,
-      nom: l.nom,
-      prenom: l.prenom,
-      email: `${l.prenom.toLowerCase()}.${l.nom.toLowerCase()}@email.fr`,
-      telephone: `07 ${String(i + 10).padStart(2, '0')} ${String(i + 20).padStart(2, '0')} ${String(i + 30).padStart(2, '0')} ${String(i + 40).padStart(2, '0')}`,
-      date_entree: `202${3 + (i % 3)}-${String((i % 12) + 1).padStart(2, '0')}-01`,
-      date_sortie: null,
-      created_at: now,
-      updated_at: now
+  const locatairesData = []
+  let locIdx = 0
+  const locPerCopro = 5
+
+  for (const coproId of coproIds) {
+    const apptLots = await knex('lots')
+      .where({ copropriete_id: coproId, type: 'appartement' })
+      .select('id')
+      .orderBy('id')
+      .limit(locPerCopro)
+
+    for (const lot of apptLots) {
+      const l = LOCATAIRES_NOMS[locIdx % LOCATAIRES_NOMS.length]
+      locatairesData.push({
+        lot_id: lot.id,
+        nom: l.nom,
+        prenom: l.prenom,
+        email: `${l.prenom.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}.${l.nom.toLowerCase()}@email.fr`,
+        telephone: `07 ${String(locIdx + 10).padStart(2, '0')} ${String(locIdx + 20).padStart(2, '0')} ${String(locIdx + 30).padStart(2, '0')} ${String(locIdx + 40).padStart(2, '0')}`,
+        date_entree: `202${3 + (locIdx % 3)}-${String((locIdx % 12) + 1).padStart(2, '0')}-01`,
+        date_sortie: null,
+        created_at: now,
+        updated_at: now
+      })
+      locIdx++
     }
-  })
+  }
   await knex('locataires').insert(locatairesData)
 
-  // --- Mutations (10 recent mutations) ---
-  const coproprietaires = await knex('coproprietaires').select('id').orderBy('id')
-  const someLots = await knex('lots').select('id').orderBy('id').limit(10)
+  // --- Mutations (2 per copropriete, distributed) ---
+  const MUTATION_TYPES = ['vente', 'vente', 'donation', 'vente', 'succession', 'vente', 'vente', 'donation', 'vente', 'vente']
+  const MUTATION_NOTES = [
+    'Vente notariée', 'Acquisition premier achat', 'Donation familiale',
+    'Vente aux enchères', 'Succession suite décès', 'Vente classique',
+    'Vente investisseur', 'Donation entre époux', 'Vente après divorce', 'Vente déménagement'
+  ]
 
-  const mutationsData = someLots.map((lot, i) => ({
-    lot_id: lot.id,
-    ancien_proprietaire_id: coproprietaires[i + 10]?.id || coproprietaires[0].id,
-    nouveau_proprietaire_id: coproprietaires[i]?.id || coproprietaires[1].id,
-    date_mutation: `202${4 + (i % 2)}-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 28) + 1).padStart(2, '0')}`,
-    type: ['vente', 'vente', 'donation', 'vente', 'succession', 'vente', 'vente', 'donation', 'vente', 'vente'][i],
-    notes: [
-      'Vente notariée', 'Acquisition premier achat', 'Donation familiale',
-      'Vente aux enchères', 'Succession suite décès', 'Vente classique',
-      'Vente investisseur', 'Donation entre époux', 'Vente après divorce', 'Vente déménagement'
-    ][i],
-    created_at: now,
-    updated_at: now
-  }))
+  const mutationsData = []
+  let mutIdx = 0
+
+  for (const coproId of coproIds) {
+    const coproLots = await knex('lots')
+      .where({ copropriete_id: coproId, type: 'appartement' })
+      .select('id', 'coproprietaire_id')
+      .orderBy('id')
+      .limit(4)
+
+    const coproprietaires = await knex('lots')
+      .where({ copropriete_id: coproId })
+      .whereNotNull('coproprietaire_id')
+      .select('coproprietaire_id')
+      .distinct()
+      .orderBy('coproprietaire_id')
+
+    for (let m = 0; m < Math.min(2, coproLots.length); m++) {
+      const lot = coproLots[m]
+      const ancienIdx = (m + 2) % coproprietaires.length
+      mutationsData.push({
+        lot_id: lot.id,
+        ancien_proprietaire_id: coproprietaires[ancienIdx]?.coproprietaire_id || lot.coproprietaire_id,
+        nouveau_proprietaire_id: lot.coproprietaire_id,
+        date_mutation: `202${4 + (mutIdx % 2)}-${String((mutIdx % 12) + 1).padStart(2, '0')}-${String((mutIdx % 28) + 1).padStart(2, '0')}`,
+        type: MUTATION_TYPES[mutIdx % MUTATION_TYPES.length],
+        notes: MUTATION_NOTES[mutIdx % MUTATION_NOTES.length],
+        created_at: now,
+        updated_at: now
+      })
+      mutIdx++
+    }
+  }
   await knex('mutations').insert(mutationsData)
 }

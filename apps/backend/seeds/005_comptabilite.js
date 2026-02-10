@@ -103,7 +103,10 @@ export async function seed(knex) {
       })
     }
   }
-  await knex('appels_fonds_lignes').insert(lignesData)
+  // Insert in batches (can be large with many lots)
+  for (let i = 0; i < lignesData.length; i += 500) {
+    await knex('appels_fonds_lignes').insert(lignesData.slice(i, i + 500))
+  }
 
   // --- Paiements (one per coproprietaire for Q1 and Q2 2025) ---
   const coproprietaires = await knex('coproprietaires').select('id').orderBy('id')
@@ -140,7 +143,10 @@ export async function seed(knex) {
       pIdx++
     }
   }
-  await knex('paiements').insert(paiementsData)
+  // Insert in batches
+  for (let i = 0; i < paiementsData.length; i += 500) {
+    await knex('paiements').insert(paiementsData.slice(i, i + 500))
+  }
 
   // --- Fonds de travaux (2025 + 2026 per copropriete) ---
   const fondsData = []

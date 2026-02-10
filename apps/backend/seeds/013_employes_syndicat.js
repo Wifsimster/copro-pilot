@@ -89,6 +89,36 @@ export async function seed(knex) {
       { posteIdx: 5, typeContrat: 'cdd', dateEmbauche: '2025-01-15', salaire: 1700.00, logement: false, dateFin: '2025-07-14' },
       { posteIdx: 0, typeContrat: 'cdi', dateEmbauche: '2008-04-01', salaire: 2200.00, logement: false, dateFin: '2020-02-28', statut: 'inactif' },
     ],
+    // Copro 6 (Nice, standing): concierge + agent entretien + jardinier
+    [
+      { posteIdx: 1, typeContrat: 'cdi', dateEmbauche: '2016-09-01', salaire: 2700.00, logement: true },
+      { posteIdx: 2, typeContrat: 'cdi', dateEmbauche: '2020-06-15', salaire: 1900.00, logement: false },
+      { posteIdx: 3, typeContrat: 'cdi', dateEmbauche: '2021-04-01', salaire: 1750.00, logement: false },
+    ],
+    // Copro 7 (Toulouse, grande): gardien + 2 agents entretien + agent technique
+    [
+      { posteIdx: 0, typeContrat: 'cdi', dateEmbauche: '2014-02-01', salaire: 2800.00, logement: true },
+      { posteIdx: 2, typeContrat: 'cdi', dateEmbauche: '2019-09-15', salaire: 1850.00, logement: false },
+      { posteIdx: 7, typeContrat: 'cdi', dateEmbauche: '2022-03-01', salaire: 1680.00, logement: false },
+      { posteIdx: 6, typeContrat: 'cdi', dateEmbauche: '2018-06-01', salaire: 2400.00, logement: false },
+    ],
+    // Copro 8 (Nantes, HQE): gardien + agent entretien + jardinier saisonnier
+    [
+      { posteIdx: 0, typeContrat: 'cdi', dateEmbauche: '2011-01-10', salaire: 2650.00, logement: true },
+      { posteIdx: 2, typeContrat: 'cdi', dateEmbauche: '2018-10-01', salaire: 1820.00, logement: false },
+      { posteIdx: 3, typeContrat: 'saisonnier', dateEmbauche: '2025-04-01', salaire: 1550.00, logement: false, dateFin: '2025-09-30', statut: 'actif' },
+    ],
+    // Copro 9 (Strasbourg, historique): gardien + agent sécurité + femme de ménage
+    [
+      { posteIdx: 0, typeContrat: 'cdi', dateEmbauche: '2017-07-01', salaire: 2500.00, logement: true },
+      { posteIdx: 4, typeContrat: 'cdi', dateEmbauche: '2021-11-15', salaire: 2050.00, logement: false },
+      { posteIdx: 7, typeContrat: 'cdi', dateEmbauche: '2023-01-15', salaire: 1620.00, logement: false },
+    ],
+    // Copro 10 (Montpellier, RE2020): agent technique polyvalent + agent entretien
+    [
+      { posteIdx: 6, typeContrat: 'cdi', dateEmbauche: '2021-06-01', salaire: 2300.00, logement: false },
+      { posteIdx: 2, typeContrat: 'cdi', dateEmbauche: '2022-09-01', salaire: 1780.00, logement: false },
+    ],
   ]
 
   let nameIdx = 0
