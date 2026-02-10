@@ -25,6 +25,8 @@ export interface Copropriete {
   date_creation: string
   nombre_lots: number
   numero_immatriculation: string | null
+  date_immatriculation: string | null
+  date_derniere_maj_registre: string | null
   nombre_batiments: number
   nombre_ascenseurs: number
   periode_construction: string | null
@@ -726,4 +728,62 @@ export interface EmployeSyndicat {
   notes: string | null
   created_at: string
   updated_at: string
+}
+
+// ============================================
+// Declaration Registre Types
+// ============================================
+
+export type StatutDeclaration = 'brouillon' | 'soumis' | 'valide'
+
+export interface DeclarationRegistre {
+  id: number
+  copropriete_id: number
+  annee: number
+  date_declaration: string | null
+  donnees_declarees: DonneesDeclarees | null
+  statut: StatutDeclaration
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface DonneesDeclarees {
+  identification: {
+    nom: string
+    adresse: string
+    code_postal: string
+    ville: string
+    numero_immatriculation: string | null
+    date_creation: string | null
+    nombre_batiments: number
+    nombre_ascenseurs: number
+    periode_construction: string | null
+    type_chauffage: string | null
+    energie_chauffage: string | null
+  }
+  lots: {
+    total: number
+    total_tantiemes: number
+    par_type: { type: string; count: number }[]
+    nombre_coproprietaires: number
+  }
+  finances: {
+    budget_annee: number
+    budget_montant: number | null
+    budget_statut: string | null
+    appels_fonds_nombre: number
+    appels_fonds_montant: number
+    fonds_travaux_cotisation: number | null
+    fonds_travaux_solde: number | null
+  }
+  personnel: {
+    nombre_employes: number
+    employes: {
+      nom: string
+      prenom: string
+      poste: string
+      type_contrat: string
+    }[]
+  }
 }

@@ -26,6 +26,8 @@ export class CoproprieteModel {
                 date_creation: data.date_creation || null,
                 nombre_lots: data.nombre_lots || 0,
                 numero_immatriculation: data.numero_immatriculation || null,
+                date_immatriculation: data.date_immatriculation || null,
+                date_derniere_maj_registre: data.date_derniere_maj_registre || null,
                 reglement_copropriete_url: data.reglement_copropriete_url || null,
                 notes: data.notes || null,
                 nombre_batiments: data.nombre_batiments || 0,

@@ -19,6 +19,7 @@ import {
   Scale,
   HardHat,
   BookOpen,
+  ClipboardList,
   LogOut,
   Menu,
   X,
@@ -47,6 +48,7 @@ const navigation = [
   { name: 'Contentieux', href: '/contentieux', icon: Scale },
   { name: 'Employes', href: '/employes', icon: HardHat },
   { name: 'Reglement', href: '/reglements', icon: BookOpen },
+  { name: 'Immatriculation', href: '/immatriculation', icon: ClipboardList },
 ]
 
 export function MainLayout({ children }: MainLayoutProps) {
