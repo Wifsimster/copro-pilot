@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -93,7 +94,7 @@ export function MouvementBancaireFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -126,25 +127,26 @@ export function MouvementBancaireFormDialog({
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="libelle">Libelle *</Label>
-              <Input id="libelle" {...register('libelle')} placeholder="Libelle du mouvement" />
-              {errors.libelle && (
-                <p className="text-sm text-destructive">{errors.libelle.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="type">Type *</Label>
-              <Select value={currentType} onValueChange={(val) => setValue('type', val as MouvementFormData['type'])}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="credit">Credit</SelectItem>
-                  <SelectItem value="debit">Debit</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="libelle">Libelle *</Label>
+                <Input id="libelle" {...register('libelle')} placeholder="Libelle du mouvement" />
+                {errors.libelle && (
+                  <p className="text-sm text-destructive">{errors.libelle.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="type">Type *</Label>
+                <Select value={currentType} onValueChange={(val) => setValue('type', val as MouvementFormData['type'])}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="credit">Credit</SelectItem>
+                    <SelectItem value="debit">Debit</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
@@ -157,38 +159,39 @@ export function MouvementBancaireFormDialog({
               <span>Details</span>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="categorie">Categorie</Label>
-              <Select value={currentCategorie} onValueChange={(val) => setValue('categorie', val)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selectionner une categorie" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="appel_de_fonds">Appel de fonds</SelectItem>
-                  <SelectItem value="paiement_prestataire">Paiement prestataire</SelectItem>
-                  <SelectItem value="frais_bancaires">Frais bancaires</SelectItem>
-                  <SelectItem value="remboursement">Remboursement</SelectItem>
-                  <SelectItem value="autre">Autre</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="categorie">Categorie</Label>
+                <Select value={currentCategorie} onValueChange={(val) => setValue('categorie', val)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selectionner une categorie" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="appel_de_fonds">Appel de fonds</SelectItem>
+                    <SelectItem value="paiement_prestataire">Paiement prestataire</SelectItem>
+                    <SelectItem value="frais_bancaires">Frais bancaires</SelectItem>
+                    <SelectItem value="remboursement">Remboursement</SelectItem>
+                    <SelectItem value="autre">Autre</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="rapproche">Rapproche</Label>
+                <Select value={currentRapproche ? 'oui' : 'non'} onValueChange={(val) => setValue('rapproche', val === 'oui')}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="oui">Oui</SelectItem>
+                    <SelectItem value="non">Non</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="reference">Reference</Label>
               <Input id="reference" {...register('reference')} placeholder="Reference du mouvement" />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="rapproche">Rapproche</Label>
-              <Select value={currentRapproche ? 'oui' : 'non'} onValueChange={(val) => setValue('rapproche', val === 'oui')}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="oui">Oui</SelectItem>
-                  <SelectItem value="non">Non</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </div>
 
@@ -203,7 +206,7 @@ export function MouvementBancaireFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="notes">Notes</Label>
-              <Input id="notes" {...register('notes')} placeholder="Notes supplementaires..." />
+              <Textarea rows={3} {...register('notes')} placeholder="Notes supplementaires..." />
             </div>
           </div>
 

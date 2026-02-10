@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -206,7 +207,7 @@ export function DeclarationFormDialog({
 
           <div className="space-y-2">
             <Label htmlFor="notes">Notes</Label>
-            <Input id="notes" {...register('notes')} placeholder="Informations complementaires..." />
+            <Textarea {...register('notes')} rows={3} placeholder="Informations complementaires..." />
           </div>
 
           <Separator />

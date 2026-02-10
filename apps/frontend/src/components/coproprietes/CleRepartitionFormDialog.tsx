@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -74,7 +75,7 @@ export function CleRepartitionFormDialog({ open, onOpenChange, coproprieteId, on
 
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
-              <Input id="description" {...register('description')} placeholder="Description..." />
+              <Textarea rows={3} {...register('description')} placeholder="Description..." />
             </div>
           </div>
 

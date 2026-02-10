@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -91,7 +92,7 @@ export function PropositionSyndicFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -107,20 +108,22 @@ export function PropositionSyndicFormDialog({
               <span>Syndic candidat</span>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="syndic_nom">Nom du syndic *</Label>
-              <Input id="syndic_nom" {...register('syndic_nom')} placeholder="Nom du cabinet de syndic" />
-              {errors.syndic_nom && (
-                <p className="text-sm text-destructive">{errors.syndic_nom.message}</p>
-              )}
-            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="syndic_nom">Nom du syndic *</Label>
+                <Input id="syndic_nom" {...register('syndic_nom')} placeholder="Nom du cabinet de syndic" />
+                {errors.syndic_nom && (
+                  <p className="text-sm text-destructive">{errors.syndic_nom.message}</p>
+                )}
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="date_reception">Date de reception *</Label>
-              <Input id="date_reception" type="date" {...register('date_reception')} />
-              {errors.date_reception && (
-                <p className="text-sm text-destructive">{errors.date_reception.message}</p>
-              )}
+              <div className="space-y-2">
+                <Label htmlFor="date_reception">Date de reception *</Label>
+                <Input id="date_reception" type="date" {...register('date_reception')} />
+                {errors.date_reception && (
+                  <p className="text-sm text-destructive">{errors.date_reception.message}</p>
+                )}
+              </div>
             </div>
           </div>
 
@@ -140,7 +143,7 @@ export function PropositionSyndicFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="prestations_proposees">Prestations proposees</Label>
-              <Input id="prestations_proposees" {...register('prestations_proposees')} placeholder="Detail des prestations proposees..." />
+              <Textarea {...register('prestations_proposees')} rows={3} placeholder="Detail des prestations proposees..." />
             </div>
           </div>
 
@@ -175,7 +178,7 @@ export function PropositionSyndicFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="notes">Notes</Label>
-              <Input id="notes" {...register('notes')} placeholder="Notes supplementaires..." />
+              <Textarea {...register('notes')} rows={3} placeholder="Notes supplementaires..." />
             </div>
           </div>
 

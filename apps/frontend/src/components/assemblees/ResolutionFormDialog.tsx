@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -116,7 +117,7 @@ export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmi
 
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
-              <Input id="description" {...register('description')} placeholder="Details de la resolution..." />
+              <Textarea rows={3} {...register('description')} placeholder="Details de la resolution..." />
             </div>
           </div>
 

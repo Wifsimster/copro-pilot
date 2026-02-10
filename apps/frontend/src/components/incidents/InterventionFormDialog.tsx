@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -91,7 +92,7 @@ export function InterventionFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -109,31 +110,32 @@ export function InterventionFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="description">Description *</Label>
-              <Input id="description" {...register('description')} placeholder="Reparation de la fuite..." />
+              <Textarea {...register('description')} rows={3} placeholder="Reparation de la fuite..." />
               {errors.description && (
                 <p className="text-sm text-destructive">{errors.description.message}</p>
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="prestataire">Prestataire</Label>
-              <Input id="prestataire" {...register('prestataire')} placeholder="Nom du prestataire..." />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="statut">Statut *</Label>
-              <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as InterventionFormData['statut'])}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en_attente">En attente</SelectItem>
-                  <SelectItem value="planifiee">Planifiee</SelectItem>
-                  <SelectItem value="en_cours">En cours</SelectItem>
-                  <SelectItem value="terminee">Terminee</SelectItem>
-                  <SelectItem value="annulee">Annulee</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="prestataire">Prestataire</Label>
+                <Input id="prestataire" {...register('prestataire')} placeholder="Nom du prestataire..." />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="statut">Statut *</Label>
+                <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as InterventionFormData['statut'])}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en_attente">En attente</SelectItem>
+                    <SelectItem value="planifiee">Planifiee</SelectItem>
+                    <SelectItem value="en_cours">En cours</SelectItem>
+                    <SelectItem value="terminee">Terminee</SelectItem>
+                    <SelectItem value="annulee">Annulee</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 

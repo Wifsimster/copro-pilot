@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -116,7 +117,7 @@ export function ConseilSyndicalFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -130,7 +131,7 @@ export function ConseilSyndicalFormDialog({
             <span>Membre</span>
           </div>
 
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="coproprietaire_id">Copropriétaire *</Label>
               <Select
@@ -184,28 +185,30 @@ export function ConseilSyndicalFormDialog({
           </div>
 
           <div className="space-y-3">
-            <div className="space-y-2">
-              <Label htmlFor="date_election">Date d'élection *</Label>
-              <Input
-                id="date_election"
-                type="date"
-                {...register('date_election')}
-              />
-              {errors.date_election && (
-                <p className="text-sm text-destructive">{errors.date_election.message}</p>
-              )}
-            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="date_election">Date d'élection *</Label>
+                <Input
+                  id="date_election"
+                  type="date"
+                  {...register('date_election')}
+                />
+                {errors.date_election && (
+                  <p className="text-sm text-destructive">{errors.date_election.message}</p>
+                )}
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="date_fin_mandat">Date de fin de mandat</Label>
-              <Input
-                id="date_fin_mandat"
-                type="date"
-                {...register('date_fin_mandat')}
-              />
-              {errors.date_fin_mandat && (
-                <p className="text-sm text-destructive">{errors.date_fin_mandat.message}</p>
-              )}
+              <div className="space-y-2">
+                <Label htmlFor="date_fin_mandat">Date de fin de mandat</Label>
+                <Input
+                  id="date_fin_mandat"
+                  type="date"
+                  {...register('date_fin_mandat')}
+                />
+                {errors.date_fin_mandat && (
+                  <p className="text-sm text-destructive">{errors.date_fin_mandat.message}</p>
+                )}
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -235,8 +238,8 @@ export function ConseilSyndicalFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="notes">Notes</Label>
-              <Input
-                id="notes"
+              <Textarea
+                rows={3}
                 placeholder="Notes complémentaires..."
                 {...register('notes')}
               />

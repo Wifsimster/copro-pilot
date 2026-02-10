@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -96,7 +97,7 @@ export function AssuranceFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -112,12 +113,27 @@ export function AssuranceFormDialog({
               <span>Informations de la police</span>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="compagnie">Compagnie *</Label>
-              <Input id="compagnie" {...register('compagnie')} placeholder="AXA, MAIF, Allianz..." />
-              {errors.compagnie && (
-                <p className="text-sm text-destructive">{errors.compagnie.message}</p>
-              )}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="compagnie">Compagnie *</Label>
+                <Input id="compagnie" {...register('compagnie')} placeholder="AXA, MAIF, Allianz..." />
+                {errors.compagnie && (
+                  <p className="text-sm text-destructive">{errors.compagnie.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="statut">Statut *</Label>
+                <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as AssuranceFormData['statut'])}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="actif">Actif</SelectItem>
+                    <SelectItem value="expire">Expire</SelectItem>
+                    <SelectItem value="resilie">Resilie</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -140,20 +156,6 @@ export function AssuranceFormDialog({
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="statut">Statut *</Label>
-              <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as AssuranceFormData['statut'])}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="actif">Actif</SelectItem>
-                  <SelectItem value="expire">Expire</SelectItem>
-                  <SelectItem value="resilie">Resilie</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </div>
 
@@ -206,7 +208,7 @@ export function AssuranceFormDialog({
 
           <div className="space-y-2">
             <Label htmlFor="notes">Notes</Label>
-            <Input id="notes" {...register('notes')} placeholder="Informations complementaires..." />
+            <Textarea rows={3} {...register('notes')} placeholder="Informations complementaires..." />
           </div>
 
           <Separator />

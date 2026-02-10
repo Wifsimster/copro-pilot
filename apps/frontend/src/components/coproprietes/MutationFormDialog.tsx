@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -58,6 +59,8 @@ export function MutationFormDialog({ open, onOpenChange, lotId, onSubmit, isLoad
   })
 
   const currentType = watch('type')
+  const currentAncienProprietaire = watch('ancien_proprietaire_id')
+  const currentNouveauProprietaire = watch('nouveau_proprietaire_id')
 
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({
@@ -73,7 +76,7 @@ export function MutationFormDialog({ open, onOpenChange, lotId, onSubmit, isLoad
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -113,33 +116,39 @@ export function MutationFormDialog({ open, onOpenChange, lotId, onSubmit, isLoad
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="ancien_proprietaire_id">Ancien proprietaire</Label>
-              <select
-                {...register('ancien_proprietaire_id')}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              >
-                <option value={0}>— Aucun —</option>
-                {coproprietaires?.map((c) => (
-                  <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>
-                ))}
-              </select>
-            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="ancien_proprietaire_id">Ancien proprietaire</Label>
+                <Select value={String(currentAncienProprietaire || 0)} onValueChange={(val) => setValue('ancien_proprietaire_id', Number(val))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="— Aucun —" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">— Aucun —</SelectItem>
+                    {coproprietaires?.map((c) => (
+                      <SelectItem key={c.id} value={String(c.id)}>{c.prenom} {c.nom}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="nouveau_proprietaire_id">Nouveau proprietaire *</Label>
-              <select
-                {...register('nouveau_proprietaire_id')}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              >
-                <option value={0}>— Selectionner —</option>
-                {coproprietaires?.map((c) => (
-                  <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>
-                ))}
-              </select>
-              {errors.nouveau_proprietaire_id && (
-                <p className="text-sm text-destructive">{errors.nouveau_proprietaire_id.message}</p>
-              )}
+              <div className="space-y-2">
+                <Label htmlFor="nouveau_proprietaire_id">Nouveau proprietaire *</Label>
+                <Select value={String(currentNouveauProprietaire || 0)} onValueChange={(val) => setValue('nouveau_proprietaire_id', Number(val))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="— Selectionner —" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">— Selectionner —</SelectItem>
+                    {coproprietaires?.map((c) => (
+                      <SelectItem key={c.id} value={String(c.id)}>{c.prenom} {c.nom}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.nouveau_proprietaire_id && (
+                  <p className="text-sm text-destructive">{errors.nouveau_proprietaire_id.message}</p>
+                )}
+              </div>
             </div>
           </div>
 
@@ -154,7 +163,7 @@ export function MutationFormDialog({ open, onOpenChange, lotId, onSubmit, isLoad
 
             <div className="space-y-2">
               <Label htmlFor="notes">Notes</Label>
-              <Input id="notes" {...register('notes')} placeholder="Informations complementaires..." />
+              <Textarea rows={3} {...register('notes')} placeholder="Informations complementaires..." />
             </div>
           </div>
 

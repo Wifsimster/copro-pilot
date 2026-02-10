@@ -14,6 +14,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import type { Copropriete } from '@/types'
 
 const coproprieteSchema = z.object({
@@ -53,6 +60,8 @@ export function CoproprieteFormDialog({
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<CoproprieteFormData>({
     resolver: zodResolver(coproprieteSchema),
@@ -71,6 +80,9 @@ export function CoproprieteFormDialog({
     },
   })
 
+  const currentTypeChauffage = watch('type_chauffage')
+  const currentEnergieChauffage = watch('energie_chauffage')
+
   const handleFormSubmit = async (data: CoproprieteFormData) => {
     const cleanData = {
       ...data,
@@ -83,7 +95,7 @@ export function CoproprieteFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -196,33 +208,33 @@ export function CoproprieteFormDialog({
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="type_chauffage">Type de chauffage</Label>
-                <select
-                  id="type_chauffage"
-                  {...register('type_chauffage')}
-                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                >
-                  <option value="">--</option>
-                  <option value="individuel">Individuel</option>
-                  <option value="collectif">Collectif</option>
-                  <option value="mixte">Mixte</option>
-                </select>
+                <Select value={currentTypeChauffage || ''} onValueChange={(val) => setValue('type_chauffage', val as CoproprieteFormData['type_chauffage'])}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="--" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="individuel">Individuel</SelectItem>
+                    <SelectItem value="collectif">Collectif</SelectItem>
+                    <SelectItem value="mixte">Mixte</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="energie_chauffage">Energie</Label>
-                <select
-                  id="energie_chauffage"
-                  {...register('energie_chauffage')}
-                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                >
-                  <option value="">--</option>
-                  <option value="gaz">Gaz</option>
-                  <option value="electricite">Electricite</option>
-                  <option value="fioul">Fioul</option>
-                  <option value="bois">Bois</option>
-                  <option value="pompe_chaleur">Pompe a chaleur</option>
-                  <option value="reseau_chaleur">Reseau de chaleur</option>
-                  <option value="autre">Autre</option>
-                </select>
+                <Select value={currentEnergieChauffage || ''} onValueChange={(val) => setValue('energie_chauffage', val as CoproprieteFormData['energie_chauffage'])}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="--" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="gaz">Gaz</SelectItem>
+                    <SelectItem value="electricite">Electricite</SelectItem>
+                    <SelectItem value="fioul">Fioul</SelectItem>
+                    <SelectItem value="bois">Bois</SelectItem>
+                    <SelectItem value="pompe_chaleur">Pompe a chaleur</SelectItem>
+                    <SelectItem value="reseau_chaleur">Reseau de chaleur</SelectItem>
+                    <SelectItem value="autre">Autre</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>

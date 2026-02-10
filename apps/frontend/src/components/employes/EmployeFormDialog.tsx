@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -98,7 +99,7 @@ export function EmployeFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -222,7 +223,7 @@ export function EmployeFormDialog({
 
           <div className="space-y-2">
             <Label htmlFor="notes">Notes</Label>
-            <Input id="notes" {...register('notes')} placeholder="Informations complementaires..." />
+            <Textarea rows={3} {...register('notes')} placeholder="Informations complementaires..." />
           </div>
 
           <Separator />

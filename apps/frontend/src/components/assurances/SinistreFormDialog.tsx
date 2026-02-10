@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -106,7 +107,7 @@ export function SinistreFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -146,43 +147,45 @@ export function SinistreFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
-              <Input id="description" {...register('description')} placeholder="Description du sinistre..." />
+              <Textarea rows={3} {...register('description')} placeholder="Description du sinistre..." />
             </div>
 
-            {/* Linked assurance */}
-            <div className="space-y-2">
-              <Label htmlFor="assurance_id">Assurance liee</Label>
-              <Select value={currentAssuranceId || ''} onValueChange={(val) => setValue('assurance_id', val)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Aucune" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">Aucune</SelectItem>
-                  {assurances.map((a) => (
-                    <SelectItem key={a.id} value={String(a.id)}>
-                      {a.compagnie} — {a.numero_police || 'N/A'}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {/* Linked assurance */}
+              <div className="space-y-2">
+                <Label htmlFor="assurance_id">Assurance liee</Label>
+                <Select value={currentAssuranceId || ''} onValueChange={(val) => setValue('assurance_id', val)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Aucune" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Aucune</SelectItem>
+                    {assurances.map((a) => (
+                      <SelectItem key={a.id} value={String(a.id)}>
+                        {a.compagnie} — {a.numero_police || 'N/A'}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            {/* Linked incident */}
-            <div className="space-y-2">
-              <Label htmlFor="incident_id">Incident lie</Label>
-              <Select value={currentIncidentId || ''} onValueChange={(val) => setValue('incident_id', val)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Aucun" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">Aucun</SelectItem>
-                  {incidents.map((i) => (
-                    <SelectItem key={i.id} value={String(i.id)}>
-                      {i.titre}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {/* Linked incident */}
+              <div className="space-y-2">
+                <Label htmlFor="incident_id">Incident lie</Label>
+                <Select value={currentIncidentId || ''} onValueChange={(val) => setValue('incident_id', val)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Aucun" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Aucun</SelectItem>
+                    {incidents.map((i) => (
+                      <SelectItem key={i.id} value={String(i.id)}>
+                        {i.titre}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
@@ -235,7 +238,7 @@ export function SinistreFormDialog({
 
           <div className="space-y-2">
             <Label htmlFor="notes">Notes</Label>
-            <Input id="notes" {...register('notes')} placeholder="Informations complementaires..." />
+            <Textarea rows={3} {...register('notes')} placeholder="Informations complementaires..." />
           </div>
 
           <Separator />

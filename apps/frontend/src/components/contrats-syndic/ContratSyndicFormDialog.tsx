@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -98,7 +99,7 @@ export function ContratSyndicFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -114,27 +115,29 @@ export function ContratSyndicFormDialog({
               <span>Syndic</span>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="syndic_nom">Nom du syndic *</Label>
-              <Input id="syndic_nom" {...register('syndic_nom')} placeholder="Nom du cabinet de syndic" />
-              {errors.syndic_nom && (
-                <p className="text-sm text-destructive">{errors.syndic_nom.message}</p>
-              )}
-            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="syndic_nom">Nom du syndic *</Label>
+                <Input id="syndic_nom" {...register('syndic_nom')} placeholder="Nom du cabinet de syndic" />
+                {errors.syndic_nom && (
+                  <p className="text-sm text-destructive">{errors.syndic_nom.message}</p>
+                )}
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="statut">Statut *</Label>
-              <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as ContratSyndicFormData['statut'])}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en_cours">En cours</SelectItem>
-                  <SelectItem value="en_attente">En attente</SelectItem>
-                  <SelectItem value="expire">Expire</SelectItem>
-                  <SelectItem value="resilie">Resilie</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <Label htmlFor="statut">Statut *</Label>
+                <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as ContratSyndicFormData['statut'])}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en_cours">En cours</SelectItem>
+                    <SelectItem value="en_attente">En attente</SelectItem>
+                    <SelectItem value="expire">Expire</SelectItem>
+                    <SelectItem value="resilie">Resilie</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
@@ -181,12 +184,12 @@ export function ContratSyndicFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="prestations_incluses">Prestations incluses dans le forfait</Label>
-              <Input id="prestations_incluses" {...register('prestations_incluses')} placeholder="Gestion courante, convocations AG..." />
+              <Textarea {...register('prestations_incluses')} rows={3} placeholder="Gestion courante, convocations AG..." />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="prestations_particulieres">Prestations particulieres (hors forfait)</Label>
-              <Input id="prestations_particulieres" {...register('prestations_particulieres')} placeholder="Travaux exceptionnels, contentieux..." />
+              <Textarea {...register('prestations_particulieres')} rows={3} placeholder="Travaux exceptionnels, contentieux..." />
             </div>
           </div>
 
@@ -201,12 +204,12 @@ export function ContratSyndicFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="conditions_execution">Conditions d'execution</Label>
-              <Input id="conditions_execution" {...register('conditions_execution')} placeholder="Conditions d'execution de la mission..." />
+              <Textarea {...register('conditions_execution')} rows={3} placeholder="Conditions d'execution de la mission..." />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="notes">Notes</Label>
-              <Input id="notes" {...register('notes')} placeholder="Notes supplementaires..." />
+              <Textarea {...register('notes')} rows={3} placeholder="Notes supplementaires..." />
             </div>
           </div>
 

@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -109,7 +110,7 @@ export function ProcedureFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -234,11 +235,11 @@ export function ProcedureFormDialog({
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="decision">Decision</Label>
-              <Input id="decision" {...register('decision')} placeholder="Decision du tribunal..." />
+              <Textarea rows={3} {...register('decision')} placeholder="Decision du tribunal..." />
             </div>
             <div className="space-y-2">
               <Label htmlFor="notes">Notes</Label>
-              <Input id="notes" {...register('notes')} placeholder="Notes complementaires..." />
+              <Textarea rows={3} {...register('notes')} placeholder="Notes complementaires..." />
             </div>
           </div>
 

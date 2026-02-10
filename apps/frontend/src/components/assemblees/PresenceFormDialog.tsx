@@ -68,6 +68,8 @@ export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoadi
   }, [open, defaultValues, reset])
 
   const currentStatut = watch('statut')
+  const selectedCoproprietaireId = watch('coproprietaire_id')
+  const selectedRepresenteParId = watch('represente_par_id')
 
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({
@@ -101,15 +103,17 @@ export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoadi
 
             <div className="space-y-2">
               <Label htmlFor="coproprietaire_id">Coproprietaire *</Label>
-              <select
-                {...register('coproprietaire_id')}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              >
-                <option value={0}>— Selectionner —</option>
-                {coproprietaires?.map((c) => (
-                  <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>
-                ))}
-              </select>
+              <Select value={String(selectedCoproprietaireId)} onValueChange={(val) => setValue('coproprietaire_id', Number(val))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="-- Selectionner --" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0">-- Selectionner --</SelectItem>
+                  {coproprietaires?.map((c) => (
+                    <SelectItem key={c.id} value={String(c.id)}>{c.prenom} {c.nom}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {errors.coproprietaire_id && (
                 <p className="text-sm text-destructive">{errors.coproprietaire_id.message}</p>
               )}
@@ -141,15 +145,17 @@ export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoadi
             {currentStatut === 'represente' && (
               <div className="space-y-2">
                 <Label htmlFor="represente_par_id">Represente par</Label>
-                <select
-                  {...register('represente_par_id')}
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                >
-                  <option value={0}>— Aucun —</option>
-                  {coproprietaires?.map((c) => (
-                    <option key={c.id} value={c.id}>{c.prenom} {c.nom}</option>
-                  ))}
-                </select>
+                <Select value={String(selectedRepresenteParId)} onValueChange={(val) => setValue('represente_par_id', Number(val))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="-- Aucun --" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">-- Aucun --</SelectItem>
+                    {coproprietaires?.map((c) => (
+                      <SelectItem key={c.id} value={String(c.id)}>{c.prenom} {c.nom}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             )}
           </div>

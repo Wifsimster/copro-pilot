@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -86,7 +87,7 @@ export function ArticleReglementFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -158,24 +159,12 @@ export function ArticleReglementFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="contenu">Contenu de l'article</Label>
-              <textarea
-                id="contenu"
-                {...register('contenu')}
-                rows={5}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                placeholder="Texte complet de l'article..."
-              />
+              <Textarea {...register('contenu')} rows={5} placeholder="Texte complet de l'article..." />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="notes">Notes</Label>
-              <textarea
-                id="notes"
-                {...register('notes')}
-                rows={2}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                placeholder="Notes complementaires..."
-              />
+              <Textarea {...register('notes')} rows={2} placeholder="Notes complementaires..." />
             </div>
           </div>
 

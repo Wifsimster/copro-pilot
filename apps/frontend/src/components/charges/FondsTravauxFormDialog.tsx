@@ -66,15 +66,14 @@ export function FondsTravauxFormDialog({ open, onOpenChange, coproprieteId, onSu
               <span>Fonds travaux</span>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="annee">Annee *</Label>
-              <Input id="annee" type="number" {...register('annee')} />
-              {errors.annee && (
-                <p className="text-sm text-destructive">{errors.annee.message}</p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="annee">Annee *</Label>
+                <Input id="annee" type="number" {...register('annee')} />
+                {errors.annee && (
+                  <p className="text-sm text-destructive">{errors.annee.message}</p>
+                )}
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="cotisation_annuelle">Cotisation annuelle (EUR) *</Label>
                 <Input id="cotisation_annuelle" type="number" step="0.01" {...register('cotisation_annuelle')} />

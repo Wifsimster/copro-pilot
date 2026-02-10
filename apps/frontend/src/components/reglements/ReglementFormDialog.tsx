@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -100,7 +101,7 @@ export function ReglementFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -162,46 +163,22 @@ export function ReglementFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="restrictions_usage">Restrictions d'usage</Label>
-              <textarea
-                id="restrictions_usage"
-                {...register('restrictions_usage')}
-                rows={2}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                placeholder="Restrictions d'usage des parties privatives..."
-              />
+              <Textarea {...register('restrictions_usage')} rows={2} placeholder="Restrictions d'usage des parties privatives..." />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="conditions_travaux">Conditions de travaux</Label>
-              <textarea
-                id="conditions_travaux"
-                {...register('conditions_travaux')}
-                rows={2}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                placeholder="Conditions pour la realisation de travaux..."
-              />
+              <Textarea {...register('conditions_travaux')} rows={2} placeholder="Conditions pour la realisation de travaux..." />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="composition_conseil_syndical">Composition du conseil syndical</Label>
-              <textarea
-                id="composition_conseil_syndical"
-                {...register('composition_conseil_syndical')}
-                rows={2}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                placeholder="Composition et regles du conseil syndical..."
-              />
+              <Textarea {...register('composition_conseil_syndical')} rows={2} placeholder="Composition et regles du conseil syndical..." />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="modalites_convocation_ag">Modalites de convocation AG</Label>
-              <textarea
-                id="modalites_convocation_ag"
-                {...register('modalites_convocation_ag')}
-                rows={2}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                placeholder="Modalites de convocation des assemblees generales..."
-              />
+              <Textarea {...register('modalites_convocation_ag')} rows={2} placeholder="Modalites de convocation des assemblees generales..." />
             </div>
           </div>
 
@@ -221,13 +198,7 @@ export function ReglementFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="notes">Notes</Label>
-              <textarea
-                id="notes"
-                {...register('notes')}
-                rows={2}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                placeholder="Notes complementaires..."
-              />
+              <Textarea {...register('notes')} rows={3} placeholder="Notes complementaires..." />
             </div>
           </div>
 

@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -149,7 +150,7 @@ export function AssembleeFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="ordre_du_jour">Ordre du jour</Label>
-              <Input id="ordre_du_jour" {...register('ordre_du_jour')} placeholder="Points a l'ordre du jour..." />
+              <Textarea rows={3} {...register('ordre_du_jour')} placeholder="Points a l'ordre du jour..." />
             </div>
           </div>
 

@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -108,7 +109,7 @@ export function ContratFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -264,7 +265,7 @@ export function ContratFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="conditions_resiliation">Conditions de resiliation</Label>
-              <Input id="conditions_resiliation" {...register('conditions_resiliation')} placeholder="Conditions de resiliation..." />
+              <Textarea rows={3} {...register('conditions_resiliation')} placeholder="Conditions de resiliation..." />
             </div>
           </div>
 
@@ -279,7 +280,7 @@ export function ContratFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="notes">Notes</Label>
-              <Input id="notes" {...register('notes')} placeholder="Notes supplementaires..." />
+              <Textarea rows={3} {...register('notes')} placeholder="Notes supplementaires..." />
             </div>
           </div>
 

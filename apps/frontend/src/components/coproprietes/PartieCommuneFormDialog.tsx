@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -76,25 +77,27 @@ export function PartieCommuneFormDialog({ open, onOpenChange, coproprieteId, onS
               <span>Identification</span>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="nom">Nom *</Label>
-              <Input id="nom" {...register('nom')} placeholder="Hall d'entree, Jardin..." />
-              {errors.nom && (
-                <p className="text-sm text-destructive">{errors.nom.message}</p>
-              )}
-            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="nom">Nom *</Label>
+                <Input id="nom" {...register('nom')} placeholder="Hall d'entree, Jardin..." />
+                {errors.nom && (
+                  <p className="text-sm text-destructive">{errors.nom.message}</p>
+                )}
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="categorie">Categorie *</Label>
-              <Select value={currentCategorie} onValueChange={(val) => setValue('categorie', val as FormData['categorie'])}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="generales">Generales</SelectItem>
-                  <SelectItem value="speciales">Speciales</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <Label htmlFor="categorie">Categorie *</Label>
+                <Select value={currentCategorie} onValueChange={(val) => setValue('categorie', val as FormData['categorie'])}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="generales">Generales</SelectItem>
+                    <SelectItem value="speciales">Speciales</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
@@ -109,7 +112,7 @@ export function PartieCommuneFormDialog({ open, onOpenChange, coproprieteId, onS
 
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
-              <Input id="description" {...register('description')} placeholder="Description..." />
+              <Textarea rows={3} {...register('description')} placeholder="Description..." />
             </div>
           </div>
 

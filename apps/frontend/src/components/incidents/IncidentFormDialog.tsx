@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { AlertTriangle, CalendarDays, Tag } from 'lucide-react'
+import { AlertTriangle, Tag } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -87,7 +88,7 @@ export function IncidentFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -113,7 +114,7 @@ export function IncidentFormDialog({
 
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
-              <Input id="description" {...register('description')} placeholder="Details de l'incident..." />
+              <Textarea {...register('description')} rows={3} placeholder="Details de l'incident..." />
             </div>
           </div>
 
@@ -147,37 +148,28 @@ export function IncidentFormDialog({
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="statut">Statut *</Label>
-              <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as IncidentFormData['statut'])}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ouvert">Ouvert</SelectItem>
-                  <SelectItem value="en_cours">En cours</SelectItem>
-                  <SelectItem value="resolu">Resolu</SelectItem>
-                  <SelectItem value="ferme">Ferme</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Date section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <CalendarDays className="size-4" />
-              <span>Date</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="date_signalement">Date de signalement *</Label>
-              <Input id="date_signalement" type="date" {...register('date_signalement')} />
-              {errors.date_signalement && (
-                <p className="text-sm text-destructive">{errors.date_signalement.message}</p>
-              )}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="statut">Statut *</Label>
+                <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as IncidentFormData['statut'])}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ouvert">Ouvert</SelectItem>
+                    <SelectItem value="en_cours">En cours</SelectItem>
+                    <SelectItem value="resolu">Resolu</SelectItem>
+                    <SelectItem value="ferme">Ferme</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="date_signalement">Date de signalement *</Label>
+                <Input id="date_signalement" type="date" {...register('date_signalement')} />
+                {errors.date_signalement && (
+                  <p className="text-sm text-destructive">{errors.date_signalement.message}</p>
+                )}
+              </div>
             </div>
           </div>
 
