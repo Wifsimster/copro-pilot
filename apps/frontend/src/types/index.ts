@@ -351,6 +351,28 @@ export interface CarnetEntretien {
 }
 
 // ============================================
+// Conseil Syndical Types
+// ============================================
+
+export type RoleConseilSyndical = 'president' | 'membre' | 'suppleant'
+
+export interface MembreConseilSyndical {
+  id: number
+  copropriete_id: number
+  coproprietaire_id: number
+  role: RoleConseilSyndical
+  date_election: string
+  date_fin_mandat: string | null
+  ag_election_id: number | null
+  notes: string | null
+  coproprietaire_nom?: string
+  coproprietaire_prenom?: string
+  coproprietaire_email?: string
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
 // Diagnostic Types
 // ============================================
 

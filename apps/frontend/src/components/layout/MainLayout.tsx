@@ -11,6 +11,7 @@ import {
   FolderOpen,
   FileText,
   Landmark,
+  UsersRound,
   Handshake,
   LogOut,
   Menu,
@@ -33,6 +34,7 @@ const navigation = [
   { name: 'Documents', href: '/documents', icon: FolderOpen },
   { name: 'Fiche synthetique', href: '/fiche-synthetique', icon: FileText },
   { name: 'Comptes bancaires', href: '/comptes-bancaires', icon: Landmark },
+  { name: 'Conseil syndical', href: '/conseil-syndical', icon: UsersRound },
   { name: 'Contrats', href: '/contrats', icon: Handshake },
 ]
 

@@ -15,6 +15,7 @@ const DocumentsPage = lazy(() => import('@/pages/DocumentsPage'))
 const FicheSynthetiquePage = lazy(() => import('@/pages/FicheSynthetiquePage'))
 const AssembleeDetailPage = lazy(() => import('@/pages/AssembleeDetailPage'))
 const ComptesBancairesPage = lazy(() => import('@/pages/ComptesBancairesPage'))
+const ConseilSyndicalPage = lazy(() => import('@/pages/ConseilSyndicalPage'))
 const ContratsPage = lazy(() => import('@/pages/ContratsPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
@@ -98,6 +99,10 @@ export const router = createHashRouter([
       {
         path: '/comptes-bancaires',
         element: <ComptesBancairesPage />,
+      },
+      {
+        path: '/conseil-syndical',
+        element: <ConseilSyndicalPage />,
       },
       {
         path: '/contrats',

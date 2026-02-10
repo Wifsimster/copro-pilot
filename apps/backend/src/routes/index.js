@@ -25,6 +25,8 @@ import carnetEntretienRoutes from './carnet-entretien.js'
 import documentsRoutes from './documents.js'
 // Diagnostics techniques
 import diagnosticsRoutes from './diagnostics.js'
+// Conseil Syndical
+import conseilSyndicalRoutes from './conseil-syndical.js'
 // Contrats & Prestataires
 import prestatairesRoutes from './prestataires.js'
 import contratsRoutes from './contrats.js'
@@ -66,6 +68,9 @@ router.use('/documents', documentsRoutes)
 
 // Diagnostics techniques
 router.use('/diagnostics', diagnosticsRoutes)
+
+// Conseil Syndical
+router.use('/conseil-syndical', conseilSyndicalRoutes)
 
 // Contrats & Prestataires
 router.use('/prestataires', prestatairesRoutes)
