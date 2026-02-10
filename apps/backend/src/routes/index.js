@@ -45,6 +45,8 @@ import declarationsRegistreRoutes from './declarations-registre.js'
 // Contrat de syndic & Mise en concurrence
 import contratsSyndicRoutes from './contrats-syndic.js'
 import propositionsSyndicRoutes from './propositions-syndic.js'
+// Notifications
+import notificationsRoutes from './notifications.js'
 // Stats
 import statsRoutes from './stats.js'
 
@@ -111,6 +113,9 @@ router.use('/declarations-registre', declarationsRegistreRoutes)
 // Contrat de syndic & Mise en concurrence
 router.use('/contrats-syndic', contratsSyndicRoutes)
 router.use('/propositions-syndic', propositionsSyndicRoutes)
+
+// Notifications
+router.use('/notifications', notificationsRoutes)
 
 // Stats
 router.use('/stats', statsRoutes)

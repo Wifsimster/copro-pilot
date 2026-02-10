@@ -681,6 +681,25 @@ export interface ArticleReglement {
 }
 
 // ============================================
+// Notification Types
+// ============================================
+
+export type TypeNotification = 'incident' | 'ag' | 'paiement' | 'document' | 'general'
+
+export interface Notification {
+  id: number
+  user_id: string
+  copropriete_id: number | null
+  type: TypeNotification
+  titre: string
+  message: string | null
+  lu: boolean
+  lien: string | null
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
 // API Response Types
 // ============================================
 

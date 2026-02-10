@@ -5,6 +5,7 @@ import { useAuthStore } from '@/store/authStore'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { cn } from '@/lib/utils'
+import { NotificationBell } from './NotificationBell'
 import {
   Building2,
   LayoutDashboard,
@@ -295,6 +296,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             {user?.firstname} {user?.lastname}
           </div>
           <div className="flex items-center gap-2">
+            <NotificationBell />
             <button
               onClick={toggleTheme}
               className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700"
@@ -324,6 +326,9 @@ export function MainLayout({ children }: MainLayoutProps) {
             <Menu className="h-5 w-5" />
           </button>
           <span className="ml-3 text-lg font-bold text-gray-900 dark:text-white">CoproPilot</span>
+          <div className="ml-auto">
+            <NotificationBell />
+          </div>
         </header>
 
         {/* Page content */}
