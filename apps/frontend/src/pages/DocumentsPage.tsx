@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useCoproprietes } from '@/hooks/useCoproprietes'
+import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useDocumentsByCopropriete, useCreateDocument, useUpdateDocument, useDeleteDocument } from '@/hooks/useDocuments'
 import { DocumentFormDialog } from '@/components/documents/DocumentFormDialog'
 import type { Document } from '@/types'
@@ -37,8 +37,7 @@ function formatFileSize(bytes: number | null): string {
 }
 
 export default function DocumentsPage() {
-  const { data: coproprietes, isLoading: loadingCopros } = useCoproprietes()
-  const [selectedCoproId, setSelectedCoproId] = useState<number | undefined>()
+  const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [editingDoc, setEditingDoc] = useState<Document | null>(null)
   const [search, setSearch] = useState('')
@@ -65,28 +64,12 @@ export default function DocumentsPage() {
         <p className="text-muted-foreground">Gestion des documents de copropriete</p>
       </div>
 
-      {/* Copropriete selector */}
-      <div className="relative w-full max-w-sm">
-        <select
-          value={selectedCoproId ?? ''}
-          onChange={(e) => setSelectedCoproId(e.target.value ? Number(e.target.value) : undefined)}
-          disabled={loadingCopros}
-          className="w-full appearance-none rounded-lg border border-input bg-background py-2.5 pl-3 pr-10 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-        >
-          <option value="">— Selectionner une copropriete —</option>
-          {coproprietes?.map((c) => (
-            <option key={c.id} value={c.id}>{c.nom}</option>
-          ))}
-        </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-      </div>
-
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-16">
           <FolderOpen className="h-16 w-16 text-muted-foreground/40" />
-          <h3 className="mt-6 text-lg font-medium text-foreground">Selectionnez une copropriete</h3>
+          <h3 className="mt-6 text-lg font-medium text-foreground">Aucune copropriete selectionnee</h3>
           <p className="mt-2 max-w-md text-center text-muted-foreground">
-            Choisissez une copropriete pour afficher et gerer ses documents.
+            Selectionnez une copropriete dans le menu lateral.
           </p>
         </div>
       ) : (

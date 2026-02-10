@@ -1,0 +1,329 @@
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { useCoproprieteStore } from '@/store/coproprieteStore'
+import { useRelancesByCopropriete, useCreateRelance, useUpdateRelance, useDeleteRelance } from '@/hooks/useRelances'
+import { useProceduresByCopropriete, useCreateProcedure, useUpdateProcedure, useDeleteProcedure } from '@/hooks/useProcedures'
+import { RelanceFormDialog } from '@/components/contentieux/RelanceFormDialog'
+import { ProcedureFormDialog } from '@/components/contentieux/ProcedureFormDialog'
+import type { Relance, Procedure } from '@/types'
+import { Scale, Plus, Trash2, Pencil, Mail } from 'lucide-react'
+
+const TYPE_RELANCE_LABELS: Record<string, string> = {
+  amiable: 'Amiable',
+  mise_en_demeure: 'Mise en demeure',
+  contentieux: 'Contentieux',
+}
+
+const TYPE_RELANCE_COLORS: Record<string, string> = {
+  amiable: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  mise_en_demeure: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+  contentieux: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+}
+
+const STATUT_RELANCE_LABELS: Record<string, string> = {
+  brouillon: 'Brouillon',
+  envoyee: 'Envoyee',
+  accusee_reception: 'Accusee reception',
+  sans_effet: 'Sans effet',
+}
+
+const STATUT_RELANCE_COLORS: Record<string, string> = {
+  brouillon: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+  envoyee: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  accusee_reception: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  sans_effet: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+}
+
+const STATUT_PROCEDURE_LABELS: Record<string, string> = {
+  en_preparation: 'En preparation',
+  en_cours: 'En cours',
+  audience_fixee: 'Audience fixee',
+  juge: 'Juge',
+  execute: 'Execute',
+  clos: 'Clos',
+}
+
+const STATUT_PROCEDURE_COLORS: Record<string, string> = {
+  en_preparation: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+  en_cours: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  audience_fixee: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+  juge: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+  execute: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  clos: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+}
+
+type Tab = 'relances' | 'procedures'
+
+export default function ContentieuxPage() {
+  const [searchParams] = useSearchParams()
+  const { selectedCoproprieteId: selectedCoproId, setSelectedCoproprieteId } = useCoproprieteStore()
+
+  useEffect(() => {
+    const param = searchParams.get('copropriete')
+    if (param) setSelectedCoproprieteId(parseInt(param))
+  }, [searchParams, setSelectedCoproprieteId])
+  const [activeTab, setActiveTab] = useState<Tab>('relances')
+  const [showRelanceDialog, setShowRelanceDialog] = useState(false)
+  const [showProcedureDialog, setShowProcedureDialog] = useState(false)
+  const [editingRelance, setEditingRelance] = useState<Relance | null>(null)
+  const [editingProcedure, setEditingProcedure] = useState<Procedure | null>(null)
+
+  const { data: relances, isLoading: loadingRelances } = useRelancesByCopropriete(selectedCoproId)
+  const { data: procedures, isLoading: loadingProcedures } = useProceduresByCopropriete(selectedCoproId)
+  const createRelance = useCreateRelance()
+  const updateRelance = useUpdateRelance()
+  const deleteRelance = useDeleteRelance()
+  const createProcedure = useCreateProcedure()
+  const updateProcedure = useUpdateProcedure()
+  const deleteProcedure = useDeleteProcedure()
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Contentieux & Recouvrement</h1>
+          <p className="text-gray-500 dark:text-zinc-400">Suivi des relances et procedures de recouvrement des impayes</p>
+        </div>
+      </div>
+
+      {!selectedCoproId ? (
+        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
+          <Scale className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
+          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucune copropriete selectionnee</h3>
+          <p className="mt-2 text-gray-500 dark:text-zinc-400">Selectionnez une copropriete dans le menu lateral.</p>
+        </div>
+      ) : (
+        <>
+          {/* Tabs */}
+          <div className="flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-zinc-800">
+            {([
+              { key: 'relances' as Tab, label: 'Relances', icon: Mail },
+              { key: 'procedures' as Tab, label: 'Procedures', icon: Scale },
+            ]).map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                  activeTab === tab.key
+                    ? 'bg-white text-gray-900 shadow dark:bg-zinc-700 dark:text-white'
+                    : 'text-gray-500 hover:text-gray-700 dark:text-zinc-400'
+                }`}
+              >
+                <tab.icon className="h-4 w-4" />
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Relances tab */}
+          {activeTab === 'relances' && (
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Relances</h2>
+                <button
+                  onClick={() => setShowRelanceDialog(true)}
+                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                >
+                  <Plus className="h-4 w-4" />
+                  Nouvelle relance
+                </button>
+              </div>
+
+              {loadingRelances ? (
+                <div className="flex justify-center py-8">
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                </div>
+              ) : !relances || relances.length === 0 ? (
+                <div className="flex flex-col items-center py-12">
+                  <Mail className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
+                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune relance enregistree</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Coproprietaire</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Type</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Montant du</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Mode d'envoi</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Date</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {relances.map((relance: Relance) => (
+                        <tr key={relance.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
+                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                            {relance.coproprietaire_nom && relance.coproprietaire_prenom
+                              ? `${relance.coproprietaire_prenom} ${relance.coproprietaire_nom}`
+                              : `#${relance.coproprietaire_id}`}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${TYPE_RELANCE_COLORS[relance.type]}`}>
+                              {TYPE_RELANCE_LABELS[relance.type]}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                            {Number(relance.montant_du).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{relance.mode_envoi || '—'}</td>
+                          <td className="px-4 py-3">
+                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUT_RELANCE_COLORS[relance.statut]}`}>
+                              {STATUT_RELANCE_LABELS[relance.statut]}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                            {new Date(relance.date_relance).toLocaleDateString('fr-FR')}
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => { setEditingRelance(relance); setShowRelanceDialog(true) }}
+                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (window.confirm('Supprimer cette relance ?')) deleteRelance.mutate(relance.id)
+                                }}
+                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              <RelanceFormDialog
+                open={showRelanceDialog}
+                onOpenChange={(open) => { setShowRelanceDialog(open); if (!open) setEditingRelance(null) }}
+                coproprieteId={selectedCoproId}
+                defaultValues={editingRelance || undefined}
+                title={editingRelance ? 'Modifier la relance' : 'Nouvelle relance'}
+                onSubmit={async (data) => {
+                  if (editingRelance) {
+                    await updateRelance.mutateAsync({ id: editingRelance.id, data })
+                  } else {
+                    await createRelance.mutateAsync(data)
+                  }
+                  setShowRelanceDialog(false)
+                  setEditingRelance(null)
+                }}
+                isLoading={editingRelance ? updateRelance.isPending : createRelance.isPending}
+              />
+            </div>
+          )}
+
+          {/* Procedures tab */}
+          {activeTab === 'procedures' && (
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Procedures</h2>
+                <button
+                  onClick={() => setShowProcedureDialog(true)}
+                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                >
+                  <Plus className="h-4 w-4" />
+                  Nouvelle procedure
+                </button>
+              </div>
+
+              {loadingProcedures ? (
+                <div className="flex justify-center py-8">
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                </div>
+              ) : !procedures || procedures.length === 0 ? (
+                <div className="flex flex-col items-center py-12">
+                  <Scale className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
+                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune procedure enregistree</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Coproprietaire</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Avocat</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Tribunal</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Montant reclame</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {procedures.map((procedure: Procedure) => (
+                        <tr key={procedure.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
+                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                            {procedure.coproprietaire_nom && procedure.coproprietaire_prenom
+                              ? `${procedure.coproprietaire_prenom} ${procedure.coproprietaire_nom}`
+                              : `#${procedure.coproprietaire_id}`}
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{procedure.avocat || '—'}</td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{procedure.tribunal || '—'}</td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                            {procedure.montant_reclame
+                              ? Number(procedure.montant_reclame).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
+                              : '—'}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUT_PROCEDURE_COLORS[procedure.statut]}`}>
+                              {STATUT_PROCEDURE_LABELS[procedure.statut]}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => { setEditingProcedure(procedure); setShowProcedureDialog(true) }}
+                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (window.confirm('Supprimer cette procedure ?')) deleteProcedure.mutate(procedure.id)
+                                }}
+                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              <ProcedureFormDialog
+                open={showProcedureDialog}
+                onOpenChange={(open) => { setShowProcedureDialog(open); if (!open) setEditingProcedure(null) }}
+                coproprieteId={selectedCoproId}
+                defaultValues={editingProcedure || undefined}
+                title={editingProcedure ? 'Modifier la procedure' : 'Nouvelle procedure'}
+                onSubmit={async (data) => {
+                  if (editingProcedure) {
+                    await updateProcedure.mutateAsync({ id: editingProcedure.id, data })
+                  } else {
+                    await createProcedure.mutateAsync(data)
+                  }
+                  setShowProcedureDialog(false)
+                  setEditingProcedure(null)
+                }}
+                isLoading={editingProcedure ? updateProcedure.isPending : createProcedure.isPending}
+              />
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+}

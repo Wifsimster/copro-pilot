@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useCoproprietes } from '@/hooks/useCoproprietes'
+import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useCoproprietaires } from '@/hooks/useCoproprietaires'
 import { useBudgetsByCopropriete, useCreateBudget, useUpdateBudget, useDeleteBudget } from '@/hooks/useBudgets'
 import { useAppelsFondsByCopropriete, useCreateAppelFonds, useUpdateAppelFonds, useDeleteAppelFonds } from '@/hooks/useAppelsFonds'
@@ -10,7 +10,7 @@ import { AppelFondsFormDialog } from '@/components/charges/AppelFondsFormDialog'
 import { FondsTravauxFormDialog } from '@/components/charges/FondsTravauxFormDialog'
 import { PaiementFormDialog } from '@/components/charges/PaiementFormDialog'
 import type { BudgetPrevisionnel, AppelFonds, FondsTravaux, Paiement } from '@/types'
-import { Receipt, Plus, Trash2, Pencil, ChevronDown, FileText, Banknote, PiggyBank, CreditCard } from 'lucide-react'
+import { Receipt, Plus, Trash2, Pencil, FileText, Banknote, PiggyBank, CreditCard } from 'lucide-react'
 
 const STATUT_BUDGET_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
@@ -47,8 +47,7 @@ const MODE_PAIEMENT_LABELS: Record<string, string> = {
 type Tab = 'budgets' | 'appels' | 'paiements' | 'fonds-travaux'
 
 export default function ChargesPage() {
-  const { data: coproprietes, isLoading: loadingCopros } = useCoproprietes()
-  const [selectedCoproId, setSelectedCoproId] = useState<number | undefined>()
+  const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
   const [activeTab, setActiveTab] = useState<Tab>('budgets')
   const [showBudgetDialog, setShowBudgetDialog] = useState(false)
   const [showAppelDialog, setShowAppelDialog] = useState(false)
@@ -77,14 +76,6 @@ export default function ChargesPage() {
   const updatePaiement = useUpdatePaiement()
   const deletePaiement = useDeletePaiement()
 
-  if (loadingCopros) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-      </div>
-    )
-  }
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -94,26 +85,11 @@ export default function ChargesPage() {
         </div>
       </div>
 
-      {/* Copropriete selector */}
-      <div className="relative">
-        <select
-          value={selectedCoproId || ''}
-          onChange={(e) => setSelectedCoproId(e.target.value ? parseInt(e.target.value) : undefined)}
-          className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
-        >
-          <option value="">Selectionner une copropriete...</option>
-          {coproprietes?.map((c) => (
-            <option key={c.id} value={c.id}>{c.nom}</option>
-          ))}
-        </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-      </div>
-
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
           <Receipt className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Selectionnez une copropriete</h3>
-          <p className="mt-2 text-gray-500 dark:text-zinc-400">Choisissez une copropriete pour voir ses charges.</p>
+          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucune copropriete selectionnee</h3>
+          <p className="mt-2 text-gray-500 dark:text-zinc-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
       ) : (
         <>

@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import { useCoproprietes, useFicheSynthetique } from '@/hooks/useCoproprietes'
-import type { CoproprieteWithStats } from '@/api/coproprietes'
+import { useCoproprieteStore } from '@/store/coproprieteStore'
+import { useFicheSynthetique } from '@/hooks/useCoproprietes'
 import {
   Building2,
   Home,
@@ -88,46 +87,24 @@ function SectionCard({ title, icon: Icon, children }: { title: string; icon: Rea
 }
 
 export default function FicheSynthetiquePage() {
-  const { data: coproprietes, isLoading: loadingCopros } = useCoproprietes()
-  const [selectedId, setSelectedId] = useState<number | undefined>()
+  const selectedId = useCoproprieteStore((s) => s.selectedCoproprieteId)
   const { data: fiche, isLoading: loadingFiche } = useFicheSynthetique(selectedId)
-
-  if (loadingCopros) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-      </div>
-    )
-  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Fiche synthetique</h1>
-          <p className="text-gray-500 dark:text-zinc-400">
-            Document reglementaire (decret du 28 juin 2016)
-          </p>
-        </div>
-
-        <select
-          value={selectedId || ''}
-          onChange={(e) => setSelectedId(e.target.value ? parseInt(e.target.value) : undefined)}
-          className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
-        >
-          <option value="">Selectionner une copropriete...</option>
-          {coproprietes?.map((c: CoproprieteWithStats) => (
-            <option key={c.id} value={c.id}>{c.nom}</option>
-          ))}
-        </select>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Fiche synthetique</h1>
+        <p className="text-gray-500 dark:text-zinc-400">
+          Document reglementaire (decret du 28 juin 2016)
+        </p>
       </div>
 
       {!selectedId ? (
         <div className="flex flex-col items-center py-16">
           <FileText className="h-12 w-12 text-gray-300 dark:text-zinc-600" />
           <p className="mt-4 text-gray-500 dark:text-zinc-400">
-            Selectionnez une copropriete pour afficher sa fiche synthetique
+            Selectionnez une copropriete dans le menu lateral
           </p>
         </div>
       ) : loadingFiche ? (

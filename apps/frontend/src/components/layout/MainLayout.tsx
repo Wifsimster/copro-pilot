@@ -1,6 +1,8 @@
 import { ReactNode, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
+import { useCoproprieteStore } from '@/store/coproprieteStore'
+import { useCoproprietes } from '@/hooks/useCoproprietes'
 import {
   Building2,
   LayoutDashboard,
@@ -14,11 +16,13 @@ import {
   UsersRound,
   Handshake,
   Shield,
+  Scale,
   LogOut,
   Menu,
   X,
   Moon,
   Sun,
+  ChevronDown,
 } from 'lucide-react'
 
 interface MainLayoutProps {
@@ -38,11 +42,14 @@ const navigation = [
   { name: 'Conseil syndical', href: '/conseil-syndical', icon: UsersRound },
   { name: 'Contrats', href: '/contrats', icon: Handshake },
   { name: 'Assurances', href: '/assurances', icon: Shield },
+  { name: 'Contentieux', href: '/contentieux', icon: Scale },
 ]
 
 export function MainLayout({ children }: MainLayoutProps) {
   const location = useLocation()
   const { user, logout } = useAuthStore()
+  const { selectedCoproprieteId, setSelectedCoproprieteId } = useCoproprieteStore()
+  const { data: coproprietes } = useCoproprietes()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains('dark')
@@ -86,6 +93,26 @@ export function MainLayout({ children }: MainLayoutProps) {
           >
             <X className="h-5 w-5 text-gray-500" />
           </button>
+        </div>
+
+        {/* Copropriete selector */}
+        <div className="border-b border-gray-200 px-4 py-3 dark:border-zinc-700">
+          <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-zinc-500">
+            Copropriete
+          </label>
+          <div className="relative">
+            <select
+              value={selectedCoproprieteId ?? ''}
+              onChange={(e) => setSelectedCoproprieteId(e.target.value ? parseInt(e.target.value) : undefined)}
+              className="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 pr-8 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600"
+            >
+              <option value="">Toutes les coproprietes</option>
+              {coproprietes?.map((c) => (
+                <option key={c.id} value={c.id}>{c.nom}</option>
+              ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          </div>
         </div>
 
         {/* Navigation */}

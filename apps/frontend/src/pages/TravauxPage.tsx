@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { useCoproprietes } from '@/hooks/useCoproprietes'
+import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useIncidentsByCopropriete, useCreateIncident, useUpdateIncident, useDeleteIncident } from '@/hooks/useIncidents'
 import { useInterventionsByCopropriete, useCreateIntervention, useUpdateIntervention, useDeleteIntervention } from '@/hooks/useInterventions'
 import { useCarnetEntretienByCopropriete, useCreateCarnetEntretien, useUpdateCarnetEntretien, useDeleteCarnetEntretien } from '@/hooks/useCarnetEntretien'
@@ -8,7 +8,7 @@ import { IncidentFormDialog } from '@/components/incidents/IncidentFormDialog'
 import { InterventionFormDialog } from '@/components/incidents/InterventionFormDialog'
 import { CarnetEntretienFormDialog } from '@/components/incidents/CarnetEntretienFormDialog'
 import type { Incident, Intervention, CarnetEntretien } from '@/types'
-import { Wrench, Plus, Trash2, Pencil, ChevronDown, AlertTriangle, Hammer, BookOpen } from 'lucide-react'
+import { Wrench, Plus, Trash2, Pencil, AlertTriangle, Hammer, BookOpen } from 'lucide-react'
 
 const URGENCE_LABELS: Record<string, string> = {
   faible: 'Faible',
@@ -58,11 +58,12 @@ type Tab = 'incidents' | 'interventions' | 'carnet'
 
 export default function TravauxPage() {
   const [searchParams] = useSearchParams()
-  const { data: coproprietes, isLoading: loadingCopros } = useCoproprietes()
-  const [selectedCoproId, setSelectedCoproId] = useState<number | undefined>(() => {
+  const { selectedCoproprieteId: selectedCoproId, setSelectedCoproprieteId } = useCoproprieteStore()
+
+  useEffect(() => {
     const param = searchParams.get('copropriete')
-    return param ? parseInt(param) : undefined
-  })
+    if (param) setSelectedCoproprieteId(parseInt(param))
+  }, [searchParams, setSelectedCoproprieteId])
   const [activeTab, setActiveTab] = useState<Tab>('incidents')
   const [showIncidentDialog, setShowIncidentDialog] = useState(false)
   const [showInterventionDialog, setShowInterventionDialog] = useState(false)
@@ -84,14 +85,6 @@ export default function TravauxPage() {
   const deleteCarnet = useDeleteCarnetEntretien()
   const [editingCarnet, setEditingCarnet] = useState<CarnetEntretien | null>(null)
 
-  if (loadingCopros) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-      </div>
-    )
-  }
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -101,26 +94,11 @@ export default function TravauxPage() {
         </div>
       </div>
 
-      {/* Copropriete selector */}
-      <div className="relative">
-        <select
-          value={selectedCoproId || ''}
-          onChange={(e) => setSelectedCoproId(e.target.value ? parseInt(e.target.value) : undefined)}
-          className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
-        >
-          <option value="">Selectionner une copropriete...</option>
-          {coproprietes?.map((c) => (
-            <option key={c.id} value={c.id}>{c.nom}</option>
-          ))}
-        </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-      </div>
-
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
           <Wrench className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Selectionnez une copropriete</h3>
-          <p className="mt-2 text-gray-500 dark:text-zinc-400">Choisissez une copropriete pour voir ses travaux et incidents.</p>
+          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucune copropriete selectionnee</h3>
+          <p className="mt-2 text-gray-500 dark:text-zinc-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
       ) : (
         <>
