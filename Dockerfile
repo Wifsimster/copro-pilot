@@ -23,6 +23,9 @@ RUN cd apps/frontend && npm run build
 # Stage 2: Production image
 FROM node:24-alpine
 
+LABEL org.opencontainers.image.title="CoproPilot"
+LABEL org.opencontainers.image.description="Plateforme de gestion de copropriété pour syndic professionnel"
+
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
