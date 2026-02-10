@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1e3a8a"/>
+      <stop offset="1" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="102" fill="url(#grad)"/>
+
+  <!-- Building with arrow/compass roof -->
+  <path d="M256 80 L352 200 L352 420 L296 420 L296 348 C296 340 290 334 282 334 L230 334 C222 334 216 340 216 348 L216 420 L160 420 L160 200 Z" fill="white"/>
+
+  <!-- Windows row 1 -->
+  <rect x="192" y="224" width="48" height="40" rx="8" fill="#2563eb"/>
+  <rect x="272" y="224" width="48" height="40" rx="8" fill="#2563eb"/>
+
+  <!-- Windows row 2 -->
+  <rect x="192" y="284" width="48" height="32" rx="8" fill="#2563eb"/>
+  <rect x="272" y="284" width="48" height="32" rx="8" fill="#2563eb"/>
+</svg>

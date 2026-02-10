@@ -78,9 +78,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       >
         {/* Logo */}
         <div className="flex h-16 items-center gap-3 border-b border-gray-200 px-6 dark:border-zinc-700">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
-            <Building2 className="h-5 w-5" />
-          </div>
+          <img src="/logo.svg" alt="CoproPilot" className="h-8 w-8 rounded-lg" />
           <span className="text-lg font-bold text-gray-900 dark:text-white">CoproPilot</span>
           <button
             onClick={() => setSidebarOpen(false)}
