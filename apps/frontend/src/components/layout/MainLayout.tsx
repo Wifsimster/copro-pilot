@@ -24,6 +24,7 @@ import {
   BookOpen,
   ClipboardList,
   Stamp,
+  FileDown,
   LogOut,
   Menu,
   X,
@@ -98,6 +99,7 @@ const navigationSections: NavSection[] = [
       { name: 'Règlement', href: '/reglements', icon: BookOpen },
       { name: 'Immatriculation', href: '/immatriculation', icon: ClipboardList },
       { name: 'Contrat syndic', href: '/contrats-syndic', icon: Stamp },
+      { name: 'Exports', href: '/exports', icon: FileDown },
     ],
   },
 ]

@@ -47,6 +47,8 @@ import contratsSyndicRoutes from './contrats-syndic.js'
 import propositionsSyndicRoutes from './propositions-syndic.js'
 // Notifications
 import notificationsRoutes from './notifications.js'
+// Exports (PDF & Excel)
+import exportsRoutes from './exports.js'
 // Stats
 import statsRoutes from './stats.js'
 
@@ -116,6 +118,9 @@ router.use('/propositions-syndic', propositionsSyndicRoutes)
 
 // Notifications
 router.use('/notifications', notificationsRoutes)
+
+// Exports (PDF & Excel)
+router.use('/exports', exportsRoutes)
 
 // Stats
 router.use('/stats', statsRoutes)

@@ -24,6 +24,7 @@ const ReglementsPage = lazy(() => import('@/pages/ReglementsPage'))
 const ImmatriculationPage = lazy(() => import('@/pages/ImmatriculationPage'))
 const ContratsSyndicPage = lazy(() => import('@/pages/ContratsSyndicPage'))
 const NotificationsPage = lazy(() => import('@/pages/NotificationsPage'))
+const ExportsPage = lazy(() => import('@/pages/ExportsPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function PageLoader() {
@@ -142,6 +143,10 @@ export const router = createHashRouter([
       {
         path: '/notifications',
         element: <NotificationsPage />,
+      },
+      {
+        path: '/exports',
+        element: <ExportsPage />,
       },
     ],
   },
