@@ -392,6 +392,48 @@ export interface Document {
 }
 
 // ============================================
+// Prestataire & Contrat Types
+// ============================================
+
+export interface Prestataire {
+  id: number
+  nom: string
+  siret: string | null
+  specialite: string | null
+  contact_nom: string | null
+  contact_email: string | null
+  contact_telephone: string | null
+  adresse: string | null
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type StatutContrat = 'actif' | 'expire' | 'resilie' | 'en_attente'
+export type FrequencePaiement = 'mensuel' | 'trimestriel' | 'semestriel' | 'annuel'
+
+export interface Contrat {
+  id: number
+  copropriete_id: number
+  prestataire_id: number
+  objet: string
+  type: string | null
+  date_debut: string
+  date_fin: string | null
+  montant_annuel: number | null
+  frequence_paiement: FrequencePaiement
+  conditions_resiliation: string | null
+  preavis_mois: number | null
+  reconduction_tacite: boolean
+  statut: StatutContrat
+  notes: string | null
+  prestataire_nom?: string
+  prestataire_specialite?: string
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
 // Compte Bancaire Types
 // ============================================
 
