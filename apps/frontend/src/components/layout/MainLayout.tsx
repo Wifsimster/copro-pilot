@@ -1,8 +1,10 @@
-import { ReactNode, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { type ReactNode, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Collapsible } from 'radix-ui'
 import { useAuthStore } from '@/store/authStore'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
+import { cn } from '@/lib/utils'
 import {
   Building2,
   LayoutDashboard,
@@ -27,34 +29,87 @@ import {
   Moon,
   Sun,
   ChevronDown,
+  ChevronRight,
+  type LucideIcon,
 } from 'lucide-react'
+
+interface NavItem {
+  name: string
+  href: string
+  icon: LucideIcon
+}
+
+interface NavSection {
+  key: string
+  label: string
+  collapsible: boolean
+  items: NavItem[]
+}
+
+const navigationSections: NavSection[] = [
+  {
+    key: 'overview',
+    label: 'Vue d\'ensemble',
+    collapsible: false,
+    items: [
+      { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
+      { name: 'Copropriétés', href: '/coproprietes', icon: Building2 },
+      { name: 'Copropriétaires', href: '/coproprietaires', icon: Users },
+    ],
+  },
+  {
+    key: 'gestion',
+    label: 'Gestion',
+    collapsible: true,
+    items: [
+      { name: 'Charges', href: '/charges', icon: Receipt },
+      { name: 'Assemblées', href: '/assemblees', icon: Calendar },
+      { name: 'Conseil syndical', href: '/conseil-syndical', icon: UsersRound },
+      { name: 'Fiche synthétique', href: '/fiche-synthetique', icon: FileText },
+    ],
+  },
+  {
+    key: 'technique',
+    label: 'Technique',
+    collapsible: true,
+    items: [
+      { name: 'Travaux', href: '/travaux', icon: Wrench },
+      { name: 'Contrats', href: '/contrats', icon: Handshake },
+      { name: 'Employés', href: '/employes', icon: HardHat },
+    ],
+  },
+  {
+    key: 'finances',
+    label: 'Finances',
+    collapsible: true,
+    items: [
+      { name: 'Comptes bancaires', href: '/comptes-bancaires', icon: Landmark },
+      { name: 'Assurances', href: '/assurances', icon: Shield },
+      { name: 'Contentieux', href: '/contentieux', icon: Scale },
+    ],
+  },
+  {
+    key: 'administration',
+    label: 'Administration',
+    collapsible: true,
+    items: [
+      { name: 'Documents', href: '/documents', icon: FolderOpen },
+      { name: 'Règlement', href: '/reglements', icon: BookOpen },
+      { name: 'Immatriculation', href: '/immatriculation', icon: ClipboardList },
+      { name: 'Contrat syndic', href: '/contrats-syndic', icon: Stamp },
+    ],
+  },
+]
+
+const SIDEBAR_STORAGE_KEY = 'sidebar-sections'
 
 interface MainLayoutProps {
   children: ReactNode
 }
 
-const navigation = [
-  { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
-  { name: 'Copropriétés', href: '/coproprietes', icon: Building2 },
-  { name: 'Copropriétaires', href: '/coproprietaires', icon: Users },
-  { name: 'Charges', href: '/charges', icon: Receipt },
-  { name: 'Assemblées', href: '/assemblees', icon: Calendar },
-  { name: 'Travaux', href: '/travaux', icon: Wrench },
-  { name: 'Documents', href: '/documents', icon: FolderOpen },
-  { name: 'Fiche synthetique', href: '/fiche-synthetique', icon: FileText },
-  { name: 'Comptes bancaires', href: '/comptes-bancaires', icon: Landmark },
-  { name: 'Conseil syndical', href: '/conseil-syndical', icon: UsersRound },
-  { name: 'Contrats', href: '/contrats', icon: Handshake },
-  { name: 'Assurances', href: '/assurances', icon: Shield },
-  { name: 'Contentieux', href: '/contentieux', icon: Scale },
-  { name: 'Employes', href: '/employes', icon: HardHat },
-  { name: 'Reglement', href: '/reglements', icon: BookOpen },
-  { name: 'Immatriculation', href: '/immatriculation', icon: ClipboardList },
-  { name: 'Contrat syndic', href: '/contrats-syndic', icon: Stamp },
-]
-
 export function MainLayout({ children }: MainLayoutProps) {
   const location = useLocation()
+  const navigate = useNavigate()
   const { user, logout } = useAuthStore()
   const { selectedCoproprieteId, setSelectedCoproprieteId } = useCoproprieteStore()
   const { data: coproprietes } = useCoproprietes()
@@ -62,6 +117,40 @@ export function MainLayout({ children }: MainLayoutProps) {
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains('dark')
   )
+
+  const [sectionState, setSectionState] = useState<Record<string, boolean>>(() => {
+    try {
+      const stored = localStorage.getItem(SIDEBAR_STORAGE_KEY)
+      if (stored) return JSON.parse(stored)
+    } catch { /* ignore */ }
+    return { gestion: true, technique: true, finances: true, administration: true }
+  })
+
+  const toggleSection = (key: string) => {
+    setSectionState(prev => {
+      const next = { ...prev, [key]: !prev[key] }
+      localStorage.setItem(SIDEBAR_STORAGE_KEY, JSON.stringify(next))
+      return next
+    })
+  }
+
+  const pathname = location.pathname
+
+  // Auto-expand section containing active route
+  const effectiveSectionState = { ...sectionState }
+  for (const section of navigationSections) {
+    if (
+      section.collapsible &&
+      section.items.some(item =>
+        item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)
+      )
+    ) {
+      effectiveSectionState[section.key] = true
+    }
+  }
+
+  const isItemActive = (href: string) =>
+    href === '/' ? pathname === '/' : pathname.startsWith(href)
 
   const toggleTheme = () => {
     const newIsDark = !isDark
@@ -73,6 +162,66 @@ export function MainLayout({ children }: MainLayoutProps) {
       document.documentElement.classList.remove('dark')
       localStorage.setItem('theme', 'light')
     }
+  }
+
+  const renderNavItem = (item: NavItem) => {
+    const active = isItemActive(item.href)
+    return (
+      <Link
+        key={item.name}
+        to={item.href}
+        onClick={() => setSidebarOpen(false)}
+        className={cn(
+          'flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
+          active
+            ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+            : 'text-gray-600 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700'
+        )}
+      >
+        <item.icon className="h-4 w-4" />
+        {item.name}
+      </Link>
+    )
+  }
+
+  const renderSection = (section: NavSection) => {
+    if (!section.collapsible) {
+      return (
+        <div key={section.key} className="space-y-0.5">
+          <div className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400 dark:text-zinc-500">
+            {section.label}
+          </div>
+          {section.items.map(renderNavItem)}
+        </div>
+      )
+    }
+
+    const isOpen = effectiveSectionState[section.key] ?? true
+
+    return (
+      <Collapsible.Root
+        key={section.key}
+        open={isOpen}
+        onOpenChange={() => toggleSection(section.key)}
+      >
+        <Collapsible.Trigger className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-gray-400 transition-colors hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300">
+          {section.label}
+          <ChevronRight
+            className={cn(
+              'h-3.5 w-3.5 transition-transform duration-200',
+              isOpen && 'rotate-90'
+            )}
+          />
+        </Collapsible.Trigger>
+        <Collapsible.Content
+          className="overflow-hidden data-[state=closed]:animate-[collapsible-up_150ms_ease-out] data-[state=open]:animate-[collapsible-down_150ms_ease-out]"
+        >
+          <div className="space-y-0.5 pt-0.5">
+            {section.items.map(renderNavItem)}
+          </div>
+        </Collapsible.Content>
+      </Collapsible.Root>
+    )
   }
 
   return (
@@ -87,9 +236,10 @@ export function MainLayout({ children }: MainLayoutProps) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white shadow-lg transition-transform dark:bg-zinc-800 lg:static lg:translate-x-0 ${
+        className={cn(
+          'fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white shadow-lg transition-transform dark:bg-zinc-800 lg:static lg:translate-x-0',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        )}
       >
         {/* Logo */}
         <div className="flex h-16 items-center gap-3 border-b border-gray-200 px-6 dark:border-zinc-700">
@@ -106,15 +256,26 @@ export function MainLayout({ children }: MainLayoutProps) {
         {/* Copropriete selector */}
         <div className="border-b border-gray-200 px-4 py-3 dark:border-zinc-700">
           <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-zinc-500">
-            Copropriete
+            Copropriété
           </label>
           <div className="relative">
             <select
               value={selectedCoproprieteId ?? ''}
-              onChange={(e) => setSelectedCoproprieteId(e.target.value ? parseInt(e.target.value) : undefined)}
+              onChange={(e) => {
+                const value = e.target.value
+                if (value) {
+                  const id = parseInt(value)
+                  setSelectedCoproprieteId(id)
+                  navigate(`/coproprietes/${id}`)
+                } else {
+                  setSelectedCoproprieteId(undefined)
+                  navigate('/coproprietes')
+                }
+                setSidebarOpen(false)
+              }}
               className="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 pr-8 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600"
             >
-              <option value="">Toutes les coproprietes</option>
+              <option value="">Toutes les copropriétés</option>
               {coproprietes?.map((c) => (
                 <option key={c.id} value={c.id}>{c.nom}</option>
               ))}
@@ -124,25 +285,8 @@ export function MainLayout({ children }: MainLayoutProps) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 space-y-1 overflow-y-auto p-4">
-          {navigation.map((item) => {
-            const isActive = location.pathname === item.href
-            return (
-              <Link
-                key={item.name}
-                to={item.href}
-                onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                    : 'text-gray-600 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700'
-                }`}
-              >
-                <item.icon className="h-5 w-5" />
-                {item.name}
-              </Link>
-            )
-          })}
+        <nav className="flex-1 space-y-4 overflow-y-auto p-4">
+          {navigationSections.map(renderSection)}
         </nav>
 
         {/* User section */}

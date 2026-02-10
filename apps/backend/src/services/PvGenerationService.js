@@ -167,6 +167,7 @@ class PvGenerationService {
       yPos += 16
     }
 
+    doc.x = 50
     doc.y = yPos + 10
     this._drawLine(doc)
     doc.moveDown(0.5)
