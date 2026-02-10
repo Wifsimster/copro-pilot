@@ -23,6 +23,11 @@ const coproprieteSchema = z.object({
   ville: z.string().min(1, 'La ville est obligatoire'),
   nombre_lots: z.coerce.number().min(0).optional(),
   numero_immatriculation: z.string().optional(),
+  nombre_batiments: z.coerce.number().min(0).optional(),
+  nombre_ascenseurs: z.coerce.number().min(0).optional(),
+  periode_construction: z.string().optional(),
+  type_chauffage: z.enum(['individuel', 'collectif', 'mixte']).optional().or(z.literal('')),
+  energie_chauffage: z.enum(['gaz', 'electricite', 'fioul', 'bois', 'pompe_chaleur', 'reseau_chaleur', 'autre']).optional().or(z.literal('')),
 })
 
 type CoproprieteFormData = z.infer<typeof coproprieteSchema>
@@ -58,17 +63,27 @@ export function CoproprieteFormDialog({
       ville: defaultValues?.ville || '',
       nombre_lots: defaultValues?.nombre_lots || 0,
       numero_immatriculation: defaultValues?.numero_immatriculation || '',
+      nombre_batiments: defaultValues?.nombre_batiments || 0,
+      nombre_ascenseurs: defaultValues?.nombre_ascenseurs || 0,
+      periode_construction: defaultValues?.periode_construction || '',
+      type_chauffage: defaultValues?.type_chauffage || '',
+      energie_chauffage: defaultValues?.energie_chauffage || '',
     },
   })
 
   const handleFormSubmit = async (data: CoproprieteFormData) => {
-    await onSubmit(data)
+    const cleanData = {
+      ...data,
+      type_chauffage: data.type_chauffage || null,
+      energie_chauffage: data.energie_chauffage || null,
+    }
+    await onSubmit(cleanData)
     reset()
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -149,6 +164,65 @@ export function CoproprieteFormDialog({
                   {...register('numero_immatriculation')}
                   placeholder="AB1234567"
                 />
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Building info section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Building2 className="size-4" />
+              <span>Caracteristiques du batiment</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="nombre_batiments">Nombre de batiments</Label>
+                <Input id="nombre_batiments" type="number" {...register('nombre_batiments')} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="nombre_ascenseurs">Nombre d'ascenseurs</Label>
+                <Input id="nombre_ascenseurs" type="number" {...register('nombre_ascenseurs')} />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="periode_construction">Periode de construction</Label>
+              <Input id="periode_construction" {...register('periode_construction')} placeholder="ex: 1960-1970" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="type_chauffage">Type de chauffage</Label>
+                <select
+                  id="type_chauffage"
+                  {...register('type_chauffage')}
+                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                >
+                  <option value="">--</option>
+                  <option value="individuel">Individuel</option>
+                  <option value="collectif">Collectif</option>
+                  <option value="mixte">Mixte</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="energie_chauffage">Energie</Label>
+                <select
+                  id="energie_chauffage"
+                  {...register('energie_chauffage')}
+                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                >
+                  <option value="">--</option>
+                  <option value="gaz">Gaz</option>
+                  <option value="electricite">Electricite</option>
+                  <option value="fioul">Fioul</option>
+                  <option value="bois">Bois</option>
+                  <option value="pompe_chaleur">Pompe a chaleur</option>
+                  <option value="reseau_chaleur">Reseau de chaleur</option>
+                  <option value="autre">Autre</option>
+                </select>
               </div>
             </div>
           </div>

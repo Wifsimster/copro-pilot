@@ -28,6 +28,11 @@ export class CoproprieteModel {
                 numero_immatriculation: data.numero_immatriculation || null,
                 reglement_copropriete_url: data.reglement_copropriete_url || null,
                 notes: data.notes || null,
+                nombre_batiments: data.nombre_batiments || 0,
+                nombre_ascenseurs: data.nombre_ascenseurs || 0,
+                periode_construction: data.periode_construction || null,
+                type_chauffage: data.type_chauffage || null,
+                energie_chauffage: data.energie_chauffage || null,
             })
             .returning('*')
         return result

@@ -55,3 +55,14 @@ export function useDeleteCopropriete() {
     },
   })
 }
+
+export function useFicheSynthetique(id: number | undefined) {
+  return useQuery({
+    queryKey: [...COPROPRIETES_QUERY_KEY, id, 'fiche-synthetique'],
+    queryFn: async () => {
+      const response = await coproprietesApi.getFicheSynthetique(id!)
+      return response.data
+    },
+    enabled: !!id,
+  })
+}

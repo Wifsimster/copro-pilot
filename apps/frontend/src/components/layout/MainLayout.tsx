@@ -9,6 +9,8 @@ import {
   Calendar,
   Wrench,
   FolderOpen,
+  FileText,
+  Landmark,
   LogOut,
   Menu,
   X,
@@ -28,6 +30,8 @@ const navigation = [
   { name: 'Assemblées', href: '/assemblees', icon: Calendar },
   { name: 'Travaux', href: '/travaux', icon: Wrench },
   { name: 'Documents', href: '/documents', icon: FolderOpen },
+  { name: 'Fiche synthetique', href: '/fiche-synthetique', icon: FileText },
+  { name: 'Comptes bancaires', href: '/comptes-bancaires', icon: Landmark },
 ]
 
 export function MainLayout({ children }: MainLayoutProps) {

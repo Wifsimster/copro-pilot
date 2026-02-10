@@ -12,6 +12,9 @@ import budgetsRoutes from './budgets.js'
 import appelsFondsRoutes from './appels-fonds.js'
 import paiementsRoutes from './paiements.js'
 import fondsTravauxRoutes from './fonds-travaux.js'
+// Comptes bancaires
+import comptesBancairesRoutes from './comptes-bancaires.js'
+import mouvementsBancairesRoutes from './mouvements-bancaires.js'
 // Module 4 — Assemblées Générales
 import assembleesRoutes from './assemblees.js'
 // Module 5 — Travaux & Incidents
@@ -42,6 +45,10 @@ router.use('/budgets', budgetsRoutes)
 router.use('/appels-fonds', appelsFondsRoutes)
 router.use('/paiements', paiementsRoutes)
 router.use('/fonds-travaux', fondsTravauxRoutes)
+
+// Comptes bancaires
+router.use('/comptes-bancaires', comptesBancairesRoutes)
+router.use('/mouvements-bancaires', mouvementsBancairesRoutes)
 
 // Module 4 — Assemblées Générales
 router.use('/assemblees', assembleesRoutes)

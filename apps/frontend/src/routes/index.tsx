@@ -12,7 +12,9 @@ const ChargesPage = lazy(() => import('@/pages/ChargesPage'))
 const AssembleesPage = lazy(() => import('@/pages/AssembleesPage'))
 const TravauxPage = lazy(() => import('@/pages/TravauxPage'))
 const DocumentsPage = lazy(() => import('@/pages/DocumentsPage'))
+const FicheSynthetiquePage = lazy(() => import('@/pages/FicheSynthetiquePage'))
 const AssembleeDetailPage = lazy(() => import('@/pages/AssembleeDetailPage'))
+const ComptesBancairesPage = lazy(() => import('@/pages/ComptesBancairesPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function PageLoader() {
@@ -87,6 +89,14 @@ export const router = createHashRouter([
       {
         path: '/documents',
         element: <DocumentsPage />,
+      },
+      {
+        path: '/fiche-synthetique',
+        element: <FicheSynthetiquePage />,
+      },
+      {
+        path: '/comptes-bancaires',
+        element: <ComptesBancairesPage />,
       },
     ],
   },

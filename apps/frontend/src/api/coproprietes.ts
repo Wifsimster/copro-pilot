@@ -1,5 +1,5 @@
 import { api } from './api'
-import type { Copropriete, ApiResponse } from '@/types'
+import type { Copropriete, ApiResponse, FicheSynthetique } from '@/types'
 
 export interface CoproprieteWithStats extends Copropriete {
   nombre_lots: number
@@ -22,4 +22,7 @@ export const coproprietesApi = {
 
   delete: (id: number) =>
     api.delete<{ message: string }>(`/coproprietes/${id}`),
+
+  getFicheSynthetique: (id: number) =>
+    api.get<{ data: FicheSynthetique }>(`/coproprietes/${id}/fiche-synthetique`),
 }

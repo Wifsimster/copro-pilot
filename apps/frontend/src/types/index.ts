@@ -25,6 +25,11 @@ export interface Copropriete {
   date_creation: string
   nombre_lots: number
   numero_immatriculation: string | null
+  nombre_batiments: number
+  nombre_ascenseurs: number
+  periode_construction: string | null
+  type_chauffage: 'individuel' | 'collectif' | 'mixte' | null
+  energie_chauffage: 'gaz' | 'electricite' | 'fioul' | 'bois' | 'pompe_chaleur' | 'reseau_chaleur' | 'autre' | null
   created_at: string
   updated_at: string
 }
@@ -384,6 +389,100 @@ export interface Document {
   description: string | null
   created_at: string
   updated_at: string
+}
+
+// ============================================
+// Compte Bancaire Types
+// ============================================
+
+export type TypeCompte = 'courant' | 'fonds_travaux' | 'emprunt'
+export type TypeMouvement = 'credit' | 'debit'
+
+export interface CompteBancaire {
+  id: number
+  copropriete_id: number
+  banque: string
+  iban: string
+  bic: string | null
+  type: TypeCompte
+  libelle: string | null
+  solde: number
+  date_ouverture: string | null
+  actif: boolean
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface MouvementBancaire {
+  id: number
+  compte_id: number
+  date: string
+  libelle: string
+  montant: number
+  type: TypeMouvement
+  categorie: string | null
+  reference: string | null
+  paiement_id: number | null
+  rapproche: boolean
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
+// Fiche Synthetique Types
+// ============================================
+
+export interface FicheSynthetique {
+  identification: {
+    nom: string
+    adresse: string
+    code_postal: string
+    ville: string
+    numero_immatriculation: string | null
+    date_creation: string | null
+    nombre_batiments: number
+    nombre_ascenseurs: number
+    periode_construction: string | null
+    type_chauffage: string | null
+    energie_chauffage: string | null
+  }
+  lots: {
+    total: number
+    total_tantiemes: number
+    par_type: { type: string; count: number }[]
+    nombre_coproprietaires: number
+  }
+  finances: {
+    budget_previsionnel: {
+      annee: number
+      montant_total: number
+      statut: string
+    } | null
+    postes_depenses: {
+      nom: string
+      categorie: string | null
+      montant_prevu: number
+      montant_reel: number
+    }[]
+    impayes: number
+    fonds_travaux: number
+  }
+  diagnostics: {
+    type: string
+    statut: string
+    date_realisation: string
+    date_validite: string | null
+  }[]
+  contentieux: {
+    incidents_en_cours: number
+  }
+  prochaine_ag: {
+    date: string
+    type: string
+    statut: string
+  } | null
 }
 
 // ============================================
