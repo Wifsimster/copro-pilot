@@ -50,6 +50,8 @@ import contratsSyndicRoutes from './contrats-syndic.js'
 import propositionsSyndicRoutes from './propositions-syndic.js'
 // Notifications
 import notificationsRoutes from './notifications.js'
+// Extranet copropriétaires
+import extranetRoutes from './extranet.js'
 // Exports (PDF & Excel)
 import exportsRoutes from './exports.js'
 // Stats
@@ -125,6 +127,9 @@ router.use('/propositions-syndic', propositionsSyndicRoutes)
 
 // Notifications
 router.use('/notifications', notificationsRoutes)
+
+// Extranet copropriétaires
+router.use('/extranet', extranetRoutes)
 
 // Exports (PDF & Excel)
 router.use('/exports', exportsRoutes)

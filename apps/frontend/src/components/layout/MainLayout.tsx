@@ -9,6 +9,7 @@ import { NotificationBell } from './NotificationBell'
 import {
   Building2,
   LayoutDashboard,
+  UserCircle,
   Users,
   Receipt,
   Calendar,
@@ -56,6 +57,7 @@ const navigationSections: NavSection[] = [
     collapsible: false,
     items: [
       { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
+      { name: 'Espace copropriétaire', href: '/extranet', icon: UserCircle },
       { name: 'Copropriétés', href: '/coproprietes', icon: Building2 },
       { name: 'Copropriétaires', href: '/coproprietaires', icon: Users },
     ],

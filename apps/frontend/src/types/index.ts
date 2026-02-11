@@ -67,6 +67,7 @@ export interface Coproprietaire {
   email: string | null
   telephone: string | null
   adresse_correspondance: string | null
+  user_id: string | null
   created_at: string
   updated_at: string
 }
@@ -977,4 +978,45 @@ export interface PropositionSyndic {
   notes: string | null
   created_at: string
   updated_at: string
+}
+
+// ============================================
+// Extranet Copropriétaire Types
+// ============================================
+
+export interface ExtranetProfil {
+  coproprietaire: Coproprietaire
+  lots: Lot[]
+  coproprietes: Copropriete[]
+  conseilSyndical: { copropriete_id: number; role: string }[]
+}
+
+export interface ExtranetCompte {
+  total_du: number
+  total_paye: number
+  solde: number
+}
+
+export interface ExtranetChargeLigne {
+  id: number
+  appel_fonds_id: number
+  montant: number
+  trimestre: number
+  annee: number
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface ExtranetDocuments {
+  documents: Document[]
+  pvAG: AssembleeGenerale[]
+  diagnostics: any[]
+  assurances: Assurance[]
+  contrats: any[]
+  contratSyndic: any | null
+}
+
+export interface ExtranetConseilSyndical {
+  coproprietaires: Coproprietaire[]
+  soldes: { coproprietaire_id: number; nom: string; prenom: string; total_du: number; total_paye: number; solde: number }[]
+  comptesBancaires: unknown[]
 }

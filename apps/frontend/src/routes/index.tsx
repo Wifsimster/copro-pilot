@@ -25,6 +25,7 @@ const ImmatriculationPage = lazy(() => import('@/pages/ImmatriculationPage'))
 const ContratsSyndicPage = lazy(() => import('@/pages/ContratsSyndicPage'))
 const NotificationsPage = lazy(() => import('@/pages/NotificationsPage'))
 const ComptabiliteReglementairePage = lazy(() => import('@/pages/ComptabiliteReglementairePage'))
+const ExtranetPage = lazy(() => import('@/pages/ExtranetPage'))
 const ExportsPage = lazy(() => import('@/pages/ExportsPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
@@ -148,6 +149,10 @@ export const router = createHashRouter([
       {
         path: '/comptabilite-reglementaire',
         element: <ComptabiliteReglementairePage />,
+      },
+      {
+        path: '/extranet',
+        element: <ExtranetPage />,
       },
       {
         path: '/exports',

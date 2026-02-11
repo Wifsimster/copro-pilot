@@ -1,0 +1,31 @@
+import { api } from './api'
+import type {
+  ExtranetProfil,
+  ExtranetCompte,
+  ExtranetChargeLigne,
+  ExtranetDocuments,
+  ExtranetConseilSyndical,
+} from '@/types'
+
+export const extranetApi = {
+  getMonProfil: () =>
+    api.get<{ data: ExtranetProfil }>('/extranet/mon-profil'),
+
+  getEspaceDocuments: (coproprieteId: number) =>
+    api.get<{ data: ExtranetDocuments }>(`/extranet/documents/${coproprieteId}`),
+
+  getMonCompte: () =>
+    api.get<{ data: ExtranetCompte }>('/extranet/mon-compte'),
+
+  getMesCharges: () =>
+    api.get<{ data: ExtranetChargeLigne[] }>('/extranet/mes-charges'),
+
+  getMesAppelsFonds: () =>
+    api.get<{ data: ExtranetChargeLigne[] }>('/extranet/mes-appels-fonds'),
+
+  getMonFondsTravaux: () =>
+    api.get<{ data: unknown[] }>('/extranet/mon-fonds-travaux'),
+
+  getDonneesConseilSyndical: (coproprieteId: number) =>
+    api.get<{ data: ExtranetConseilSyndical }>(`/extranet/conseil-syndical/${coproprieteId}`),
+}
