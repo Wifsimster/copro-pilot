@@ -4,14 +4,36 @@ import type { Document } from '@/types'
 
 export const DOCUMENTS_QUERY_KEY = ['documents'] as const
 
-export function useDocumentsByCopropriete(coproprieteId: number | undefined) {
+export function useDocumentsByCopropriete(coproprieteId: number | undefined, filters?: { categorie?: string; entite_type?: string; search?: string }) {
   return useQuery({
-    queryKey: [...DOCUMENTS_QUERY_KEY, 'copropriete', coproprieteId],
+    queryKey: [...DOCUMENTS_QUERY_KEY, 'copropriete', coproprieteId, filters],
     queryFn: async () => {
-      const response = await documentsApi.getAllByCopropriete(coproprieteId!)
+      const response = await documentsApi.getAllByCopropriete(coproprieteId!, filters)
       return response.data
     },
     enabled: !!coproprieteId,
+  })
+}
+
+export function useDocumentsByEntity(entiteType: string | undefined, entiteId: number | undefined) {
+  return useQuery({
+    queryKey: [...DOCUMENTS_QUERY_KEY, 'entity', entiteType, entiteId],
+    queryFn: async () => {
+      const response = await documentsApi.getByEntity(entiteType!, entiteId!)
+      return response.data
+    },
+    enabled: !!entiteType && !!entiteId,
+  })
+}
+
+export function useUploadDocument() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ file, metadata }: { file: File; metadata: { copropriete_id: number; nom: string; categorie?: string; description?: string; entite_type?: string; entite_id?: number } }) =>
+      documentsApi.upload(file, metadata),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: DOCUMENTS_QUERY_KEY })
+    },
   })
 }
 

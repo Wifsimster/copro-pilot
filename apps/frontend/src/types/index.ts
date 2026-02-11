@@ -449,6 +449,8 @@ export interface Diagnostic {
 
 export type CategorieDocument = 'pv_ag' | 'contrat' | 'facture' | 'devis' | 'reglement' | 'assurance' | 'diagnostic' | 'courrier' | 'autre'
 
+export type EntiteType = 'ag' | 'intervention' | 'budget' | 'contrat' | 'sinistre'
+
 export interface Document {
   id: number
   copropriete_id: number
@@ -459,6 +461,8 @@ export interface Document {
   mime_type: string | null
   taille: number | null
   description: string | null
+  entite_type: EntiteType | null
+  entite_id: number | null
   created_at: string
   updated_at: string
 }

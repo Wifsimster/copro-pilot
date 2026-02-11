@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
-import { useDocumentsByCopropriete, useCreateDocument, useUpdateDocument, useDeleteDocument } from '@/hooks/useDocuments'
+import { useDocumentsByCopropriete, useUploadDocument, useUpdateDocument, useDeleteDocument } from '@/hooks/useDocuments'
+import { documentsApi } from '@/api/documents'
 import { DocumentFormDialog } from '@/components/documents/DocumentFormDialog'
 import type { Document } from '@/types'
-import { FolderOpen, Plus, Trash2, Pencil, ChevronDown, FileText, Download, Search } from 'lucide-react'
+import { FolderOpen, Plus, Trash2, Pencil, ChevronDown, FileText, Download, Search, Eye, X, Image, FileSpreadsheet, File } from 'lucide-react'
 
 const CATEGORIE_LABELS: Record<string, string> = {
   pv_ag: 'PV d\'AG',
@@ -29,6 +30,14 @@ const CATEGORIE_COLORS: Record<string, string> = {
   autre: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
 }
 
+const ENTITE_LABELS: Record<string, string> = {
+  ag: 'AG',
+  intervention: 'Intervention',
+  budget: 'Budget',
+  contrat: 'Contrat',
+  sinistre: 'Sinistre',
+}
+
 function formatFileSize(bytes: number | null): string {
   if (!bytes) return '—'
   if (bytes < 1024) return `${bytes} o`
@@ -36,15 +45,29 @@ function formatFileSize(bytes: number | null): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`
 }
 
+function getFileIcon(mimeType: string | null) {
+  if (!mimeType) return FileText
+  if (mimeType.startsWith('image/')) return Image
+  if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) return FileSpreadsheet
+  if (mimeType.includes('pdf')) return FileText
+  return File
+}
+
+function isPreviewable(mimeType: string | null): boolean {
+  if (!mimeType) return false
+  return mimeType === 'application/pdf' || mimeType.startsWith('image/')
+}
+
 export default function DocumentsPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [editingDoc, setEditingDoc] = useState<Document | null>(null)
+  const [previewDoc, setPreviewDoc] = useState<Document | null>(null)
   const [search, setSearch] = useState('')
   const [filterCategorie, setFilterCategorie] = useState<string>('all')
 
   const { data: documents, isLoading: loadingDocs } = useDocumentsByCopropriete(selectedCoproId)
-  const createDocument = useCreateDocument()
+  const uploadDocument = useUploadDocument()
   const updateDocument = useUpdateDocument()
   const deleteDocument = useDeleteDocument()
 
@@ -57,11 +80,22 @@ export default function DocumentsPage() {
     return matchSearch && matchCategorie
   })
 
+  const stats = documents ? {
+    total: documents.length,
+    totalSize: documents.reduce((sum, d) => sum + (d.taille || 0), 0),
+    categories: Object.entries(
+      documents.reduce((acc, d) => {
+        acc[d.categorie] = (acc[d.categorie] || 0) + 1
+        return acc
+      }, {} as Record<string, number>)
+    ).sort((a, b) => b[1] - a[1]),
+  } : null
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-foreground">Documents</h1>
-        <p className="text-muted-foreground">Gestion des documents de copropriete</p>
+        <p className="text-muted-foreground">Gestion electronique des documents de copropriete</p>
       </div>
 
       {!selectedCoproId ? (
@@ -74,6 +108,26 @@ export default function DocumentsPage() {
         </div>
       ) : (
         <div className="space-y-4">
+          {/* Stats bar */}
+          {stats && stats.total > 0 && (
+            <div className="flex flex-wrap gap-3">
+              <div className="rounded-lg border border-border bg-card px-4 py-2">
+                <p className="text-xs text-muted-foreground">Documents</p>
+                <p className="text-lg font-semibold">{stats.total}</p>
+              </div>
+              <div className="rounded-lg border border-border bg-card px-4 py-2">
+                <p className="text-xs text-muted-foreground">Taille totale</p>
+                <p className="text-lg font-semibold">{formatFileSize(stats.totalSize)}</p>
+              </div>
+              {stats.categories.slice(0, 3).map(([cat, count]) => (
+                <div key={cat} className="rounded-lg border border-border bg-card px-4 py-2">
+                  <p className="text-xs text-muted-foreground">{CATEGORIE_LABELS[cat] ?? cat}</p>
+                  <p className="text-lg font-semibold">{count}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Actions bar */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-1 gap-3">
@@ -139,65 +193,124 @@ export default function DocumentsPage() {
             </div>
           ) : (
             <div className="space-y-2">
-              {filtered.map((doc) => (
-                <div
-                  key={doc.id}
-                  className="flex items-center gap-4 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent/50"
-                >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
-                    <FileText className="size-5 text-muted-foreground" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-foreground">{doc.nom}</p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span>{doc.fichier_nom}</span>
-                      <span>&middot;</span>
-                      <span>{formatFileSize(doc.taille)}</span>
-                      <span>&middot;</span>
-                      <span>{new Date(doc.created_at).toLocaleDateString('fr-FR')}</span>
+              {filtered.map((doc) => {
+                const IconComponent = getFileIcon(doc.mime_type)
+                return (
+                  <div
+                    key={doc.id}
+                    className="flex items-center gap-4 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent/50"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                      <IconComponent className="size-5 text-muted-foreground" />
                     </div>
-                    {doc.description && (
-                      <p className="mt-1 truncate text-xs text-muted-foreground">{doc.description}</p>
-                    )}
-                  </div>
-                  <span className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${CATEGORIE_COLORS[doc.categorie] ?? CATEGORIE_COLORS.autre}`}>
-                    {CATEGORIE_LABELS[doc.categorie] ?? doc.categorie}
-                  </span>
-                  <div className="flex shrink-0 items-center gap-1">
-                    {doc.fichier_path && (
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-foreground">{doc.nom}</p>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <span>{doc.fichier_nom}</span>
+                        <span>&middot;</span>
+                        <span>{formatFileSize(doc.taille)}</span>
+                        <span>&middot;</span>
+                        <span>{new Date(doc.created_at).toLocaleDateString('fr-FR')}</span>
+                      </div>
+                      {doc.description && (
+                        <p className="mt-1 truncate text-xs text-muted-foreground">{doc.description}</p>
+                      )}
+                    </div>
+                    <div className="flex shrink-0 flex-col items-end gap-1">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${CATEGORIE_COLORS[doc.categorie] ?? CATEGORIE_COLORS.autre}`}>
+                        {CATEGORIE_LABELS[doc.categorie] ?? doc.categorie}
+                      </span>
+                      {doc.entite_type && (
+                        <span className="text-xs text-muted-foreground">
+                          {ENTITE_LABELS[doc.entite_type] ?? doc.entite_type} #{doc.entite_id}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1">
+                      {isPreviewable(doc.mime_type) && (
+                        <button
+                          onClick={() => setPreviewDoc(doc)}
+                          className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                          title="Previsualiser"
+                        >
+                          <Eye className="size-4" />
+                        </button>
+                      )}
                       <a
-                        href={doc.fichier_path}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href={documentsApi.getDownloadUrl(doc.id)}
                         className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                         title="Telecharger"
                       >
                         <Download className="size-4" />
                       </a>
-                    )}
-                    <button
-                      onClick={() => setEditingDoc(doc)}
-                      className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                      title="Modifier"
-                    >
-                      <Pencil className="size-4" />
-                    </button>
-                    <button
-                      onClick={() => { if (confirm('Supprimer ce document ?')) deleteDocument.mutate(doc.id) }}
-                      className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
-                      title="Supprimer"
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
+                      <button
+                        onClick={() => setEditingDoc(doc)}
+                        className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                        title="Modifier"
+                      >
+                        <Pencil className="size-4" />
+                      </button>
+                      <button
+                        onClick={() => { if (confirm('Supprimer ce document ?')) deleteDocument.mutate(doc.id) }}
+                        className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
+                        title="Supprimer"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>
       )}
 
-      {/* Create dialog */}
+      {/* Preview modal */}
+      {previewDoc && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+          <div className="relative flex h-[90vh] w-[90vw] max-w-5xl flex-col rounded-lg bg-background shadow-xl">
+            <div className="flex items-center justify-between border-b border-border px-4 py-3">
+              <div>
+                <h3 className="text-sm font-medium">{previewDoc.nom}</h3>
+                <p className="text-xs text-muted-foreground">{previewDoc.fichier_nom}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <a
+                  href={documentsApi.getDownloadUrl(previewDoc.id)}
+                  className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
+                  title="Telecharger"
+                >
+                  <Download className="size-4" />
+                </a>
+                <button
+                  onClick={() => setPreviewDoc(null)}
+                  className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
+                >
+                  <X className="size-5" />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-auto p-4">
+              {previewDoc.mime_type?.startsWith('image/') ? (
+                <img
+                  src={documentsApi.getDownloadUrl(previewDoc.id)}
+                  alt={previewDoc.nom}
+                  className="mx-auto max-h-full max-w-full object-contain"
+                />
+              ) : previewDoc.mime_type === 'application/pdf' ? (
+                <iframe
+                  src={documentsApi.getDownloadUrl(previewDoc.id)}
+                  className="h-full w-full rounded border border-border"
+                  title={previewDoc.nom}
+                />
+              ) : null}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Create/Edit dialog */}
       <DocumentFormDialog
         open={showCreateDialog || !!editingDoc}
         onOpenChange={(open) => {
@@ -209,13 +322,23 @@ export default function DocumentsPage() {
         coproprieteId={selectedCoproId ?? 0}
         defaultValues={editingDoc ?? undefined}
         title={editingDoc ? 'Modifier le document' : 'Nouveau document'}
-        isLoading={createDocument.isPending || updateDocument.isPending}
-        onSubmit={async (data) => {
+        isLoading={uploadDocument.isPending || updateDocument.isPending}
+        onSubmit={async ({ file, metadata }) => {
           if (editingDoc) {
-            await updateDocument.mutateAsync({ id: editingDoc.id, data })
+            await updateDocument.mutateAsync({ id: editingDoc.id, data: metadata })
             setEditingDoc(null)
-          } else {
-            await createDocument.mutateAsync(data)
+          } else if (file) {
+            await uploadDocument.mutateAsync({
+              file,
+              metadata: {
+                copropriete_id: metadata.copropriete_id!,
+                nom: metadata.nom!,
+                categorie: metadata.categorie,
+                description: metadata.description ?? undefined,
+                entite_type: metadata.entite_type ?? undefined,
+                entite_id: metadata.entite_id ?? undefined,
+              },
+            })
             setShowCreateDialog(false)
           }
         }}

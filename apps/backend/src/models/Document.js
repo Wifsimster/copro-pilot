@@ -10,6 +10,38 @@ export class DocumentModel {
             .orderBy('created_at', 'desc')
     }
 
+    static async getAllByEntity(entiteType, entiteId) {
+        const db = getDb()
+        return db('documents')
+            .where('entite_type', entiteType)
+            .where('entite_id', entiteId)
+            .orderBy('created_at', 'desc')
+    }
+
+    static async getByFilters(coproprieteId, { categorie, entiteType, search } = {}) {
+        const db = getDb()
+        const query = db('documents')
+            .where('copropriete_id', coproprieteId)
+
+        if (categorie) {
+            query.where('categorie', categorie)
+        }
+
+        if (entiteType) {
+            query.where('entite_type', entiteType)
+        }
+
+        if (search) {
+            query.where(function () {
+                this.whereILike('nom', `%${search}%`)
+                    .orWhereILike('description', `%${search}%`)
+                    .orWhereILike('fichier_nom', `%${search}%`)
+            })
+        }
+
+        return query.orderBy('created_at', 'desc')
+    }
+
     static async getById(id) {
         const db = getDb()
         return db('documents').where('id', id).first()
@@ -27,6 +59,8 @@ export class DocumentModel {
                 mime_type: data.mime_type || null,
                 taille: data.taille || null,
                 description: data.description || null,
+                entite_type: data.entite_type || null,
+                entite_id: data.entite_id || null,
             })
             .returning('*')
         return result
