@@ -273,10 +273,13 @@ export function MainLayout({ children }: MainLayoutProps) {
                 if (value) {
                   const id = parseInt(value)
                   setSelectedCoproprieteId(id)
-                  navigate(`/coproprietes/${id}`)
+                  // Only navigate if on a copropriete detail page
+                  const detailMatch = pathname.match(/^\/coproprietes\/\d+/)
+                  if (detailMatch) {
+                    navigate(`/coproprietes/${id}`)
+                  }
                 } else {
                   setSelectedCoproprieteId(undefined)
-                  navigate('/coproprietes')
                 }
                 setSidebarOpen(false)
               }}
