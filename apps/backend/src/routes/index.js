@@ -12,6 +12,8 @@ import budgetsRoutes from './budgets.js'
 import appelsFondsRoutes from './appels-fonds.js'
 import paiementsRoutes from './paiements.js'
 import fondsTravauxRoutes from './fonds-travaux.js'
+// Comptabilité réglementaire (loi ALUR)
+import comptabiliteReglementaireRoutes from './comptabilite-reglementaire.js'
 // Comptes bancaires
 import comptesBancairesRoutes from './comptes-bancaires.js'
 import mouvementsBancairesRoutes from './mouvements-bancaires.js'
@@ -70,6 +72,9 @@ router.use('/budgets', budgetsRoutes)
 router.use('/appels-fonds', appelsFondsRoutes)
 router.use('/paiements', paiementsRoutes)
 router.use('/fonds-travaux', fondsTravauxRoutes)
+
+// Comptabilité réglementaire (loi ALUR)
+router.use('/comptabilite', comptabiliteReglementaireRoutes)
 
 // Comptes bancaires
 router.use('/comptes-bancaires', comptesBancairesRoutes)

@@ -240,6 +240,71 @@ export interface SoldeCoproprietaire {
 }
 
 // ============================================
+// Comptabilité Réglementaire Types
+// ============================================
+
+export interface ExerciceComptable {
+  id: number
+  copropriete_id: number
+  annee: number
+  date_debut: string
+  date_fin: string
+  statut: 'ouvert' | 'cloture'
+  date_cloture: string | null
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type TypeCompteComptable = 'actif' | 'passif' | 'charge' | 'produit'
+
+export interface CompteComptable {
+  id: number
+  copropriete_id: number
+  code: string
+  libelle: string
+  classe: number
+  type: TypeCompteComptable
+  actif: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface EcritureComptable {
+  id: number
+  exercice_id: number
+  copropriete_id: number
+  date_ecriture: string
+  libelle: string
+  compte_code: string
+  debit: number
+  credit: number
+  piece_ref: string | null
+  entite_type: string | null
+  entite_id: number | null
+  coproprietaire_id: number | null
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface LigneBalance {
+  compte_code: string
+  libelle: string
+  classe: number
+  type: TypeCompteComptable
+  total_debit: number
+  total_credit: number
+  solde: number
+}
+
+export interface LigneGrandLivre {
+  compte_code: string
+  total_debit: number
+  total_credit: number
+}
+
+// ============================================
 // Assemblée Générale Types
 // ============================================
 
