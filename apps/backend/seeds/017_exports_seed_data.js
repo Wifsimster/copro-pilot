@@ -5,9 +5,13 @@
  * @returns { Promise<void> }
  */
 export async function seed(knex) {
-  // Check if we already ran this seed
-  const marker = await knex('appel_fonds_lignes').count('id as cnt').first()
-  if (parseInt(marker.cnt) > 50) return
+  // Check if appel_fonds_lignes table exists (may not be created yet)
+  const hasLignesTable = await knex.schema.hasTable('appel_fonds_lignes')
+
+  if (hasLignesTable) {
+    const marker = await knex('appel_fonds_lignes').count('id as cnt').first()
+    if (parseInt(marker.cnt) > 50) return
+  }
 
   const copros = await knex('coproprietes').select('id', 'nom').orderBy('id').limit(5)
   if (copros.length === 0) return
@@ -68,39 +72,41 @@ export async function seed(knex) {
       }
     }
 
-    // Ensure appels de fonds have individual lignes per lot
+    // Ensure appels de fonds have individual lignes per lot (only if table exists)
     const appels = await knex('appels_fonds')
       .where('copropriete_id', copro.id)
       .orderBy('annee', 'desc')
       .orderBy('trimestre', 'asc')
 
-    for (const appel of appels) {
-      const existingLignes = await knex('appel_fonds_lignes')
-        .where('appel_fonds_id', appel.id)
-        .count('id as cnt')
-        .first()
+    if (hasLignesTable) {
+      for (const appel of appels) {
+        const existingLignes = await knex('appel_fonds_lignes')
+          .where('appel_fonds_id', appel.id)
+          .count('id as cnt')
+          .first()
 
-      if (parseInt(existingLignes.cnt) === 0) {
-        const totalTantiemes = lots.reduce((s, l) => s + (l.tantiemes || 0), 0)
-        const totalAppel = parseFloat(appel.montant_total) || 10000
+        if (parseInt(existingLignes.cnt) === 0) {
+          const totalTantiemes = lots.reduce((s, l) => s + (l.tantiemes || 0), 0)
+          const totalAppel = parseFloat(appel.montant_total) || 10000
 
-        const lignes = lots
-          .filter((l) => l.coproprietaire_id)
-          .map((l) => ({
-            appel_fonds_id: appel.id,
-            lot_id: l.id,
-            coproprietaire_id: l.coproprietaire_id,
-            montant: totalTantiemes > 0
-              ? Math.round((l.tantiemes / totalTantiemes) * totalAppel * 100) / 100
-              : 0,
-            created_at: now,
-            updated_at: now,
-          }))
+          const lignes = lots
+            .filter((l) => l.coproprietaire_id)
+            .map((l) => ({
+              appel_fonds_id: appel.id,
+              lot_id: l.id,
+              coproprietaire_id: l.coproprietaire_id,
+              montant: totalTantiemes > 0
+                ? Math.round((l.tantiemes / totalTantiemes) * totalAppel * 100) / 100
+                : 0,
+              created_at: now,
+              updated_at: now,
+            }))
 
-        if (lignes.length > 0) {
-          // Insert in batches
-          for (let i = 0; i < lignes.length; i += 100) {
-            await knex('appel_fonds_lignes').insert(lignes.slice(i, i + 100))
+          if (lignes.length > 0) {
+            // Insert in batches
+            for (let i = 0; i < lignes.length; i += 100) {
+              await knex('appel_fonds_lignes').insert(lignes.slice(i, i + 100))
+            }
           }
         }
       }
@@ -108,7 +114,7 @@ export async function seed(knex) {
 
     // Ensure paiements exist for some appels
     const appelIds = appels.map((a) => a.id)
-    if (appelIds.length > 0) {
+    if (appelIds.length > 0 && hasLignesTable) {
       const existingPaiements = await knex('paiements')
         .whereIn('appel_fonds_id', appelIds)
         .count('id as cnt')
