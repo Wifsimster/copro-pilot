@@ -17,6 +17,7 @@ import comptesBancairesRoutes from './comptes-bancaires.js'
 import mouvementsBancairesRoutes from './mouvements-bancaires.js'
 // Module 4 — Assemblées Générales
 import assembleesRoutes from './assemblees.js'
+import convocationsRoutes from './convocations.js'
 // Module 5 — Travaux & Incidents
 import incidentsRoutes from './incidents.js'
 import interventionsRoutes from './interventions.js'
@@ -76,6 +77,7 @@ router.use('/mouvements-bancaires', mouvementsBancairesRoutes)
 
 // Module 4 — Assemblées Générales
 router.use('/assemblees', assembleesRoutes)
+router.use('/convocations', convocationsRoutes)
 
 // Module 5 — Travaux & Incidents
 router.use('/incidents', incidentsRoutes)

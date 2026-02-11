@@ -294,6 +294,54 @@ export interface PresenceAG {
 }
 
 // ============================================
+// Convocation AG Types
+// ============================================
+
+export type StatutConvocation = 'brouillon' | 'validee' | 'envoyee' | 'cloturee'
+export type ModeEnvoi = 'email' | 'courrier_recommande' | 'les_deux'
+export type StatutDestinataire = 'en_attente' | 'envoyee' | 'recue' | 'ar_signe'
+
+export interface ConvocationAG {
+  id: number
+  ag_id: number
+  date_envoi: string | null
+  mode_envoi: ModeEnvoi
+  statut: StatutConvocation
+  contenu: string | null
+  documents_annexes: string | null
+  notes: string | null
+  destinataires?: DestinataireConvocation[]
+  created_at: string
+  updated_at: string
+}
+
+export interface DestinataireConvocation {
+  id: number
+  convocation_id: number
+  coproprietaire_id: number
+  statut: StatutDestinataire
+  date_envoi: string | null
+  date_reception: string | null
+  date_ar: string | null
+  mode_envoi: 'email' | 'courrier_recommande' | null
+  email_envoye_a: string | null
+  notes: string | null
+  coproprietaire_nom?: string
+  coproprietaire_prenom?: string
+  coproprietaire_email?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface DelaiVerification {
+  valide: boolean
+  jours_restants: number
+  date_ag: string
+  date_limite_envoi: string
+  message: string
+}
+
+// ============================================
 // Travaux & Incidents Types
 // ============================================
 

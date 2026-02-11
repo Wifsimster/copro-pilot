@@ -1,10 +1,15 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useAssemblee, useCreateResolution, useUpdateResolution, useDeleteResolution, useSetPresence, useDeletePresence, useGenererPv } from '@/hooks/useAssemblees'
+import { useConvocationsByAg, useDelaiVerification, useCreateConvocation, useUpdateConvocation, useDeleteConvocation, useGenererDestinataires, useEnvoyerConvocation } from '@/hooks/useConvocations'
+import { convocationsApi } from '@/api/convocations'
 import { ResolutionFormDialog } from '@/components/assemblees/ResolutionFormDialog'
 import { PresenceFormDialog } from '@/components/assemblees/PresenceFormDialog'
-import type { Resolution, PresenceAG } from '@/types'
-import { ArrowLeft, Plus, Trash2, Pencil, Vote, Users, FileText, Download, Loader2 } from 'lucide-react'
+import { ConvocationFormDialog } from '@/components/assemblees/ConvocationFormDialog'
+import type { Resolution, PresenceAG, ConvocationAG, DestinataireConvocation } from '@/types'
+import { ArrowLeft, Plus, Trash2, Pencil, Vote, Users, FileText, Download, Loader2, Mail, Send, UserPlus, AlertTriangle, CheckCircle2, Eye } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { CONVOCATIONS_QUERY_KEY } from '@/hooks/useConvocations'
 
 const STATUT_LABELS: Record<string, string> = {
   planifiee: 'Planifiee',
@@ -41,7 +46,41 @@ const RESULTAT_COLORS: Record<string, string> = {
   ajournee: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
 }
 
-type Tab = 'resolutions' | 'presences'
+const CONVOC_STATUT_LABELS: Record<string, string> = {
+  brouillon: 'Brouillon',
+  validee: 'Validee',
+  envoyee: 'Envoyee',
+  cloturee: 'Cloturee',
+}
+
+const CONVOC_STATUT_COLORS: Record<string, string> = {
+  brouillon: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+  validee: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  envoyee: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  cloturee: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+}
+
+const DEST_STATUT_LABELS: Record<string, string> = {
+  en_attente: 'En attente',
+  envoyee: 'Envoyee',
+  recue: 'Recue',
+  ar_signe: 'AR signe',
+}
+
+const DEST_STATUT_COLORS: Record<string, string> = {
+  en_attente: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+  envoyee: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  recue: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  ar_signe: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+}
+
+const MODE_ENVOI_LABELS: Record<string, string> = {
+  email: 'Email',
+  courrier_recommande: 'Courrier recommande',
+  les_deux: 'Email + Courrier',
+}
+
+type Tab = 'resolutions' | 'presences' | 'convocations'
 
 export default function AssembleeDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -53,11 +92,34 @@ export default function AssembleeDetailPage() {
   const setPresence = useSetPresence()
   const deletePresence = useDeletePresence()
   const genererPv = useGenererPv()
+
+  // Convocations
+  const { data: convocations } = useConvocationsByAg(agId)
+  const { data: delai } = useDelaiVerification(agId)
+  const createConvocation = useCreateConvocation()
+  const updateConvocation = useUpdateConvocation()
+  const deleteConvocation = useDeleteConvocation()
+  const genererDestinataires = useGenererDestinataires()
+  const envoyerConvocation = useEnvoyerConvocation()
+
   const [activeTab, setActiveTab] = useState<Tab>('resolutions')
   const [showResolutionDialog, setShowResolutionDialog] = useState(false)
   const [showPresenceDialog, setShowPresenceDialog] = useState(false)
+  const [showConvocationDialog, setShowConvocationDialog] = useState(false)
   const [editingResolution, setEditingResolution] = useState<Resolution | null>(null)
   const [editingPresence, setEditingPresence] = useState<PresenceAG | null>(null)
+  const [editingConvocation, setEditingConvocation] = useState<ConvocationAG | null>(null)
+  const [expandedConvocation, setExpandedConvocation] = useState<number | null>(null)
+
+  // Fetch destinataires when expanding a convocation
+  const { data: expandedDestinataires } = useQuery({
+    queryKey: [...CONVOCATIONS_QUERY_KEY, 'destinataires', expandedConvocation],
+    queryFn: async () => {
+      const response = await convocationsApi.getDestinataires(expandedConvocation!)
+      return response.data
+    },
+    enabled: !!expandedConvocation,
+  })
 
   if (isLoading) {
     return (
@@ -90,6 +152,13 @@ export default function AssembleeDetailPage() {
     absents: ag.presences.filter((p) => p.statut === 'absent').length,
     totalTantiemes: ag.presences.reduce((s, p) => s + (p.statut !== 'absent' ? p.tantiemes : 0), 0),
   } : null
+
+  const handleEnvoyer = async (convocId: number) => {
+    if (!delai?.valide) {
+      if (!window.confirm('Le delai legal de 21 jours n\'est pas respecte. Envoyer quand meme ?')) return
+    }
+    await envoyerConvocation.mutateAsync(convocId)
+  }
 
   return (
     <div className="space-y-6">
@@ -131,6 +200,29 @@ export default function AssembleeDetailPage() {
           </button>
         )}
       </div>
+
+      {/* Delay warning */}
+      {delai && ag.statut === 'planifiee' && (
+        <div className={`flex items-center gap-3 rounded-xl border p-4 ${
+          delai.valide
+            ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20'
+            : 'border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20'
+        }`}>
+          {delai.valide ? (
+            <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
+          ) : (
+            <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+          )}
+          <div className="flex-1">
+            <p className={`text-sm font-medium ${delai.valide ? 'text-green-700 dark:text-green-300' : 'text-amber-700 dark:text-amber-300'}`}>
+              {delai.message}
+            </p>
+            <p className="text-xs text-gray-500 dark:text-zinc-400">
+              Date limite d'envoi : {new Date(delai.date_limite_envoi).toLocaleDateString('fr-FR')}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Info cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
@@ -183,6 +275,22 @@ export default function AssembleeDetailPage() {
         >
           <Users className="h-4 w-4" />
           Presences
+        </button>
+        <button
+          onClick={() => setActiveTab('convocations')}
+          className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            activeTab === 'convocations'
+              ? 'bg-white text-gray-900 shadow dark:bg-zinc-700 dark:text-white'
+              : 'text-gray-500 hover:text-gray-700 dark:text-zinc-400'
+          }`}
+        >
+          <Mail className="h-4 w-4" />
+          Convocations
+          {convocations && convocations.length > 0 && (
+            <span className="rounded-full bg-blue-100 px-1.5 py-0.5 text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+              {convocations.length}
+            </span>
+          )}
         </button>
       </div>
 
@@ -386,6 +494,197 @@ export default function AssembleeDetailPage() {
                 setEditingPresence(null)
               }}
               isLoading={setPresence.isPending}
+            />
+          )}
+        </div>
+      )}
+
+      {/* Convocations tab */}
+      {activeTab === 'convocations' && (
+        <div className="space-y-4">
+          <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+            <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Convocations</h2>
+              <button
+                onClick={() => setShowConvocationDialog(true)}
+                className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+              >
+                <Plus className="h-4 w-4" />
+                Nouvelle convocation
+              </button>
+            </div>
+
+            {(!convocations || convocations.length === 0) ? (
+              <div className="flex flex-col items-center py-12">
+                <Mail className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
+                <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune convocation creee</p>
+                <p className="text-xs text-gray-400 dark:text-zinc-500">Creez une convocation pour envoyer aux coproprietaires</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-100 dark:divide-zinc-700/50">
+                {convocations.map((convoc: ConvocationAG) => (
+                  <div key={convoc.id}>
+                    <div className="p-4 hover:bg-gray-50 dark:hover:bg-zinc-700/30">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${CONVOC_STATUT_COLORS[convoc.statut]}`}>
+                              {CONVOC_STATUT_LABELS[convoc.statut]}
+                            </span>
+                            <span className="rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600 dark:bg-zinc-700 dark:text-zinc-300">
+                              {MODE_ENVOI_LABELS[convoc.mode_envoi]}
+                            </span>
+                          </div>
+                          {convoc.date_envoi && (
+                            <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">
+                              Envoyee le {new Date(convoc.date_envoi).toLocaleDateString('fr-FR')}
+                            </p>
+                          )}
+                          {convoc.notes && (
+                            <p className="mt-1 text-xs text-gray-400 dark:text-zinc-500">{convoc.notes}</p>
+                          )}
+                        </div>
+                        <div className="flex gap-1">
+                          {convoc.statut === 'brouillon' && (
+                            <>
+                              <button
+                                onClick={() => genererDestinataires.mutate(convoc.id)}
+                                disabled={genererDestinataires.isPending}
+                                className="flex items-center gap-1 rounded px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                title="Generer les destinataires"
+                              >
+                                <UserPlus className="h-3.5 w-3.5" />
+                                Destinataires
+                              </button>
+                              <button
+                                onClick={() => handleEnvoyer(convoc.id)}
+                                disabled={envoyerConvocation.isPending}
+                                className="flex items-center gap-1 rounded px-2 py-1 text-xs text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
+                                title="Envoyer la convocation"
+                              >
+                                {envoyerConvocation.isPending ? (
+                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                ) : (
+                                  <Send className="h-3.5 w-3.5" />
+                                )}
+                                Envoyer
+                              </button>
+                            </>
+                          )}
+                          <button
+                            onClick={() => setExpandedConvocation(expandedConvocation === convoc.id ? null : convoc.id)}
+                            className="rounded p-1 text-gray-400 hover:text-blue-600"
+                            title="Voir les destinataires"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+                          {convoc.statut === 'brouillon' && (
+                            <button
+                              onClick={() => setEditingConvocation(convoc)}
+                              className="rounded p-1 text-gray-400 hover:text-blue-600"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </button>
+                          )}
+                          {convoc.statut === 'brouillon' && (
+                            <button
+                              onClick={() => {
+                                if (window.confirm('Supprimer cette convocation ?')) deleteConvocation.mutate(convoc.id)
+                              }}
+                              className="rounded p-1 text-gray-400 hover:text-red-600"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Expanded destinataires */}
+                    {expandedConvocation === convoc.id && (
+                      <div className="border-t border-gray-100 bg-gray-50/50 px-4 py-3 dark:border-zinc-700/50 dark:bg-zinc-800/50">
+                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-zinc-300">
+                          Destinataires
+                          {expandedDestinataires && (
+                            <span className="ml-1 text-gray-400">({expandedDestinataires.length})</span>
+                          )}
+                        </h4>
+                        {!expandedDestinataires ? (
+                          <div className="flex items-center gap-2 py-2">
+                            <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
+                            <span className="text-sm text-gray-400">Chargement...</span>
+                          </div>
+                        ) : expandedDestinataires.length === 0 ? (
+                          <p className="text-sm text-gray-400 dark:text-zinc-500">
+                            Aucun destinataire. Cliquez "Destinataires" pour generer la liste.
+                          </p>
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-xs">
+                              <thead>
+                                <tr className="text-left text-gray-500 dark:text-zinc-400">
+                                  <th className="pb-2 pr-4">Nom</th>
+                                  <th className="pb-2 pr-4">Email</th>
+                                  <th className="pb-2 pr-4">Mode</th>
+                                  <th className="pb-2 pr-4">Statut</th>
+                                  <th className="pb-2 pr-4">Reception</th>
+                                  <th className="pb-2">AR</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {expandedDestinataires.map((dest: DestinataireConvocation) => (
+                                  <tr key={dest.id} className="border-t border-gray-100 dark:border-zinc-700/50">
+                                    <td className="py-2 pr-4 font-medium text-gray-900 dark:text-white">
+                                      {dest.coproprietaire_prenom} {dest.coproprietaire_nom}
+                                    </td>
+                                    <td className="py-2 pr-4 text-gray-500 dark:text-zinc-400">
+                                      {dest.email_envoye_a || '—'}
+                                    </td>
+                                    <td className="py-2 pr-4 text-gray-500 dark:text-zinc-400">
+                                      {dest.mode_envoi ? (dest.mode_envoi === 'email' ? 'Email' : 'Courrier') : '—'}
+                                    </td>
+                                    <td className="py-2 pr-4">
+                                      <span className={`inline-flex rounded-full px-1.5 py-0.5 text-xs font-medium ${DEST_STATUT_COLORS[dest.statut]}`}>
+                                        {DEST_STATUT_LABELS[dest.statut]}
+                                      </span>
+                                    </td>
+                                    <td className="py-2 pr-4 text-gray-500 dark:text-zinc-400">
+                                      {dest.date_reception ? new Date(dest.date_reception).toLocaleDateString('fr-FR') : '—'}
+                                    </td>
+                                    <td className="py-2 text-gray-500 dark:text-zinc-400">
+                                      {dest.date_ar ? new Date(dest.date_ar).toLocaleDateString('fr-FR') : '—'}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {agId && (
+            <ConvocationFormDialog
+              open={showConvocationDialog || !!editingConvocation}
+              onOpenChange={(open) => { setShowConvocationDialog(open); if (!open) setEditingConvocation(null) }}
+              agId={agId}
+              defaultValues={editingConvocation ?? undefined}
+              title={editingConvocation ? 'Modifier la convocation' : 'Nouvelle convocation'}
+              onSubmit={async (data) => {
+                if (editingConvocation) {
+                  await updateConvocation.mutateAsync({ id: editingConvocation.id, data })
+                } else {
+                  await createConvocation.mutateAsync(data)
+                }
+                setShowConvocationDialog(false)
+                setEditingConvocation(null)
+              }}
+              isLoading={editingConvocation ? updateConvocation.isPending : createConvocation.isPending}
             />
           )}
         </div>
