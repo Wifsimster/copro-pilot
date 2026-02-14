@@ -17,7 +17,8 @@
         "bootstrap": "npm run iw && npm run build",
         "frontend:build": "npm run build --workspace=copro-pilot-frontend",
         "dev:backend": "npm run start --workspace=@copro-pilot/backend",
-        "dev:frontend": "npm run start --workspace=copro-pilot-frontend"
+        "dev:frontend": "npm run start --workspace=copro-pilot-frontend",
+        "test": "npm run test --workspaces --if-present"
     },
     "devDependencies": {
         "@eslint/js": "^9.19.0",

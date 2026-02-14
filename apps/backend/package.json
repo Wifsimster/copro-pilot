@@ -17,7 +17,9 @@
     "seed:run": "npm run knex -- seed:run",
     "seed:make": "npm run knex -- seed:make",
     "db:reset": "npm run knex -- migrate:rollback --all && npm run knex -- migrate:latest && npm run knex -- seed:run",
-    "lint": "eslint src/ --quiet"
+    "lint": "eslint src/ --quiet",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "license": "MIT",
   "dependencies": {
@@ -38,6 +40,8 @@
     "winston": "^3.19.0"
   },
   "devDependencies": {
-    "eslint": "^9.39.2"
+    "eslint": "^9.39.2",
+    "supertest": "^7.2.2",
+    "vitest": "^4.0.18"
   }
 }
