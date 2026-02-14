@@ -1,8 +1,5 @@
 // Third-party packages
-import cors from 'cors'
 import express from 'express'
-import cookieParser from 'cookie-parser'
-import methodOverride from 'method-override'
 import path from 'path'
 import fs from 'fs'
 import history from 'connect-history-api-fallback'
@@ -12,15 +9,7 @@ import { fileURLToPath } from 'url'
 import knexDatabase from './config/knex-database.js'
 import { migrate } from './config/migrate.js'
 import logger from './logger.js'
-
-// Import routes
-import routes from './routes/index.js'
-
-// Import middleware
-import { requestLogger } from './middleware/requestLogger.js'
-import { validateJSON } from './middleware/validation.js'
-import { errorHandler, notFoundHandler } from './middleware/errorHandler.js'
-import { toNodeHandler } from 'better-auth/node'
+import { createApp, errorHandler, notFoundHandler } from './createApp.js'
 
 // Application configuration
 const APP_NAME = 'copro-pilot-backend'
@@ -137,9 +126,6 @@ async function main() {
     await initializeBetterAuth()
 
     // Initialize Express app
-    const app = express()
-
-    // CORS configuration
     const frontendUrl = process.env.BASE_URL || process.env.FRONTEND_URL
 
     if (process.env.NODE_ENV === 'production' && !frontendUrl) {
@@ -147,49 +133,14 @@ async function main() {
       process.exit(1)
     }
 
-    app.use(cors({
-      origin: process.env.NODE_ENV === 'development'
-        ? ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000']
-        : frontendUrl,
-      credentials: true
-    }))
+    const app = createApp({
+      getDb: () => knexDatabase.getKnex(),
+      auth
+    })
 
-    // Better Auth handler before express.json()
     if (auth) {
-      app.all('/api/auth/*splat', toNodeHandler(auth))
       logger.info('[Auth] Better Auth handler mounted at /api/auth')
     }
-
-    // Body parsing middleware
-    app.use(express.json({ limit: '10mb' }))
-    app.use(express.urlencoded({ extended: true, limit: '10mb' }))
-    app.use(methodOverride())
-
-    app.set('query parser', 'extended')
-
-    app.use(cookieParser())
-
-    // Custom middleware
-    app.use(requestLogger)
-    app.use(validateJSON)
-
-    // Inject database connection
-    app.use((req, res, next) => {
-      req.db = knexDatabase.getKnex()
-      next()
-    })
-
-    // Mount Express routes under /api prefix
-    app.use('/api', routes)
-
-    // Handler 404 pour les routes API
-    app.use('/api', (req, res) => {
-      res.status(404).json({
-        error: 'Route API non trouvée',
-        path: req.originalUrl,
-        method: req.method
-      })
-    })
 
     // Serve static frontend build files (production)
     const frontendDistPath = path.join(__dirname, '../../../frontend-dist')
