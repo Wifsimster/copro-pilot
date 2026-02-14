@@ -6,6 +6,7 @@ import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { cn } from '@/lib/utils'
 import { NotificationBell } from './NotificationBell'
+import { GlobalSearch } from './GlobalSearch'
 import { canAccessRoute } from '@/utils/roleAccess'
 import {
   Building2,
@@ -306,6 +307,11 @@ export function MainLayout({ children }: MainLayoutProps) {
             </select>
             <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           </div>
+        </div>
+
+        {/* Global search */}
+        <div className="border-b border-gray-200 px-4 py-3 dark:border-zinc-700">
+          <GlobalSearch />
         </div>
 
         {/* Navigation */}

@@ -58,6 +58,8 @@ import exportsRoutes from './exports.js'
 import statsRoutes from './stats.js'
 // Cycle annuel (workflow)
 import cycleAnnuelRoutes from './cycle-annuel.js'
+// Global search
+import searchRoutes from './search.js'
 
 const router = Router()
 
@@ -141,6 +143,9 @@ router.use('/stats', statsRoutes)
 
 // Cycle annuel (workflow)
 router.use('/cycle-annuel', cycleAnnuelRoutes)
+
+// Global search
+router.use('/search', searchRoutes)
 
 // Root health check
 router.get('/', (req, res) => {

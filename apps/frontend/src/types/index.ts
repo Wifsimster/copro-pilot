@@ -818,6 +818,26 @@ export interface Notification {
 }
 
 // ============================================
+// Global Search Types
+// ============================================
+
+export interface SearchResults {
+  coproprietes: Pick<Copropriete, 'id' | 'nom' | 'adresse' | 'ville' | 'code_postal'>[]
+  coproprietaires: Pick<Coproprietaire, 'id' | 'nom' | 'prenom' | 'email'>[]
+  contrats: {
+    id: number
+    objet: string
+    type: string | null
+    statut: string
+    prestataire_nom: string | null
+  }[]
+  incidents: Pick<Incident, 'id' | 'titre' | 'categorie' | 'urgence' | 'statut'>[]
+  documents: Pick<Document, 'id' | 'nom' | 'categorie'>[]
+  assemblees: Pick<AssembleeGenerale, 'id' | 'date' | 'type' | 'statut' | 'lieu'>[]
+  assurances: Pick<Assurance, 'id' | 'compagnie' | 'numero_police' | 'type' | 'statut'>[]
+}
+
+// ============================================
 // API Response Types
 // ============================================
 
