@@ -260,6 +260,11 @@ export function MainLayout({ children }: MainLayoutProps) {
           </button>
         </div>
 
+        {/* Vue d'ensemble */}
+        <div className="border-b border-gray-200 px-4 pt-4 pb-3 dark:border-zinc-700">
+          {renderSection(navigationSections[0])}
+        </div>
+
         {/* Copropriete selector */}
         <div className="border-b border-gray-200 px-4 py-3 dark:border-zinc-700">
           <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-zinc-500">
@@ -296,7 +301,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
         {/* Navigation */}
         <nav className="flex-1 space-y-4 overflow-y-auto p-4">
-          {navigationSections.map(renderSection)}
+          {navigationSections.slice(1).map(renderSection)}
         </nav>
 
         {/* User section */}
