@@ -7,9 +7,11 @@ import { useClesRepartitionByCopropriete, useCreateCleRepartition, useUpdateCleR
 import { useLocatairesByLot, useCreateLocataire, useUpdateLocataire, useDeleteLocataire } from '@/hooks/useLocataires'
 import { useMutationsByLot, useCreateMutation, useUpdateMutation, useDeleteMutation } from '@/hooks/useMutations'
 import { useDiagnosticsByCopropriete, useCreateDiagnostic, useUpdateDiagnostic, useDeleteDiagnostic } from '@/hooks/useDiagnostics'
+import { useCycleAnnuel, useInitializeCycle, useRefreshCycle } from '@/hooks/useCycleAnnuel'
 import type { LotWithProprietaire } from '@/api/lots'
 import type { PartieCommune, CleRepartition, Locataire, Mutation, Diagnostic } from '@/types'
-import { ArrowLeft, Plus, Trash2, Pencil, Home, DoorOpen, Key, UserCheck, ArrowRightLeft, ClipboardCheck } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, Pencil, Home, DoorOpen, Key, UserCheck, ArrowRightLeft, ClipboardCheck, ListChecks } from 'lucide-react'
+import { CycleAnnuelChecklist } from '@/components/coproprietes/CycleAnnuelChecklist'
 import { LotFormDialog } from '@/components/coproprietes/LotFormDialog'
 import { CoproprieteFormDialog } from '@/components/coproprietes/CoproprieteFormDialog'
 import { PartieCommuneFormDialog } from '@/components/coproprietes/PartieCommuneFormDialog'
@@ -62,7 +64,7 @@ const STATUT_DIAGNOSTIC_LABELS: Record<string, string> = {
   a_renouveler: 'A renouveler',
 }
 
-type Tab = 'lots' | 'parties-communes' | 'cles-repartition' | 'locataires' | 'mutations' | 'diagnostics'
+type Tab = 'lots' | 'parties-communes' | 'cles-repartition' | 'locataires' | 'mutations' | 'diagnostics' | 'cycle-annuel'
 
 export default function CoproprieteDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -91,6 +93,10 @@ export default function CoproprieteDetailPage() {
   const createDiagnostic = useCreateDiagnostic()
   const updateDiagnostic = useUpdateDiagnostic()
   const deleteDiagnostic = useDeleteDiagnostic()
+  const currentYear = new Date().getFullYear()
+  const { data: cycleAnnuel } = useCycleAnnuel(coproprieteId, currentYear)
+  const initCycle = useInitializeCycle()
+  const refreshCycleAction = useRefreshCycle()
   const [showCreateLot, setShowCreateLot] = useState(false)
   const [showEditCopro, setShowEditCopro] = useState(false)
   const [showCreatePC, setShowCreatePC] = useState(false)
@@ -142,6 +148,7 @@ export default function CoproprieteDetailPage() {
     { id: 'locataires' as Tab, label: 'Locataires', icon: UserCheck },
     { id: 'mutations' as Tab, label: 'Mutations', icon: ArrowRightLeft },
     { id: 'diagnostics' as Tab, label: 'Diagnostics', icon: ClipboardCheck, count: diagnostics?.length || 0 },
+    { id: 'cycle-annuel' as Tab, label: 'Cycle annuel', icon: ListChecks, count: cycleAnnuel?.filter(t => t.statut === 'completed').length || 0 },
   ]
 
   return (
@@ -653,6 +660,33 @@ export default function CoproprieteDetailPage() {
                 </tbody>
               </table>
             </div>
+          )}
+        </div>
+      )}
+
+      {/* Cycle annuel tab */}
+      {activeTab === 'cycle-annuel' && (
+        <div className="space-y-4">
+          {(!cycleAnnuel || cycleAnnuel.length === 0) ? (
+            <div className="rounded-xl border border-gray-200 bg-white p-8 text-center dark:border-zinc-700 dark:bg-zinc-800">
+              <ListChecks className="mx-auto h-10 w-10 text-gray-300 dark:text-zinc-600" />
+              <p className="mt-3 text-gray-500 dark:text-zinc-400">
+                Aucun cycle annuel initialise pour {currentYear}
+              </p>
+              <button
+                onClick={() => initCycle.mutate({ coproprieteId: coproprieteId!, annee: currentYear })}
+                disabled={initCycle.isPending}
+                className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+              >
+                {initCycle.isPending ? 'Initialisation...' : `Initialiser le cycle ${currentYear}`}
+              </button>
+            </div>
+          ) : (
+            <CycleAnnuelChecklist
+              taches={cycleAnnuel}
+              onRefresh={() => refreshCycleAction.mutate({ coproprieteId: coproprieteId!, annee: currentYear })}
+              isRefreshing={refreshCycleAction.isPending}
+            />
           )}
         </div>
       )}

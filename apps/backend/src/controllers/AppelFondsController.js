@@ -111,4 +111,21 @@ export class AppelFondsController {
             res.status(500).json({ error: 'Impossible de supprimer la ligne d\'appel' })
         }
     }
+
+    static async generateFromBudget(req, res) {
+        try {
+            const { budgetId } = req.params
+            if (!budgetId) {
+                return res.status(400).json({ error: 'Le parametre budgetId est obligatoire' })
+            }
+            const appels = await appelFondsService.generateFromBudget(parseInt(budgetId))
+            res.status(201).json({
+                data: appels,
+                message: `${appels.length} appel(s) de fonds genere(s) avec succes`,
+            })
+        } catch (error) {
+            logger.error(`[AppelFondsController] Error generating from budget: ${error.message}`)
+            res.status(500).json({ error: error.message || 'Impossible de generer les appels de fonds' })
+        }
+    }
 }

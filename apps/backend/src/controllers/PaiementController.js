@@ -1,4 +1,5 @@
 import { paiementService } from '../services/PaiementService.js'
+import { workflowEventService } from '../services/WorkflowEventService.js'
 import logger from '../logger.js'
 
 export class PaiementController {
@@ -55,6 +56,7 @@ export class PaiementController {
             }
             const result = await paiementService.create(req.body)
             res.status(201).json({ data: result, message: 'Paiement enregistré avec succès' })
+            workflowEventService.onPaiementCreated(result).catch(() => {})
         } catch (error) {
             logger.error(`[PaiementController] Error creating: ${error.message}`)
             res.status(500).json({ error: 'Impossible d\'enregistrer le paiement' })

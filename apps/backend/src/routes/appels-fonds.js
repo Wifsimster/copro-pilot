@@ -11,6 +11,7 @@ router.post('/', requireAuth(), AppelFondsController.create)
 router.post('/lignes', requireAuth(), AppelFondsController.createLigne)
 router.put('/lignes/:ligneId', requireAuth(), AppelFondsController.updateLigne)
 router.put('/:id', requireAuth(), AppelFondsController.update)
+router.post('/generate-from-budget/:budgetId', requireAuth(), AppelFondsController.generateFromBudget)
 router.delete('/lignes/:ligneId', requireAuth(), AppelFondsController.deleteLigne)
 router.delete('/:id', requireAuth(), AppelFondsController.delete)
 
