@@ -10,6 +10,7 @@ import knexDatabase from './config/knex-database.js'
 import { migrate } from './config/migrate.js'
 import logger from './logger.js'
 import { createApp, errorHandler, notFoundHandler } from './createApp.js'
+import { workflowSchedulerService } from './services/WorkflowSchedulerService.js'
 
 // Application configuration
 const APP_NAME = 'copro-pilot-backend'
@@ -202,6 +203,9 @@ async function main() {
       }
     })
 
+    // Start workflow scheduler (cron jobs)
+    workflowSchedulerService.start()
+
     logger.info(`CoproPilot Backend started successfully!`)
     logger.info(`Server running on port ${port}`)
     logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`)
@@ -219,6 +223,7 @@ async function main() {
         logger.info(`[${APP_NAME}] HTTP server closed`)
 
         try {
+          workflowSchedulerService.stop()
           await knexDatabase.close()
           logger.info(`[${APP_NAME}] Database connections closed`)
         } catch (dbError) {

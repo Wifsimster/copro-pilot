@@ -56,6 +56,8 @@ import extranetRoutes from './extranet.js'
 import exportsRoutes from './exports.js'
 // Stats
 import statsRoutes from './stats.js'
+// Cycle annuel (workflow)
+import cycleAnnuelRoutes from './cycle-annuel.js'
 
 const router = Router()
 
@@ -136,6 +138,9 @@ router.use('/exports', exportsRoutes)
 
 // Stats
 router.use('/stats', statsRoutes)
+
+// Cycle annuel (workflow)
+router.use('/cycle-annuel', cycleAnnuelRoutes)
 
 // Root health check
 router.get('/', (req, res) => {

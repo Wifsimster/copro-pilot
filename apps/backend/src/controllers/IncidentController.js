@@ -1,4 +1,5 @@
 import { incidentService } from '../services/IncidentService.js'
+import { workflowEventService } from '../services/WorkflowEventService.js'
 import logger from '../logger.js'
 
 export class IncidentController {
@@ -33,6 +34,8 @@ export class IncidentController {
             }
             const result = await incidentService.create(req.body)
             res.status(201).json({ data: result, message: 'Incident créé avec succès' })
+            // Fire-and-forget workflow event
+            workflowEventService.onIncidentCreated(result).catch(() => {})
         } catch (error) {
             logger.error(`[IncidentController] Error creating: ${error.message}`)
             res.status(500).json({ error: 'Impossible de créer l\'incident' })
