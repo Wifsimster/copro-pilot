@@ -35,6 +35,12 @@ jobs:
       - name: TypeScript check
         run: npm run typecheck --workspace=copro-pilot-frontend
 
+      - name: Test backend
+        run: npm test --workspace=@copro-pilot/backend
+
+      - name: Test frontend
+        run: npm test --workspace=copro-pilot-frontend
+
       - name: Build frontend
         run: npm run build --workspace=copro-pilot-frontend
 
