@@ -2,19 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Building2, User, FileText } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { Prestataire } from '@/types'
 
 const prestataireSchema = z.object({
@@ -54,14 +52,7 @@ export function PrestataireFormDialog({
   defaultValues,
   title = 'Nouveau prestataire',
 }: PrestataireFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<PrestataireFormData>({
+  const form = useForm<PrestataireFormData>({
     resolver: zodResolver(prestataireSchema),
     defaultValues: {
       nom: defaultValues?.nom || '',
@@ -75,8 +66,6 @@ export function PrestataireFormDialog({
     },
   })
 
-  const currentSpecialite = watch('specialite')
-
   const handleFormSubmit = async (data: PrestataireFormData) => {
     await onSubmit({
       ...data,
@@ -88,50 +77,62 @@ export function PrestataireFormDialog({
       adresse: data.adresse || null,
       notes: data.notes || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Renseignez les informations du prestataire. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Renseignez les informations du prestataire. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={Building2} label="Informations">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="nom"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nom *</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="siret"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>SIRET</FormLabel>
+                <FormControl>
+                  <Input placeholder="12345678901234" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Informations section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Building2 className="size-4" />
-              <span>Informations</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="nom">Nom *</Label>
-                <Input id="nom" {...register('nom')} />
-                {errors.nom && (
-                  <p className="text-sm text-destructive">{errors.nom.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="siret">SIRET</Label>
-                <Input id="siret" {...register('siret')} placeholder="12345678901234" />
-                {errors.siret && (
-                  <p className="text-sm text-destructive">{errors.siret.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="specialite">Specialite</Label>
-              <Select value={currentSpecialite} onValueChange={(val) => setValue('specialite', val)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selectionnez une specialite" />
-                </SelectTrigger>
+        <FormField
+          control={form.control}
+          name="specialite"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Specialite</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selectionnez une specialite" />
+                  </SelectTrigger>
+                </FormControl>
                 <SelectContent>
                   <SelectItem value="Ascenseur">Ascenseur</SelectItem>
                   <SelectItem value="Nettoyage">Nettoyage</SelectItem>
@@ -144,66 +145,85 @@ export function PrestataireFormDialog({
                   <SelectItem value="Autre">Autre</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-          <Separator />
+      <FormSection icon={User} label="Contact">
+        <div className="grid grid-cols-3 gap-4">
+          <FormField
+            control={form.control}
+            name="contact_nom"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nom du contact</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="contact_email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input type="email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="contact_telephone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Telephone</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-          {/* Contact section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <User className="size-4" />
-              <span>Contact</span>
-            </div>
+        <FormField
+          control={form.control}
+          name="adresse"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Adresse</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="contact_nom">Nom du contact</Label>
-                <Input id="contact_nom" {...register('contact_nom')} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="contact_email">Email</Label>
-                <Input id="contact_email" type="email" {...register('contact_email')} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="contact_telephone">Telephone</Label>
-                <Input id="contact_telephone" {...register('contact_telephone')} />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="adresse">Adresse</Label>
-              <Input id="adresse" {...register('adresse')} />
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Notes section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Notes</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea rows={3} {...register('notes')} placeholder="Notes supplementaires..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <FormSection icon={FileText} label="Notes">
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Notes supplementaires..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

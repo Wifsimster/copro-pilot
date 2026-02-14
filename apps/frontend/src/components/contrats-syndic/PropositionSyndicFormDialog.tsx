@@ -2,19 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Building2, Euro, FileText } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { PropositionSyndic } from '@/types'
 
 const propositionSyndicSchema = z.object({
@@ -55,14 +53,7 @@ export function PropositionSyndicFormDialog({
   defaultValues,
   title = 'Nouvelle proposition',
 }: PropositionSyndicFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<PropositionSyndicFormData>({
+  const form = useForm<PropositionSyndicFormData>({
     resolver: zodResolver(propositionSyndicSchema),
     defaultValues: {
       syndic_nom: defaultValues?.syndic_nom || '',
@@ -75,8 +66,6 @@ export function PropositionSyndicFormDialog({
     },
   })
 
-  const currentRetenue = watch('retenue')
-
   const handleFormSubmit = async (data: PropositionSyndicFormData) => {
     await onSubmit({
       ...data,
@@ -87,113 +76,131 @@ export function PropositionSyndicFormDialog({
       retenue: data.retenue === 'oui',
       notes: data.notes || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Enregistrez une proposition de contrat de syndic pour la mise en concurrence.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Enregistrez une proposition de contrat de syndic pour la mise en concurrence."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={Building2} label="Syndic candidat">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="syndic_nom"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nom du syndic *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Nom du cabinet de syndic" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_reception"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de reception *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Syndic section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Building2 className="size-4" />
-              <span>Syndic candidat</span>
-            </div>
+      <FormSection icon={Euro} label="Proposition financiere">
+        <FormField
+          control={form.control}
+          name="montant_propose"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Montant propose (EUR/an)</FormLabel>
+              <FormControl>
+                <Input type="number" step="0.01" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="prestations_proposees"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Prestations proposees</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Detail des prestations proposees..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="syndic_nom">Nom du syndic *</Label>
-                <Input id="syndic_nom" {...register('syndic_nom')} placeholder="Nom du cabinet de syndic" />
-                {errors.syndic_nom && (
-                  <p className="text-sm text-destructive">{errors.syndic_nom.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="date_reception">Date de reception *</Label>
-                <Input id="date_reception" type="date" {...register('date_reception')} />
-                {errors.date_reception && (
-                  <p className="text-sm text-destructive">{errors.date_reception.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Montant section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Euro className="size-4" />
-              <span>Proposition financiere</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="montant_propose">Montant propose (EUR/an)</Label>
-              <Input id="montant_propose" type="number" step="0.01" {...register('montant_propose')} />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="prestations_proposees">Prestations proposees</Label>
-              <Textarea {...register('prestations_proposees')} rows={3} placeholder="Detail des prestations proposees..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Decision section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Decision et notes</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="retenue">Proposition retenue</Label>
-                <Select value={currentRetenue} onValueChange={(val) => setValue('retenue', val)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+      <FormSection icon={FileText} label="Decision et notes">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="retenue"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Proposition retenue</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="non">Non</SelectItem>
                     <SelectItem value="oui">Oui</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="document_url">URL du document</Label>
-                <Input id="document_url" {...register('document_url')} placeholder="Lien vers le document" />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea {...register('notes')} rows={3} placeholder="Notes supplementaires..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="document_url"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>URL du document</FormLabel>
+                <FormControl>
+                  <Input placeholder="Lien vers le document" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Notes supplementaires..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

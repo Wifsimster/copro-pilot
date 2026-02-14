@@ -2,19 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Calculator, FileText } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { BudgetPrevisionnel } from '@/types'
 
 const budgetSchema = z.object({
@@ -52,14 +50,7 @@ export function BudgetFormDialog({
   defaultValues,
   title = 'Nouveau budget',
 }: BudgetFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<BudgetFormData>({
+  const form = useForm<BudgetFormData>({
     resolver: zodResolver(budgetSchema),
     defaultValues: {
       annee: defaultValues?.annee || new Date().getFullYear(),
@@ -69,94 +60,95 @@ export function BudgetFormDialog({
     },
   })
 
-  const currentStatut = watch('statut')
-
   const handleFormSubmit = async (data: BudgetFormData) => {
     await onSubmit({
       ...data,
       copropriete_id: coproprieteId,
       notes: data.notes || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Definissez le budget previsionnel. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Definissez le budget previsionnel. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="md"
+    >
+      <FormSection icon={Calculator} label="Budget">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="annee"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Annee *</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="montant_total"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Montant total (EUR) *</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" placeholder="50000" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Budget section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Calculator className="size-4" />
-              <span>Budget</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="annee">Annee *</Label>
-                <Input id="annee" type="number" {...register('annee')} />
-                {errors.annee && (
-                  <p className="text-sm text-destructive">{errors.annee.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="montant_total">Montant total (EUR) *</Label>
-                <Input id="montant_total" type="number" step="0.01" {...register('montant_total')} placeholder="50000" />
-                {errors.montant_total && (
-                  <p className="text-sm text-destructive">{errors.montant_total.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="statut">Statut *</Label>
-              <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as BudgetFormData['statut'])}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+        <FormField
+          control={form.control}
+          name="statut"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Statut *</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
                 <SelectContent>
                   <SelectItem value="brouillon">Brouillon</SelectItem>
                   <SelectItem value="vote">Vote</SelectItem>
                   <SelectItem value="approuve">Approuve</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-          <Separator />
-
-          {/* Notes section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Notes</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea rows={3} {...register('notes')} placeholder="Notes supplementaires..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <FormSection icon={FileText} label="Notes">
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Notes supplementaires..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

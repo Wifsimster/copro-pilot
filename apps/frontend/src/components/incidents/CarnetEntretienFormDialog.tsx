@@ -2,19 +2,17 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ClipboardList, Banknote } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { CarnetEntretien } from '@/types'
 
 const schema = z.object({
@@ -39,7 +37,7 @@ interface Props {
 }
 
 export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading, defaultValues, title = 'Nouvelle entree au carnet' }: Props) {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
+  const form = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       titre: defaultValues?.titre || '',
@@ -60,88 +58,109 @@ export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, o
       montant: data.montant === '' ? null : Number(data.montant),
       categorie: data.categorie || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Ajoutez une entree au carnet d'entretien. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Ajoutez une entree au carnet d'entretien. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={onFormSubmit}
+      isLoading={isLoading}
+      size="md"
+    >
+      <FormSection icon={ClipboardList} label="Entretien">
+        <FormField
+          control={form.control}
+          name="titre"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Titre *</FormLabel>
+              <FormControl>
+                <Input placeholder="Ravalement facade..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-5">
-          {/* Entry details section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <ClipboardList className="size-4" />
-              <span>Entretien</span>
-            </div>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Details..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <div className="space-y-2">
-              <Label htmlFor="titre">Titre *</Label>
-              <Input id="titre" {...register('titre')} placeholder="Ravalement facade..." />
-              {errors.titre && (
-                <p className="text-sm text-destructive">{errors.titre.message}</p>
-              )}
-            </div>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="prestataire"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Prestataire</FormLabel>
+                <FormControl>
+                  <Input placeholder="Nom du prestataire" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="categorie"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Categorie</FormLabel>
+                <FormControl>
+                  <Input placeholder="Toiture, Plomberie..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea {...register('description')} rows={3} placeholder="Details..." />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="prestataire">Prestataire</Label>
-                <Input id="prestataire" {...register('prestataire')} placeholder="Nom du prestataire" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="categorie">Categorie</Label>
-                <Input id="categorie" {...register('categorie')} placeholder="Toiture, Plomberie..." />
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Cost & date section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Banknote className="size-4" />
-              <span>Cout et date</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="montant">Montant (EUR)</Label>
-                <Input id="montant" type="number" step="0.01" {...register('montant')} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_realisation">Date de realisation *</Label>
-                <Input id="date_realisation" type="date" {...register('date_realisation')} />
-                {errors.date_realisation && (
-                  <p className="text-sm text-destructive">{errors.date_realisation.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <FormSection icon={Banknote} label="Cout et date">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="montant"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Montant (EUR)</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_realisation"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de realisation *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
+    </FormDialog>
   )
 }

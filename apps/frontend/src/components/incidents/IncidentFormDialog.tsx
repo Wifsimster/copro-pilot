@@ -2,19 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { AlertTriangle, Tag } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { Incident } from '@/types'
 
 const incidentSchema = z.object({
@@ -54,14 +52,7 @@ export function IncidentFormDialog({
   defaultValues,
   title = 'Signaler un incident',
 }: IncidentFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<IncidentFormData>({
+  const form = useForm<IncidentFormData>({
     resolver: zodResolver(incidentSchema),
     defaultValues: {
       titre: defaultValues?.titre || '',
@@ -73,9 +64,6 @@ export function IncidentFormDialog({
     },
   })
 
-  const currentUrgence = watch('urgence')
-  const currentStatut = watch('statut')
-
   const handleFormSubmit = async (data: IncidentFormData) => {
     await onSubmit({
       ...data,
@@ -83,61 +71,77 @@ export function IncidentFormDialog({
       description: data.description || null,
       categorie: data.categorie || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Decrivez l'incident rencontre. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Decrivez l'incident rencontre. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={AlertTriangle} label="Description de l'incident">
+        <FormField
+          control={form.control}
+          name="titre"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Titre *</FormLabel>
+              <FormControl>
+                <Input placeholder="Fuite d'eau au 3e etage..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Incident details section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <AlertTriangle className="size-4" />
-              <span>Description de l'incident</span>
-            </div>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Details de l'incident..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-            <div className="space-y-2">
-              <Label htmlFor="titre">Titre *</Label>
-              <Input id="titre" {...register('titre')} placeholder="Fuite d'eau au 3e etage..." />
-              {errors.titre && (
-                <p className="text-sm text-destructive">{errors.titre.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea {...register('description')} rows={3} placeholder="Details de l'incident..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Classification section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Tag className="size-4" />
-              <span>Classification</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="categorie">Categorie</Label>
-                <Input id="categorie" {...register('categorie')} placeholder="Plomberie, Electricite..." />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="urgence">Urgence *</Label>
-                <Select value={currentUrgence} onValueChange={(val) => setValue('urgence', val as IncidentFormData['urgence'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+      <FormSection icon={Tag} label="Classification">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="categorie"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Categorie</FormLabel>
+                <FormControl>
+                  <Input placeholder="Plomberie, Electricite..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="urgence"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Urgence *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="faible">Faible</SelectItem>
                     <SelectItem value="moyenne">Moyenne</SelectItem>
@@ -145,16 +149,25 @@ export function IncidentFormDialog({
                     <SelectItem value="critique">Critique</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="statut">Statut *</Label>
-                <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as IncidentFormData['statut'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="statut"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Statut *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="ouvert">Ouvert</SelectItem>
                     <SelectItem value="en_cours">En cours</SelectItem>
@@ -162,29 +175,25 @@ export function IncidentFormDialog({
                     <SelectItem value="ferme">Ferme</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_signalement">Date de signalement *</Label>
-                <Input id="date_signalement" type="date" {...register('date_signalement')} />
-                {errors.date_signalement && (
-                  <p className="text-sm text-destructive">{errors.date_signalement.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_signalement"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de signalement *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
+    </FormDialog>
   )
 }

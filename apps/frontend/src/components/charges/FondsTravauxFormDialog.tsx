@@ -2,18 +2,16 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { PiggyBank } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { FondsTravaux } from '@/types'
 
 const schema = z.object({
@@ -35,7 +33,7 @@ interface Props {
 }
 
 export function FondsTravauxFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading, defaultValues, title = 'Nouveau fonds travaux' }: Props) {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
+  const form = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       annee: defaultValues?.annee || new Date().getFullYear(),
@@ -46,63 +44,63 @@ export function FondsTravauxFormDialog({ open, onOpenChange, coproprieteId, onSu
 
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({ ...data, copropriete_id: coproprieteId })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Definissez le fonds travaux annuel. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-5">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <PiggyBank className="size-4" />
-              <span>Fonds travaux</span>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="annee">Annee *</Label>
-                <Input id="annee" type="number" {...register('annee')} />
-                {errors.annee && (
-                  <p className="text-sm text-destructive">{errors.annee.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="cotisation_annuelle">Cotisation annuelle (EUR) *</Label>
-                <Input id="cotisation_annuelle" type="number" step="0.01" {...register('cotisation_annuelle')} />
-                {errors.cotisation_annuelle && (
-                  <p className="text-sm text-destructive">{errors.cotisation_annuelle.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="solde">Solde (EUR) *</Label>
-                <Input id="solde" type="number" step="0.01" {...register('solde')} />
-                {errors.solde && (
-                  <p className="text-sm text-destructive">{errors.solde.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Definissez le fonds travaux annuel. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={onFormSubmit}
+      isLoading={isLoading}
+      size="md"
+    >
+      <FormSection icon={PiggyBank} label="Fonds travaux">
+        <div className="grid grid-cols-3 gap-4">
+          <FormField
+            control={form.control}
+            name="annee"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Annee *</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="cotisation_annuelle"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cotisation annuelle (EUR) *</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="solde"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Solde (EUR) *</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
+    </FormDialog>
   )
 }

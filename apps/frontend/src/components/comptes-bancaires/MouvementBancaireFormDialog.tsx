@@ -2,19 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ArrowDownUp, FileText } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { MouvementBancaire } from '@/types'
 
 const mouvementSchema = z.object({
@@ -35,7 +33,7 @@ const mouvementSchema = z.object({
   notes: z.string().optional(),
 })
 
-type MouvementFormData = z.infer<typeof mouvementSchema>;
+type MouvementFormData = z.infer<typeof mouvementSchema>
 
 interface MouvementBancaireFormDialogProps {
   open: boolean
@@ -56,14 +54,7 @@ export function MouvementBancaireFormDialog({
   defaultValues,
   title = 'Nouveau mouvement',
 }: MouvementBancaireFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<MouvementFormData>({
+  const form = useForm<MouvementFormData>({
     resolver: zodResolver(mouvementSchema),
     defaultValues: {
       date: defaultValues?.date || new Date().toISOString().split('T')[0],
@@ -77,10 +68,6 @@ export function MouvementBancaireFormDialog({
     },
   })
 
-  const currentType = watch('type')
-  const currentCategorie = watch('categorie')
-  const currentRapproche = watch('rapproche')
-
   const handleFormSubmit = async (data: MouvementFormData) => {
     await onSubmit({
       ...data,
@@ -89,83 +76,102 @@ export function MouvementBancaireFormDialog({
       reference: data.reference || null,
       notes: data.notes || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Enregistrez un mouvement bancaire. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Enregistrez un mouvement bancaire. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={ArrowDownUp} label="Mouvement">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="montant"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Montant (EUR) *</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" placeholder="0.00" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Mouvement section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <ArrowDownUp className="size-4" />
-              <span>Mouvement</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date">Date *</Label>
-                <Input id="date" type="date" {...register('date')} />
-                {errors.date && (
-                  <p className="text-sm text-destructive">{errors.date.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="montant">Montant (EUR) *</Label>
-                <Input id="montant" type="number" step="0.01" {...register('montant')} placeholder="0.00" />
-                {errors.montant && (
-                  <p className="text-sm text-destructive">{errors.montant.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="libelle">Libelle *</Label>
-                <Input id="libelle" {...register('libelle')} placeholder="Libelle du mouvement" />
-                {errors.libelle && (
-                  <p className="text-sm text-destructive">{errors.libelle.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="type">Type *</Label>
-                <Select value={currentType} onValueChange={(val) => setValue('type', val as MouvementFormData['type'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="libelle"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Libelle *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Libelle du mouvement" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="credit">Credit</SelectItem>
                     <SelectItem value="debit">Debit</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
-          </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
-
-          {/* Details section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Details</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="categorie">Categorie</Label>
-                <Select value={currentCategorie} onValueChange={(val) => setValue('categorie', val)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selectionner une categorie" />
-                  </SelectTrigger>
+      <FormSection icon={FileText} label="Details">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="categorie"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Categorie</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selectionner une categorie" />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="appel_de_fonds">Appel de fonds</SelectItem>
                     <SelectItem value="paiement_prestataire">Paiement prestataire</SelectItem>
@@ -174,54 +180,63 @@ export function MouvementBancaireFormDialog({
                     <SelectItem value="autre">Autre</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="rapproche">Rapproche</Label>
-                <Select value={currentRapproche ? 'oui' : 'non'} onValueChange={(val) => setValue('rapproche', val === 'oui')}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="rapproche"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Rapproche</FormLabel>
+                <Select value={field.value ? 'true' : 'false'} onValueChange={(val) => field.onChange(val === 'true')}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
-                    <SelectItem value="oui">Oui</SelectItem>
-                    <SelectItem value="non">Non</SelectItem>
+                    <SelectItem value="true">Oui</SelectItem>
+                    <SelectItem value="false">Non</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="reference">Reference</Label>
-              <Input id="reference" {...register('reference')} placeholder="Reference du mouvement" />
-            </div>
-          </div>
+        <FormField
+          control={form.control}
+          name="reference"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Reference</FormLabel>
+              <FormControl>
+                <Input placeholder="Reference du mouvement" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-          <Separator />
-
-          {/* Notes section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Notes</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea rows={3} {...register('notes')} placeholder="Notes supplementaires..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <FormSection icon={FileText} label="Notes">
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Notes supplementaires..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

@@ -2,19 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Vote, FileText } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { Resolution, TypeMajorite } from '@/types'
 import { useEffect } from 'react'
 
@@ -48,7 +46,7 @@ interface Props {
 }
 
 export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmit, isLoading, defaultValues, title }: Props) {
-  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormData>({
+  const form = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       titre: defaultValues?.titre ?? '',
@@ -62,7 +60,7 @@ export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmi
 
   useEffect(() => {
     if (open) {
-      reset({
+      form.reset({
         titre: defaultValues?.titre ?? '',
         description: defaultValues?.description ?? '',
         majorite: defaultValues?.majorite ?? 'article_24',
@@ -71,9 +69,7 @@ export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmi
         abstentions: defaultValues?.abstentions ?? 0,
       })
     }
-  }, [open, defaultValues, reset])
-
-  const currentMajorite = watch('majorite')
+  }, [open, defaultValues, form.reset])
 
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({
@@ -86,56 +82,63 @@ export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmi
       voix_contre: data.voix_contre ?? 0,
       abstentions: data.abstentions ?? 0,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{title ?? `Resolution #${defaultValues?.numero ?? numero}`}</DialogTitle>
-          <DialogDescription>
-            Ajoutez une resolution a l'ordre du jour. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title ?? `Resolution #${defaultValues?.numero ?? numero}`}
+      description="Ajoutez une resolution a l'ordre du jour. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={onFormSubmit}
+      isLoading={isLoading}
+      size="md"
+    >
+      <FormSection icon={FileText} label="Contenu">
+        <FormField
+          control={form.control}
+          name="titre"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Titre *</FormLabel>
+              <FormControl>
+                <Input placeholder="Approbation des comptes..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-5">
-          {/* Resolution details section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Contenu</span>
-            </div>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Details de la resolution..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-            <div className="space-y-2">
-              <Label htmlFor="titre">Titre *</Label>
-              <Input id="titre" {...register('titre')} placeholder="Approbation des comptes..." />
-              {errors.titre && (
-                <p className="text-sm text-destructive">{errors.titre.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea rows={3} {...register('description')} placeholder="Details de la resolution..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Vote section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Vote className="size-4" />
-              <span>Regles de vote</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="majorite">Majorite requise *</Label>
-              <Select value={currentMajorite} onValueChange={(val) => setValue('majorite', val as FormData['majorite'])}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+      <FormSection icon={Vote} label="Regles de vote">
+        <FormField
+          control={form.control}
+          name="majorite"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Majorite requise *</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
                 <SelectContent>
                   <SelectItem value="article_24">Article 24 (majorite simple)</SelectItem>
                   <SelectItem value="article_25">Article 25 (majorite absolue)</SelectItem>
@@ -143,36 +146,53 @@ export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmi
                   <SelectItem value="unanimite">Unanimite</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="voix_pour">Voix pour</Label>
-                <Input id="voix_pour" type="number" {...register('voix_pour')} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="voix_contre">Voix contre</Label>
-                <Input id="voix_contre" type="number" {...register('voix_contre')} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="abstentions">Abstentions</Label>
-                <Input id="abstentions" type="number" {...register('abstentions')} />
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+        <div className="grid grid-cols-3 gap-4">
+          <FormField
+            control={form.control}
+            name="voix_pour"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Voix pour</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="voix_contre"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Voix contre</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="abstentions"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Abstentions</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
+    </FormDialog>
   )
 }

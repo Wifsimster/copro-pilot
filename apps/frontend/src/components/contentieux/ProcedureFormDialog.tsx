@@ -1,20 +1,9 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Scale, Gavel, CalendarDays, Euro } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Scale, Gavel, CalendarDays, Euro, FileText } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { Procedure } from '@/types'
 
 const procedureSchema = z.object({
@@ -61,14 +59,7 @@ export function ProcedureFormDialog({
   defaultValues,
   title = 'Nouvelle procedure',
 }: ProcedureFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<ProcedureFormData>({
+  const form = useForm<ProcedureFormData>({
     resolver: zodResolver(procedureSchema),
     defaultValues: {
       coproprietaire_id: defaultValues?.coproprietaire_id ?? 0,
@@ -87,8 +78,6 @@ export function ProcedureFormDialog({
     },
   })
 
-  const currentStatut = watch('statut')
-
   const handleFormSubmit = async (data: ProcedureFormData) => {
     await onSubmit({
       ...data,
@@ -105,42 +94,48 @@ export function ProcedureFormDialog({
       decision: data.decision || null,
       notes: data.notes || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Enregistrez une procedure judiciaire. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Enregistrez une procedure judiciaire. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={Scale} label="Procedure">
+        <FormField
+          control={form.control}
+          name="coproprietaire_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Coproprietaire ID *</FormLabel>
+              <FormControl>
+                <Input type="number" placeholder="ID du coproprietaire" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Procedure section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Scale className="size-4" />
-              <span>Procedure</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="coproprietaire_id">Coproprietaire ID *</Label>
-              <Input id="coproprietaire_id" type="number" {...register('coproprietaire_id')} placeholder="ID du coproprietaire" />
-              {errors.coproprietaire_id && (
-                <p className="text-sm text-destructive">{errors.coproprietaire_id.message}</p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="statut">Statut *</Label>
-                <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as ProcedureFormData['statut'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="statut"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Statut *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="en_preparation">En preparation</SelectItem>
                     <SelectItem value="en_cours">En cours</SelectItem>
@@ -150,111 +145,173 @@ export function ProcedureFormDialog({
                     <SelectItem value="clos">Clos</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="reference_dossier">Reference dossier</Label>
-                <Input id="reference_dossier" {...register('reference_dossier')} placeholder="REF-2026-001" />
-              </div>
-            </div>
-          </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="reference_dossier"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Reference dossier</FormLabel>
+                <FormControl>
+                  <Input placeholder="REF-2026-001" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
+      <FormSection icon={Gavel} label="Intervenants">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="avocat"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Avocat</FormLabel>
+                <FormControl>
+                  <Input placeholder="Me Dupont..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="tribunal"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tribunal</FormLabel>
+                <FormControl>
+                  <Input placeholder="TJ Paris..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          {/* Intervenants section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Gavel className="size-4" />
-              <span>Intervenants</span>
-            </div>
+      <FormSection icon={CalendarDays} label="Dates">
+        <div className="grid grid-cols-3 gap-4">
+          <FormField
+            control={form.control}
+            name="date_assignation"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Assignation</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_audience"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Audience</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_jugement"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Jugement</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="avocat">Avocat</Label>
-                <Input id="avocat" {...register('avocat')} placeholder="Me Dupont..." />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="tribunal">Tribunal</Label>
-                <Input id="tribunal" {...register('tribunal')} placeholder="TJ Paris..." />
-              </div>
-            </div>
-          </div>
+      <FormSection icon={Euro} label="Montants">
+        <div className="grid grid-cols-3 gap-4">
+          <FormField
+            control={form.control}
+            name="montant_reclame"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Reclame (EUR)</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" placeholder="5000" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="montant_obtenu"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Obtenu (EUR)</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" placeholder="4500" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="frais_procedure"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Frais (EUR)</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" placeholder="800" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
-
-          {/* Dates section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <CalendarDays className="size-4" />
-              <span>Dates</span>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date_assignation">Assignation</Label>
-                <Input id="date_assignation" type="date" {...register('date_assignation')} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_audience">Audience</Label>
-                <Input id="date_audience" type="date" {...register('date_audience')} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_jugement">Jugement</Label>
-                <Input id="date_jugement" type="date" {...register('date_jugement')} />
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Montants section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Euro className="size-4" />
-              <span>Montants</span>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="montant_reclame">Reclame (EUR)</Label>
-                <Input id="montant_reclame" type="number" step="0.01" {...register('montant_reclame')} placeholder="5000" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="montant_obtenu">Obtenu (EUR)</Label>
-                <Input id="montant_obtenu" type="number" step="0.01" {...register('montant_obtenu')} placeholder="4500" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="frais_procedure">Frais (EUR)</Label>
-                <Input id="frais_procedure" type="number" step="0.01" {...register('frais_procedure')} placeholder="800" />
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Decision & notes section */}
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="decision">Decision</Label>
-              <Textarea rows={3} {...register('decision')} placeholder="Decision du tribunal..." />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea rows={3} {...register('notes')} placeholder="Notes complementaires..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <FormSection icon={FileText} label="Decision & notes">
+        <FormField
+          control={form.control}
+          name="decision"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Decision</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Decision du tribunal..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Notes complementaires..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

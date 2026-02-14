@@ -2,18 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Building2, MapPin, Info } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -21,6 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { Copropriete } from '@/types'
 
 const coproprieteSchema = z.object({
@@ -56,14 +54,7 @@ export function CoproprieteFormDialog({
   defaultValues,
   title = 'Nouvelle copropriete',
 }: CoproprieteFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<CoproprieteFormData>({
+  const form = useForm<CoproprieteFormData>({
     resolver: zodResolver(coproprieteSchema),
     defaultValues: {
       nom: defaultValues?.nom || '',
@@ -80,9 +71,6 @@ export function CoproprieteFormDialog({
     },
   })
 
-  const currentTypeChauffage = watch('type_chauffage')
-  const currentEnergieChauffage = watch('energie_chauffage')
-
   const handleFormSubmit = async (data: CoproprieteFormData) => {
     const cleanData = {
       ...data,
@@ -90,141 +78,188 @@ export function CoproprieteFormDialog({
       energie_chauffage: data.energie_chauffage || null,
     }
     await onSubmit(cleanData)
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Renseignez les informations de la copropriete. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Renseignez les informations de la copropriete. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={Building2} label="Informations generales">
+        <FormField
+          control={form.control}
+          name="nom"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nom *</FormLabel>
+              <FormControl>
+                <Input placeholder="Residence Les Tilleuls" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* General info section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Building2 className="size-4" />
-              <span>Informations generales</span>
-            </div>
+      <FormSection icon={MapPin} label="Adresse">
+        <FormField
+          control={form.control}
+          name="adresse"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Adresse *</FormLabel>
+              <FormControl>
+                <Input placeholder="12 rue de la Paix" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="code_postal"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Code postal *</FormLabel>
+                <FormControl>
+                  <Input placeholder="75001" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="ville"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ville *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Paris" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-            <div className="space-y-2">
-              <Label htmlFor="nom">Nom *</Label>
-              <Input id="nom" {...register('nom')} placeholder="Residence Les Tilleuls" />
-              {errors.nom && (
-                <p className="text-sm text-destructive">{errors.nom.message}</p>
-              )}
-            </div>
-          </div>
+      <FormSection icon={Info} label="Informations complementaires">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="nombre_lots"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre de lots</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="numero_immatriculation"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>N° immatriculation</FormLabel>
+                <FormControl>
+                  <Input placeholder="AB1234567" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
-
-          {/* Address section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <MapPin className="size-4" />
-              <span>Adresse</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="adresse">Adresse *</Label>
-              <Input id="adresse" {...register('adresse')} placeholder="12 rue de la Paix" />
-              {errors.adresse && (
-                <p className="text-sm text-destructive">{errors.adresse.message}</p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="code_postal">Code postal *</Label>
-                <Input id="code_postal" {...register('code_postal')} placeholder="75001" />
-                {errors.code_postal && (
-                  <p className="text-sm text-destructive">{errors.code_postal.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="ville">Ville *</Label>
-                <Input id="ville" {...register('ville')} placeholder="Paris" />
-                {errors.ville && (
-                  <p className="text-sm text-destructive">{errors.ville.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Additional info section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Info className="size-4" />
-              <span>Informations complementaires</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="nombre_lots">Nombre de lots</Label>
-                <Input id="nombre_lots" type="number" {...register('nombre_lots')} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="numero_immatriculation">N° immatriculation</Label>
-                <Input
-                  id="numero_immatriculation"
-                  {...register('numero_immatriculation')}
-                  placeholder="AB1234567"
-                />
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Building info section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Building2 className="size-4" />
-              <span>Caracteristiques du batiment</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="nombre_batiments">Nombre de batiments</Label>
-                <Input id="nombre_batiments" type="number" {...register('nombre_batiments')} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="nombre_ascenseurs">Nombre d'ascenseurs</Label>
-                <Input id="nombre_ascenseurs" type="number" {...register('nombre_ascenseurs')} />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="periode_construction">Periode de construction</Label>
-              <Input id="periode_construction" {...register('periode_construction')} placeholder="ex: 1960-1970" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="type_chauffage">Type de chauffage</Label>
-                <Select value={currentTypeChauffage || ''} onValueChange={(val) => setValue('type_chauffage', val as CoproprieteFormData['type_chauffage'])}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--" />
-                  </SelectTrigger>
+      <FormSection icon={Building2} label="Caracteristiques du batiment">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="nombre_batiments"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre de batiments</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="nombre_ascenseurs"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre d'ascenseurs</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <FormField
+          control={form.control}
+          name="periode_construction"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Periode de construction</FormLabel>
+              <FormControl>
+                <Input placeholder="ex: 1960-1970" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="type_chauffage"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type de chauffage</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ''}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--" />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="individuel">Individuel</SelectItem>
                     <SelectItem value="collectif">Collectif</SelectItem>
                     <SelectItem value="mixte">Mixte</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="energie_chauffage">Energie</Label>
-                <Select value={currentEnergieChauffage || ''} onValueChange={(val) => setValue('energie_chauffage', val as CoproprieteFormData['energie_chauffage'])}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--" />
-                  </SelectTrigger>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="energie_chauffage"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Energie</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ''}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--" />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="gaz">Gaz</SelectItem>
                     <SelectItem value="electricite">Electricite</SelectItem>
@@ -235,26 +270,12 @@ export function CoproprieteFormDialog({
                     <SelectItem value="autre">Autre</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
+    </FormDialog>
   )
 }

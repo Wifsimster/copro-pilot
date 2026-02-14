@@ -1,20 +1,9 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Shield, CalendarDays, Banknote } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Shield, CalendarDays, Banknote, FileText } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { Assurance } from '@/types'
 
 const assuranceSchema = z.object({
@@ -57,14 +55,7 @@ export function AssuranceFormDialog({
   defaultValues,
   title = 'Nouvelle assurance',
 }: AssuranceFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<AssuranceFormData>({
+  const form = useForm<AssuranceFormData>({
     resolver: zodResolver(assuranceSchema),
     defaultValues: {
       compagnie: defaultValues?.compagnie || '',
@@ -79,9 +70,6 @@ export function AssuranceFormDialog({
     },
   })
 
-  const currentType = watch('type')
-  const currentStatut = watch('statut')
-
   const handleFormSubmit = async (data: AssuranceFormData) => {
     await onSubmit({
       ...data,
@@ -92,61 +80,85 @@ export function AssuranceFormDialog({
       franchise: data.franchise ? parseFloat(data.franchise) : null,
       notes: data.notes || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Renseignez les informations de la police d'assurance. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Insurance details */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Shield className="size-4" />
-              <span>Informations de la police</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="compagnie">Compagnie *</Label>
-                <Input id="compagnie" {...register('compagnie')} placeholder="AXA, MAIF, Allianz..." />
-                {errors.compagnie && (
-                  <p className="text-sm text-destructive">{errors.compagnie.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="statut">Statut *</Label>
-                <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as AssuranceFormData['statut'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Renseignez les informations de la police d'assurance. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={Shield} label="Informations de la police">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="compagnie"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Compagnie *</FormLabel>
+                <FormControl>
+                  <Input placeholder="AXA, MAIF, Allianz..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="statut"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Statut *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="actif">Actif</SelectItem>
                     <SelectItem value="expire">Expire</SelectItem>
                     <SelectItem value="resilie">Resilie</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="numero_police">Numero de police</Label>
-                <Input id="numero_police" {...register('numero_police')} placeholder="POL-2024-0001" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="type">Type *</Label>
-                <Select value={currentType} onValueChange={(val) => setValue('type', val as AssuranceFormData['type'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="numero_police"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Numero de police</FormLabel>
+                <FormControl>
+                  <Input placeholder="POL-2024-0001" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="multirisque_immeuble">Multirisque immeuble</SelectItem>
                     <SelectItem value="responsabilite_civile">Responsabilite civile</SelectItem>
@@ -155,74 +167,90 @@ export function AssuranceFormDialog({
                     <SelectItem value="autre">Autre</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
-          </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
+      <FormSection icon={CalendarDays} label="Periode de couverture">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="date_debut"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de debut *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_fin"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de fin</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          {/* Dates */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <CalendarDays className="size-4" />
-              <span>Periode de couverture</span>
-            </div>
+      <FormSection icon={Banknote} label="Montants">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="prime_annuelle"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Prime annuelle</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" placeholder="0.00" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="franchise"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Franchise</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" placeholder="0.00" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date_debut">Date de debut *</Label>
-                <Input id="date_debut" type="date" {...register('date_debut')} />
-                {errors.date_debut && (
-                  <p className="text-sm text-destructive">{errors.date_debut.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_fin">Date de fin</Label>
-                <Input id="date_fin" type="date" {...register('date_fin')} />
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Financial */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Banknote className="size-4" />
-              <span>Montants</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="prime_annuelle">Prime annuelle</Label>
-                <Input id="prime_annuelle" type="number" step="0.01" {...register('prime_annuelle')} placeholder="0.00" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="franchise">Franchise</Label>
-                <Input id="franchise" type="number" step="0.01" {...register('franchise')} placeholder="0.00" />
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
-            <Textarea rows={3} {...register('notes')} placeholder="Informations complementaires..." />
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <FormSection icon={FileText} label="Notes">
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Informations complementaires..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

@@ -2,18 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Mail, FileText } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -21,6 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { ConvocationAG, ModeEnvoi } from '@/types'
 
 const convocationSchema = z.object({
@@ -62,14 +60,7 @@ export function ConvocationFormDialog({
   defaultValues,
   title = 'Nouvelle convocation',
 }: ConvocationFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<ConvocationFormData>({
+  const form = useForm<ConvocationFormData>({
     resolver: zodResolver(convocationSchema),
     defaultValues: {
       mode_envoi: (defaultValues?.mode_envoi as ModeEnvoi) || 'email',
@@ -78,85 +69,79 @@ export function ConvocationFormDialog({
     },
   })
 
-  const currentMode = watch('mode_envoi')
-
   const handleFormSubmit = async (data: ConvocationFormData) => {
     await onSubmit({
       ...data,
       ag_id: agId,
       notes: data.notes || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Redigez la convocation et choisissez le mode d'envoi.
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Mode envoi */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Mail className="size-4" />
-              <span>Mode d'envoi</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="mode_envoi">Mode d'envoi *</Label>
-              <Select value={currentMode} onValueChange={(val) => setValue('mode_envoi', val as ModeEnvoi)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Redigez la convocation et choisissez le mode d'envoi."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+    >
+      <FormSection icon={Mail} label="Mode d'envoi">
+        <FormField
+          control={form.control}
+          name="mode_envoi"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Mode d'envoi *</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
                 <SelectContent>
                   <SelectItem value="email">Email</SelectItem>
                   <SelectItem value="courrier_recommande">Courrier recommande</SelectItem>
                   <SelectItem value="les_deux">Les deux (email + courrier)</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-          <Separator />
+      <FormSection icon={FileText} label="Contenu de la convocation">
+        <FormField
+          control={form.control}
+          name="contenu"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Contenu *</FormLabel>
+              <FormControl>
+                <Textarea rows={10} placeholder="Texte de la convocation..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          {/* Contenu */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Contenu de la convocation</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="contenu">Contenu *</Label>
-              <Textarea rows={10} {...register('contenu')} placeholder="Texte de la convocation..." />
-              {errors.contenu && (
-                <p className="text-sm text-destructive">{errors.contenu.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes internes</Label>
-              <Textarea rows={2} {...register('notes')} placeholder="Notes internes (non envoyees)..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes internes</FormLabel>
+              <FormControl>
+                <Textarea rows={2} placeholder="Notes internes (non envoyees)..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }
