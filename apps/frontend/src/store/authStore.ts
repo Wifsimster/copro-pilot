@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { authClient } from '@/lib/auth-client'
-import { isAdmin as checkIsAdmin, isAdminOnlyRoute } from '@/utils/roleAccess'
+import { isAdmin as checkIsAdmin, canAccessRoute as checkCanAccessRoute } from '@/utils/roleAccess'
 import logger from '@/utils/logger'
 import type { User, UserRole } from '@/types'
 
@@ -196,6 +196,5 @@ export const selectIsLoading = (state: AuthStore) => state.isLoading
 export const selectIsAdmin = (state: AuthStore) => checkIsAdmin(state.user?.role)
 export const selectCanAccessRoute = (state: AuthStore) => (routeName: string) => {
   if (!state.isAuthenticated) return false
-  if (isAdminOnlyRoute(routeName)) return checkIsAdmin(state.user?.role)
-  return true
+  return checkCanAccessRoute(state.user?.role, routeName)
 }

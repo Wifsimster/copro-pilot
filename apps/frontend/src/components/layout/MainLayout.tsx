@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react'
+import { type ReactNode, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Collapsible } from 'radix-ui'
 import { useAuthStore } from '@/store/authStore'
@@ -6,6 +6,7 @@ import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { cn } from '@/lib/utils'
 import { NotificationBell } from './NotificationBell'
+import { canAccessRoute } from '@/utils/roleAccess'
 import {
   Building2,
   LayoutDashboard,
@@ -143,9 +144,21 @@ export function MainLayout({ children }: MainLayoutProps) {
 
   const pathname = location.pathname
 
+  const filteredSections = useMemo(() => {
+    const role = user?.role
+    return navigationSections
+      .map(section => ({
+        ...section,
+        items: section.items.filter(item =>
+          canAccessRoute(role, item.href)
+        ),
+      }))
+      .filter(section => section.items.length > 0)
+  }, [user?.role])
+
   // Auto-expand section containing active route
   const effectiveSectionState = { ...sectionState }
-  for (const section of navigationSections) {
+  for (const section of filteredSections) {
     if (
       section.collapsible &&
       section.items.some(item =>
@@ -296,7 +309,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
         {/* Navigation */}
         <nav className="flex-1 space-y-4 overflow-y-auto p-4">
-          {navigationSections.map(renderSection)}
+          {filteredSections.map(renderSection)}
         </nav>
 
         {/* User section */}
