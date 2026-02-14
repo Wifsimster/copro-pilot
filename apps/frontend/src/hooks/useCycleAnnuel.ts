@@ -7,6 +7,7 @@ import {
   updateTache,
   generateAppelsFromBudget,
 } from '@/api/cycle-annuel'
+import type { TacheAnnuelle } from '@/types'
 
 export function useCycleAnnuel(
   coproprieteId: number | undefined,
@@ -82,7 +83,7 @@ export function useUpdateTache() {
       data,
     }: {
       id: number
-      data: { statut?: string; notes?: string }
+      data: Partial<TacheAnnuelle>
     }) => updateTache(id, data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['cycle-annuel'] })
