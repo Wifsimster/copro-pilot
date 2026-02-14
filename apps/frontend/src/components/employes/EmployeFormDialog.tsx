@@ -2,19 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { User, CalendarDays, Banknote } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
   Select,
@@ -23,6 +12,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { EmployeSyndicat } from '@/types'
 
 const employeSchema = z.object({
@@ -59,14 +57,7 @@ export function EmployeFormDialog({
   defaultValues,
   title = 'Nouvel employe',
 }: EmployeFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<EmployeFormData>({
+  const form = useForm<EmployeFormData>({
     resolver: zodResolver(employeSchema),
     defaultValues: {
       nom: defaultValues?.nom || '',
@@ -82,10 +73,6 @@ export function EmployeFormDialog({
     },
   })
 
-  const currentTypeContrat = watch('type_contrat')
-  const currentStatut = watch('statut')
-  const currentLogement = watch('logement_fonction')
-
   const handleFormSubmit = async (data: EmployeFormData) => {
     await onSubmit({
       ...data,
@@ -94,58 +81,76 @@ export function EmployeFormDialog({
       salaire_brut: data.salaire_brut ? parseFloat(data.salaire_brut) : null,
       notes: data.notes || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Renseignez les informations de l'employe. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Renseignez les informations de l'employe. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={User} label="Identite">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="nom"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nom *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Dupont" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="prenom"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Prenom *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Jean" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Identity */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <User className="size-4" />
-              <span>Identite</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="nom">Nom *</Label>
-                <Input id="nom" {...register('nom')} placeholder="Dupont" />
-                {errors.nom && (
-                  <p className="text-sm text-destructive">{errors.nom.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="prenom">Prenom *</Label>
-                <Input id="prenom" {...register('prenom')} placeholder="Jean" />
-                {errors.prenom && (
-                  <p className="text-sm text-destructive">{errors.prenom.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="poste">Poste *</Label>
-                <Input id="poste" {...register('poste')} placeholder="Gardien, concierge..." />
-                {errors.poste && (
-                  <p className="text-sm text-destructive">{errors.poste.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="type_contrat">Type de contrat *</Label>
-                <Select value={currentTypeContrat} onValueChange={(val) => setValue('type_contrat', val as EmployeFormData['type_contrat'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="poste"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Poste *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Gardien, concierge..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="type_contrat"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type de contrat *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="cdi">CDI</SelectItem>
                     <SelectItem value="cdd">CDD</SelectItem>
@@ -153,91 +158,112 @@ export function EmployeFormDialog({
                     <SelectItem value="saisonnier">Saisonnier</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="statut">Statut *</Label>
-              <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as EmployeFormData['statut'])}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+        <FormField
+          control={form.control}
+          name="statut"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Statut *</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
                 <SelectContent>
                   <SelectItem value="actif">Actif</SelectItem>
                   <SelectItem value="inactif">Inactif</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-          <Separator />
+      <FormSection icon={CalendarDays} label="Periode d'emploi">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="date_embauche"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date d'embauche *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_fin"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de fin</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          {/* Dates */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <CalendarDays className="size-4" />
-              <span>Periode d'emploi</span>
-            </div>
+      <FormSection icon={Banknote} label="Remuneration & logement">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="salaire_brut"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Salaire brut mensuel</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" placeholder="0.00" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="logement_fonction"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2 pt-6">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel className="cursor-pointer">Logement de fonction</FormLabel>
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date_embauche">Date d'embauche *</Label>
-                <Input id="date_embauche" type="date" {...register('date_embauche')} />
-                {errors.date_embauche && (
-                  <p className="text-sm text-destructive">{errors.date_embauche.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_fin">Date de fin</Label>
-                <Input id="date_fin" type="date" {...register('date_fin')} />
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Financial & housing */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Banknote className="size-4" />
-              <span>Remuneration & logement</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="salaire_brut">Salaire brut mensuel</Label>
-                <Input id="salaire_brut" type="number" step="0.01" {...register('salaire_brut')} placeholder="0.00" />
-              </div>
-              <div className="flex items-center gap-2 pt-6">
-                <Checkbox
-                  id="logement_fonction"
-                  checked={currentLogement}
-                  onCheckedChange={(checked) => setValue('logement_fonction', checked === true)}
-                />
-                <Label htmlFor="logement_fonction" className="cursor-pointer">Logement de fonction</Label>
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
-            <Textarea rows={3} {...register('notes')} placeholder="Informations complementaires..." />
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <FormField
+        control={form.control}
+        name="notes"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Notes</FormLabel>
+            <FormControl>
+              <Textarea rows={3} placeholder="Informations complementaires..." {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </FormDialog>
   )
 }

@@ -2,19 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { CalendarDays, MapPin, FileText } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { AssembleeGenerale } from '@/types'
 
 const agSchema = z.object({
@@ -53,14 +51,7 @@ export function AssembleeFormDialog({
   defaultValues,
   title = 'Nouvelle assemblee generale',
 }: AssembleeFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<AGFormData>({
+  const form = useForm<AGFormData>({
     resolver: zodResolver(agSchema),
     defaultValues: {
       date: defaultValues?.date || '',
@@ -71,8 +62,6 @@ export function AssembleeFormDialog({
     },
   })
 
-  const currentType = watch('type')
-
   const handleFormSubmit = async (data: AGFormData) => {
     await onSubmit({
       ...data,
@@ -81,91 +70,106 @@ export function AssembleeFormDialog({
       lieu: data.lieu || null,
       ordre_du_jour: data.ordre_du_jour || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Planifiez une assemblee generale. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Planifiez une assemblee generale. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="md"
+    >
+      <FormSection icon={CalendarDays} label="Date et type">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="heure"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Heure</FormLabel>
+                <FormControl>
+                  <Input type="time" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Date & type section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <CalendarDays className="size-4" />
-              <span>Date et type</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date">Date *</Label>
-                <Input id="date" type="date" {...register('date')} />
-                {errors.date && (
-                  <p className="text-sm text-destructive">{errors.date.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="heure">Heure</Label>
-                <Input id="heure" type="time" {...register('heure')} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="type">Type *</Label>
-                <Select value={currentType} onValueChange={(val) => setValue('type', val as AGFormData['type'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="ordinaire">Ordinaire</SelectItem>
                     <SelectItem value="extraordinaire">Extraordinaire</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="lieu" className="flex items-center gap-1.5">
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="lieu"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-1.5">
                   <MapPin className="size-3.5 text-muted-foreground" />
                   Lieu
-                </Label>
-                <Input id="lieu" {...register('lieu')} placeholder="Salle des fetes..." />
-              </div>
-            </div>
-          </div>
+                </FormLabel>
+                <FormControl>
+                  <Input placeholder="Salle des fetes..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
-
-          {/* Agenda section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Ordre du jour</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="ordre_du_jour">Ordre du jour</Label>
-              <Textarea rows={3} {...register('ordre_du_jour')} placeholder="Points a l'ordre du jour..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <FormSection icon={FileText} label="Ordre du jour">
+        <FormField
+          control={form.control}
+          name="ordre_du_jour"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Ordre du jour</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Points a l'ordre du jour..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

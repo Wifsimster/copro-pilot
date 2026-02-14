@@ -2,19 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { FileSignature, CalendarDays, Euro, FileText } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { ContratSyndic } from '@/types'
 
 const contratSyndicSchema = z.object({
@@ -58,14 +56,7 @@ export function ContratSyndicFormDialog({
   defaultValues,
   title = 'Nouveau contrat de syndic',
 }: ContratSyndicFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<ContratSyndicFormData>({
+  const form = useForm<ContratSyndicFormData>({
     resolver: zodResolver(contratSyndicSchema),
     defaultValues: {
       syndic_nom: defaultValues?.syndic_nom || '',
@@ -81,8 +72,6 @@ export function ContratSyndicFormDialog({
     },
   })
 
-  const currentStatut = watch('statut')
-
   const handleFormSubmit = async (data: ContratSyndicFormData) => {
     await onSubmit({
       ...data,
@@ -94,42 +83,47 @@ export function ContratSyndicFormDialog({
       ag_designation_id: data.ag_designation_id || null,
       notes: data.notes || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Definissez les informations du contrat de syndic. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Syndic section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileSignature className="size-4" />
-              <span>Syndic</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="syndic_nom">Nom du syndic *</Label>
-                <Input id="syndic_nom" {...register('syndic_nom')} placeholder="Nom du cabinet de syndic" />
-                {errors.syndic_nom && (
-                  <p className="text-sm text-destructive">{errors.syndic_nom.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="statut">Statut *</Label>
-                <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as ContratSyndicFormData['statut'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Definissez les informations du contrat de syndic. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={FileSignature} label="Syndic">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="syndic_nom"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nom du syndic *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Nom du cabinet de syndic" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="statut"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Statut *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="en_cours">En cours</SelectItem>
                     <SelectItem value="en_attente">En attente</SelectItem>
@@ -137,94 +131,114 @@ export function ContratSyndicFormDialog({
                     <SelectItem value="resilie">Resilie</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
-          </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
+      <FormSection icon={CalendarDays} label="Duree du mandat">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="date_debut"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de debut *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_fin"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de fin *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          {/* Dates section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <CalendarDays className="size-4" />
-              <span>Duree du mandat</span>
-            </div>
+      <FormSection icon={Euro} label="Remuneration">
+        <FormField
+          control={form.control}
+          name="remuneration_forfait"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Forfait annuel (EUR)</FormLabel>
+              <FormControl>
+                <Input type="number" step="0.01" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="prestations_incluses"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Prestations incluses dans le forfait</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Gestion courante, convocations AG..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="prestations_particulieres"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Prestations particulieres (hors forfait)</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Travaux exceptionnels, contentieux..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date_debut">Date de debut *</Label>
-                <Input id="date_debut" type="date" {...register('date_debut')} />
-                {errors.date_debut && (
-                  <p className="text-sm text-destructive">{errors.date_debut.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_fin">Date de fin *</Label>
-                <Input id="date_fin" type="date" {...register('date_fin')} />
-                {errors.date_fin && (
-                  <p className="text-sm text-destructive">{errors.date_fin.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Remuneration section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Euro className="size-4" />
-              <span>Remuneration</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="remuneration_forfait">Forfait annuel (EUR)</Label>
-              <Input id="remuneration_forfait" type="number" step="0.01" {...register('remuneration_forfait')} />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="prestations_incluses">Prestations incluses dans le forfait</Label>
-              <Textarea {...register('prestations_incluses')} rows={3} placeholder="Gestion courante, convocations AG..." />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="prestations_particulieres">Prestations particulieres (hors forfait)</Label>
-              <Textarea {...register('prestations_particulieres')} rows={3} placeholder="Travaux exceptionnels, contentieux..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Conditions section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Conditions et notes</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="conditions_execution">Conditions d'execution</Label>
-              <Textarea {...register('conditions_execution')} rows={3} placeholder="Conditions d'execution de la mission..." />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea {...register('notes')} rows={3} placeholder="Notes supplementaires..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <FormSection icon={FileText} label="Conditions et notes">
+        <FormField
+          control={form.control}
+          name="conditions_execution"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Conditions d'execution</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Conditions d'execution de la mission..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Notes supplementaires..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

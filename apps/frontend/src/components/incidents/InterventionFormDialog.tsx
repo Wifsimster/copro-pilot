@@ -2,19 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Wrench, Banknote } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { Intervention } from '@/types'
 
 const interventionSchema = z.object({
@@ -55,14 +53,7 @@ export function InterventionFormDialog({
   defaultValues,
   title = 'Nouvelle intervention',
 }: InterventionFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<InterventionFormData>({
+  const form = useForm<InterventionFormData>({
     resolver: zodResolver(interventionSchema),
     defaultValues: {
       description: defaultValues?.description || '',
@@ -75,8 +66,6 @@ export function InterventionFormDialog({
     },
   })
 
-  const currentStatut = watch('statut')
-
   const handleFormSubmit = async (data: InterventionFormData) => {
     await onSubmit({
       ...data,
@@ -87,46 +76,61 @@ export function InterventionFormDialog({
       date_prevue: data.date_prevue || null,
       date_realisation: data.date_realisation || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Planifiez une intervention. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Planifiez une intervention. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={Wrench} label="Intervention">
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description *</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Reparation de la fuite..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Intervention details section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Wrench className="size-4" />
-              <span>Intervention</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Description *</Label>
-              <Textarea {...register('description')} rows={3} placeholder="Reparation de la fuite..." />
-              {errors.description && (
-                <p className="text-sm text-destructive">{errors.description.message}</p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="prestataire">Prestataire</Label>
-                <Input id="prestataire" {...register('prestataire')} placeholder="Nom du prestataire..." />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="statut">Statut *</Label>
-                <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as InterventionFormData['statut'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="prestataire"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Prestataire</FormLabel>
+                <FormControl>
+                  <Input placeholder="Nom du prestataire..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="statut"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Statut *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="en_attente">En attente</SelectItem>
                     <SelectItem value="planifiee">Planifiee</SelectItem>
@@ -135,54 +139,72 @@ export function InterventionFormDialog({
                     <SelectItem value="annulee">Annulee</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
-          </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
+      <FormSection icon={Banknote} label="Devis, facture et planning">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="montant_devis"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Montant devis (EUR)</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" placeholder="1500" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="montant_facture"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Montant facture (EUR)</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" placeholder="1500" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-          {/* Cost & date section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Banknote className="size-4" />
-              <span>Devis, facture et planning</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="montant_devis">Montant devis (EUR)</Label>
-                <Input id="montant_devis" type="number" step="0.01" {...register('montant_devis')} placeholder="1500" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="montant_facture">Montant facture (EUR)</Label>
-                <Input id="montant_facture" type="number" step="0.01" {...register('montant_facture')} placeholder="1500" />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date_prevue">Date prevue</Label>
-                <Input id="date_prevue" type="date" {...register('date_prevue')} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_realisation">Date realisation</Label>
-                <Input id="date_realisation" type="date" {...register('date_realisation')} />
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="date_prevue"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date prevue</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_realisation"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date realisation</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
+    </FormDialog>
   )
 }

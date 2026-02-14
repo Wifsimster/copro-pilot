@@ -2,18 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Home, Ruler, FileText } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -21,6 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { Lot, TypeLot } from '@/types'
 
 const TYPE_OPTIONS: { value: TypeLot; label: string }[] = [
@@ -62,14 +60,7 @@ export function LotFormDialog({
   defaultValues,
   title = 'Nouveau lot',
 }: LotFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<LotFormData>({
+  const form = useForm<LotFormData>({
     resolver: zodResolver(lotSchema),
     defaultValues: {
       numero: defaultValues?.numero || '',
@@ -81,8 +72,6 @@ export function LotFormDialog({
     },
   })
 
-  const currentType = watch('type')
-
   const handleFormSubmit = async (data: LotFormData) => {
     await onSubmit({
       ...data,
@@ -91,41 +80,47 @@ export function LotFormDialog({
       etage: data.etage === '' ? null : Number(data.etage),
       tantiemes: Number(data.tantiemes),
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Renseignez les informations du lot. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Identification section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Home className="size-4" />
-              <span>Identification</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="numero">Numero *</Label>
-                <Input id="numero" {...register('numero')} placeholder="A101" />
-                {errors.numero && (
-                  <p className="text-sm text-destructive">{errors.numero.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="type">Type *</Label>
-                <Select value={currentType} onValueChange={(val) => setValue('type', val as TypeLot)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Renseignez les informations du lot. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="md"
+    >
+      <FormSection icon={Home} label="Identification">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="numero"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Numero *</FormLabel>
+                <FormControl>
+                  <Input placeholder="A101" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     {TYPE_OPTIONS.map((opt) => (
                       <SelectItem key={opt.value} value={opt.value}>
@@ -134,71 +129,72 @@ export function LotFormDialog({
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.type && (
-                  <p className="text-sm text-destructive">{errors.type.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
+      <FormSection icon={Ruler} label="Caracteristiques">
+        <div className="grid grid-cols-3 gap-4">
+          <FormField
+            control={form.control}
+            name="surface"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Surface (m²)</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" placeholder="45" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="etage"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Etage</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="3" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="tantiemes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tantiemes *</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="150" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          {/* Characteristics section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Ruler className="size-4" />
-              <span>Caracteristiques</span>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="surface">Surface (m²)</Label>
-                <Input id="surface" type="number" step="0.01" {...register('surface')} placeholder="45" />
-                {errors.surface && (
-                  <p className="text-sm text-destructive">{errors.surface.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="etage">Etage</Label>
-                <Input id="etage" type="number" {...register('etage')} placeholder="3" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="tantiemes">Tantiemes *</Label>
-                <Input id="tantiemes" type="number" {...register('tantiemes')} placeholder="150" />
-                {errors.tantiemes && (
-                  <p className="text-sm text-destructive">{errors.tantiemes.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Description section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Description</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Input id="description" {...register('description')} placeholder="Appartement 3 pieces, balcon..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <FormSection icon={FileText} label="Description">
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Input placeholder="Appartement 3 pieces, balcon..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

@@ -2,19 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { BookOpen, CalendarDays, FileText } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { ReglementCopropriete } from '@/types'
 
 const reglementSchema = z.object({
@@ -58,14 +56,7 @@ export function ReglementFormDialog({
   defaultValues,
   title = 'Nouveau reglement',
 }: ReglementFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<ReglementFormData>({
+  const form = useForm<ReglementFormData>({
     resolver: zodResolver(reglementSchema),
     defaultValues: {
       date_etablissement: defaultValues?.date_etablissement || new Date().toISOString().split('T')[0],
@@ -81,8 +72,6 @@ export function ReglementFormDialog({
     },
   })
 
-  const currentDestination = watch('destination_immeuble')
-
   const handleFormSubmit = async (data: ReglementFormData) => {
     await onSubmit({
       ...data,
@@ -96,124 +85,176 @@ export function ReglementFormDialog({
       document_url: data.document_url || null,
       notes: data.notes || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Renseignez les informations du reglement de copropriete. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Renseignez les informations du reglement de copropriete. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={BookOpen} label="Informations generales">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="date_etablissement"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date d'etablissement *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_derniere_modification"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Derniere modification</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* General info section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <BookOpen className="size-4" />
-              <span>Informations generales</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date_etablissement">Date d'etablissement *</Label>
-                <Input id="date_etablissement" type="date" {...register('date_etablissement')} />
-                {errors.date_etablissement && (
-                  <p className="text-sm text-destructive">{errors.date_etablissement.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_derniere_modification">Derniere modification</Label>
-                <Input id="date_derniere_modification" type="date" {...register('date_derniere_modification')} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="notaire">Notaire</Label>
-                <Input id="notaire" {...register('notaire')} placeholder="Me Dupont..." />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="destination_immeuble">Destination *</Label>
-                <Select value={currentDestination} onValueChange={(val) => setValue('destination_immeuble', val as ReglementFormData['destination_immeuble'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="notaire"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Notaire</FormLabel>
+                <FormControl>
+                  <Input placeholder="Me Dupont..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="destination_immeuble"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Destination *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="habitation">Habitation</SelectItem>
                     <SelectItem value="commerce">Commerce</SelectItem>
                     <SelectItem value="mixte">Mixte</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
-          </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
+      <FormSection icon={FileText} label="Clauses et conditions">
+        <FormField
+          control={form.control}
+          name="restrictions_usage"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Restrictions d'usage</FormLabel>
+              <FormControl>
+                <Textarea rows={2} placeholder="Restrictions d'usage des parties privatives..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          {/* Clauses section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Clauses et conditions</span>
-            </div>
+        <FormField
+          control={form.control}
+          name="conditions_travaux"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Conditions de travaux</FormLabel>
+              <FormControl>
+                <Textarea rows={2} placeholder="Conditions pour la realisation de travaux..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <div className="space-y-2">
-              <Label htmlFor="restrictions_usage">Restrictions d'usage</Label>
-              <Textarea {...register('restrictions_usage')} rows={2} placeholder="Restrictions d'usage des parties privatives..." />
-            </div>
+        <FormField
+          control={form.control}
+          name="composition_conseil_syndical"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Composition du conseil syndical</FormLabel>
+              <FormControl>
+                <Textarea rows={2} placeholder="Composition et regles du conseil syndical..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <div className="space-y-2">
-              <Label htmlFor="conditions_travaux">Conditions de travaux</Label>
-              <Textarea {...register('conditions_travaux')} rows={2} placeholder="Conditions pour la realisation de travaux..." />
-            </div>
+        <FormField
+          control={form.control}
+          name="modalites_convocation_ag"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Modalites de convocation AG</FormLabel>
+              <FormControl>
+                <Textarea rows={2} placeholder="Modalites de convocation des assemblees generales..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-            <div className="space-y-2">
-              <Label htmlFor="composition_conseil_syndical">Composition du conseil syndical</Label>
-              <Textarea {...register('composition_conseil_syndical')} rows={2} placeholder="Composition et regles du conseil syndical..." />
-            </div>
+      <FormSection icon={CalendarDays} label="Document et notes">
+        <FormField
+          control={form.control}
+          name="document_url"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>URL du document</FormLabel>
+              <FormControl>
+                <Input placeholder="https://..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <div className="space-y-2">
-              <Label htmlFor="modalites_convocation_ag">Modalites de convocation AG</Label>
-              <Textarea {...register('modalites_convocation_ag')} rows={2} placeholder="Modalites de convocation des assemblees generales..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Document & notes section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <CalendarDays className="size-4" />
-              <span>Document et notes</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="document_url">URL du document</Label>
-              <Input id="document_url" {...register('document_url')} placeholder="https://..." />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea {...register('notes')} rows={3} placeholder="Notes complementaires..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Notes complementaires..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

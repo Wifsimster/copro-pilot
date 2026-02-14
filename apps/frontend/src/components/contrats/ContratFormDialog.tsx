@@ -2,19 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { FileText, CalendarDays, Shield } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { Contrat, Prestataire } from '@/types'
 
 const contratSchema = z.object({
@@ -62,14 +60,7 @@ export function ContratFormDialog({
   defaultValues,
   title = 'Nouveau contrat',
 }: ContratFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<ContratFormData>({
+  const form = useForm<ContratFormData>({
     resolver: zodResolver(contratSchema),
     defaultValues: {
       prestataire_id: defaultValues?.prestataire_id || 0,
@@ -87,12 +78,6 @@ export function ContratFormDialog({
     },
   })
 
-  const currentPrestataireId = watch('prestataire_id')
-  const currentType = watch('type')
-  const currentFrequence = watch('frequence_paiement')
-  const currentStatut = watch('statut')
-  const currentReconduction = watch('reconduction_tacite')
-
   const handleFormSubmit = async (data: ContratFormData) => {
     await onSubmit({
       ...data,
@@ -104,36 +89,36 @@ export function ContratFormDialog({
       conditions_resiliation: data.conditions_resiliation || null,
       notes: data.notes || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Definissez les informations du contrat. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Contrat section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Contrat</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="prestataire_id">Prestataire *</Label>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Definissez les informations du contrat. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={FileText} label="Contrat">
+        <FormField
+          control={form.control}
+          name="prestataire_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Prestataire *</FormLabel>
               <Select
-                value={currentPrestataireId ? String(currentPrestataireId) : ''}
-                onValueChange={(val) => setValue('prestataire_id', Number(val))}
+                value={field.value ? String(field.value) : ''}
+                onValueChange={(val) => field.onChange(Number(val))}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selectionnez un prestataire" />
-                </SelectTrigger>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selectionnez un prestataire" />
+                  </SelectTrigger>
+                </FormControl>
                 <SelectContent>
                   {prestataires.map((p) => (
                     <SelectItem key={p.id} value={String(p.id)}>
@@ -142,26 +127,38 @@ export function ContratFormDialog({
                   ))}
                 </SelectContent>
               </Select>
-              {errors.prestataire_id && (
-                <p className="text-sm text-destructive">{errors.prestataire_id.message}</p>
-              )}
-            </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <div className="space-y-2">
-              <Label htmlFor="objet">Objet *</Label>
-              <Input id="objet" {...register('objet')} placeholder="Objet du contrat" />
-              {errors.objet && (
-                <p className="text-sm text-destructive">{errors.objet.message}</p>
-              )}
-            </div>
+        <FormField
+          control={form.control}
+          name="objet"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Objet *</FormLabel>
+              <FormControl>
+                <Input placeholder="Objet du contrat" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="type">Type</Label>
-                <Select value={currentType || ''} onValueChange={(val) => setValue('type', val)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selectionnez un type" />
-                  </SelectTrigger>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ''}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selectionnez un type" />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="maintenance">Maintenance</SelectItem>
                     <SelectItem value="entretien">Entretien</SelectItem>
@@ -171,14 +168,22 @@ export function ContratFormDialog({
                     <SelectItem value="autre">Autre</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="statut">Statut *</Label>
-                <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as ContratFormData['statut'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="statut"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Statut *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="actif">Actif</SelectItem>
                     <SelectItem value="expire">Expire</SelectItem>
@@ -186,44 +191,69 @@ export function ContratFormDialog({
                     <SelectItem value="en_attente">En attente</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
-          </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
+      <FormSection icon={CalendarDays} label="Dates et montant">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="date_debut"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de debut *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_fin"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de fin</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-          {/* Dates et montant section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <CalendarDays className="size-4" />
-              <span>Dates et montant</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date_debut">Date de debut *</Label>
-                <Input id="date_debut" type="date" {...register('date_debut')} />
-                {errors.date_debut && (
-                  <p className="text-sm text-destructive">{errors.date_debut.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_fin">Date de fin</Label>
-                <Input id="date_fin" type="date" {...register('date_fin')} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="montant_annuel">Montant annuel (EUR)</Label>
-                <Input id="montant_annuel" type="number" step="0.01" {...register('montant_annuel')} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="frequence_paiement">Frequence de paiement *</Label>
-                <Select value={currentFrequence} onValueChange={(val) => setValue('frequence_paiement', val as ContratFormData['frequence_paiement'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="montant_annuel"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Montant annuel (EUR)</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="frequence_paiement"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Frequence de paiement *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="mensuel">Mensuel</SelectItem>
                     <SelectItem value="trimestriel">Trimestriel</SelectItem>
@@ -231,71 +261,81 @@ export function ContratFormDialog({
                     <SelectItem value="annuel">Annuel</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
-          </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
-
-          {/* Conditions section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Shield className="size-4" />
-              <span>Conditions</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="preavis_mois">Preavis (mois)</Label>
-                <Input id="preavis_mois" type="number" {...register('preavis_mois')} placeholder="3" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="reconduction_tacite">Reconduction tacite</Label>
-                <Select value={currentReconduction ? 'oui' : 'non'} onValueChange={(val) => setValue('reconduction_tacite', val === 'oui')}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+      <FormSection icon={Shield} label="Conditions">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="preavis_mois"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Preavis (mois)</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="3" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="reconduction_tacite"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Reconduction tacite</FormLabel>
+                <Select value={field.value ? 'true' : 'false'} onValueChange={(val) => field.onChange(val === 'true')}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
-                    <SelectItem value="oui">Oui</SelectItem>
-                    <SelectItem value="non">Non</SelectItem>
+                    <SelectItem value="true">Oui</SelectItem>
+                    <SelectItem value="false">Non</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="conditions_resiliation">Conditions de resiliation</Label>
-              <Textarea rows={3} {...register('conditions_resiliation')} placeholder="Conditions de resiliation..." />
-            </div>
-          </div>
+        <FormField
+          control={form.control}
+          name="conditions_resiliation"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Conditions de resiliation</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Conditions de resiliation..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-          <Separator />
-
-          {/* Notes section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Notes</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea rows={3} {...register('notes')} placeholder="Notes supplementaires..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <FormSection icon={FileText} label="Notes">
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Notes supplementaires..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

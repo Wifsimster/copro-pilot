@@ -2,18 +2,16 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { User, Mail, Phone, MapPin } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { Coproprietaire } from '@/types'
 
 const coproprietaireSchema = z.object({
@@ -43,12 +41,7 @@ export function CoproprietaireFormDialog({
   defaultValues,
   title = 'Nouveau coproprietaire',
 }: CoproprietaireFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<CoproprietaireFormData>({
+  const form = useForm<CoproprietaireFormData>({
     resolver: zodResolver(coproprietaireSchema),
     defaultValues: {
       nom: defaultValues?.nom || '',
@@ -66,109 +59,100 @@ export function CoproprietaireFormDialog({
       telephone: data.telephone || null,
       adresse_correspondance: data.adresse_correspondance || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Renseignez les informations du coproprietaire. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Renseignez les informations du coproprietaire. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="md"
+    >
+      <FormSection icon={User} label="Identite">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="prenom"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Prenom *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Jean" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="nom"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nom *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Dupont" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Identity section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <User className="size-4" />
-              <span>Identite</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="prenom">Prenom *</Label>
-                <Input id="prenom" {...register('prenom')} placeholder="Jean" />
-                {errors.prenom && (
-                  <p className="text-sm text-destructive">{errors.prenom.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="nom">Nom *</Label>
-                <Input id="nom" {...register('nom')} placeholder="Dupont" />
-                {errors.nom && (
-                  <p className="text-sm text-destructive">{errors.nom.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Contact section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Mail className="size-4" />
-              <span>Coordonnees</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  {...register('email')}
-                  placeholder="jean.dupont@email.com"
-                />
-                {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="telephone" className="flex items-center gap-1.5">
+      <FormSection icon={Mail} label="Coordonnees">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input type="email" placeholder="jean.dupont@email.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="telephone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-1.5">
                   <Phone className="size-3.5 text-muted-foreground" />
                   Telephone
-                </Label>
-                <Input
-                  id="telephone"
-                  {...register('telephone')}
-                  placeholder="06 12 34 56 78"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="adresse_correspondance" className="flex items-center gap-1.5">
+                </FormLabel>
+                <FormControl>
+                  <Input placeholder="06 12 34 56 78" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <FormField
+          control={form.control}
+          name="adresse_correspondance"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-1.5">
                 <MapPin className="size-3.5 text-muted-foreground" />
                 Adresse de correspondance
-              </Label>
-              <Input
-                id="adresse_correspondance"
-                {...register('adresse_correspondance')}
-                placeholder="12 rue de la Paix, 75001 Paris"
-              />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="12 rue de la Paix, 75001 Paris" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

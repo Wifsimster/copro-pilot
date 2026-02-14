@@ -3,19 +3,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Banknote, FileText, Users } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -23,6 +12,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { Paiement } from '@/types'
 
 const schema = z.object({
@@ -60,7 +58,7 @@ export function PaiementFormDialog({
   const showCoproSelect = !coproprietaireId && !!coproprietaires
   const showAppelSelect = !appelFondsId && !!appelsFonds
 
-  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormData>({
+  const form = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       montant: defaultValues?.montant || 0,
@@ -73,7 +71,7 @@ export function PaiementFormDialog({
 
   useEffect(() => {
     if (open) {
-      reset({
+      form.reset({
         montant: defaultValues?.montant || 0,
         date_paiement: defaultValues?.date_paiement || new Date().toISOString().split('T')[0],
         mode: (defaultValues?.mode as FormData['mode']) || 'virement',
@@ -84,9 +82,7 @@ export function PaiementFormDialog({
       setSelectedAppelId(defaultValues?.appel_fonds_id || appelFondsId || null)
       setCoproError('')
     }
-  }, [open, defaultValues, coproprietaireId, appelFondsId, reset])
-
-  const currentMode = watch('mode')
+  }, [open, defaultValues, coproprietaireId, appelFondsId, form.reset])
 
   const onFormSubmit = async (data: FormData) => {
     const finalCoproId = coproprietaireId || selectedCoproId
@@ -102,109 +98,113 @@ export function PaiementFormDialog({
       reference: data.reference || null,
       notes: data.notes || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Enregistrez un paiement. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-5">
-          {(showCoproSelect || showAppelSelect) && (
-            <>
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                  <Users className="size-4" />
-                  <span>Attribution</span>
-                </div>
-
-                {showCoproSelect && (
-                  <div className="space-y-2">
-                    <Label>Coproprietaire *</Label>
-                    <Select
-                      value={selectedCoproId ? String(selectedCoproId) : ''}
-                      onValueChange={(val) => { setSelectedCoproId(parseInt(val)); setCoproError('') }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selectionner un coproprietaire..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {coproprietaires!.map((c) => (
-                          <SelectItem key={c.id} value={String(c.id)}>
-                            {c.prenom} {c.nom}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {coproError && (
-                      <p className="text-sm text-destructive">{coproError}</p>
-                    )}
-                  </div>
-                )}
-
-                {showAppelSelect && (
-                  <div className="space-y-2">
-                    <Label>Appel de fonds</Label>
-                    <Select
-                      value={selectedAppelId ? String(selectedAppelId) : 'none'}
-                      onValueChange={(val) => setSelectedAppelId(val === 'none' ? null : parseInt(val))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Aucun (paiement libre)" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">Aucun (paiement libre)</SelectItem>
-                        {appelsFonds!.map((a) => (
-                          <SelectItem key={a.id} value={String(a.id)}>
-                            T{a.trimestre} {a.annee} — {Number(a.montant_total).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-              </div>
-              <Separator />
-            </>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Enregistrez un paiement. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={onFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      {(showCoproSelect || showAppelSelect) && (
+        <FormSection icon={Users} label="Attribution">
+          {showCoproSelect && (
+            <div className="grid gap-2">
+              <label className="text-sm font-medium">Coproprietaire *</label>
+              <Select
+                value={selectedCoproId ? String(selectedCoproId) : ''}
+                onValueChange={(val) => { setSelectedCoproId(parseInt(val)); setCoproError('') }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selectionner un coproprietaire..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {coproprietaires!.map((c) => (
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.prenom} {c.nom}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {coproError && (
+                <p className="text-sm text-destructive">{coproError}</p>
+              )}
+            </div>
           )}
 
-          {/* Payment details section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Banknote className="size-4" />
-              <span>Paiement</span>
+          {showAppelSelect && (
+            <div className="grid gap-2">
+              <label className="text-sm font-medium">Appel de fonds</label>
+              <Select
+                value={selectedAppelId ? String(selectedAppelId) : 'none'}
+                onValueChange={(val) => setSelectedAppelId(val === 'none' ? null : parseInt(val))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Aucun (paiement libre)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Aucun (paiement libre)</SelectItem>
+                  {appelsFonds!.map((a) => (
+                    <SelectItem key={a.id} value={String(a.id)}>
+                      T{a.trimestre} {a.annee} — {Number(a.montant_total).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
+          )}
+        </FormSection>
+      )}
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="montant">Montant (EUR) *</Label>
-                <Input id="montant" type="number" step="0.01" {...register('montant')} />
-                {errors.montant && (
-                  <p className="text-sm text-destructive">{errors.montant.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_paiement">Date *</Label>
-                <Input id="date_paiement" type="date" {...register('date_paiement')} />
-                {errors.date_paiement && (
-                  <p className="text-sm text-destructive">{errors.date_paiement.message}</p>
-                )}
-              </div>
-            </div>
+      <FormSection icon={Banknote} label="Paiement">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="montant"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Montant (EUR) *</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_paiement"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="mode">Mode de paiement *</Label>
-                <Select value={currentMode} onValueChange={(val) => setValue('mode', val as FormData['mode'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="mode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mode de paiement *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     <SelectItem value="virement">Virement</SelectItem>
                     <SelectItem value="cheque">Cheque</SelectItem>
@@ -213,41 +213,41 @@ export function PaiementFormDialog({
                     <SelectItem value="autre">Autre</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="reference">Reference</Label>
-                <Input id="reference" {...register('reference')} placeholder="REF-001" />
-              </div>
-            </div>
-          </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="reference"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Reference</FormLabel>
+                <FormControl>
+                  <Input placeholder="REF-001" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
-
-          {/* Notes section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Notes</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea rows={3} {...register('notes')} placeholder="Notes supplementaires..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <FormSection icon={FileText} label="Notes">
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Notes supplementaires..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

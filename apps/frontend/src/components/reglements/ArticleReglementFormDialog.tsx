@@ -2,19 +2,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ListOrdered, FileText } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -22,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { ArticleReglement } from '@/types'
 
 const articleSchema = z.object({
@@ -54,14 +52,7 @@ export function ArticleReglementFormDialog({
   defaultValues,
   title = 'Nouvel article',
 }: ArticleReglementFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<ArticleFormData>({
+  const form = useForm<ArticleFormData>({
     resolver: zodResolver(articleSchema),
     defaultValues: {
       numero: defaultValues?.numero || '',
@@ -73,8 +64,6 @@ export function ArticleReglementFormDialog({
     },
   })
 
-  const currentCategorie = watch('categorie')
-
   const handleFormSubmit = async (data: ArticleFormData) => {
     await onSubmit({
       ...data,
@@ -82,58 +71,76 @@ export function ArticleReglementFormDialog({
       contenu: data.contenu || null,
       notes: data.notes || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Renseignez les informations de l'article du reglement. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Renseignez les informations de l'article du reglement. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={ListOrdered} label="Identification">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="numero"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Numero *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Art. 1, 2.1..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="ordre"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ordre *</FormLabel>
+                <FormControl>
+                  <Input type="number" min={0} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Article identification */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <ListOrdered className="size-4" />
-              <span>Identification</span>
-            </div>
+        <FormField
+          control={form.control}
+          name="titre"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Titre *</FormLabel>
+              <FormControl>
+                <Input placeholder="Titre de l'article..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="numero">Numero *</Label>
-                <Input id="numero" {...register('numero')} placeholder="Art. 1, 2.1..." />
-                {errors.numero && (
-                  <p className="text-sm text-destructive">{errors.numero.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="ordre">Ordre *</Label>
-                <Input id="ordre" type="number" {...register('ordre')} min={0} />
-                {errors.ordre && (
-                  <p className="text-sm text-destructive">{errors.ordre.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="titre">Titre *</Label>
-              <Input id="titre" {...register('titre')} placeholder="Titre de l'article..." />
-              {errors.titre && (
-                <p className="text-sm text-destructive">{errors.titre.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="categorie">Categorie *</Label>
-              <Select value={currentCategorie} onValueChange={(val) => setValue('categorie', val as ArticleFormData['categorie'])}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+        <FormField
+          control={form.control}
+          name="categorie"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Categorie *</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
                 <SelectContent>
                   <SelectItem value="parties_privatives">Parties privatives</SelectItem>
                   <SelectItem value="parties_communes">Parties communes</SelectItem>
@@ -145,41 +152,41 @@ export function ArticleReglementFormDialog({
                   <SelectItem value="autre">Autre</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-          <Separator />
+      <FormSection icon={FileText} label="Contenu">
+        <FormField
+          control={form.control}
+          name="contenu"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Contenu de l'article</FormLabel>
+              <FormControl>
+                <Textarea rows={5} placeholder="Texte complet de l'article..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          {/* Content section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Contenu</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="contenu">Contenu de l'article</Label>
-              <Textarea {...register('contenu')} rows={5} placeholder="Texte complet de l'article..." />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea {...register('notes')} rows={2} placeholder="Notes complementaires..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea rows={2} placeholder="Notes complementaires..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

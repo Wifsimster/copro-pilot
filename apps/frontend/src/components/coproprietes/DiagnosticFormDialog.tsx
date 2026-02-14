@@ -3,19 +3,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ClipboardCheck, CalendarDays, FileText } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -23,6 +12,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { Diagnostic } from '@/types'
 
 const diagnosticSchema = z.object({
@@ -73,14 +71,7 @@ export function DiagnosticFormDialog({
   defaultValues,
   title = 'Nouveau diagnostic',
 }: DiagnosticFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<DiagnosticFormData>({
+  const form = useForm<DiagnosticFormData>({
     resolver: zodResolver(diagnosticSchema),
     defaultValues: {
       type: defaultValues?.type || 'dpe',
@@ -95,7 +86,7 @@ export function DiagnosticFormDialog({
 
   useEffect(() => {
     if (open) {
-      reset({
+      form.reset({
         type: defaultValues?.type || 'dpe',
         prestataire: defaultValues?.prestataire || '',
         date_realisation: defaultValues?.date_realisation || new Date().toISOString().split('T')[0],
@@ -105,10 +96,7 @@ export function DiagnosticFormDialog({
         observations: defaultValues?.observations || '',
       })
     }
-  }, [open, defaultValues, reset])
-
-  const currentType = watch('type')
-  const currentStatut = watch('statut')
+  }, [open, defaultValues, form.reset])
 
   const handleFormSubmit = async (data: DiagnosticFormData) => {
     await onSubmit({
@@ -119,118 +107,141 @@ export function DiagnosticFormDialog({
       document_url: data.document_url || null,
       observations: data.observations || null,
     })
-    reset()
+    form.reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Renseignez les informations du diagnostic technique. Les champs marques d'un * sont obligatoires.
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-          {/* Type & Statut section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <ClipboardCheck className="size-4" />
-              <span>Type et statut</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="type">Type *</Label>
-                <Select value={currentType} onValueChange={(val) => setValue('type', val as DiagnosticFormData['type'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Renseignez les informations du diagnostic technique. Les champs marques d'un * sont obligatoires."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={ClipboardCheck} label="Type et statut">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     {Object.entries(TYPE_LABELS).map(([value, label]) => (
                       <SelectItem key={value} value={value}>{label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="statut">Statut *</Label>
-                <Select value={currentStatut} onValueChange={(val) => setValue('statut', val as DiagnosticFormData['statut'])}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="statut"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Statut *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
                   <SelectContent>
                     {Object.entries(STATUT_LABELS).map(([value, label]) => (
                       <SelectItem key={value} value={value}>{label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <FormField
+          control={form.control}
+          name="prestataire"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Prestataire</FormLabel>
+              <FormControl>
+                <Input placeholder="Nom du prestataire..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
 
-            <div className="space-y-2">
-              <Label htmlFor="prestataire">Prestataire</Label>
-              <Input id="prestataire" {...register('prestataire')} placeholder="Nom du prestataire..." />
-            </div>
-          </div>
+      <FormSection icon={CalendarDays} label="Dates">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="date_realisation"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de realisation *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_validite"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de validite</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-          <Separator />
-
-          {/* Dates section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <CalendarDays className="size-4" />
-              <span>Dates</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date_realisation">Date de realisation *</Label>
-                <Input id="date_realisation" type="date" {...register('date_realisation')} />
-                {errors.date_realisation && (
-                  <p className="text-sm text-destructive">{errors.date_realisation.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_validite">Date de validite</Label>
-                <Input id="date_validite" type="date" {...register('date_validite')} />
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Details section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <FileText className="size-4" />
-              <span>Details</span>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="document_url">URL du document</Label>
-              <Input id="document_url" {...register('document_url')} placeholder="https://..." />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="observations">Observations</Label>
-              <Textarea rows={3} {...register('observations')} placeholder="Observations..." />
-            </div>
-          </div>
-
-          <Separator />
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <FormSection icon={FileText} label="Details">
+        <FormField
+          control={form.control}
+          name="document_url"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>URL du document</FormLabel>
+              <FormControl>
+                <Input placeholder="https://..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="observations"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Observations</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Observations..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }

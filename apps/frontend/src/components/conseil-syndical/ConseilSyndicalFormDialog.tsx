@@ -3,19 +3,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Users, CalendarDays } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
@@ -23,6 +12,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { FormDialog } from '@/components/ui/form-dialog'
+import { FormSection } from '@/components/ui/form-section'
 import type { MembreConseilSyndical, Coproprietaire, AssembleeGenerale } from '@/types'
 
 const membreSchema = z.object({
@@ -69,14 +67,7 @@ export function ConseilSyndicalFormDialog({
   defaultValues,
   title = 'Ajouter un membre',
 }: ConseilSyndicalFormDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<MembreFormData>({
+  const form = useForm<MembreFormData>({
     resolver: zodResolver(membreSchema),
     defaultValues: {
       coproprietaire_id: defaultValues?.coproprietaire_id ?? 0,
@@ -88,13 +79,9 @@ export function ConseilSyndicalFormDialog({
     },
   })
 
-  const selectedRole = watch('role')
-  const selectedCoproprietaire = watch('coproprietaire_id')
-  const selectedAG = watch('ag_election_id')
-
   useEffect(() => {
     if (open) {
-      reset({
+      form.reset({
         coproprietaire_id: defaultValues?.coproprietaire_id ?? 0,
         role: defaultValues?.role ?? 'membre',
         date_election: defaultValues?.date_election ?? '',
@@ -103,7 +90,7 @@ export function ConseilSyndicalFormDialog({
         notes: defaultValues?.notes ?? '',
       })
     }
-  }, [open, defaultValues, reset])
+  }, [open, defaultValues, form.reset])
 
   const handleFormSubmit = async (data: MembreFormData) => {
     await onSubmit({
@@ -116,112 +103,119 @@ export function ConseilSyndicalFormDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Remplissez les informations du membre du conseil syndical.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description="Remplissez les informations du membre du conseil syndical."
+      form={form}
+      onSubmit={handleFormSubmit}
+      isLoading={isLoading}
+      size="lg"
+    >
+      <FormSection icon={Users} label="Membre">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="coproprietaire_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Copropriétaire *</FormLabel>
+                <Select
+                  value={field.value ? String(field.value) : ''}
+                  onValueChange={(value) => field.onChange(Number(value))}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner un copropriétaire" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {coproprietaires.map((c) => (
+                      <SelectItem key={c.id} value={String(c.id)}>
+                        {c.nom} {c.prenom}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Rôle *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner un rôle" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.entries(roleLabels).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </FormSection>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-            <Users className="h-4 w-4" />
-            <span>Membre</span>
-          </div>
+      <FormSection icon={CalendarDays} label="Mandat">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="date_election"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date d'élection *</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_fin_mandat"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date de fin de mandat</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="coproprietaire_id">Copropriétaire *</Label>
+        <FormField
+          control={form.control}
+          name="ag_election_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>AG d'élection</FormLabel>
               <Select
-                value={selectedCoproprietaire ? String(selectedCoproprietaire) : ''}
-                onValueChange={(value) => setValue('coproprietaire_id', Number(value))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Sélectionner un copropriétaire" />
-                </SelectTrigger>
-                <SelectContent>
-                  {coproprietaires.map((c) => (
-                    <SelectItem key={c.id} value={String(c.id)}>
-                      {c.nom} {c.prenom}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.coproprietaire_id && (
-                <p className="text-sm text-destructive">{errors.coproprietaire_id.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="role">Rôle *</Label>
-              <Select
-                value={selectedRole}
-                onValueChange={(value) => setValue('role', value as MembreFormData['role'])}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Sélectionner un rôle" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(roleLabels).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.role && (
-                <p className="text-sm text-destructive">{errors.role.message}</p>
-              )}
-            </div>
-          </div>
-
-          <Separator />
-
-          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-            <CalendarDays className="h-4 w-4" />
-            <span>Mandat</span>
-          </div>
-
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date_election">Date d'élection *</Label>
-                <Input
-                  id="date_election"
-                  type="date"
-                  {...register('date_election')}
-                />
-                {errors.date_election && (
-                  <p className="text-sm text-destructive">{errors.date_election.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="date_fin_mandat">Date de fin de mandat</Label>
-                <Input
-                  id="date_fin_mandat"
-                  type="date"
-                  {...register('date_fin_mandat')}
-                />
-                {errors.date_fin_mandat && (
-                  <p className="text-sm text-destructive">{errors.date_fin_mandat.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="ag_election_id">AG d'élection</Label>
-              <Select
-                value={selectedAG ? String(selectedAG) : 'none'}
+                value={field.value ? String(field.value) : 'none'}
                 onValueChange={(value) =>
-                  setValue('ag_election_id', value === 'none' ? undefined : Number(value))
+                  field.onChange(value === 'none' ? undefined : Number(value))
                 }
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Aucune" />
-                </SelectTrigger>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Aucune" />
+                  </SelectTrigger>
+                </FormControl>
                 <SelectContent>
                   <SelectItem value="none">Aucune</SelectItem>
                   {assemblees.map((ag) => (
@@ -231,39 +225,25 @@ export function ConseilSyndicalFormDialog({
                   ))}
                 </SelectContent>
               </Select>
-              {errors.ag_election_id && (
-                <p className="text-sm text-destructive">{errors.ag_election_id.message}</p>
-              )}
-            </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea
-                rows={3}
-                placeholder="Notes complémentaires..."
-                {...register('notes')}
-              />
-              {errors.notes && (
-                <p className="text-sm text-destructive">{errors.notes.message}</p>
-              )}
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isLoading}
-            >
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea rows={3} placeholder="Notes complémentaires..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </FormSection>
+    </FormDialog>
   )
 }
