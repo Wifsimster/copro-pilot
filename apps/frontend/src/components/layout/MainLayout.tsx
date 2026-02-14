@@ -120,6 +120,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   const { user, logout } = useAuthStore()
   const { selectedCoproprieteId, setSelectedCoproprieteId } = useCoproprieteStore()
   const { data: coproprietes } = useCoproprietes()
+  const selectedCopropriete = coproprietes?.find(c => c.id === selectedCoproprieteId)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains('dark')
@@ -251,7 +252,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         {/* Logo */}
         <div className="flex h-16 items-center gap-3 border-b border-gray-200 px-6 dark:border-zinc-700">
           <img src="/logo.svg" alt="CoproPilot" className="h-8 w-8 rounded-lg" />
-          <span className="text-lg font-bold text-gray-900 dark:text-white">CoproPilot</span>
+          <span className="text-lg font-bold text-gray-900 dark:text-white">{selectedCopropriete?.nom ?? 'CoproPilot'}</span>
           <button
             onClick={() => setSidebarOpen(false)}
             className="ml-auto lg:hidden"
@@ -334,7 +335,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span className="ml-3 text-lg font-bold text-gray-900 dark:text-white">CoproPilot</span>
+          <span className="ml-3 text-lg font-bold text-gray-900 dark:text-white">{selectedCopropriete?.nom ?? 'CoproPilot'}</span>
           <div className="ml-auto">
             <NotificationBell />
           </div>
