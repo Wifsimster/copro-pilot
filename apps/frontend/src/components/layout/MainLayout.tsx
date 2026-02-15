@@ -309,11 +309,6 @@ export function MainLayout({ children }: MainLayoutProps) {
           </div>
         </div>
 
-        {/* Global search */}
-        <div className="border-b border-gray-200 px-4 py-3 dark:border-zinc-700">
-          <GlobalSearch />
-        </div>
-
         {/* Navigation */}
         <nav className="flex-1 space-y-4 overflow-y-auto p-4">
           {filteredSections.map(renderSection)}
@@ -346,16 +341,19 @@ export function MainLayout({ children }: MainLayoutProps) {
 
       {/* Main content */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Top bar (mobile) */}
-        <header className="flex h-16 items-center border-b border-gray-200 bg-white px-4 dark:border-zinc-700 dark:bg-zinc-800 lg:hidden">
+        {/* Top bar */}
+        <header className="flex h-16 items-center border-b border-gray-200 bg-white px-4 dark:border-zinc-700 dark:bg-zinc-800">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700"
+            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700 lg:hidden"
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span className="ml-3 text-lg font-bold text-gray-900 dark:text-white">{selectedCopropriete?.nom ?? 'CoproPilot'}</span>
-          <div className="ml-auto">
+          <span className="ml-3 text-lg font-bold text-gray-900 dark:text-white lg:hidden">{selectedCopropriete?.nom ?? 'CoproPilot'}</span>
+          <div className="flex-1 lg:ml-0 ml-3">
+            <GlobalSearch />
+          </div>
+          <div className="ml-3">
             <NotificationBell />
           </div>
         </header>
