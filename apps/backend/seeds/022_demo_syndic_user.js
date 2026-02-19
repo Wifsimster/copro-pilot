@@ -20,46 +20,34 @@ function hashPassword(password) {
  * @returns { Promise<void> }
  */
 export async function seed(knex) {
-  const email = 'copro@copropilot.local'
+  const email = 'syndic@copropilot.local'
 
-  // Check if copro user already exists
   const existing = await knex('user').where({ email }).first()
   if (existing) return
-
-  // Get first coproprietaire that isn't already linked
-  const copro = await knex('coproprietaires').whereNull('user_id').first()
-  if (!copro) return
 
   const userId = randomUUID()
   const accountId = randomUUID()
   const now = new Date()
 
-  // Create user with coproprietaire role
   await knex('user').insert({
     id: userId,
-    name: `${copro.prenom} ${copro.nom}`,
+    name: 'Marie Duval',
     email,
     emailVerified: true,
-    role: 'coproprietaire',
+    role: 'syndic',
     isAdmin: false,
-    displayName: `${copro.prenom} ${copro.nom}`,
+    displayName: 'Marie Duval',
     createdAt: now,
     updatedAt: now,
   })
 
-  // Create account with password
   await knex('account').insert({
     id: accountId,
     accountId: userId,
     providerId: 'credential',
     userId,
-    password: hashPassword('copro'),
+    password: hashPassword('syndic'),
     createdAt: now,
     updatedAt: now,
   })
-
-  // Link the coproprietaire record to this user
-  await knex('coproprietaires')
-    .where('id', copro.id)
-    .update({ user_id: userId })
 }
