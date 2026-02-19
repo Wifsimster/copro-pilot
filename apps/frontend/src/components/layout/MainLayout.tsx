@@ -300,9 +300,6 @@ export function MainLayout({ children }: MainLayoutProps) {
 
         {/* User section */}
         <div className="border-t border-gray-200 p-4 dark:border-zinc-700">
-          <div className="mb-3">
-            <NotificationBell />
-          </div>
           <div className="flex items-center gap-3">
             <Avatar size="default">
               <AvatarFallback>
