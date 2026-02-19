@@ -404,7 +404,7 @@ function AnnexesTab({ coproprieteId, annee }: { coproprieteId: number; annee: nu
     { num: 5, title: 'Annexe 5 — Budget previsionnel', desc: 'Postes de depenses previsionnels vs realises' },
   ]
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const annexeData: Record<number, any> = { 1: annexe1, 2: annexe2, 3: annexe3, 4: annexe4, 5: annexe5 }
 
   return (
