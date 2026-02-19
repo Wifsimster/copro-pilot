@@ -36,7 +36,6 @@ import {
   Sun,
   ChevronDown,
   ChevronRight,
-  EllipsisVertical,
   CircleHelp,
   type LucideIcon,
 } from 'lucide-react'
@@ -298,31 +297,65 @@ export function MainLayout({ children }: MainLayoutProps) {
           {filteredSections.slice(1).map(renderSection)}
         </nav>
 
-        {/* User section */}
-        <div className="border-t border-gray-200 p-4 dark:border-zinc-700">
-          <div className="flex items-center gap-3">
-            <Avatar size="default">
-              <AvatarFallback>
-                {(user?.firstname?.[0] ?? '').toUpperCase()}
-                {(user?.lastname?.[0] ?? '').toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
-                {user?.firstname} {user?.lastname}
-              </p>
-              <p className="truncate text-xs text-gray-500 dark:text-zinc-400">
-                {user?.email}
-              </p>
-            </div>
+      </aside>
+
+      {/* Main content */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {/* Top bar */}
+        <header className="flex h-16 items-center gap-3 border-b border-gray-200 bg-white px-4 dark:border-zinc-700 dark:bg-zinc-800">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700 lg:hidden"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+          <div className="relative shrink-0">
+            <Building2 className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
+            <select
+              value={selectedCoproprieteId ?? ''}
+              onChange={(e) => {
+                const value = e.target.value
+                if (value) {
+                  const id = parseInt(value)
+                  setSelectedCoproprieteId(id)
+                  const detailMatch = pathname.match(/^\/coproprietes\/\d+/)
+                  if (detailMatch) {
+                    navigate(`/coproprietes/${id}`)
+                  }
+                } else {
+                  setSelectedCoproprieteId(undefined)
+                }
+              }}
+              className="appearance-none rounded-lg border border-gray-200 bg-gray-50 py-2 pl-8 pr-8 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600 dark:focus:bg-zinc-700 dark:focus:border-blue-500"
+            >
+              <option value="" className="dark:bg-zinc-800 dark:text-white">Toutes les copropriétés</option>
+              {coproprietes?.map((c) => (
+                <option key={c.id} value={c.id} className="dark:bg-zinc-800 dark:text-white">{c.nom}</option>
+              ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <GlobalSearch />
+          </div>
+          <div className="shrink-0">
+            <NotificationBell />
+          </div>
+          <div className="shrink-0">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700">
-                  <EllipsisVertical className="h-4 w-4" />
+                <button className="flex items-center gap-2 rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700">
+                  <Avatar size="default">
+                    <AvatarFallback>
+                      {(user?.firstname?.[0] ?? '').toUpperCase()}
+                      {(user?.lastname?.[0] ?? '').toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <ChevronDown className="h-3.5 w-3.5" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                side="top"
+                side="bottom"
                 align="end"
                 className="w-56"
               >
@@ -368,51 +401,6 @@ export function MainLayout({ children }: MainLayoutProps) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main content */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Top bar */}
-        <header className="flex h-16 items-center gap-3 border-b border-gray-200 bg-white px-4 dark:border-zinc-700 dark:bg-zinc-800">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700 lg:hidden"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-          <div className="relative shrink-0">
-            <Building2 className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
-            <select
-              value={selectedCoproprieteId ?? ''}
-              onChange={(e) => {
-                const value = e.target.value
-                if (value) {
-                  const id = parseInt(value)
-                  setSelectedCoproprieteId(id)
-                  const detailMatch = pathname.match(/^\/coproprietes\/\d+/)
-                  if (detailMatch) {
-                    navigate(`/coproprietes/${id}`)
-                  }
-                } else {
-                  setSelectedCoproprieteId(undefined)
-                }
-              }}
-              className="appearance-none rounded-lg border border-gray-200 bg-gray-50 py-2 pl-8 pr-8 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600 dark:focus:bg-zinc-700 dark:focus:border-blue-500"
-            >
-              <option value="" className="dark:bg-zinc-800 dark:text-white">Toutes les copropriétés</option>
-              {coproprietes?.map((c) => (
-                <option key={c.id} value={c.id} className="dark:bg-zinc-800 dark:text-white">{c.nom}</option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <GlobalSearch />
-          </div>
-          <div className="shrink-0">
-            <NotificationBell />
           </div>
         </header>
 
