@@ -28,6 +28,7 @@ const NotificationsPage = lazy(() => import('@/pages/NotificationsPage'))
 const ComptabiliteReglementairePage = lazy(() => import('@/pages/ComptabiliteReglementairePage'))
 const ExtranetPage = lazy(() => import('@/pages/ExtranetPage'))
 const ExportsPage = lazy(() => import('@/pages/ExportsPage'))
+const ProfilPage = lazy(() => import('@/pages/ProfilPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function PageLoader() {
@@ -222,6 +223,10 @@ export const router = createHashRouter([
       {
         path: '/notifications',
         element: <NotificationsPage />,
+      },
+      {
+        path: '/profil',
+        element: <ProfilPage />,
       },
       {
         path: '/comptabilite-reglementaire',
