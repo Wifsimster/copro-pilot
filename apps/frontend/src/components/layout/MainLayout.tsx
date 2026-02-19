@@ -36,8 +36,20 @@ import {
   Sun,
   ChevronDown,
   ChevronRight,
+  EllipsisVertical,
+  CircleHelp,
   type LucideIcon,
 } from 'lucide-react'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 interface NavItem {
   name: string
@@ -321,25 +333,77 @@ export function MainLayout({ children }: MainLayoutProps) {
 
         {/* User section */}
         <div className="border-t border-gray-200 p-4 dark:border-zinc-700">
-          <div className="mb-3 text-sm text-gray-600 dark:text-zinc-400">
-            {user?.firstname} {user?.lastname}
-          </div>
-          <div className="flex items-center gap-2">
+          <div className="mb-3">
             <NotificationBell />
-            <button
-              onClick={toggleTheme}
-              className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700"
-              title={isDark ? 'Mode clair' : 'Mode sombre'}
-            >
-              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </button>
-            <button
-              onClick={logout}
-              className="flex items-center gap-2 rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700"
-            >
-              <LogOut className="h-4 w-4" />
-              Déconnexion
-            </button>
+          </div>
+          <div className="flex items-center gap-3">
+            <Avatar size="default">
+              <AvatarFallback>
+                {(user?.firstname?.[0] ?? '').toUpperCase()}
+                {(user?.lastname?.[0] ?? '').toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
+                {user?.firstname} {user?.lastname}
+              </p>
+              <p className="truncate text-xs text-gray-500 dark:text-zinc-400">
+                {user?.email}
+              </p>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700">
+                  <EllipsisVertical className="h-4 w-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="top"
+                align="end"
+                className="w-56"
+              >
+                <DropdownMenuLabel>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium">
+                      {user?.firstname} {user?.lastname}
+                    </span>
+                    <span className="text-xs font-normal text-muted-foreground">
+                      {user?.email}
+                    </span>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      navigate('/profil')
+                      setSidebarOpen(false)
+                    }}
+                  >
+                    <UserCircle className="h-4 w-4" />
+                    Mon profil
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={toggleTheme}>
+                    {isDark
+                      ? <Sun className="h-4 w-4" />
+                      : <Moon className="h-4 w-4" />}
+                    {isDark ? 'Mode clair' : 'Mode sombre'}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem disabled>
+                    <CircleHelp className="h-4 w-4" />
+                    Aide
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={logout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  Déconnexion
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </aside>

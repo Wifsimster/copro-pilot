@@ -26,7 +26,7 @@ export function canAccessRoute(role?: string, route?: string): boolean {
   if (!role || !route) return false
   if (isAdmin(role)) return true
   if (isCoproprietaire(role)) {
-    return ['/extranet', '/notifications'].includes(route)
+    return ['/extranet', '/notifications', '/profil'].includes(route)
   }
   return !COPROPRIETAIRE_ROUTES.includes(route)
 }
