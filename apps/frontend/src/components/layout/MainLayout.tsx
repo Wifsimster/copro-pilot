@@ -134,7 +134,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   const { user, logout } = useAuthStore()
   const { selectedCoproprieteId, setSelectedCoproprieteId } = useCoproprieteStore()
   const { data: coproprietes } = useCoproprietes()
-  const selectedCopropriete = coproprietes?.find(c => c.id === selectedCoproprieteId)
+
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains('dark')
@@ -278,7 +278,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         {/* Logo */}
         <div className="flex h-16 items-center gap-3 border-b border-gray-200 px-6 dark:border-zinc-700">
           <img src="/logo.svg" alt="CoproPilot" className="h-8 w-8 rounded-lg" />
-          <span className="text-lg font-bold text-gray-900 dark:text-white">{selectedCopropriete?.nom ?? 'CoproPilot'}</span>
+          <span className="text-lg font-bold text-gray-900 dark:text-white">CoproPilot</span>
           <button
             onClick={() => setSidebarOpen(false)}
             className="ml-auto lg:hidden"
@@ -292,39 +292,6 @@ export function MainLayout({ children }: MainLayoutProps) {
           {renderSection(filteredSections[0])}
         </div>
 
-        {/* Copropriete selector */}
-        <div className="border-b border-gray-200 px-4 py-3 dark:border-zinc-700">
-          <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-zinc-500">
-            Copropriété
-          </label>
-          <div className="relative">
-            <select
-              value={selectedCoproprieteId ?? ''}
-              onChange={(e) => {
-                const value = e.target.value
-                if (value) {
-                  const id = parseInt(value)
-                  setSelectedCoproprieteId(id)
-                  // Only navigate if on a copropriete detail page
-                  const detailMatch = pathname.match(/^\/coproprietes\/\d+/)
-                  if (detailMatch) {
-                    navigate(`/coproprietes/${id}`)
-                  }
-                } else {
-                  setSelectedCoproprieteId(undefined)
-                }
-                setSidebarOpen(false)
-              }}
-              className="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 pr-8 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600 dark:focus:bg-zinc-700 dark:focus:border-blue-500"
-            >
-              <option value="" className="dark:bg-zinc-800 dark:text-white">Toutes les copropriétés</option>
-              {coproprietes?.map((c) => (
-                <option key={c.id} value={c.id} className="dark:bg-zinc-800 dark:text-white">{c.nom}</option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-          </div>
-        </div>
 
         {/* Navigation */}
         <nav className="flex-1 space-y-4 overflow-y-auto p-4">
@@ -418,7 +385,31 @@ export function MainLayout({ children }: MainLayoutProps) {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span className="ml-3 text-lg font-bold text-gray-900 dark:text-white lg:hidden">{selectedCopropriete?.nom ?? 'CoproPilot'}</span>
+          <div className="relative ml-3">
+            <select
+              value={selectedCoproprieteId ?? ''}
+              onChange={(e) => {
+                const value = e.target.value
+                if (value) {
+                  const id = parseInt(value)
+                  setSelectedCoproprieteId(id)
+                  const detailMatch = pathname.match(/^\/coproprietes\/\d+/)
+                  if (detailMatch) {
+                    navigate(`/coproprietes/${id}`)
+                  }
+                } else {
+                  setSelectedCoproprieteId(undefined)
+                }
+              }}
+              className="appearance-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 pr-8 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600 dark:focus:bg-zinc-700 dark:focus:border-blue-500"
+            >
+              <option value="" className="dark:bg-zinc-800 dark:text-white">Toutes les copropriétés</option>
+              {coproprietes?.map((c) => (
+                <option key={c.id} value={c.id} className="dark:bg-zinc-800 dark:text-white">{c.nom}</option>
+              ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          </div>
           <div className="flex-1 lg:ml-0 ml-3">
             <GlobalSearch />
           </div>
