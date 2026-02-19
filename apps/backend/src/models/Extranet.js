@@ -252,4 +252,61 @@ export class ExtranetModel {
       .where('actif', true)
       .orderBy('type', 'asc')
   }
+
+  // ── Dashboard data ───────────────────────────────────────────────
+
+  static async getUpcomingAGs(coproprieteIds, limit = 5) {
+    const db = getDb()
+    return db('assemblees_generales')
+      .select(
+        'assemblees_generales.id',
+        'assemblees_generales.date',
+        'assemblees_generales.heure',
+        'assemblees_generales.type',
+        'assemblees_generales.statut',
+        'assemblees_generales.lieu',
+        'coproprietes.nom as copropriete_nom'
+      )
+      .leftJoin(
+        'coproprietes',
+        'assemblees_generales.copropriete_id',
+        'coproprietes.id'
+      )
+      .whereIn('assemblees_generales.copropriete_id', coproprieteIds)
+      .where('assemblees_generales.date', '>=', db.fn.now())
+      .whereIn('assemblees_generales.statut', ['planifiee', 'convoquee'])
+      .orderBy('assemblees_generales.date', 'asc')
+      .limit(limit)
+  }
+
+  static async getOpenIncidents(coproprieteIds, limit = 5) {
+    const db = getDb()
+    return db('incidents')
+      .select(
+        'incidents.id',
+        'incidents.titre',
+        'incidents.urgence',
+        'incidents.statut',
+        'incidents.date_signalement',
+        'coproprietes.nom as copropriete_nom'
+      )
+      .leftJoin(
+        'coproprietes',
+        'incidents.copropriete_id',
+        'coproprietes.id'
+      )
+      .whereIn('incidents.copropriete_id', coproprieteIds)
+      .whereIn('incidents.statut', ['ouvert', 'en_cours'])
+      .orderBy('incidents.date_signalement', 'desc')
+      .limit(limit)
+  }
+
+  static async getUnreadNotificationCount(userId) {
+    const db = getDb()
+    const result = await db('notifications')
+      .where({ user_id: userId, lu: false })
+      .count('id as count')
+      .first()
+    return parseInt(result?.count || 0, 10)
+  }
 }

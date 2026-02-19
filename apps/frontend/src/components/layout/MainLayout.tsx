@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 import { NotificationBell } from './NotificationBell'
 import { GlobalSearch } from './GlobalSearch'
 import { NavigationTour } from './NavigationTour'
-import { canAccessRoute } from '@/utils/roleAccess'
+import { canAccessRoute, isCoproprietaire } from '@/utils/roleAccess'
 import {
   Building2,
   LayoutDashboard,
@@ -406,32 +406,34 @@ export function MainLayout({ children }: MainLayoutProps) {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <div data-tour="copropriete-selector" className="relative shrink-0">
-            <Building2 className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
-            <select
-              value={selectedCoproprieteId ?? ''}
-              onChange={(e) => {
-                const value = e.target.value
-                if (value) {
-                  const id = parseInt(value)
-                  setSelectedCoproprieteId(id)
-                  const detailMatch = pathname.match(/^\/coproprietes\/\d+/)
-                  if (detailMatch) {
-                    navigate(`/coproprietes/${id}`)
+          {!isCoproprietaire(user?.role) && (
+            <div data-tour="copropriete-selector" className="relative shrink-0">
+              <Building2 className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
+              <select
+                value={selectedCoproprieteId ?? ''}
+                onChange={(e) => {
+                  const value = e.target.value
+                  if (value) {
+                    const id = parseInt(value)
+                    setSelectedCoproprieteId(id)
+                    const detailMatch = pathname.match(/^\/coproprietes\/\d+/)
+                    if (detailMatch) {
+                      navigate(`/coproprietes/${id}`)
+                    }
+                  } else {
+                    setSelectedCoproprieteId(undefined)
                   }
-                } else {
-                  setSelectedCoproprieteId(undefined)
-                }
-              }}
-              className="appearance-none rounded-lg border border-gray-200 bg-gray-50 py-2 pl-8 pr-8 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600 dark:focus:bg-zinc-700 dark:focus:border-blue-500"
-            >
-              <option value="" className="dark:bg-zinc-800 dark:text-white">Toutes les copropriétés</option>
-              {coproprietes?.map((c) => (
-                <option key={c.id} value={c.id} className="dark:bg-zinc-800 dark:text-white">{c.nom}</option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
-          </div>
+                }}
+                className="appearance-none rounded-lg border border-gray-200 bg-gray-50 py-2 pl-8 pr-8 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600 dark:focus:bg-zinc-700 dark:focus:border-blue-500"
+              >
+                <option value="" className="dark:bg-zinc-800 dark:text-white">Toutes les copropriétés</option>
+                {coproprietes?.map((c) => (
+                  <option key={c.id} value={c.id} className="dark:bg-zinc-800 dark:text-white">{c.nom}</option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
+            </div>
+          )}
           <div data-tour="global-search" className="min-w-0 flex-1">
             <GlobalSearch />
           </div>
@@ -446,7 +448,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         </main>
       </div>
 
-      <NavigationTour run={tourRunning} onFinish={onTourFinish} />
+      <NavigationTour run={tourRunning} onFinish={onTourFinish} role={user?.role} />
     </div>
   )
 }

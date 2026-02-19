@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   CommandDialog,
@@ -11,6 +11,8 @@ import {
 } from '@/components/ui/command'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
+import { useAuthStore } from '@/store/authStore'
+import { canAccessRoute } from '@/utils/roleAccess'
 import {
   Building2,
   Users,
@@ -34,6 +36,8 @@ import {
   UsersRound,
   Search,
   Loader2,
+  Bell,
+  UserCircle,
 } from 'lucide-react'
 
 const navigationItems = [
@@ -76,14 +80,30 @@ const navigationItems = [
   },
   { name: 'Contrat syndic', href: '/contrats-syndic', icon: Stamp },
   { name: 'Exports', href: '/exports', icon: FileDown },
+  {
+    name: 'Espace copropriétaire',
+    href: '/extranet',
+    icon: UserCircle,
+  },
+  { name: 'Notifications', href: '/notifications', icon: Bell },
+  { name: 'Mon profil', href: '/profil', icon: UserCircle },
 ]
 
 export function GlobalSearch() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const { selectedCoproprieteId } = useCoproprieteStore()
+  const user = useAuthStore(s => s.user)
   const { query, setQuery, results, isLoading } =
     useGlobalSearch(selectedCoproprieteId)
+
+  const filteredNavItems = useMemo(
+    () =>
+      navigationItems.filter(item =>
+        canAccessRoute(user?.role, item.href)
+      ),
+    [user?.role]
+  )
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -301,7 +321,7 @@ export function GlobalSearch() {
             <>
               {hasResults && <CommandSeparator />}
               <CommandGroup heading="Navigation rapide">
-                {navigationItems.map(item => (
+                {filteredNavItems.map(item => (
                   <CommandItem
                     key={item.href}
                     value={`nav-${item.name}`}

@@ -5,6 +5,7 @@ import type {
   ExtranetChargeLigne,
   ExtranetDocuments,
   ExtranetConseilSyndical,
+  ExtranetDashboard,
 } from '@/types'
 
 export const extranetApi = {
@@ -28,4 +29,7 @@ export const extranetApi = {
 
   getDonneesConseilSyndical: (coproprieteId: number) =>
     api.get<{ data: ExtranetConseilSyndical }>(`/extranet/conseil-syndical/${coproprieteId}`),
+
+  getDashboard: () =>
+    api.get<{ data: ExtranetDashboard }>('/extranet/dashboard'),
 }

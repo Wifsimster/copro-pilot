@@ -118,6 +118,36 @@ class ExtranetService {
     }
   }
 
+  async getDashboard(userId) {
+    try {
+      const coproprietaire = await ExtranetModel.getCoproprietaireByUserId(userId)
+      if (!coproprietaire) return null
+
+      const coproprietes = await ExtranetModel.getCoproprietesByCoproprietaire(coproprietaire.id)
+      const coproprieteIds = coproprietes.map(c => c.id)
+
+      const [compte, upcomingAGs, openIncidents, unreadNotifications] =
+        await Promise.all([
+          ExtranetModel.getMonCompte(coproprietaire.id),
+          ExtranetModel.getUpcomingAGs(coproprieteIds),
+          ExtranetModel.getOpenIncidents(coproprieteIds),
+          ExtranetModel.getUnreadNotificationCount(userId),
+        ])
+
+      logger.info(`[ExtranetService] Dashboard récupéré pour userId=${userId}`)
+      return {
+        compte,
+        unreadNotifications,
+        upcomingAGs,
+        openIncidents,
+        coproprietes: coproprietes.length,
+      }
+    } catch (error) {
+      logger.error(`[ExtranetService] Error getting dashboard for userId=${userId}: ${error.message}`)
+      throw error
+    }
+  }
+
   async getDonneesConseilSyndical(userId, coproprieteId) {
     try {
       const coproprietaire = await ExtranetModel.getCoproprietaireByUserId(userId)
