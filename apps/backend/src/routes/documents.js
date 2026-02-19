@@ -5,6 +5,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { DocumentController } from '../controllers/DocumentController.js'
 import { requireAuth } from '../middleware/auth.js'
+import { requireAdminForDelete } from '../middleware/authorization.js'
 
 const router = Router()
 
@@ -47,6 +48,6 @@ router.get('/copropriete/:coproprieteId', requireAuth(), DocumentController.getA
 router.get('/:id', requireAuth(), DocumentController.getById)
 router.post('/', requireAuth(), DocumentController.create)
 router.put('/:id', requireAuth(), DocumentController.update)
-router.delete('/:id', requireAuth(), DocumentController.delete)
+router.delete('/:id', requireAuth(), requireAdminForDelete, DocumentController.delete)
 
 export default router

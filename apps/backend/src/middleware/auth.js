@@ -92,7 +92,6 @@ export const requireAdmin = async (req, res, next) => {
         if (!isAdmin) {
             logger.warn('[Auth] Non-admin user attempted to access admin route', {
                 userId: req.user.id,
-                userEmail: req.user.email,
                 path: req.path
             })
             return res.status(403).json({

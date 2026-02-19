@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { AppelFondsController } from '../controllers/AppelFondsController.js'
 import { requireAuth } from '../middleware/auth.js'
+import { requireAdminForDelete } from '../middleware/authorization.js'
 
 const router = Router()
 
@@ -12,7 +13,7 @@ router.post('/lignes', requireAuth(), AppelFondsController.createLigne)
 router.put('/lignes/:ligneId', requireAuth(), AppelFondsController.updateLigne)
 router.put('/:id', requireAuth(), AppelFondsController.update)
 router.post('/generate-from-budget/:budgetId', requireAuth(), AppelFondsController.generateFromBudget)
-router.delete('/lignes/:ligneId', requireAuth(), AppelFondsController.deleteLigne)
-router.delete('/:id', requireAuth(), AppelFondsController.delete)
+router.delete('/lignes/:ligneId', requireAuth(), requireAdminForDelete, AppelFondsController.deleteLigne)
+router.delete('/:id', requireAuth(), requireAdminForDelete, AppelFondsController.delete)
 
 export default router

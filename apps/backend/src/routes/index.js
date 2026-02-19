@@ -60,6 +60,8 @@ import statsRoutes from './stats.js'
 import cycleAnnuelRoutes from './cycle-annuel.js'
 // Global search
 import searchRoutes from './search.js'
+// GDPR
+import gdprRoutes from './gdpr.js'
 
 const router = Router()
 
@@ -146,6 +148,9 @@ router.use('/cycle-annuel', cycleAnnuelRoutes)
 
 // Global search
 router.use('/search', searchRoutes)
+
+// GDPR
+router.use('/gdpr', gdprRoutes)
 
 // Root health check
 router.get('/', (req, res) => {

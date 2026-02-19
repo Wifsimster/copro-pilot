@@ -37,6 +37,12 @@ const ExtranetFondsTravauPage = lazy(() => import('@/pages/extranet/ExtranetFond
 const ExtranetConseilPage = lazy(() => import('@/pages/extranet/ExtranetConseilPage'))
 const ExportsPage = lazy(() => import('@/pages/ExportsPage'))
 const ProfilPage = lazy(() => import('@/pages/ProfilPage'))
+const DonneesPersonnellesPage = lazy(
+  () => import('@/pages/DonneesPersonnellesPage')
+)
+const PolitiqueConfidentialitePage = lazy(
+  () => import('@/pages/PolitiqueConfidentialitePage')
+)
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function PageLoader() {
@@ -69,6 +75,14 @@ export const router = createHashRouter([
           <LoginPage />
         </Suspense>
       </PublicRoute>
+    ),
+  },
+  {
+    path: '/politique-confidentialite',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <PolitiqueConfidentialitePage />
+      </Suspense>
     ),
   },
 
@@ -235,6 +249,10 @@ export const router = createHashRouter([
       {
         path: '/profil',
         element: <ProfilPage />,
+      },
+      {
+        path: '/donnees-personnelles',
+        element: <DonneesPersonnellesPage />,
       },
       {
         path: '/comptabilite-reglementaire',

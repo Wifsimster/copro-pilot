@@ -405,6 +405,15 @@ export function MainLayout({ children }: MainLayoutProps) {
                   <UserCircle className="h-4 w-4" />
                   Mon profil
                 </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    navigate('/donnees-personnelles')
+                    setSidebarOpen(false)
+                  }}
+                >
+                  <Shield className="h-4 w-4" />
+                  Mes donnees personnelles
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={toggleTheme}>
                   {isDark
                     ? <Sun className="h-4 w-4" />

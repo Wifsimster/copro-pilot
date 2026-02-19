@@ -118,4 +118,62 @@ export class ExtranetController {
       res.status(500).json({ error: 'Impossible de récupérer les données du conseil syndical' })
     }
   }
+
+  static async updateMonProfil(req, res) {
+    try {
+      const userId = req.user.id
+      const { telephone, adresse_correspondance } = req.body
+      const updated = await extranetService.updateProfil(userId, {
+        telephone,
+        adresse_correspondance,
+      })
+      if (!updated) {
+        return res
+          .status(403)
+          .json({ error: 'Acces reserve aux coproprietaires' })
+      }
+      res.json({
+        data: updated,
+        message: 'Profil mis a jour avec succes',
+      })
+    } catch (error) {
+      logger.error(
+        `[ExtranetController] Error updating profil: ${error.message}`
+      )
+      res
+        .status(500)
+        .json({ error: 'Impossible de mettre a jour le profil' })
+    }
+  }
+
+  static async updateMonCompte(req, res) {
+    try {
+      const userId = req.user.id
+      const { name } = req.body
+      if (!name || name.trim().length < 2) {
+        return res.status(400).json({
+          error: 'Le nom est obligatoire (2 caracteres minimum)',
+        })
+      }
+      const db = req.db
+      const [updated] = await db('user')
+        .where('id', userId)
+        .update({
+          name: name.trim(),
+          updatedAt: db.fn.now(),
+        })
+        .returning(['id', 'name', 'email', 'role'])
+      res.json({
+        data: updated,
+        message: 'Compte mis a jour avec succes',
+      })
+    } catch (error) {
+      logger.error(
+        `[ExtranetController] Error updating compte: ${error.message}`
+      )
+      res
+        .status(500)
+        .json({ error: 'Impossible de mettre a jour le compte' })
+    }
+  }
 }

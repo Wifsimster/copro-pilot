@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { ConvocationAGController } from '../controllers/ConvocationAGController.js'
 import { requireAuth } from '../middleware/auth.js'
+import { requireAdminForDelete } from '../middleware/authorization.js'
 
 const router = Router()
 
@@ -14,7 +15,7 @@ router.post('/:id/generer-destinataires', requireAuth(), ConvocationAGController
 router.post('/:id/envoyer', requireAuth(), ConvocationAGController.envoyer)
 router.put('/:id', requireAuth(), ConvocationAGController.update)
 router.put('/destinataires/:destId', requireAuth(), ConvocationAGController.updateDestinataire)
-router.delete('/:id', requireAuth(), ConvocationAGController.delete)
-router.delete('/destinataires/:destId', requireAuth(), ConvocationAGController.deleteDestinataire)
+router.delete('/:id', requireAuth(), requireAdminForDelete, ConvocationAGController.delete)
+router.delete('/destinataires/:destId', requireAuth(), requireAdminForDelete, ConvocationAGController.deleteDestinataire)
 
 export default router

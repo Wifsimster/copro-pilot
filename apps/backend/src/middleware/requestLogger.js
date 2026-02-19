@@ -15,7 +15,7 @@ export const requestLogger = (req, res, next) => {
 
     const start = Date.now()
 
-    logger.info(`[${req.method}] ${req.path} - ${req.ip}`)
+    logger.info(`[${req.method}] ${req.path}`)
 
     if (['POST', 'PUT', 'PATCH'].includes(req.method) && req.body) {
         const logBody = (req.body && typeof req.body === 'object' && !Array.isArray(req.body))
@@ -23,7 +23,11 @@ export const requestLogger = (req, res, next) => {
             : req.body
 
         if (logBody && typeof logBody === 'object' && !Array.isArray(logBody)) {
-            const sensitiveFields = ['password', 'token', 'apikey', 'secret']
+            const sensitiveFields = [
+                'password', 'token', 'apikey', 'secret',
+                'email', 'telephone', 'iban', 'adresse',
+                'nom', 'prenom', 'adresse_correspondance',
+            ]
             sensitiveFields.forEach(field => {
                 if (logBody[field]) {
                     logBody[field] = '[REDACTED]'
