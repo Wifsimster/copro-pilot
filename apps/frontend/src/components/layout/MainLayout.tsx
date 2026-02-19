@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo, useState } from 'react'
+import { type ReactNode, useMemo, useState, useCallback } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Collapsible } from 'radix-ui'
 import { useAuthStore } from '@/store/authStore'
@@ -7,6 +7,7 @@ import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { cn } from '@/lib/utils'
 import { NotificationBell } from './NotificationBell'
 import { GlobalSearch } from './GlobalSearch'
+import { NavigationTour } from './NavigationTour'
 import { canAccessRoute } from '@/utils/roleAccess'
 import {
   Building2,
@@ -136,6 +137,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   const { data: coproprietes } = useCoproprietes()
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [tourRunning, setTourRunning] = useState(false)
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains('dark')
   )
@@ -198,6 +200,15 @@ export function MainLayout({ children }: MainLayoutProps) {
     }
   }
 
+  const startTour = useCallback(() => {
+    setSidebarOpen(false)
+    setTourRunning(true)
+  }, [])
+
+  const onTourFinish = useCallback(() => {
+    setTourRunning(false)
+  }, [])
+
   const renderNavItem = (item: NavItem) => {
     const active = isItemActive(item.href)
     return (
@@ -237,6 +248,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         key={section.key}
         open={isOpen}
         onOpenChange={() => toggleSection(section.key)}
+        data-tour={`section-${section.key}`}
       >
         <Collapsible.Trigger className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-gray-400 transition-colors hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300">
           {section.label}
@@ -270,6 +282,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
       {/* Sidebar */}
       <aside
+        data-tour="sidebar"
         className={cn(
           'fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white shadow-lg transition-transform dark:bg-zinc-800 lg:static lg:translate-x-0',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -288,7 +301,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         </div>
 
         {/* Vue d'ensemble */}
-        <div className="border-b border-gray-200 px-4 pt-4 pb-3 dark:border-zinc-700">
+        <div data-tour="section-overview" className="border-b border-gray-200 px-4 pt-4 pb-3 dark:border-zinc-700">
           {renderSection(filteredSections[0])}
         </div>
 
@@ -299,7 +312,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         </nav>
 
         {/* User menu */}
-        <div className="border-t border-gray-200 p-2 dark:border-zinc-700">
+        <div data-tour="user-profile" className="border-t border-gray-200 p-2 dark:border-zinc-700">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex w-full items-center gap-2 rounded-lg p-2 text-left hover:bg-gray-100 data-[state=open]:bg-gray-100 dark:hover:bg-zinc-700 dark:data-[state=open]:bg-zinc-700">
@@ -361,7 +374,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                     : <Moon className="h-4 w-4" />}
                   {isDark ? 'Mode clair' : 'Mode sombre'}
                 </DropdownMenuItem>
-                <DropdownMenuItem disabled>
+                <DropdownMenuItem onClick={startTour}>
                   <CircleHelp className="h-4 w-4" />
                   Aide
                 </DropdownMenuItem>
@@ -393,7 +406,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <div className="relative shrink-0">
+          <div data-tour="copropriete-selector" className="relative shrink-0">
             <Building2 className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
             <select
               value={selectedCoproprieteId ?? ''}
@@ -419,10 +432,10 @@ export function MainLayout({ children }: MainLayoutProps) {
             </select>
             <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
           </div>
-          <div className="min-w-0 flex-1">
+          <div data-tour="global-search" className="min-w-0 flex-1">
             <GlobalSearch />
           </div>
-          <div className="shrink-0">
+          <div data-tour="notifications" className="shrink-0">
             <NotificationBell />
           </div>
         </header>
@@ -432,6 +445,8 @@ export function MainLayout({ children }: MainLayoutProps) {
           {children}
         </main>
       </div>
+
+      <NavigationTour run={tourRunning} onFinish={onTourFinish} />
     </div>
   )
 }
