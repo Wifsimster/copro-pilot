@@ -1,5 +1,6 @@
 import { createHashRouter, Outlet } from 'react-router-dom'
 import { ProtectedRoute, PublicRoute } from './ProtectedRoute'
+import { RoleGuard } from './RoleGuard'
 import { MainLayout } from '@/components/layout/MainLayout'
 import { lazy, Suspense } from 'react'
 
@@ -68,79 +69,155 @@ export const router = createHashRouter([
     children: [
       {
         path: '/',
-        element: <DashboardPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <DashboardPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/coproprietes',
-        element: <CoproprietesPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <CoproprietesPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/coproprietes/:id',
-        element: <CoproprieteDetailPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <CoproprieteDetailPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/coproprietaires',
-        element: <CoproprietairesPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <CoproprietairesPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/charges',
-        element: <ChargesPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <ChargesPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/assemblees',
-        element: <AssembleesPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <AssembleesPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/assemblees/:id',
-        element: <AssembleeDetailPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <AssembleeDetailPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/travaux',
-        element: <TravauxPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <TravauxPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/documents',
-        element: <DocumentsPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <DocumentsPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/fiche-synthetique',
-        element: <FicheSynthetiquePage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <FicheSynthetiquePage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/comptes-bancaires',
-        element: <ComptesBancairesPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <ComptesBancairesPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/conseil-syndical',
-        element: <ConseilSyndicalPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <ConseilSyndicalPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/contrats',
-        element: <ContratsPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <ContratsPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/assurances',
-        element: <AssurancesPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <AssurancesPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/contentieux',
-        element: <ContentieuxPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <ContentieuxPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/employes',
-        element: <EmployesPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <EmployesPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/reglements',
-        element: <ReglementsPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <ReglementsPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/immatriculation',
-        element: <ImmatriculationPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <ImmatriculationPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/contrats-syndic',
-        element: <ContratsSyndicPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <ContratsSyndicPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/notifications',
@@ -148,15 +225,27 @@ export const router = createHashRouter([
       },
       {
         path: '/comptabilite-reglementaire',
-        element: <ComptabiliteReglementairePage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <ComptabiliteReglementairePage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/extranet',
-        element: <ExtranetPage />,
+        element: (
+          <RoleGuard allowedRoles={['coproprietaire']}>
+            <ExtranetPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/exports',
-        element: <ExportsPage />,
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <ExportsPage />
+          </RoleGuard>
+        ),
       },
     ],
   },

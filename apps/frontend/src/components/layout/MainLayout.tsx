@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react'
+import { type ReactNode, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Collapsible } from 'radix-ui'
 import { useAuthStore } from '@/store/authStore'
@@ -6,6 +6,8 @@ import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import { cn } from '@/lib/utils'
 import { NotificationBell } from './NotificationBell'
+import { GlobalSearch } from './GlobalSearch'
+import { canAccessRoute } from '@/utils/roleAccess'
 import {
   Building2,
   LayoutDashboard,
@@ -120,6 +122,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   const { user, logout } = useAuthStore()
   const { selectedCoproprieteId, setSelectedCoproprieteId } = useCoproprieteStore()
   const { data: coproprietes } = useCoproprietes()
+  const selectedCopropriete = coproprietes?.find(c => c.id === selectedCoproprieteId)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains('dark')
@@ -143,9 +146,21 @@ export function MainLayout({ children }: MainLayoutProps) {
 
   const pathname = location.pathname
 
+  const filteredSections = useMemo(() => {
+    const role = user?.role
+    return navigationSections
+      .map(section => ({
+        ...section,
+        items: section.items.filter(item =>
+          canAccessRoute(role, item.href)
+        ),
+      }))
+      .filter(section => section.items.length > 0)
+  }, [user?.role])
+
   // Auto-expand section containing active route
   const effectiveSectionState = { ...sectionState }
-  for (const section of navigationSections) {
+  for (const section of filteredSections) {
     if (
       section.collapsible &&
       section.items.some(item =>
@@ -251,7 +266,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         {/* Logo */}
         <div className="flex h-16 items-center gap-3 border-b border-gray-200 px-6 dark:border-zinc-700">
           <img src="/logo.svg" alt="CoproPilot" className="h-8 w-8 rounded-lg" />
-          <span className="text-lg font-bold text-gray-900 dark:text-white">CoproPilot</span>
+          <span className="text-lg font-bold text-gray-900 dark:text-white">{selectedCopropriete?.nom ?? 'CoproPilot'}</span>
           <button
             onClick={() => setSidebarOpen(false)}
             className="ml-auto lg:hidden"
@@ -262,7 +277,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
         {/* Vue d'ensemble */}
         <div className="border-b border-gray-200 px-4 pt-4 pb-3 dark:border-zinc-700">
-          {renderSection(navigationSections[0])}
+          {renderSection(filteredSections[0])}
         </div>
 
         {/* Copropriete selector */}
@@ -301,7 +316,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
         {/* Navigation */}
         <nav className="flex-1 space-y-4 overflow-y-auto p-4">
-          {navigationSections.slice(1).map(renderSection)}
+          {filteredSections.slice(1).map(renderSection)}
         </nav>
 
         {/* User section */}
@@ -331,16 +346,19 @@ export function MainLayout({ children }: MainLayoutProps) {
 
       {/* Main content */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Top bar (mobile) */}
-        <header className="flex h-16 items-center border-b border-gray-200 bg-white px-4 dark:border-zinc-700 dark:bg-zinc-800 lg:hidden">
+        {/* Top bar */}
+        <header className="flex h-16 items-center border-b border-gray-200 bg-white px-4 dark:border-zinc-700 dark:bg-zinc-800">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700"
+            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700 lg:hidden"
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span className="ml-3 text-lg font-bold text-gray-900 dark:text-white">CoproPilot</span>
-          <div className="ml-auto">
+          <span className="ml-3 text-lg font-bold text-gray-900 dark:text-white lg:hidden">{selectedCopropriete?.nom ?? 'CoproPilot'}</span>
+          <div className="flex-1 lg:ml-0 ml-3">
+            <GlobalSearch />
+          </div>
+          <div className="ml-3">
             <NotificationBell />
           </div>
         </header>

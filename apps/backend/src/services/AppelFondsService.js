@@ -1,4 +1,5 @@
 import { AppelFondsModel } from '../models/AppelFonds.js'
+import knexDatabase from '../config/knex-database.js'
 import logger from '../logger.js'
 
 class AppelFondsService {
@@ -100,6 +101,85 @@ class AppelFondsService {
             return true
         } catch (error) {
             logger.error(`[AppelFondsService] Error deleting ligne ${id}: ${error.message}`)
+            throw error
+        }
+    }
+
+    async generateFromBudget(budgetId) {
+        try {
+            const db = knexDatabase.getKnex()
+            const budget = await db('budgets_previsionnels')
+                .where('id', budgetId)
+                .first()
+            if (!budget) {
+                throw new Error('Budget non trouve')
+            }
+
+            const lots = await db('lots')
+                .where('copropriete_id', budget.copropriete_id)
+                .whereNotNull('coproprietaire_id')
+
+            const totalTantiemes = lots.reduce(
+                (sum, lot) => sum + (parseInt(lot.tantiemes, 10) || 0),
+                0
+            )
+            if (totalTantiemes === 0) {
+                throw new Error('Aucun tantieme configure')
+            }
+
+            const quarterAmount =
+                parseFloat(budget.montant_total) / 4
+
+            const appels = []
+            for (let trimestre = 1; trimestre <= 4; trimestre++) {
+                const existing = await db('appels_fonds')
+                    .where({
+                        copropriete_id: budget.copropriete_id,
+                        annee: budget.annee,
+                        trimestre,
+                    })
+                    .first()
+                if (existing) continue
+
+                const month = (trimestre - 1) * 3 + 1
+                const dateEmission = `${budget.annee}-${String(month).padStart(2, '0')}-01`
+                const echeanceMonth = month + 2
+                const dateEcheance = `${budget.annee}-${String(echeanceMonth).padStart(2, '0')}-${echeanceMonth === 2 ? '28' : '30'}`
+
+                const appel = await AppelFondsModel.create({
+                    copropriete_id: budget.copropriete_id,
+                    budget_id: budget.id,
+                    trimestre,
+                    annee: budget.annee,
+                    montant_total: quarterAmount,
+                    date_emission: dateEmission,
+                    date_echeance: dateEcheance,
+                    statut: 'brouillon',
+                })
+
+                for (const lot of lots) {
+                    const montantLot =
+                        (quarterAmount * parseInt(lot.tantiemes, 10)) /
+                        totalTantiemes
+                    await AppelFondsModel.createLigne({
+                        appel_fonds_id: appel.id,
+                        lot_id: lot.id,
+                        coproprietaire_id: lot.coproprietaire_id,
+                        montant: Math.round(montantLot * 100) / 100,
+                    })
+                }
+
+                appels.push(appel)
+            }
+
+            logger.info(
+                `[AppelFondsService] Generated ${appels.length} appels from budget ${budgetId}`
+            )
+            return appels
+        } catch (error) {
+            logger.error(
+                `[AppelFondsService] Error generating from budget: ${error.message}`
+            )
             throw error
         }
     }

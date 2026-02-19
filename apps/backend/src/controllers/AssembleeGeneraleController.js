@@ -1,4 +1,5 @@
 import { assembleeGeneraleService } from '../services/AssembleeGeneraleService.js'
+import { workflowEventService } from '../services/WorkflowEventService.js'
 import logger from '../logger.js'
 
 export class AssembleeGeneraleController {
@@ -45,6 +46,9 @@ export class AssembleeGeneraleController {
             const result = await assembleeGeneraleService.update(id, req.body)
             if (!result) return res.status(404).json({ error: 'Assemblée générale non trouvée' })
             res.json({ data: result, message: 'Assemblée générale mise à jour avec succès' })
+            if (result.statut === 'terminee') {
+                workflowEventService.onAssembleeTerminee(result).catch(() => {})
+            }
         } catch (error) {
             logger.error(`[AGController] Error updating: ${error.message}`)
             res.status(500).json({ error: 'Impossible de mettre à jour l\'assemblée générale' })

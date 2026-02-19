@@ -818,6 +818,26 @@ export interface Notification {
 }
 
 // ============================================
+// Global Search Types
+// ============================================
+
+export interface SearchResults {
+  coproprietes: Pick<Copropriete, 'id' | 'nom' | 'adresse' | 'ville' | 'code_postal'>[]
+  coproprietaires: Pick<Coproprietaire, 'id' | 'nom' | 'prenom' | 'email'>[]
+  contrats: {
+    id: number
+    objet: string
+    type: string | null
+    statut: string
+    prestataire_nom: string | null
+  }[]
+  incidents: Pick<Incident, 'id' | 'titre' | 'categorie' | 'urgence' | 'statut'>[]
+  documents: Pick<Document, 'id' | 'nom' | 'categorie'>[]
+  assemblees: Pick<AssembleeGenerale, 'id' | 'date' | 'type' | 'statut' | 'lieu'>[]
+  assurances: Pick<Assurance, 'id' | 'compagnie' | 'numero_police' | 'type' | 'statut'>[]
+}
+
+// ============================================
 // API Response Types
 // ============================================
 
@@ -1019,4 +1039,39 @@ export interface ExtranetConseilSyndical {
   coproprietaires: Coproprietaire[]
   soldes: { coproprietaire_id: number; nom: string; prenom: string; total_du: number; total_paye: number; solde: number }[]
   comptesBancaires: unknown[]
+}
+
+// ============================================
+// Cycle Annuel (Workflow) Types
+// ============================================
+
+export type StatutTacheAnnuelle =
+  | 'pending'
+  | 'in_progress'
+  | 'completed'
+  | 'overdue'
+
+export interface TacheAnnuelle {
+  id: number
+  copropriete_id: number
+  annee: number
+  tache_code: string
+  tache_label: string
+  statut: StatutTacheAnnuelle
+  date_echeance: string | null
+  date_completion: string | null
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface TacheDefinition {
+  code: string
+  label: string
+}
+
+export interface CycleAnnuelSummary {
+  total: number
+  completed: number
+  percentage: number
 }

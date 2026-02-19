@@ -1,13 +1,20 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
+import { isCoproprietaire } from '@/utils/roleAccess'
+import type { UserRole } from '@/types'
 
 interface ProtectedRouteProps {
   children: ReactNode
   requiresAdmin?: boolean
+  allowedRoles?: UserRole[]
 }
 
-export function ProtectedRoute({ children, requiresAdmin = false }: ProtectedRouteProps) {
+export function ProtectedRoute({
+  children,
+  requiresAdmin = false,
+  allowedRoles,
+}: ProtectedRouteProps) {
   const location = useLocation()
   const { isAuthenticated, isLoading, user, validateToken, isInitialized } = useAuthStore()
   const [isValidating, setIsValidating] = useState(!isInitialized)
@@ -40,6 +47,13 @@ export function ProtectedRoute({ children, requiresAdmin = false }: ProtectedRou
 
   if (requiresAdmin && user?.role !== 'admin') {
     return <Navigate to="/" replace />
+  }
+
+  if (allowedRoles && user?.role) {
+    if (!allowedRoles.includes(user.role) && user.role !== 'admin') {
+      const redirectTo = isCoproprietaire(user.role) ? '/extranet' : '/'
+      return <Navigate to={redirectTo} replace />
+    }
   }
 
   return <>{children}</>
