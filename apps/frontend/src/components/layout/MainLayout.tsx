@@ -36,6 +36,7 @@ import {
   Sun,
   ChevronDown,
   ChevronRight,
+  ChevronsUpDown,
   CircleHelp,
   type LucideIcon,
 } from 'lucide-react'
@@ -297,6 +298,89 @@ export function MainLayout({ children }: MainLayoutProps) {
           {filteredSections.slice(1).map(renderSection)}
         </nav>
 
+        {/* User menu */}
+        <div className="border-t border-gray-200 p-2 dark:border-zinc-700">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex w-full items-center gap-2 rounded-lg p-2 text-left hover:bg-gray-100 data-[state=open]:bg-gray-100 dark:hover:bg-zinc-700 dark:data-[state=open]:bg-zinc-700">
+                <Avatar size="default">
+                  <AvatarFallback>
+                    {(user?.firstname?.[0] ?? '').toUpperCase()}
+                    {(user?.lastname?.[0] ?? '').toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-sm leading-tight">
+                  <span className="truncate font-semibold text-gray-900 dark:text-white">
+                    {user?.firstname} {user?.lastname}
+                  </span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {user?.email}
+                  </span>
+                </div>
+                <ChevronsUpDown className="ml-auto h-4 w-4 text-muted-foreground" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              side="top"
+              align="start"
+              className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+              sideOffset={4}
+            >
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar size="default">
+                    <AvatarFallback>
+                      {(user?.firstname?.[0] ?? '').toUpperCase()}
+                      {(user?.lastname?.[0] ?? '').toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-sm leading-tight">
+                    <span className="truncate font-semibold">
+                      {user?.firstname} {user?.lastname}
+                    </span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      {user?.email}
+                    </span>
+                  </div>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  onClick={() => {
+                    navigate('/profil')
+                    setSidebarOpen(false)
+                  }}
+                >
+                  <UserCircle className="h-4 w-4" />
+                  Mon profil
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={toggleTheme}>
+                  {isDark
+                    ? <Sun className="h-4 w-4" />
+                    : <Moon className="h-4 w-4" />}
+                  {isDark ? 'Mode clair' : 'Mode sombre'}
+                </DropdownMenuItem>
+                <DropdownMenuItem disabled>
+                  <CircleHelp className="h-4 w-4" />
+                  Aide
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={logout}
+              >
+                <LogOut className="h-4 w-4" />
+                Déconnexion
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <div className="px-2 py-1.5 text-center text-[10px] text-muted-foreground">
+                v{__APP_VERSION__} · {new Date(__BUILD_DATE__).toLocaleDateString('fr-FR')}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </aside>
 
       {/* Main content */}
@@ -340,67 +424,6 @@ export function MainLayout({ children }: MainLayoutProps) {
           </div>
           <div className="shrink-0">
             <NotificationBell />
-          </div>
-          <div className="shrink-0">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700">
-                  <Avatar size="default">
-                    <AvatarFallback>
-                      {(user?.firstname?.[0] ?? '').toUpperCase()}
-                      {(user?.lastname?.[0] ?? '').toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <ChevronDown className="h-3.5 w-3.5" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="bottom"
-                align="end"
-                className="w-56"
-              >
-                <DropdownMenuLabel>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium">
-                      {user?.firstname} {user?.lastname}
-                    </span>
-                    <span className="text-xs font-normal text-muted-foreground">
-                      {user?.email}
-                    </span>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      navigate('/profil')
-                      setSidebarOpen(false)
-                    }}
-                  >
-                    <UserCircle className="h-4 w-4" />
-                    Mon profil
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={toggleTheme}>
-                    {isDark
-                      ? <Sun className="h-4 w-4" />
-                      : <Moon className="h-4 w-4" />}
-                    {isDark ? 'Mode clair' : 'Mode sombre'}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem disabled>
-                    <CircleHelp className="h-4 w-4" />
-                    Aide
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  variant="destructive"
-                  onClick={logout}
-                >
-                  <LogOut className="h-4 w-4" />
-                  Déconnexion
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
         </header>
 
