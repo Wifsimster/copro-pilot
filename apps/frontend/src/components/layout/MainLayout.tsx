@@ -378,14 +378,15 @@ export function MainLayout({ children }: MainLayoutProps) {
       {/* Main content */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top bar */}
-        <header className="flex h-16 items-center border-b border-gray-200 bg-white px-4 dark:border-zinc-700 dark:bg-zinc-800">
+        <header className="flex h-16 items-center gap-3 border-b border-gray-200 bg-white px-4 dark:border-zinc-700 dark:bg-zinc-800">
           <button
             onClick={() => setSidebarOpen(true)}
             className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700 lg:hidden"
           >
             <Menu className="h-5 w-5" />
           </button>
-          <div className="relative ml-3">
+          <div className="relative shrink-0">
+            <Building2 className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
             <select
               value={selectedCoproprieteId ?? ''}
               onChange={(e) => {
@@ -401,19 +402,19 @@ export function MainLayout({ children }: MainLayoutProps) {
                   setSelectedCoproprieteId(undefined)
                 }
               }}
-              className="appearance-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 pr-8 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600 dark:focus:bg-zinc-700 dark:focus:border-blue-500"
+              className="appearance-none rounded-lg border border-gray-200 bg-gray-50 py-2 pl-8 pr-8 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600 dark:focus:bg-zinc-700 dark:focus:border-blue-500"
             >
               <option value="" className="dark:bg-zinc-800 dark:text-white">Toutes les copropriétés</option>
               {coproprietes?.map((c) => (
                 <option key={c.id} value={c.id} className="dark:bg-zinc-800 dark:text-white">{c.nom}</option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
           </div>
-          <div className="flex-1 lg:ml-0 ml-3">
+          <div className="min-w-0 flex-1">
             <GlobalSearch />
           </div>
-          <div className="ml-3">
+          <div className="shrink-0">
             <NotificationBell />
           </div>
         </header>
