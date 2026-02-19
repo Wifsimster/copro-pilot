@@ -26,7 +26,15 @@ const ImmatriculationPage = lazy(() => import('@/pages/ImmatriculationPage'))
 const ContratsSyndicPage = lazy(() => import('@/pages/ContratsSyndicPage'))
 const NotificationsPage = lazy(() => import('@/pages/NotificationsPage'))
 const ComptabiliteReglementairePage = lazy(() => import('@/pages/ComptabiliteReglementairePage'))
-const ExtranetPage = lazy(() => import('@/pages/ExtranetPage'))
+const ExtranetLayout = lazy(() => import('@/pages/extranet/ExtranetLayout'))
+const ExtranetDashboardPage = lazy(() => import('@/pages/extranet/ExtranetDashboardPage'))
+const ExtranetProfilPage = lazy(() => import('@/pages/extranet/ExtranetProfilPage'))
+const ExtranetDocumentsPage = lazy(() => import('@/pages/extranet/ExtranetDocumentsPage'))
+const ExtranetComptePage = lazy(() => import('@/pages/extranet/ExtranetComptePage'))
+const ExtranetChargesPage = lazy(() => import('@/pages/extranet/ExtranetChargesPage'))
+const ExtranetAppelsFondsPage = lazy(() => import('@/pages/extranet/ExtranetAppelsFondsPage'))
+const ExtranetFondsTravauPage = lazy(() => import('@/pages/extranet/ExtranetFondsTravauPage'))
+const ExtranetConseilPage = lazy(() => import('@/pages/extranet/ExtranetConseilPage'))
 const ExportsPage = lazy(() => import('@/pages/ExportsPage'))
 const ProfilPage = lazy(() => import('@/pages/ProfilPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
@@ -240,9 +248,19 @@ export const router = createHashRouter([
         path: '/extranet',
         element: (
           <RoleGuard allowedRoles={['coproprietaire']}>
-            <ExtranetPage />
+            <ExtranetLayout />
           </RoleGuard>
         ),
+        children: [
+          { index: true, element: <ExtranetDashboardPage /> },
+          { path: 'profil', element: <ExtranetProfilPage /> },
+          { path: 'documents', element: <ExtranetDocumentsPage /> },
+          { path: 'compte', element: <ExtranetComptePage /> },
+          { path: 'charges', element: <ExtranetChargesPage /> },
+          { path: 'appels-fonds', element: <ExtranetAppelsFondsPage /> },
+          { path: 'fonds-travaux', element: <ExtranetFondsTravauPage /> },
+          { path: 'conseil-syndical', element: <ExtranetConseilPage /> },
+        ],
       },
       {
         path: '/exports',

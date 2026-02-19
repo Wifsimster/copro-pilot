@@ -39,6 +39,8 @@ import {
   ChevronRight,
   ChevronsUpDown,
   CircleHelp,
+  CreditCard,
+  PiggyBank,
   type LucideIcon,
 } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -123,6 +125,38 @@ const navigationSections: NavSection[] = [
   },
 ]
 
+const coproprietaireNavigationSections: NavSection[] = [
+  {
+    key: 'mon-espace',
+    label: 'Mon espace',
+    collapsible: false,
+    items: [
+      { name: 'Tableau de bord', href: '/extranet', icon: LayoutDashboard },
+      { name: 'Mon profil', href: '/extranet/profil', icon: UserCircle },
+    ],
+  },
+  {
+    key: 'finances',
+    label: 'Finances',
+    collapsible: true,
+    items: [
+      { name: 'Mon compte', href: '/extranet/compte', icon: CreditCard },
+      { name: 'Mes charges', href: '/extranet/charges', icon: Receipt },
+      { name: 'Appels de fonds', href: '/extranet/appels-fonds', icon: ClipboardList },
+      { name: 'Fonds travaux', href: '/extranet/fonds-travaux', icon: PiggyBank },
+    ],
+  },
+  {
+    key: 'copropriete',
+    label: 'Copropriété',
+    collapsible: true,
+    items: [
+      { name: 'Documents', href: '/extranet/documents', icon: FolderOpen },
+      { name: 'Conseil syndical', href: '/extranet/conseil-syndical', icon: UsersRound },
+    ],
+  },
+]
+
 const SIDEBAR_STORAGE_KEY = 'sidebar-sections'
 
 interface MainLayoutProps {
@@ -162,7 +196,10 @@ export function MainLayout({ children }: MainLayoutProps) {
 
   const filteredSections = useMemo(() => {
     const role = user?.role
-    return navigationSections
+    const baseSections = isCoproprietaire(role)
+      ? coproprietaireNavigationSections
+      : navigationSections
+    return baseSections
       .map(section => ({
         ...section,
         items: section.items.filter(item =>
@@ -172,21 +209,21 @@ export function MainLayout({ children }: MainLayoutProps) {
       .filter(section => section.items.length > 0)
   }, [user?.role])
 
+  const isItemActive = (href: string) =>
+    href === '/' || href === '/extranet'
+      ? pathname === href
+      : pathname.startsWith(href)
+
   // Auto-expand section containing active route
   const effectiveSectionState = { ...sectionState }
   for (const section of filteredSections) {
     if (
       section.collapsible &&
-      section.items.some(item =>
-        item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)
-      )
+      section.items.some(item => isItemActive(item.href))
     ) {
       effectiveSectionState[section.key] = true
     }
   }
-
-  const isItemActive = (href: string) =>
-    href === '/' ? pathname === '/' : pathname.startsWith(href)
 
   const toggleTheme = () => {
     const newIsDark = !isDark
