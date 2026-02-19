@@ -13,6 +13,7 @@ import {
   Moon,
   Sun,
   Check,
+  Play,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -314,6 +315,51 @@ export default function LoginPage() {
                     'Se connecter'
                   )}
                 </Button>
+
+                {/* Demo access */}
+                <div className="relative mt-2">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-border" />
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      Accès démo
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1 h-10"
+                    disabled={isLoading}
+                    onClick={() => {
+                      setSignInError('')
+                      signIn('syndic@copropilot.local', 'syndic').catch(err => {
+                        setSignInError(err instanceof Error ? err.message : 'Erreur de connexion')
+                      })
+                    }}
+                  >
+                    <Play className="size-3.5" />
+                    Syndic
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1 h-10"
+                    disabled={isLoading}
+                    onClick={() => {
+                      setSignInError('')
+                      signIn('copro@copropilot.local', 'copro').catch(err => {
+                        setSignInError(err instanceof Error ? err.message : 'Erreur de connexion')
+                      })
+                    }}
+                  >
+                    <Play className="size-3.5" />
+                    Copropriétaire
+                  </Button>
+                </div>
               </form>
             </TabsContent>
 
