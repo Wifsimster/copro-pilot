@@ -104,7 +104,7 @@ const coproSteps: DriveStep[] = [
     popover: {
       title: 'Menu de navigation',
       description:
-        'Accédez à votre espace copropriétaire et à vos notifications depuis le menu latéral.',
+        'Accédez à votre espace copropriétaire depuis le menu latéral. Retrouvez ici les sections disponibles pour suivre votre copropriété.',
     },
   },
   {
