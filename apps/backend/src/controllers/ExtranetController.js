@@ -87,6 +87,20 @@ export class ExtranetController {
     }
   }
 
+  static async getDashboard(req, res) {
+    try {
+      const userId = req.user.id
+      const dashboard = await extranetService.getDashboard(userId)
+      if (!dashboard) {
+        return res.status(403).json({ error: 'Accès réservé aux copropriétaires' })
+      }
+      res.json({ data: dashboard })
+    } catch (error) {
+      logger.error(`[ExtranetController] Error getting dashboard: ${error.message}`)
+      res.status(500).json({ error: 'Impossible de récupérer le tableau de bord' })
+    }
+  }
+
   static async getDonneesConseilSyndical(req, res) {
     try {
       const userId = req.user.id

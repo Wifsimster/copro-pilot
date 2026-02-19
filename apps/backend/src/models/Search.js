@@ -3,29 +3,46 @@ import knexDatabase from '../config/knex-database.js'
 const getDb = () => knexDatabase.getKnex()
 
 export class SearchModel {
-  static async searchCoproprietes(query, limit = 5) {
+  static async searchCoproprietes(query, limit = 5, coproprieteIds = null) {
     const db = getDb()
-    return db('coproprietes')
+    const qb = db('coproprietes')
       .select('id', 'nom', 'adresse', 'ville', 'code_postal')
-      .where('nom', 'ilike', `%${query}%`)
-      .orWhere('adresse', 'ilike', `%${query}%`)
-      .orWhere('ville', 'ilike', `%${query}%`)
+      .where(function () {
+        this.where('nom', 'ilike', `%${query}%`)
+          .orWhere('adresse', 'ilike', `%${query}%`)
+          .orWhere('ville', 'ilike', `%${query}%`)
+      })
       .orderBy('nom', 'asc')
       .limit(limit)
+    if (coproprieteIds) {
+      qb.whereIn('id', coproprieteIds)
+    }
+    return qb
   }
 
-  static async searchCoproprietaires(query, limit = 5) {
+  static async searchCoproprietaires(query, limit = 5, coproprieteIds = null) {
     const db = getDb()
-    return db('coproprietaires')
+    const qb = db('coproprietaires')
       .select('id', 'nom', 'prenom', 'email')
-      .where('nom', 'ilike', `%${query}%`)
-      .orWhere('prenom', 'ilike', `%${query}%`)
-      .orWhere('email', 'ilike', `%${query}%`)
+      .where(function () {
+        this.where('nom', 'ilike', `%${query}%`)
+          .orWhere('prenom', 'ilike', `%${query}%`)
+          .orWhere('email', 'ilike', `%${query}%`)
+      })
       .orderBy('nom', 'asc')
       .limit(limit)
+    if (coproprieteIds) {
+      qb.whereIn('id', function () {
+        this.select('coproprietaire_id')
+          .from('lots')
+          .whereIn('copropriete_id', coproprieteIds)
+          .whereNotNull('coproprietaire_id')
+      })
+    }
+    return qb
   }
 
-  static async searchContrats(query, coproprieteId, limit = 5) {
+  static async searchContrats(query, coproprieteId, limit = 5, coproprieteIds = null) {
     const db = getDb()
     const qb = db('contrats')
       .select(
@@ -45,10 +62,13 @@ export class SearchModel {
     if (coproprieteId) {
       qb.andWhere('contrats.copropriete_id', coproprieteId)
     }
+    if (coproprieteIds) {
+      qb.whereIn('contrats.copropriete_id', coproprieteIds)
+    }
     return qb
   }
 
-  static async searchIncidents(query, coproprieteId, limit = 5) {
+  static async searchIncidents(query, coproprieteId, limit = 5, coproprieteIds = null) {
     const db = getDb()
     const qb = db('incidents')
       .select('id', 'titre', 'categorie', 'urgence', 'statut')
@@ -61,10 +81,13 @@ export class SearchModel {
     if (coproprieteId) {
       qb.andWhere('copropriete_id', coproprieteId)
     }
+    if (coproprieteIds) {
+      qb.whereIn('copropriete_id', coproprieteIds)
+    }
     return qb
   }
 
-  static async searchDocuments(query, coproprieteId, limit = 5) {
+  static async searchDocuments(query, coproprieteId, limit = 5, coproprieteIds = null) {
     const db = getDb()
     const qb = db('documents')
       .select('id', 'nom', 'categorie')
@@ -74,10 +97,13 @@ export class SearchModel {
     if (coproprieteId) {
       qb.andWhere('copropriete_id', coproprieteId)
     }
+    if (coproprieteIds) {
+      qb.whereIn('copropriete_id', coproprieteIds)
+    }
     return qb
   }
 
-  static async searchAssemblees(query, coproprieteId, limit = 5) {
+  static async searchAssemblees(query, coproprieteId, limit = 5, coproprieteIds = null) {
     const db = getDb()
     const qb = db('assemblees_generales')
       .select('id', 'date', 'type', 'statut', 'lieu')
@@ -91,10 +117,13 @@ export class SearchModel {
     if (coproprieteId) {
       qb.andWhere('copropriete_id', coproprieteId)
     }
+    if (coproprieteIds) {
+      qb.whereIn('copropriete_id', coproprieteIds)
+    }
     return qb
   }
 
-  static async searchAssurances(query, coproprieteId, limit = 5) {
+  static async searchAssurances(query, coproprieteId, limit = 5, coproprieteIds = null) {
     const db = getDb()
     const qb = db('assurances')
       .select('id', 'compagnie', 'numero_police', 'type', 'statut')
@@ -106,6 +135,9 @@ export class SearchModel {
       .limit(limit)
     if (coproprieteId) {
       qb.andWhere('copropriete_id', coproprieteId)
+    }
+    if (coproprieteIds) {
+      qb.whereIn('copropriete_id', coproprieteIds)
     }
     return qb
   }

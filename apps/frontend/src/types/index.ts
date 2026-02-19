@@ -1041,6 +1041,29 @@ export interface ExtranetConseilSyndical {
   comptesBancaires: unknown[]
 }
 
+export interface ExtranetDashboard {
+  compte: ExtranetCompte
+  unreadNotifications: number
+  upcomingAGs: {
+    id: number
+    date: string
+    heure: string | null
+    type: string
+    statut: string
+    lieu: string | null
+    copropriete_nom: string
+  }[]
+  openIncidents: {
+    id: number
+    titre: string
+    urgence: UrgenceIncident
+    statut: StatutIncident
+    date_signalement: string
+    copropriete_nom: string
+  }[]
+  coproprietes: number
+}
+
 // ============================================
 // Cycle Annuel (Workflow) Types
 // ============================================

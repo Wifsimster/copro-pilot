@@ -74,3 +74,13 @@ export function useExtranetConseilSyndical(coproprieteId: number | undefined) {
     enabled: !!coproprieteId,
   })
 }
+
+export function useExtranetDashboard() {
+  return useQuery({
+    queryKey: [...EXTRANET_KEY, 'dashboard'],
+    queryFn: async () => {
+      const res = await extranetApi.getDashboard()
+      return res.data
+    },
+  })
+}

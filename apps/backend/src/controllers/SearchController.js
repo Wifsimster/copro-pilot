@@ -1,4 +1,5 @@
 import { searchService } from '../services/SearchService.js'
+import { ExtranetModel } from '../models/Extranet.js'
 import logger from '../logger.js'
 
 export class SearchController {
@@ -14,7 +15,27 @@ export class SearchController {
       const coproprieteId = copropriete_id
         ? parseInt(copropriete_id, 10)
         : null
-      const results = await searchService.search(q, coproprieteId)
+
+      let coproprieteIds = null
+      if (req.user?.role?.toLowerCase() === 'coproprietaire') {
+        const coproprietaire =
+          await ExtranetModel.getCoproprietaireByUserId(req.user.id)
+        if (coproprietaire) {
+          const coproprietes =
+            await ExtranetModel.getCoproprietesByCoproprietaire(
+              coproprietaire.id
+            )
+          coproprieteIds = coproprietes.map(c => c.id)
+        } else {
+          coproprieteIds = []
+        }
+      }
+
+      const results = await searchService.search(
+        q,
+        coproprieteId,
+        coproprieteIds
+      )
       res.json({ data: results })
     } catch (error) {
       logger.error(

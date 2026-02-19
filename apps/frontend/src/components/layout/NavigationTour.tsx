@@ -1,13 +1,15 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { driver, type DriveStep, type Driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
+import { isCoproprietaire } from '@/utils/roleAccess'
 
 interface NavigationTourProps {
   run: boolean
   onFinish: () => void
+  role?: string
 }
 
-const steps: DriveStep[] = [
+const syndicSteps: DriveStep[] = [
   {
     popover: {
       title: 'Bienvenue sur CoproPilot',
@@ -89,7 +91,49 @@ const steps: DriveStep[] = [
   },
 ]
 
-export function NavigationTour({ run, onFinish }: NavigationTourProps) {
+const coproSteps: DriveStep[] = [
+  {
+    popover: {
+      title: 'Bienvenue sur votre espace copropriétaire',
+      description:
+        'Découvrez votre portail personnalisé. Cette visite guidée vous présente les fonctionnalités à votre disposition pour suivre votre copropriété.',
+    },
+  },
+  {
+    element: '[data-tour="sidebar"]',
+    popover: {
+      title: 'Menu de navigation',
+      description:
+        'Accédez à votre espace copropriétaire et à vos notifications depuis le menu latéral.',
+    },
+  },
+  {
+    element: '[data-tour="global-search"]',
+    popover: {
+      title: 'Recherche',
+      description:
+        'Recherchez des documents, assemblées et informations liées à vos copropriétés. Utilisez le raccourci Ctrl+K (ou Cmd+K sur Mac) pour y accéder instantanément.',
+    },
+  },
+  {
+    element: '[data-tour="notifications"]',
+    popover: {
+      title: 'Notifications',
+      description:
+        'Consultez vos notifications : rappels d\'assemblées générales, appels de fonds, signalements d\'incidents et autres informations importantes.',
+    },
+  },
+  {
+    element: '[data-tour="user-profile"]',
+    popover: {
+      title: 'Votre profil',
+      description:
+        'Accédez à vos paramètres personnels, changez le thème de l\'application ou déconnectez-vous depuis ce menu.',
+    },
+  },
+]
+
+export function NavigationTour({ run, onFinish, role }: NavigationTourProps) {
   const driverRef = useRef<Driver | null>(null)
 
   const handleFinish = useCallback(() => {
@@ -105,6 +149,8 @@ export function NavigationTour({ run, onFinish }: NavigationTourProps) {
       return
     }
 
+    const activeSteps = isCoproprietaire(role) ? coproSteps : syndicSteps
+
     const instance = driver({
       showProgress: true,
       animate: true,
@@ -117,7 +163,7 @@ export function NavigationTour({ run, onFinish }: NavigationTourProps) {
       prevBtnText: 'Précédent',
       doneBtnText: 'Terminer',
       progressText: '{{current}} sur {{total}}',
-      steps,
+      steps: activeSteps,
       onDestroyStarted: () => {
         instance.destroy()
         handleFinish()
@@ -138,7 +184,7 @@ export function NavigationTour({ run, onFinish }: NavigationTourProps) {
         driverRef.current = null
       }
     }
-  }, [run, handleFinish])
+  }, [run, handleFinish, role])
 
   return null
 }

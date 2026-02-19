@@ -4,6 +4,7 @@ import { requireAuth } from '../middleware/auth.js'
 
 const router = Router()
 
+router.get('/dashboard', requireAuth(), ExtranetController.getDashboard)
 router.get('/mon-profil', requireAuth(), ExtranetController.getMonProfil)
 router.get('/documents/:coproprieteId', requireAuth(), ExtranetController.getEspaceDocuments)
 router.get('/mon-compte', requireAuth(), ExtranetController.getMonCompte)

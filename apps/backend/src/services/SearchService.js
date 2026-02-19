@@ -2,7 +2,7 @@ import { SearchModel } from '../models/Search.js'
 import logger from '../logger.js'
 
 class SearchService {
-  async search(query, coproprieteId) {
+  async search(query, coproprieteId, coproprieteIds = null) {
     try {
       const [
         coproprietes,
@@ -13,13 +13,13 @@ class SearchService {
         assemblees,
         assurances,
       ] = await Promise.all([
-        SearchModel.searchCoproprietes(query),
-        SearchModel.searchCoproprietaires(query),
-        SearchModel.searchContrats(query, coproprieteId),
-        SearchModel.searchIncidents(query, coproprieteId),
-        SearchModel.searchDocuments(query, coproprieteId),
-        SearchModel.searchAssemblees(query, coproprieteId),
-        SearchModel.searchAssurances(query, coproprieteId),
+        SearchModel.searchCoproprietes(query, 5, coproprieteIds),
+        SearchModel.searchCoproprietaires(query, 5, coproprieteIds),
+        SearchModel.searchContrats(query, coproprieteId, 5, coproprieteIds),
+        SearchModel.searchIncidents(query, coproprieteId, 5, coproprieteIds),
+        SearchModel.searchDocuments(query, coproprieteId, 5, coproprieteIds),
+        SearchModel.searchAssemblees(query, coproprieteId, 5, coproprieteIds),
+        SearchModel.searchAssurances(query, coproprieteId, 5, coproprieteIds),
       ])
 
       return {
