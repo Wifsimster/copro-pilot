@@ -31,6 +31,7 @@ services:
       - NODE_ENV=development
       - POSTGRES_URI=postgresql://${POSTGRES_USER:-copro_pilot}:${POSTGRES_PASSWORD:-password}@copro-pilot-postgres:5432/${POSTGRES_DB:-copro_pilot}
       - BASE_URL=${BASE_URL:-http://localhost:3000}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-dev-secret-change-me}
     depends_on:
       postgres:
         condition: service_healthy

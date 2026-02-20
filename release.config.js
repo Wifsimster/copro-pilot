@@ -7,7 +7,12 @@ export default {
     [
       '@semantic-release/git',
       {
-        assets: ['package.json', 'package-lock.json'],
+        assets: [
+          'package.json',
+          'package-lock.json',
+          'apps/backend/package.json',
+          'apps/frontend/package.json',
+        ],
         message: 'chore(release): ${nextRelease.version} [skip ci]',
       },
     ],

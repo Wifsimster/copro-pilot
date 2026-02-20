@@ -20,14 +20,10 @@ export function ProtectedRoute({
   const [isValidating, setIsValidating] = useState(!isInitialized)
 
   useEffect(() => {
-    const checkAuth = async () => {
-      if (!isInitialized) {
-        setIsValidating(true)
-        await validateToken()
-        setIsValidating(false)
-      }
+    if (!isInitialized) {
+      setIsValidating(true)
+      validateToken().finally(() => setIsValidating(false))
     }
-    checkAuth()
   }, [isInitialized, validateToken])
 
   if (isLoading || isValidating) {
