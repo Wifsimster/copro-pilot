@@ -174,7 +174,7 @@ describe('authStore', () => {
   // ─── signUp ────────────────────────────────────────────────────────
 
   describe('signUp', () => {
-    it('creates account and sets user on success', async () => {
+    it('creates account and sets emailVerificationPending on success', async () => {
       mockSignUpEmail.mockResolvedValue({
         data: {
           user: { id: 'usr-2', email: 'new@test.com', name: 'New User', role: 'user' },
@@ -184,10 +184,9 @@ describe('authStore', () => {
       await useAuthStore.getState().signUp('New User', 'new@test.com', 'password')
 
       const state = useAuthStore.getState()
-      expect(state.isAuthenticated).toBe(true)
-      expect(state.user?.email).toBe('new@test.com')
-      expect(state.user?.firstname).toBe('New')
-      expect(state.user?.lastname).toBe('User')
+      expect(state.emailVerificationPending).toBe(true)
+      expect(state.isAuthenticated).toBe(false)
+      expect(state.isLoading).toBe(false)
     })
 
     it('throws on API error', async () => {

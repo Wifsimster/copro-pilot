@@ -61,7 +61,7 @@ export default function FirstLoginPage() {
     setIsLoading(true)
 
     try {
-      const result = await authClient.emailOtp.verifyOtp({
+      const result = await authClient.signIn.emailOtp({
         email,
         otp,
       })
@@ -72,7 +72,6 @@ export default function FirstLoginPage() {
       } else {
         // Check if user needs to change password
         const session = await authClient.getSession()
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const user = session?.data?.user as any
         if (user?.mustChangePassword) {
           setStep('password')
