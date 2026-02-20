@@ -1,6 +1,6 @@
 {
     "name": "copro-pilot",
-    "version": "1.20.0",
+    "version": "1.21.0",
     "description": "CoproPilot - Plateforme de gestion de copropriété pour syndic professionnel",
     "private": true,
     "type": "module",
