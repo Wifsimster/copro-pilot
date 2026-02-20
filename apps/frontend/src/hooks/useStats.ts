@@ -11,3 +11,21 @@ export function useDashboardStats() {
     refetchInterval: 60_000,
   })
 }
+
+export function useSyndicDashboard(
+  coproprieteId?: number
+) {
+  return useQuery({
+    queryKey: [
+      'stats',
+      'syndic-dashboard',
+      coproprieteId,
+    ],
+    queryFn: async () => {
+      const response =
+        await statsApi.getSyndicDashboard(coproprieteId)
+      return response.data
+    },
+    refetchInterval: 60_000,
+  })
+}

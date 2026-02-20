@@ -1119,3 +1119,80 @@ export interface GdprConsent {
   created_at: string
   updated_at: string
 }
+
+// ============================================
+// Syndic Dashboard Types
+// ============================================
+
+export type AlertSeverity = 'critique' | 'haute' | 'moyenne' | 'info'
+export type AlertCategory =
+  | 'incident'
+  | 'ag'
+  | 'contrat'
+  | 'assurance'
+  | 'diagnostic'
+  | 'impaye'
+  | 'contrat_syndic'
+
+export interface DashboardAlert {
+  id: string
+  severity: AlertSeverity
+  category: AlertCategory
+  title: string
+  description: string
+  link: string
+  copropriete_nom?: string
+  date_echeance?: string
+}
+
+export interface DashboardTask {
+  id: string
+  type:
+    | 'intervention'
+    | 'ag'
+    | 'appel_fonds'
+    | 'cycle_annuel'
+    | 'relance'
+  title: string
+  description: string
+  link: string
+  copropriete_nom?: string
+  date?: string
+  priority: 'haute' | 'normale'
+}
+
+export type ActivityType =
+  | 'incident'
+  | 'paiement'
+  | 'intervention'
+  | 'document'
+  | 'ag'
+  | 'sinistre'
+
+export interface DashboardActivity {
+  id: string
+  type: ActivityType
+  title: string
+  description: string
+  link: string
+  copropriete_nom?: string
+  date: string
+}
+
+export interface SyndicDashboardMetrics {
+  coproprietes: number
+  incidents_ouverts: number
+  incidents_critiques: number
+  impayes: number
+  prochaines_ag: number
+  contrats_expirant: number
+  procedures_actives: number
+  sinistres_ouverts: number
+}
+
+export interface SyndicDashboard {
+  alerts: DashboardAlert[]
+  tasks: DashboardTask[]
+  metrics: SyndicDashboardMetrics
+  activity: DashboardActivity[]
+}
