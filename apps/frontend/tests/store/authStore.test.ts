@@ -141,7 +141,7 @@ describe('authStore', () => {
 
       await useAuthStore.getState().signIn('a@b.com', 'pass')
 
-      expect(window.location.href).toBe('/#/')
+      expect(window.location.hash).toBe('#/')
     })
 
     it('throws on API error', async () => {
@@ -217,7 +217,7 @@ describe('authStore', () => {
       expect(useAuthStore.getState().isAuthenticated).toBe(false)
       expect(useAuthStore.getState().user).toBeNull()
       expect(mockSignOut).toHaveBeenCalled()
-      expect(window.location.href).toBe('/#/login')
+      expect(window.location.hash).toBe('#/login')
     })
 
     it('still clears state even if backend signOut fails', async () => {
@@ -229,7 +229,7 @@ describe('authStore', () => {
       await useAuthStore.getState().logout()
 
       expect(useAuthStore.getState().isAuthenticated).toBe(false)
-      expect(window.location.href).toBe('/#/login')
+      expect(window.location.hash).toBe('#/login')
     })
   })
 
