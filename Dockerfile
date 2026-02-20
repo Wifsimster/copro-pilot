@@ -34,7 +34,7 @@ WORKDIR /app
 
 # Install backend dependencies
 COPY apps/backend/package*.json ./apps/backend/
-RUN cd apps/backend && npm install --only=production && npm cache clean --force && \
+RUN cd apps/backend && npm install --omit=dev && npm cache clean --force && \
     chown -R nodejs:nodejs /app/apps/backend/node_modules
 
 # Copy backend source

@@ -9,6 +9,10 @@ const getPostgresConnection = () => {
         return process.env.POSTGRES_URI
     }
 
+    if (process.env.NODE_ENV === 'production' && !process.env.POSTGRES_PASSWORD) {
+        throw new Error('POSTGRES_PASSWORD is required in production')
+    }
+
     return {
         host: process.env.POSTGRES_HOST || 'localhost',
         port: parseInt(process.env.POSTGRES_PORT || '5432', 10),

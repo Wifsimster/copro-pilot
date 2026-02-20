@@ -100,7 +100,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       if (result.data?.user) {
         const userData = transformUser(result.data.user as SessionUser)
         get().setAuth(userData)
-        window.location.href = '/#/'
+        window.location.hash = '#/'
       }
     } catch (error) {
       logger.error('Sign in failed:', error)
@@ -121,26 +121,30 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         const userData = transformUser(result.data.user as SessionUser)
         get().setAuth(userData)
 
-        // Record GDPR consents (non-blocking)
+        // Record GDPR consents (non-blocking but logged)
         const consentTypes = [
           'terms_of_service',
           'privacy_policy',
           'data_processing',
         ]
-        for (const type of consentTypes) {
-          fetch('/api/gdpr/consents', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({
-              consent_type: type,
-              granted: true,
-              version: '1.0',
-            }),
-          }).catch(() => {})
-        }
+        Promise.all(
+          consentTypes.map(type =>
+            fetch('/api/gdpr/consents', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                consent_type: type,
+                granted: true,
+                version: '1.0',
+              }),
+            })
+          )
+        ).catch(err => {
+          logger.error('Failed to record GDPR consents:', err)
+        })
 
-        window.location.href = '/#/'
+        window.location.hash = '#/'
       }
     } catch (error) {
       logger.error('Sign up failed:', error)
@@ -160,7 +164,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     } finally {
       set({ isLoading: false })
     }
-    window.location.href = '/#/login'
+    window.location.hash = '#/login'
   },
 
   validateToken: async () => {
