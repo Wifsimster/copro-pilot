@@ -1,4 +1,5 @@
 import { api } from './api'
+import type { SyndicDashboard } from '@/types'
 
 export interface DashboardStats {
   counts: {
@@ -32,5 +33,13 @@ export interface DashboardStats {
 }
 
 export const statsApi = {
-  getDashboard: () => api.get<{ data: DashboardStats }>('/stats/dashboard'),
+  getDashboard: () =>
+    api.get<{ data: DashboardStats }>('/stats/dashboard'),
+  getSyndicDashboard: (coproprieteId?: number) =>
+    api.get<{ data: SyndicDashboard }>(
+      '/stats/syndic-dashboard',
+      coproprieteId
+        ? { copropriete_id: coproprieteId }
+        : undefined
+    ),
 }
