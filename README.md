@@ -21,6 +21,7 @@ Plateforme de gestion de copropriété conçue pour les syndics professionnels. 
 | [Schéma des données](docs/donnees.md) | Description des tables de la base de données et de leurs relations |
 | [Référence API](docs/api.md) | Liste complète des points d'accès de l'API REST |
 | [Authentification](docs/authentification.md) | Mécanismes de connexion, rôles et protection des données |
+| [Conformité RGPD](docs/GDPR-COMPLIANCE-REVIEW.md) | Audit de conformité au RGPD |
 
 ## À quoi sert ce produit ?
 
@@ -80,7 +81,7 @@ En production, le backend sert aussi les fichiers statiques de l'application web
 
 | Environnement | URL | Description |
 |---------------|-----|-------------|
-| Développement (frontend) | `http://localhost:5173` | Serveur Vite local |
+| Développement (frontend) | `http://localhost:3000` | Serveur Vite local (proxy /api vers le backend) |
 | Développement (backend) | `http://localhost:3001` | API Express locale |
 | Production (Docker) | `http://localhost:3000` | Application complète conteneurisée |
 
@@ -88,17 +89,15 @@ En production, le backend sert aussi les fichiers statiques de l'application web
 
 ```mermaid
 graph LR
-    A[Développeur] -->|Push du code| B[GitHub]
-    B -->|Semantic Release| C[Nouvelle version]
-    C --> D[Build Docker multi-étapes]
-    D -->|Build frontend| E[Fichiers statiques]
-    D -->|Install backend| F[Serveur Node.js]
-    E --> G[Image de production]
-    F --> G
-    G -->|Docker Compose| H[Application en ligne]
+    A[Développeur] -->|Push sur main| B[GitHub Actions]
+    B -->|Lint + Tests + Build| C{CI OK ?}
+    C -->|Oui| D[Semantic Release]
+    C -->|Non| E[Notification erreur]
+    D -->|Nouvelle version| F[Build Docker]
+    F -->|Push| G[DockerHub]
 ```
 
-Le déploiement repose sur Docker. Semantic Release génère automatiquement les versions à chaque push. Le Dockerfile effectue un build multi-étapes : il compile le frontend en fichiers statiques, puis construit l'image de production. Docker Compose orchestre l'application et la base de données PostgreSQL.
+Le pipeline CI/CD (Intégration et Déploiement Continus) s'exécute via GitHub Actions à chaque push sur la branche principale. Il lance le lint, les tests et le build du frontend. Si tout réussit, Semantic Release détermine le numéro de version. Une image Docker multi-étapes est alors construite et publiée sur DockerHub. Docker Compose orchestre l'application et la base de données PostgreSQL en production.
 
 ## Stack technique
 
@@ -118,3 +117,4 @@ Une documentation technique détaillée est disponible dans le répertoire `docs
 | [Schéma des données](docs/donnees.md) | Description des tables de la base de données et de leurs relations |
 | [Référence API](docs/api.md) | Liste complète des points d'accès de l'API REST |
 | [Authentification](docs/authentification.md) | Mécanismes de connexion, rôles et protection des données |
+| [Conformité RGPD](docs/GDPR-COMPLIANCE-REVIEW.md) | Audit de conformité au RGPD |
