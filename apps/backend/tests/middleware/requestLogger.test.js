@@ -81,7 +81,7 @@ describe('requestLogger', () => {
     requestLogger(req, res, next)
 
     const loggedBody = mockLogger.debug.mock.calls[0]?.[1]
-    expect(loggedBody.email).toBe('test@test.com')
+    expect(loggedBody.email).toBe('[REDACTED]')
     expect(loggedBody.password).toBe('[REDACTED]')
   })
 
