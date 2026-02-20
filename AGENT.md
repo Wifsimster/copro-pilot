@@ -72,18 +72,73 @@ docker compose -f compose.local.yml up -d
 - Trailing comma : es5
 - Print width : 80
 
-### Git
+### Git — Conventional Commits & Semantic Release
 
-- Messages de commit en anglais, préfixés (`feat:`, `fix:`, `refactor:`, `docs:`)
-- Branche principale : `main`
+Ce projet utilise **Semantic Release** pour automatiser le versioning. Les commits sur `main` sont analysés pour déterminer automatiquement le numéro de version. **Respecter scrupuleusement le format Conventional Commits est obligatoire.**
+
+#### Format obligatoire
+
+```
+<type>(<scope>): <description>
+```
+
+- **Langue :** anglais
+- **Description :** impérative, minuscule, sans point final
+- **Scope (optionnel) :** `backend`, `frontend`, `auth`, ou nom du module
+
+#### Types et impact sur le versioning
+
+| Type | Quand l'utiliser | Release déclenchée |
+|---|---|---|
+| `feat` | Nouvelle fonctionnalité | **minor** (1.x.0) |
+| `fix` | Correction de bug | **patch** (1.0.x) |
+| `perf` | Amélioration de performance | **patch** (1.0.x) |
+| `refactor` | Restructuration sans changement fonctionnel | aucune |
+| `docs` | Documentation uniquement | aucune |
+| `style` | Formatage uniquement | aucune |
+| `test` | Ajout ou modification de tests | aucune |
+| `build` | Système de build, dépendances | aucune |
+| `ci` | Configuration CI/CD | aucune |
+| `chore` | Maintenance, tâches diverses | aucune |
+
+#### Breaking changes (release majeure)
+
+Ajouter `BREAKING CHANGE:` dans le footer ou `!` après le type :
+
+```
+feat(api)!: change coproprietes response format
+
+BREAKING CHANGE: endpoint now returns paginated object instead of array.
+```
+
+#### Exemples
+
+```bash
+feat(frontend): add CSV export for coproprietes list    # → minor
+fix(backend): prevent duplicate charges entries          # → patch
+refactor(backend): extract shared validation helper      # → no release
+docs: update API documentation for incidents             # → no release
+test(frontend): add tests for useAssemblees hook         # → no release
+chore: upgrade vite to v7.1                              # → no release
+```
+
+#### Règles strictes
+
+- Un commit = un changement logique unique
+- Ne pas omettre le type (ex: `update model` est invalide → `refactor: update model`)
+- Ne pas utiliser le passé (`feat: added` → `feat: add`)
+- Ne pas mettre de majuscule à la description
+- Ne pas mettre de point final à la description
+- Utiliser le bon type : un bugfix = `fix:`, pas `feat:` ; une feature = `feat:`, pas `fix:`
 
 ## Workflow de développement
 
 1. Créer une branche depuis `main`
 2. Développer et tester localement
 3. Lancer le lint (`npm run lint`)
-4. Committer avec un message préfixé
+4. Committer avec un message au format Conventional Commits
 5. Ouvrir une Pull Request vers `main`
+6. Au merge sur `main` : Semantic Release analyse les commits et publie automatiquement une release si nécessaire
 
 ## Notes importantes pour les modifications automatisées
 
