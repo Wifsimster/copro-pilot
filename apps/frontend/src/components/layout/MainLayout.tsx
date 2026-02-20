@@ -352,40 +352,40 @@ export function MainLayout({ children }: MainLayoutProps) {
         <div data-tour="user-profile" className="border-t border-gray-200 p-2 dark:border-zinc-700">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex w-full items-center gap-2 rounded-lg p-2 text-left hover:bg-gray-100 data-[state=open]:bg-gray-100 dark:hover:bg-zinc-700 dark:data-[state=open]:bg-zinc-700">
-                <Avatar size="default">
-                  <AvatarFallback>
+              <button className="flex w-full items-center gap-2 rounded-lg p-2 text-left transition-colors hover:bg-gray-100 data-[state=open]:bg-gray-100 dark:hover:bg-zinc-700 dark:data-[state=open]:bg-zinc-700">
+                <Avatar className="h-8 w-8 rounded-lg">
+                  <AvatarFallback className="rounded-lg">
                     {(user?.firstname?.[0] ?? '').toUpperCase()}
                     {(user?.lastname?.[0] ?? '').toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-sm leading-tight">
-                  <span className="truncate font-semibold text-gray-900 dark:text-white">
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium text-gray-900 dark:text-white">
                     {user?.firstname} {user?.lastname}
                   </span>
                   <span className="truncate text-xs text-muted-foreground">
                     {user?.email}
                   </span>
                 </div>
-                <ChevronsUpDown className="ml-auto h-4 w-4 text-muted-foreground" />
+                <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              side="top"
-              align="start"
-              className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+              side="right"
+              align="end"
+              className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
               sideOffset={4}
             >
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                  <Avatar size="default">
-                    <AvatarFallback>
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarFallback className="rounded-lg">
                       {(user?.firstname?.[0] ?? '').toUpperCase()}
                       {(user?.lastname?.[0] ?? '').toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="grid flex-1 text-sm leading-tight">
-                    <span className="truncate font-semibold">
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">
                       {user?.firstname} {user?.lastname}
                     </span>
                     <span className="truncate text-xs text-muted-foreground">
@@ -402,17 +402,15 @@ export function MainLayout({ children }: MainLayoutProps) {
                     setSidebarOpen(false)
                   }}
                 >
-                  <UserCircle className="h-4 w-4" />
+                  <UserCircle />
                   Mon profil
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={toggleTheme}>
-                  {isDark
-                    ? <Sun className="h-4 w-4" />
-                    : <Moon className="h-4 w-4" />}
+                  {isDark ? <Sun /> : <Moon />}
                   {isDark ? 'Mode clair' : 'Mode sombre'}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={startTour}>
-                  <CircleHelp className="h-4 w-4" />
+                  <CircleHelp />
                   Aide
                 </DropdownMenuItem>
               </DropdownMenuGroup>
@@ -421,7 +419,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                 variant="destructive"
                 onClick={logout}
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut />
                 Déconnexion
               </DropdownMenuItem>
               <DropdownMenuSeparator />
