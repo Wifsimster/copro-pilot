@@ -40,13 +40,11 @@ function parseUserName(name: string | undefined | null): { firstname: string; la
 }
 
 function saveUserToStorage(userData: User): void {
-  localStorage.setItem('user', JSON.stringify(userData))
-  localStorage.setItem('email', userData.email)
-  localStorage.setItem('role', userData.role)
+  sessionStorage.setItem('user_role', userData.role)
 }
 
 function clearUserFromStorage(): void {
-  const keys = ['user', 'email', 'firstname', 'lastname', 'role']
+  const keys = ['user', 'email', 'firstname', 'lastname', 'role', 'user_role']
   keys.forEach(key => {
     localStorage.removeItem(key)
     sessionStorage.removeItem(key)
@@ -122,6 +120,26 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       if (result.data?.user) {
         const userData = transformUser(result.data.user as SessionUser)
         get().setAuth(userData)
+
+        // Record GDPR consents (non-blocking)
+        const consentTypes = [
+          'terms_of_service',
+          'privacy_policy',
+          'data_processing',
+        ]
+        for (const type of consentTypes) {
+          fetch('/api/gdpr/consents', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              consent_type: type,
+              granted: true,
+              version: '1.0',
+            }),
+          }).catch(() => {})
+        }
+
         window.location.href = '/#/'
       }
     } catch (error) {

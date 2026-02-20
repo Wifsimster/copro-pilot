@@ -74,14 +74,14 @@ describe('authStore', () => {
       expect(state.isAuthenticated).toBe(true)
     })
 
-    it('persists user data to localStorage', () => {
+    it('persists only role to sessionStorage (GDPR PII minimization)', () => {
       const user = { id: '1', email: 'test@test.com', firstname: 'Test', lastname: 'User', role: 'admin' as const }
 
       useAuthStore.getState().setAuth(user)
 
-      expect(localStorage.getItem('user')).toBe(JSON.stringify(user))
-      expect(localStorage.getItem('email')).toBe('test@test.com')
-      expect(localStorage.getItem('role')).toBe('admin')
+      expect(sessionStorage.getItem('user_role')).toBe('admin')
+      expect(localStorage.getItem('user')).toBeNull()
+      expect(localStorage.getItem('email')).toBeNull()
     })
   })
 

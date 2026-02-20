@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { SinistreController } from '../controllers/SinistreController.js'
 import { requireAuth } from '../middleware/auth.js'
+import { requireAdminForDelete } from '../middleware/authorization.js'
 
 const router = Router()
 
@@ -9,6 +10,6 @@ router.get('/assurance/:assuranceId', requireAuth(), SinistreController.getAllBy
 router.get('/:id', requireAuth(), SinistreController.getById)
 router.post('/', requireAuth(), SinistreController.create)
 router.put('/:id', requireAuth(), SinistreController.update)
-router.delete('/:id', requireAuth(), SinistreController.delete)
+router.delete('/:id', requireAuth(), requireAdminForDelete, SinistreController.delete)
 
 export default router

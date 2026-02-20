@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { PaiementController } from '../controllers/PaiementController.js'
 import { requireAuth } from '../middleware/auth.js'
+import { requireAdminForDelete } from '../middleware/authorization.js'
 
 const router = Router()
 
@@ -11,6 +12,6 @@ router.get('/solde/:coproprietaireId', requireAuth(), PaiementController.getSold
 router.get('/:id', requireAuth(), PaiementController.getById)
 router.post('/', requireAuth(), PaiementController.create)
 router.put('/:id', requireAuth(), PaiementController.update)
-router.delete('/:id', requireAuth(), PaiementController.delete)
+router.delete('/:id', requireAuth(), requireAdminForDelete, PaiementController.delete)
 
 export default router

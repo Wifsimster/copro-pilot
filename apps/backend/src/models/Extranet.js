@@ -309,4 +309,24 @@ export class ExtranetModel {
       .first()
     return parseInt(result?.count || 0, 10)
   }
+
+  static async updateCoproprietaire(id, data) {
+    const db = getDb()
+    const allowedFields = [
+      'telephone',
+      'adresse_correspondance',
+    ]
+    const updateData = {}
+    for (const field of allowedFields) {
+      if (data[field] !== undefined) {
+        updateData[field] = data[field]
+      }
+    }
+    updateData.updated_at = db.fn.now()
+    const [result] = await db('coproprietaires')
+      .where('id', id)
+      .update(updateData)
+      .returning('*')
+    return result
+  }
 }

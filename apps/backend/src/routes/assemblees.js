@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { AssembleeGeneraleController } from '../controllers/AssembleeGeneraleController.js'
 import { requireAuth } from '../middleware/auth.js'
+import { requireAdminForDelete } from '../middleware/authorization.js'
 
 const router = Router()
 
@@ -14,8 +15,8 @@ router.post('/resolutions', requireAuth(), AssembleeGeneraleController.createRes
 router.post('/presences', requireAuth(), AssembleeGeneraleController.setPresence)
 router.put('/:id', requireAuth(), AssembleeGeneraleController.update)
 router.put('/resolutions/:resolutionId', requireAuth(), AssembleeGeneraleController.updateResolution)
-router.delete('/:id', requireAuth(), AssembleeGeneraleController.delete)
-router.delete('/presences/:presenceId', requireAuth(), AssembleeGeneraleController.deletePresence)
-router.delete('/resolutions/:resolutionId', requireAuth(), AssembleeGeneraleController.deleteResolution)
+router.delete('/:id', requireAuth(), requireAdminForDelete, AssembleeGeneraleController.delete)
+router.delete('/presences/:presenceId', requireAuth(), requireAdminForDelete, AssembleeGeneraleController.deletePresence)
+router.delete('/resolutions/:resolutionId', requireAuth(), requireAdminForDelete, AssembleeGeneraleController.deleteResolution)
 
 export default router

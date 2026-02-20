@@ -1098,3 +1098,24 @@ export interface CycleAnnuelSummary {
   completed: number
   percentage: number
 }
+
+// ============================================
+// GDPR Types
+// ============================================
+
+export type ConsentType =
+  | 'terms_of_service'
+  | 'privacy_policy'
+  | 'data_processing'
+  | 'marketing_email'
+  | 'analytics_cookies'
+
+export interface GdprConsent {
+  id: number
+  user_id: string
+  consent_type: ConsentType
+  granted: boolean
+  version: string
+  created_at: string
+  updated_at: string
+}

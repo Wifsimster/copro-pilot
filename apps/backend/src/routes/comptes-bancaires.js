@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { CompteBancaireController } from '../controllers/CompteBancaireController.js'
 import { requireAuth } from '../middleware/auth.js'
+import { requireAdminForDelete } from '../middleware/authorization.js'
 
 const router = Router()
 
@@ -9,6 +10,6 @@ router.get('/solde/:coproprieteId', requireAuth(), CompteBancaireController.getS
 router.get('/:id', requireAuth(), CompteBancaireController.getById)
 router.post('/', requireAuth(), CompteBancaireController.create)
 router.put('/:id', requireAuth(), CompteBancaireController.update)
-router.delete('/:id', requireAuth(), CompteBancaireController.delete)
+router.delete('/:id', requireAuth(), requireAdminForDelete, CompteBancaireController.delete)
 
 export default router

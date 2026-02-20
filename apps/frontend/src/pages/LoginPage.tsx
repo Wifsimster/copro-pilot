@@ -16,6 +16,7 @@ import {
   Play,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -163,6 +164,7 @@ export default function LoginPage() {
   const [signUpConfirm, setSignUpConfirm] = useState('')
   const [signUpError, setSignUpError] = useState('')
   const [signUpSuccess, setSignUpSuccess] = useState(false)
+  const [consentAccepted, setConsentAccepted] = useState(false)
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -185,6 +187,11 @@ export default function LoginPage() {
 
     if (signUpPassword.length < 8) {
       setSignUpError('Le mot de passe doit contenir au moins 8 caractères')
+      return
+    }
+
+    if (!consentAccepted) {
+      setSignUpError('Vous devez accepter la politique de confidentialite pour vous inscrire')
       return
     }
 
@@ -429,6 +436,32 @@ export default function LoginPage() {
                       )}
                     </div>
 
+                    <div className="flex items-start gap-3">
+                      <Checkbox
+                        id="consent"
+                        checked={consentAccepted}
+                        onCheckedChange={(checked) =>
+                          setConsentAccepted(checked === true)
+                        }
+                      />
+                      <Label
+                        htmlFor="consent"
+                        className="text-xs leading-relaxed text-muted-foreground font-normal cursor-pointer"
+                      >
+                        J&apos;accepte la{' '}
+                        <a
+                          href="/#/politique-confidentialite"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline text-primary hover:text-primary/80"
+                        >
+                          politique de confidentialite
+                        </a>{' '}
+                        et le traitement de mes donnees personnelles
+                        conformement au RGPD.
+                      </Label>
+                    </div>
+
                     {signUpError && (
                       <div className="flex items-start gap-2 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
                         <AlertCircle className="size-4 mt-0.5 shrink-0" />
@@ -454,7 +487,14 @@ export default function LoginPage() {
 
           {/* Footer note */}
           <p className="text-center text-xs text-muted-foreground leading-relaxed">
-            En continuant, vous acceptez les conditions d&apos;utilisation et la politique de confidentialité.
+            En continuant, vous acceptez les{' '}
+            <a
+              href="/#/politique-confidentialite"
+              className="underline hover:text-foreground"
+            >
+              conditions d&apos;utilisation et la politique de confidentialite
+            </a>
+            .
           </p>
           <p className="text-center text-xs text-muted-foreground/60 lg:hidden">
             v{__APP_VERSION__}

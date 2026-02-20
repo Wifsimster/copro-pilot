@@ -2,11 +2,14 @@ import cors from 'cors'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import methodOverride from 'method-override'
+import helmet from 'helmet'
 import { toNodeHandler } from 'better-auth/node'
 
 import routes from './routes/index.js'
 import { requestLogger } from './middleware/requestLogger.js'
 import { validateJSON } from './middleware/validation.js'
+import { apiLimiter, authLimiter } from './middleware/rateLimiter.js'
+import { auditLogger } from './middleware/auditLogger.js'
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js'
 
 export { errorHandler, notFoundHandler }
@@ -27,19 +30,49 @@ export { errorHandler, notFoundHandler }
 export function createApp({ getDb, auth } = {}) {
   const app = express()
 
+  const isProduction = process.env.NODE_ENV === 'production'
+
+  // Security headers
+  app.use(
+    helmet({
+      contentSecurityPolicy: isProduction
+        ? {
+            directives: {
+              defaultSrc: ["'self'"],
+              scriptSrc: ["'self'"],
+              styleSrc: ["'self'", "'unsafe-inline'"],
+              imgSrc: ["'self'", 'data:', 'blob:'],
+              connectSrc: ["'self'"],
+              fontSrc: ["'self'"],
+              objectSrc: ["'none'"],
+              frameSrc: ["'none'"],
+              baseUri: ["'self'"],
+              formAction: ["'self'"],
+            },
+          }
+        : false,
+      hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true,
+      },
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    })
+  )
+
   // CORS configuration
   const frontendUrl = process.env.BASE_URL || process.env.FRONTEND_URL
 
   app.use(cors({
-    origin: process.env.NODE_ENV === 'development'
-      ? ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000']
-      : frontendUrl,
+    origin: isProduction
+      ? frontendUrl
+      : ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000'],
     credentials: true
   }))
 
   // Better Auth handler before express.json()
   if (auth) {
-    app.all('/api/auth/*splat', toNodeHandler(auth))
+    app.all('/api/auth/*splat', authLimiter, toNodeHandler(auth))
   }
 
   // Body parsing middleware
@@ -62,6 +95,12 @@ export function createApp({ getDb, auth } = {}) {
       next()
     })
   }
+
+  // Audit logging for write operations
+  app.use(auditLogger)
+
+  // Rate limiting for API routes
+  app.use('/api', apiLimiter)
 
   // Mount Express routes under /api prefix
   app.use('/api', routes)

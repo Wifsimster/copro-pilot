@@ -169,6 +169,27 @@ class ExtranetService {
       throw error
     }
   }
+  async updateProfil(userId, data) {
+    try {
+      const coproprietaire =
+        await ExtranetModel.getCoproprietaireByUserId(userId)
+      if (!coproprietaire) return null
+
+      const updated = await ExtranetModel.updateCoproprietaire(
+        coproprietaire.id,
+        data
+      )
+      logger.info(
+        '[ExtranetService] Profil mis a jour'
+      )
+      return updated
+    } catch (error) {
+      logger.error(
+        `[ExtranetService] Error updating profil: ${error.message}`
+      )
+      throw error
+    }
+  }
 }
 
 export const extranetService = new ExtranetService()

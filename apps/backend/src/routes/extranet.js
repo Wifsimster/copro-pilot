@@ -13,4 +13,8 @@ router.get('/mes-appels-fonds', requireAuth(), ExtranetController.getMesAppelsFo
 router.get('/mon-fonds-travaux', requireAuth(), ExtranetController.getMonFondsTravaux)
 router.get('/conseil-syndical/:coproprieteId', requireAuth(), ExtranetController.getDonneesConseilSyndical)
 
+// Right to rectification (GDPR Art. 16)
+router.put('/mon-profil', requireAuth(), ExtranetController.updateMonProfil)
+router.put('/mon-compte', requireAuth(), ExtranetController.updateMonCompte)
+
 export default router
