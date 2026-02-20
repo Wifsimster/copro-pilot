@@ -91,7 +91,7 @@ export class ExportController {
         : 'coproprietaires.xlsx'
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
       res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
-      res.send(buffer)
+      res.end(buffer)
     } catch (error) {
       logger.error(`[ExportController] Error generating coproprietaires Excel: ${error.message}`)
       res.status(500).json({ error: 'Impossible de generer l\'export Excel des coproprietaires' })
@@ -107,7 +107,7 @@ export class ExportController {
       }
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
       res.setHeader('Content-Disposition', `attachment; filename="balance-comptes-${coproprieteId}.xlsx"`)
-      res.send(buffer)
+      res.end(buffer)
     } catch (error) {
       logger.error(`[ExportController] Error generating balance des comptes Excel: ${error.message}`)
       res.status(500).json({ error: 'Impossible de generer la balance des comptes' })
@@ -123,7 +123,7 @@ export class ExportController {
       }
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
       res.setHeader('Content-Disposition', `attachment; filename="etat-charges-${budgetId}.xlsx"`)
-      res.send(buffer)
+      res.end(buffer)
     } catch (error) {
       logger.error(`[ExportController] Error generating etat des charges Excel: ${error.message}`)
       res.status(500).json({ error: 'Impossible de generer l\'etat des charges' })
@@ -139,7 +139,7 @@ export class ExportController {
       }
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
       res.setHeader('Content-Disposition', `attachment; filename="etat-impayes-${coproprieteId}.xlsx"`)
-      res.send(buffer)
+      res.end(buffer)
     } catch (error) {
       logger.error(`[ExportController] Error generating etat des impayes Excel: ${error.message}`)
       res.status(500).json({ error: 'Impossible de generer l\'etat des impayes' })
