@@ -1,5 +1,5 @@
 import { betterAuth } from 'better-auth'
-import { admin } from 'better-auth/plugins'
+import { admin, emailOTP } from 'better-auth/plugins'
 import { Pool } from 'pg'
 import logger from '../logger.js'
 import knexDatabase from './knex-database.js'
@@ -116,7 +116,33 @@ export async function initializeAuth() {
         baseURL: baseURL,
         trustedOrigins: trustedOrigins,
         emailAndPassword: {
-            enabled: true
+            enabled: true,
+            minPasswordLength: 12,
+            maxPasswordLength: 128,
+            requireEmailVerification: true,
+            resetPasswordTokenExpiresIn: 3600,
+            async sendResetPassword({ user, url }) {
+                const { sendEmail } = await import('../utils/email.js')
+                const { generateResetPasswordEmail } = await import('../utils/email-templates.js')
+                await sendEmail({
+                    to: user.email,
+                    subject: 'CoproPilot - Réinitialisation de votre mot de passe',
+                    html: generateResetPasswordEmail(user.name, url),
+                })
+            },
+        },
+        emailVerification: {
+            async sendVerificationEmail({ user, url }) {
+                const { sendEmail } = await import('../utils/email.js')
+                const { generateVerificationEmail } = await import('../utils/email-templates.js')
+                await sendEmail({
+                    to: user.email,
+                    subject: 'CoproPilot - Vérifiez votre adresse email',
+                    html: generateVerificationEmail(user.name, url),
+                })
+            },
+            sendOnSignUp: true,
+            autoSignInAfterVerification: true,
         },
         plugins: [
             admin({
@@ -124,7 +150,20 @@ export async function initializeAuth() {
                     const userRole = user?.role?.toLowerCase()
                     return userRole === 'admin'
                 }
-            })
+            }),
+            emailOTP({
+                otpLength: 6,
+                expiresIn: 900,
+                async sendVerificationOTP({ email, otp }) {
+                    const { sendEmail } = await import('../utils/email.js')
+                    const { generateOTPEmail } = await import('../utils/email-templates.js')
+                    await sendEmail({
+                        to: email,
+                        subject: 'CoproPilot - Votre code de connexion',
+                        html: generateOTPEmail(email, otp),
+                    })
+                },
+            }),
         ]
     })
 

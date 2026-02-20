@@ -22,11 +22,17 @@ export function isCoproprietaireRoute(route: string): boolean {
   return COPROPRIETAIRE_ROUTES.includes(route)
 }
 
+export function isSyndic(role?: string): boolean {
+  if (!role) return false
+  return role.toLowerCase() === 'syndic'
+}
+
 export function canAccessRoute(role?: string, route?: string): boolean {
   if (!role || !route) return false
   if (isAdmin(role)) return true
   if (isCoproprietaire(role)) {
     return route.startsWith('/extranet') || ['/notifications', '/profil'].includes(route)
   }
+  if (isSyndic(role) && route === '/gestion-utilisateurs') return true
   return !COPROPRIETAIRE_ROUTES.includes(route)
 }

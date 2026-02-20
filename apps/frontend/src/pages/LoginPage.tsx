@@ -1,9 +1,7 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { useAuthStore } from '@/store/authStore'
 import {
   Building2,
-  Eye,
-  EyeOff,
   AlertCircle,
   Loader2,
   Shield,
@@ -27,6 +25,11 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { Toggle } from '@/components/ui/toggle'
+import {
+  PasswordInput,
+  PasswordStrength,
+} from '@/components/auth/PasswordInput'
+import { validatePassword } from '@/utils/passwordValidation'
 
 function ThemeToggle() {
   const [isDark, setIsDark] = useState(
@@ -63,86 +66,6 @@ function ThemeToggle() {
   )
 }
 
-function PasswordInput({
-  id,
-  value,
-  onChange,
-  placeholder = '••••••••',
-  autoComplete,
-  minLength,
-}: {
-  id: string
-  value: string
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  placeholder?: string
-  autoComplete?: string
-  minLength?: number
-}) {
-  const [show, setShow] = useState(false)
-
-  return (
-    <div data-slot="password-input" className="relative">
-      <Input
-        id={id}
-        type={show ? 'text' : 'password'}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        required
-        minLength={minLength}
-        autoComplete={autoComplete}
-        className="pr-10"
-      />
-      <button
-        type="button"
-        tabIndex={-1}
-        onClick={() => setShow(!show)}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-        aria-label={show ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
-      >
-        {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-      </button>
-    </div>
-  )
-}
-
-function PasswordStrength({ password }: { password: string }) {
-  const strength = useMemo(() => {
-    if (!password) return { score: 0, label: '', color: '' }
-    let score = 0
-    if (password.length >= 8) score++
-    if (password.length >= 12) score++
-    if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++
-    if (/\d/.test(password)) score++
-    if (/[^A-Za-z0-9]/.test(password)) score++
-
-    if (score <= 1) return { score: 1, label: 'Faible', color: 'bg-red-500' }
-    if (score <= 2) return { score: 2, label: 'Moyen', color: 'bg-orange-500' }
-    if (score <= 3) return { score: 3, label: 'Bon', color: 'bg-yellow-500' }
-    if (score <= 4) return { score: 4, label: 'Fort', color: 'bg-green-500' }
-    return { score: 5, label: 'Excellent', color: 'bg-emerald-500' }
-  }, [password])
-
-  if (!password) return null
-
-  return (
-    <div data-slot="password-strength" className="space-y-1.5">
-      <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <div
-            key={i}
-            className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
-              i <= strength.score ? strength.color : 'bg-muted'
-            }`}
-          />
-        ))}
-      </div>
-      <p className="text-xs text-muted-foreground">
-        Force : <span className="font-medium">{strength.label}</span>
-      </p>
-    </div>
-  )
-}
 
 const features = [
   { icon: Shield, title: 'Sécurisé', desc: 'Données chiffrées et protégées' },
@@ -185,8 +108,11 @@ export default function LoginPage() {
       return
     }
 
-    if (signUpPassword.length < 8) {
-      setSignUpError('Le mot de passe doit contenir au moins 8 caractères')
+    const passwordCheck = validatePassword(signUpPassword, {
+      email: signUpEmail,
+    })
+    if (!passwordCheck.valid) {
+      setSignUpError(passwordCheck.errors.join('. '))
       return
     }
 
@@ -296,7 +222,15 @@ export default function LoginPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signin-password">Mot de passe</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="signin-password">Mot de passe</Label>
+                    <a
+                      href="/#/forgot-password"
+                      className="text-xs text-primary hover:underline"
+                    >
+                      Mot de passe oublié ?
+                    </a>
+                  </div>
                   <PasswordInput
                     id="signin-password"
                     value={signInPassword}
@@ -367,6 +301,15 @@ export default function LoginPage() {
                     Copropriétaire
                   </Button>
                 </div>
+
+                <p className="text-center text-xs text-muted-foreground mt-2">
+                  <a
+                    href="/#/first-login"
+                    className="text-primary hover:underline"
+                  >
+                    Première connexion (copropriétaire) ?
+                  </a>
+                </p>
               </form>
             </TabsContent>
 
@@ -380,7 +323,7 @@ export default function LoginPage() {
                     </div>
                     <div>
                       <p className="font-semibold text-foreground">Compte créé avec succès !</p>
-                      <p className="text-sm text-muted-foreground mt-1">Vous êtes maintenant connecté.</p>
+                      <p className="text-sm text-muted-foreground mt-1">Un email de vérification a été envoyé à votre adresse. Veuillez cliquer sur le lien pour activer votre compte.</p>
                     </div>
                   </div>
                 ) : (
@@ -415,10 +358,14 @@ export default function LoginPage() {
                         id="signup-password"
                         value={signUpPassword}
                         onChange={(e) => setSignUpPassword(e.target.value)}
-                        minLength={8}
+                        minLength={12}
                         autoComplete="new-password"
                       />
-                      <PasswordStrength password={signUpPassword} />
+                      <PasswordStrength
+                        password={signUpPassword}
+                        email={signUpEmail}
+                        showErrors
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="signup-confirm">Confirmer le mot de passe</Label>
@@ -426,7 +373,7 @@ export default function LoginPage() {
                         id="signup-confirm"
                         value={signUpConfirm}
                         onChange={(e) => setSignUpConfirm(e.target.value)}
-                        minLength={8}
+                        minLength={12}
                         autoComplete="new-password"
                       />
                       {signUpConfirm && signUpPassword !== signUpConfirm && (

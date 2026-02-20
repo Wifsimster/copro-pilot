@@ -9,6 +9,7 @@ interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
   isInitialized: boolean
+  emailVerificationPending: boolean
 }
 
 interface AuthActions {
@@ -79,6 +80,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   isAuthenticated: false,
   isLoading: false,
   isInitialized: false,
+  emailVerificationPending: false,
 
   setAuth: (user: User) => {
     set({ user, isAuthenticated: true })
@@ -118,9 +120,6 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         throw new Error(result.error.message || "Erreur lors de l'inscription")
       }
       if (result.data?.user) {
-        const userData = transformUser(result.data.user as SessionUser)
-        get().setAuth(userData)
-
         // Record GDPR consents (non-blocking but logged)
         const consentTypes = [
           'terms_of_service',
@@ -144,7 +143,8 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
           logger.error('Failed to record GDPR consents:', err)
         })
 
-        window.location.hash = '#/'
+        // Email verification is required — don't redirect, show pending message
+        set({ emailVerificationPending: true })
       }
     } catch (error) {
       logger.error('Sign up failed:', error)

@@ -1,5 +1,6 @@
 import { createAuthClient } from 'better-auth/react'
 import { adminClient } from 'better-auth/client/plugins'
+import { emailOTPClient } from 'better-auth/client/plugins'
 
 function getBaseURL() {
   if (import.meta.env.VITE_BACKEND_URL) {
@@ -13,7 +14,7 @@ export const authClient = createAuthClient({
   fetchOptions: {
     credentials: 'include',
   },
-  plugins: [adminClient()],
+  plugins: [adminClient(), emailOTPClient()],
 })
 
 export type Session = typeof authClient.$Infer.Session

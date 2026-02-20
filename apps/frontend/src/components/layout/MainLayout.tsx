@@ -120,6 +120,7 @@ const navigationSections: NavSection[] = [
       { name: 'Règlement', href: '/reglements', icon: BookOpen },
       { name: 'Immatriculation', href: '/immatriculation', icon: ClipboardList },
       { name: 'Contrat syndic', href: '/contrats-syndic', icon: Stamp },
+      { name: 'Gestion utilisateurs', href: '/gestion-utilisateurs', icon: Users },
       { name: 'Exports', href: '/exports', icon: FileDown },
     ],
   },

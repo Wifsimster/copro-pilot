@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { useAuthStore } from '@/store/authStore'
 import { useCopropriete, useUpdateCopropriete } from '@/hooks/useCoproprietes'
 import { useLotsByCopropriete, useCreateLot, useUpdateLot, useDeleteLot } from '@/hooks/useLots'
 import { usePartiesCommunesByCopropriete, useCreatePartieCommune, useUpdatePartieCommune, useDeletePartieCommune } from '@/hooks/usePartiesCommunes'
@@ -10,7 +11,7 @@ import { useDiagnosticsByCopropriete, useCreateDiagnostic, useUpdateDiagnostic, 
 import { useCycleAnnuel, useInitializeCycle, useRefreshCycle } from '@/hooks/useCycleAnnuel'
 import type { LotWithProprietaire } from '@/api/lots'
 import type { PartieCommune, CleRepartition, Locataire, Mutation, Diagnostic } from '@/types'
-import { ArrowLeft, Plus, Trash2, Pencil, Home, DoorOpen, Key, UserCheck, ArrowRightLeft, ClipboardCheck, ListChecks } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, Pencil, Home, DoorOpen, Key, UserCheck, ArrowRightLeft, ClipboardCheck, ListChecks, UserPlus } from 'lucide-react'
 import { CycleAnnuelChecklist } from '@/components/coproprietes/CycleAnnuelChecklist'
 import { LotFormDialog } from '@/components/coproprietes/LotFormDialog'
 import { CoproprieteFormDialog } from '@/components/coproprietes/CoproprieteFormDialog'
@@ -19,6 +20,7 @@ import { CleRepartitionFormDialog } from '@/components/coproprietes/CleRepartiti
 import { LocataireFormDialog } from '@/components/coproprietes/LocataireFormDialog'
 import { MutationFormDialog } from '@/components/coproprietes/MutationFormDialog'
 import { DiagnosticFormDialog } from '@/components/coproprietes/DiagnosticFormDialog'
+import { BulkCreateAccountsDialog } from '@/components/coproprietes/BulkCreateAccountsDialog'
 
 const TYPE_LABELS: Record<string, string> = {
   appartement: 'Appartement',
@@ -112,6 +114,8 @@ export default function CoproprieteDetailPage() {
   const [editingDiagnostic, setEditingDiagnostic] = useState<Diagnostic | null>(null)
   const [activeTab, setActiveTab] = useState<Tab>('lots')
   const [selectedLotId, setSelectedLotId] = useState<number | undefined>()
+  const [showBulkCreate, setShowBulkCreate] = useState(false)
+  const userRole = useAuthStore(state => state.user?.role)
 
   const { data: locataires } = useLocatairesByLot(selectedLotId)
   const { data: mutations } = useMutationsByLot(selectedLotId)
@@ -167,13 +171,24 @@ export default function CoproprieteDetailPage() {
             {copropriete.adresse}, {copropriete.code_postal} {copropriete.ville}
           </p>
         </div>
-        <button
-          onClick={() => setShowEditCopro(true)}
-          className="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
-        >
-          <Pencil className="h-4 w-4" />
-          Modifier
-        </button>
+        <div className="flex items-center gap-2">
+          {(userRole === 'syndic' || userRole === 'admin') && (
+            <button
+              onClick={() => setShowBulkCreate(true)}
+              className="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
+            >
+              <UserPlus className="h-4 w-4" />
+              Créer les comptes extranet
+            </button>
+          )}
+          <button
+            onClick={() => setShowEditCopro(true)}
+            className="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
+          >
+            <Pencil className="h-4 w-4" />
+            Modifier
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -806,6 +821,13 @@ export default function CoproprieteDetailPage() {
         }}
         isLoading={editingDiagnostic ? updateDiagnostic.isPending : createDiagnostic.isPending}
       />
+      {coproprieteId && (
+        <BulkCreateAccountsDialog
+          coproprieteId={coproprieteId}
+          isOpen={showBulkCreate}
+          onClose={() => setShowBulkCreate(false)}
+        />
+      )}
     </div>
   )
 }

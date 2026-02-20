@@ -62,6 +62,8 @@ import cycleAnnuelRoutes from './cycle-annuel.js'
 import searchRoutes from './search.js'
 // GDPR
 import gdprRoutes from './gdpr.js'
+// User management (syndic + admin)
+import userManagementRoutes from './user-management.js'
 
 const router = Router()
 
@@ -151,6 +153,9 @@ router.use('/search', searchRoutes)
 
 // GDPR
 router.use('/gdpr', gdprRoutes)
+
+// User management
+router.use('/user-management', userManagementRoutes)
 
 // Root health check
 router.get('/', (req, res) => {
