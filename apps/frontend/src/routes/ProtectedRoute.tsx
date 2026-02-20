@@ -24,8 +24,7 @@ export function ProtectedRoute({
       setIsValidating(true)
       validateToken().finally(() => setIsValidating(false))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isInitialized])
+  }, [isInitialized, validateToken])
 
   if (isLoading || isValidating) {
     return (
