@@ -132,7 +132,6 @@ const coproprietaireNavigationSections: NavSection[] = [
     collapsible: false,
     items: [
       { name: 'Tableau de bord', href: '/extranet', icon: LayoutDashboard },
-      { name: 'Mon profil', href: '/extranet/profil', icon: UserCircle },
     ],
   },
   {
@@ -398,7 +397,7 @@ export function MainLayout({ children }: MainLayoutProps) {
               <DropdownMenuGroup>
                 <DropdownMenuItem
                   onClick={() => {
-                    navigate('/profil')
+                    navigate(isCoproprietaire(user?.role) ? '/extranet/profil' : '/profil')
                     setSidebarOpen(false)
                   }}
                 >

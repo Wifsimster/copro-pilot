@@ -3,15 +3,15 @@ import { useExtranetDashboard } from '@/hooks/useExtranet'
 import {
   Building2,
   Calendar,
-  User,
+  AlertTriangle,
+  Bell,
   Users,
   Wallet,
+  ChevronRight,
 } from 'lucide-react'
 import {
   useExtranetContext,
   formatEur,
-  Section,
-  StatCard,
 } from '@/components/extranet/shared'
 
 const ROLE_LABELS: Record<string, string> = {
@@ -29,6 +29,62 @@ const ROLE_COLORS: Record<string, string> = {
     'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
 }
 
+function DashboardCard({
+  icon: Icon,
+  label,
+  value,
+  sublabel,
+  color,
+  href,
+  badge,
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+  value: string
+  sublabel?: string
+  color?: string
+  href?: string
+  badge?: { text: string; className: string }
+}) {
+  const navigate = useNavigate()
+  const isClickable = !!href
+
+  return (
+    <button
+      type="button"
+      onClick={isClickable ? () => navigate(href) : undefined}
+      className={`flex w-full items-start gap-4 rounded-xl border border-border bg-card p-5 text-left transition-colors ${isClickable ? 'cursor-pointer hover:bg-accent/50' : 'cursor-default'}`}
+    >
+      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+        <Icon className="size-5 text-primary" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-xs font-medium text-muted-foreground">
+          {label}
+        </p>
+        <p className={`text-lg font-semibold ${color ?? ''}`}>
+          {value}
+        </p>
+        {sublabel && (
+          <p className="text-xs text-muted-foreground">
+            {sublabel}
+          </p>
+        )}
+        {badge && (
+          <span
+            className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${badge.className}`}
+          >
+            {badge.text}
+          </span>
+        )}
+      </div>
+      {isClickable && (
+        <ChevronRight className="mt-1 size-4 shrink-0 text-muted-foreground" />
+      )}
+    </button>
+  )
+}
+
 export default function ExtranetDashboardPage() {
   const { profil, currentCoproId } = useExtranetContext()
   const { data: dashboard, isLoading } = useExtranetDashboard()
@@ -39,12 +95,9 @@ export default function ExtranetDashboardPage() {
       <div className="animate-pulse space-y-4">
         <div className="h-8 w-48 rounded bg-muted" />
         <div className="h-4 w-64 rounded bg-muted" />
-        <div className="h-40 rounded-lg bg-muted" />
-        <div className="h-32 rounded-lg bg-muted" />
-        <div className="h-32 rounded-lg bg-muted" />
-        <div className="grid gap-4 sm:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-24 rounded-lg bg-muted" />
+        <div className="grid gap-4 sm:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-24 rounded-xl bg-muted" />
           ))}
         </div>
       </div>
@@ -86,215 +139,141 @@ export default function ExtranetDashboardPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold">Tableau de bord</h1>
-        <p className="text-muted-foreground">
-          Bienvenue {profil.coproprietaire.prenom}{' '}
-          {profil.coproprietaire.nom}
-        </p>
-        <p className="text-xs text-muted-foreground capitalize">
+        <h1 className="text-2xl font-bold">
+          Bonjour {profil.coproprietaire.prenom}
+        </h1>
+        <p className="text-sm text-muted-foreground capitalize">
           {today}
         </p>
       </div>
 
-      {/* Ma copropriete */}
-      {selectedCopro && (
-        <Section title="Ma copropriete" icon={Building2}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <p className="text-xs text-muted-foreground">Nom</p>
-              <p className="text-sm font-medium">
-                {selectedCopro.nom}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">
-                Adresse
-              </p>
-              <p className="text-sm font-medium">
-                {selectedCopro.adresse}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {selectedCopro.code_postal} {selectedCopro.ville}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">
-                Lots dans la copropriete
-              </p>
-              <p className="text-sm font-medium">
-                {selectedCopro.nombre_lots} lot
-                {selectedCopro.nombre_lots > 1 ? 's' : ''}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">
-                Mes lots
-              </p>
-              <p className="text-sm font-medium">
-                {userLots.length} lot
-                {userLots.length > 1 ? 's' : ''} —{' '}
-                {totalTantiemes} tantiemes
-              </p>
-            </div>
+      {/* Solde debiteur warning */}
+      {solde > 0 && (
+        <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
+          <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-400" />
+          <div>
+            <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
+              Solde debiteur : {formatEur(solde)}
+            </p>
+            <p className="text-xs text-amber-700 dark:text-amber-400">
+              Merci de regulariser votre situation.
+            </p>
           </div>
-        </Section>
+        </div>
       )}
 
-      {/* Conseil syndical status */}
+      {/* Summary cards grid */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        {/* Solde */}
+        <DashboardCard
+          icon={Wallet}
+          label="Mon solde"
+          value={formatEur(solde)}
+          sublabel={`${formatEur(dashboard.compte.total_paye)} paye sur ${formatEur(dashboard.compte.total_du)} appele`}
+          color={
+            solde > 0
+              ? 'text-red-600'
+              : solde < 0
+                ? 'text-green-600'
+                : undefined
+          }
+          href="/extranet/compte"
+        />
+
+        {/* Ma copropriete */}
+        {selectedCopro && (
+          <DashboardCard
+            icon={Building2}
+            label="Ma copropriete"
+            value={selectedCopro.nom}
+            sublabel={`${userLots.length} lot${userLots.length > 1 ? 's' : ''} — ${totalTantiemes} tantiemes`}
+            href="/extranet/profil"
+          />
+        )}
+
+        {/* Prochaine AG */}
+        {nextAG && (
+          <DashboardCard
+            icon={Calendar}
+            label="Prochaine assemblee"
+            value={`AG ${nextAG.type}`}
+            sublabel={`${new Date(nextAG.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}${nextAG.heure ? ` a ${nextAG.heure}` : ''}${nextAG.lieu ? ` — ${nextAG.lieu}` : ''}`}
+            badge={{
+              text: nextAG.statut,
+              className:
+                'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+            }}
+          />
+        )}
+
+        {/* Notifications */}
+        {dashboard.unreadNotifications > 0 && (
+          <DashboardCard
+            icon={Bell}
+            label="Notifications"
+            value={`${dashboard.unreadNotifications} non lue${dashboard.unreadNotifications > 1 ? 's' : ''}`}
+            href="/notifications"
+          />
+        )}
+      </div>
+
+      {/* Conseil syndical badge */}
       {conseilRole && (
-        <Section title="Conseil syndical" icon={Users}>
-          <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 rounded-xl border border-border bg-card px-5 py-3">
+          <Users className="size-5 text-primary" />
+          <p className="text-sm">
+            Vous etes{' '}
             <span
-              className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${ROLE_COLORS[conseilRole] ?? ROLE_COLORS.membre}`}
+              className={`rounded-full px-2 py-0.5 text-xs font-medium ${ROLE_COLORS[conseilRole] ?? ROLE_COLORS.membre}`}
             >
               {ROLE_LABELS[conseilRole] ?? conseilRole}
-            </span>
-            <p className="text-sm text-muted-foreground">
-              Vous etes{' '}
-              {ROLE_LABELS[conseilRole]?.toLowerCase() ??
-                conseilRole}{' '}
-              du conseil syndical.
-            </p>
-          </div>
-        </Section>
+            </span>{' '}
+            du conseil syndical.
+          </p>
+          <button
+            type="button"
+            onClick={() => navigate('/extranet/conseil-syndical')}
+            className="ml-auto text-xs font-medium text-primary hover:underline"
+          >
+            Voir
+          </button>
+        </div>
       )}
 
-      {/* Mes coordonnees */}
-      <Section title="Mes coordonnees" icon={User}>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <p className="text-xs text-muted-foreground">
-              Nom complet
-            </p>
-            <p className="text-sm font-medium">
-              {profil.coproprietaire.prenom}{' '}
-              {profil.coproprietaire.nom}
-            </p>
+      {/* Open incidents */}
+      {dashboard.openIncidents.length > 0 && (
+        <div className="rounded-xl border border-border bg-card p-5">
+          <div className="mb-3 flex items-center gap-3">
+            <AlertTriangle className="size-5 text-primary" />
+            <h3 className="text-sm font-semibold">
+              Incidents en cours ({dashboard.openIncidents.length})
+            </h3>
           </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Email</p>
-            <p className="text-sm font-medium">
-              {profil.coproprietaire.email ?? '\u2014'}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">
-              Telephone
-            </p>
-            <p className="text-sm font-medium">
-              {profil.coproprietaire.telephone ?? '\u2014'}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">
-              Adresse de correspondance
-            </p>
-            <p className="text-sm font-medium">
-              {profil.coproprietaire.adresse_correspondance ??
-                '\u2014'}
-            </p>
+          <div className="space-y-2">
+            {dashboard.openIncidents.map(incident => (
+              <div
+                key={incident.id}
+                className="flex items-center justify-between rounded-lg border border-border px-3 py-2"
+              >
+                <div>
+                  <p className="text-sm font-medium">
+                    {incident.titre}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(
+                      incident.date_signalement
+                    ).toLocaleDateString('fr-FR')}{' '}
+                    — {incident.copropriete_nom}
+                  </p>
+                </div>
+                <span className="text-xs font-medium text-muted-foreground">
+                  {incident.statut}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
-      </Section>
-
-      {/* Mon compte */}
-      <Section title="Mon compte" icon={Wallet}>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <StatCard
-            label="Total appele"
-            value={formatEur(dashboard.compte.total_du)}
-          />
-          <StatCard
-            label="Total paye"
-            value={formatEur(dashboard.compte.total_paye)}
-          />
-          <StatCard
-            label="Solde"
-            value={formatEur(solde)}
-            color={
-              solde > 0
-                ? 'text-red-600'
-                : solde < 0
-                  ? 'text-green-600'
-                  : undefined
-            }
-          />
-        </div>
-        {solde > 0 && (
-          <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400">
-            Vous avez un solde debiteur de {formatEur(solde)}.
-            Merci de regulariser votre situation.
-          </div>
-        )}
-      </Section>
-
-      {/* Prochaine AG */}
-      {nextAG && (
-        <Section
-          title="Prochaine assemblee generale"
-          icon={Calendar}
-        >
-          <div className="flex items-center justify-between rounded border border-border px-3 py-2">
-            <div>
-              <p className="text-sm font-medium">
-                AG {nextAG.type}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {new Date(nextAG.date).toLocaleDateString('fr-FR', {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}
-                {nextAG.heure ? ` a ${nextAG.heure}` : ''}
-                {nextAG.lieu ? ` — ${nextAG.lieu}` : ''}
-              </p>
-            </div>
-            <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-              {nextAG.statut}
-            </span>
-          </div>
-        </Section>
       )}
-
-      {/* Acces rapide */}
-      <div className="rounded-lg border border-border bg-card p-4">
-        <h3 className="mb-3 text-sm font-semibold">
-          Acces rapide
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => navigate('/extranet/profil')}
-            className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Mon profil
-          </button>
-          <button
-            onClick={() => navigate('/extranet/documents')}
-            className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Mes documents
-          </button>
-          <button
-            onClick={() => navigate('/extranet/charges')}
-            className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Mes charges
-          </button>
-          <button
-            onClick={() => navigate('/extranet/appels-fonds')}
-            className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Mes appels de fonds
-          </button>
-          <button
-            onClick={() => navigate('/notifications')}
-            className="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Notifications
-          </button>
-        </div>
-      </div>
     </div>
   )
 }
