@@ -43,6 +43,11 @@ const DonneesPersonnellesPage = lazy(
 const PolitiqueConfidentialitePage = lazy(
   () => import('@/pages/PolitiqueConfidentialitePage')
 )
+const ForgotPasswordPage = lazy(() => import('@/pages/ForgotPasswordPage'))
+const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'))
+const VerifyEmailPage = lazy(() => import('@/pages/VerifyEmailPage'))
+const FirstLoginPage = lazy(() => import('@/pages/FirstLoginPage'))
+const UserManagementPage = lazy(() => import('@/pages/UserManagementPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function PageLoader() {
@@ -82,6 +87,40 @@ export const router = createHashRouter([
     element: (
       <Suspense fallback={<PageLoader />}>
         <PolitiqueConfidentialitePage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/forgot-password',
+    element: (
+      <PublicRoute>
+        <Suspense fallback={<PageLoader />}>
+          <ForgotPasswordPage />
+        </Suspense>
+      </PublicRoute>
+    ),
+  },
+  {
+    path: '/reset-password',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <ResetPasswordPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/verify-email',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <VerifyEmailPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/first-login',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <FirstLoginPage />
       </Suspense>
     ),
   },
@@ -279,6 +318,14 @@ export const router = createHashRouter([
           { path: 'fonds-travaux', element: <ExtranetFondsTravauPage /> },
           { path: 'conseil-syndical', element: <ExtranetConseilPage /> },
         ],
+      },
+      {
+        path: '/gestion-utilisateurs',
+        element: (
+          <RoleGuard allowedRoles={['syndic']}>
+            <UserManagementPage />
+          </RoleGuard>
+        ),
       },
       {
         path: '/exports',

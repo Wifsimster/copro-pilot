@@ -1,0 +1,79 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { userManagementApi } from '@/api/userManagement'
+
+export function useCoproprietaireUsers() {
+  return useQuery({
+    queryKey: ['user-management', 'coproprietaires'],
+    queryFn: () => userManagementApi.listCoproprietaireUsers(),
+    select: data => data.data,
+  })
+}
+
+export function useResetUserPassword() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (userId: string) =>
+      userManagementApi.triggerPasswordReset(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['user-management'],
+      })
+    },
+  })
+}
+
+export function useSetUserPassword() {
+  return useMutation({
+    mutationFn: ({
+      userId,
+      newPassword,
+    }: {
+      userId: string
+      newPassword: string
+    }) =>
+      userManagementApi.setPasswordDirectly(
+        userId,
+        newPassword
+      ),
+  })
+}
+
+export function useBulkCreationPreview(
+  coproprieteId: number | null
+) {
+  return useQuery({
+    queryKey: [
+      'user-management',
+      'bulk-preview',
+      coproprieteId,
+    ],
+    queryFn: () =>
+      userManagementApi.getBulkCreationPreview(
+        coproprieteId!
+      ),
+    select: data => data.data,
+    enabled: !!coproprieteId,
+  })
+}
+
+export function useBulkCreateUsers() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (coproprieteId: number) =>
+      userManagementApi.bulkCreateUsers(coproprieteId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['user-management'],
+      })
+    },
+  })
+}
+
+export function useSetInitialPassword() {
+  return useMutation({
+    mutationFn: (newPassword: string) =>
+      userManagementApi.setInitialPassword(newPassword),
+  })
+}
