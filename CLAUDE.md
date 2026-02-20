@@ -221,11 +221,92 @@ docker compose -f compose.local.yml down     # Arrêter
 - Path alias : `@/*` → `./src/*`
 - TypeScript strict mode activé (`noUnusedLocals`, `noUnusedParameters`)
 
-### Git
+### Git — Conventional Commits & Semantic Release
 
-- Messages de commit en anglais, préfixés : `feat:`, `fix:`, `refactor:`, `docs:`, `chore:`
+Ce projet utilise **Semantic Release** (config : `release.config.js`) pour automatiser le versioning et les releases. Les commits sur `main` sont analysés par `@semantic-release/commit-analyzer` (preset Angular) pour déterminer le type de release. **Il est impératif de respecter le format Conventional Commits** pour que le pipeline fonctionne correctement.
+
+#### Format des messages de commit
+
+```
+<type>(<scope>): <description>
+
+[body optionnel]
+
+[footer(s) optionnel(s)]
+```
+
+- **Langue :** anglais uniquement
+- **Description :** impérative, minuscule, sans point final (ex: `add user export endpoint`)
+- **Scope (optionnel) :** module ou zone concernée (ex: `backend`, `frontend`, `auth`, `charges`, `coproprietes`)
+- **Body (optionnel) :** détails supplémentaires, motivation du changement
+- **Footer (optionnel) :** références issues (`Closes #42`), breaking changes
+
+#### Types de commit et impact sur le versioning
+
+| Type | Description | Release |
+|---|---|---|
+| `feat` | Nouvelle fonctionnalité | **minor** (1.x.0) |
+| `fix` | Correction de bug | **patch** (1.0.x) |
+| `perf` | Amélioration de performance | **patch** (1.0.x) |
+| `refactor` | Restructuration sans changement fonctionnel | aucune release |
+| `docs` | Documentation uniquement | aucune release |
+| `style` | Formatage, espaces, point-virgules (pas de changement logique) | aucune release |
+| `test` | Ajout ou modification de tests | aucune release |
+| `build` | Changements du système de build, dépendances | aucune release |
+| `ci` | Configuration CI/CD (GitHub Actions, Docker) | aucune release |
+| `chore` | Maintenance, tâches diverses | aucune release |
+
+#### Breaking changes (version majeure)
+
+Pour déclencher une release **major** (x.0.0), ajouter `BREAKING CHANGE:` dans le footer du commit ou `!` après le type :
+
+```
+feat(api)!: replace /api/coproprietes response format
+
+BREAKING CHANGE: the coproprietes endpoint now returns a paginated
+response object instead of a plain array.
+```
+
+#### Exemples de bons messages de commit
+
+```bash
+# Patch release (fix)
+fix(backend): prevent duplicate entries in charges table
+
+# Minor release (feat)
+feat(frontend): add export to CSV for coproprietes list
+
+# Feat avec scope et body
+feat(auth): add Microsoft OAuth login support
+
+Integrate Better Auth Microsoft provider. Users can now sign in
+with their Microsoft account in addition to email/password.
+
+Closes #127
+
+# No release (refactor, docs, chore, test, ci...)
+refactor(backend): extract validation logic into shared helper
+docs: update API documentation for incidents module
+test(frontend): add unit tests for useAssemblees hook
+chore: upgrade vite to v7.1
+ci: add test step to CI pipeline
+```
+
+#### Erreurs courantes à éviter
+
+- **Ne pas mélanger plusieurs changements dans un commit** — un commit = un changement logique
+- **Ne pas utiliser de type incorrect** — un bugfix ne doit pas être `feat:`, une nouvelle feature ne doit pas être `fix:`
+- **Ne pas omettre le type** — `update user model` est invalide, utiliser `refactor: update user model`
+- **Ne pas utiliser le passé** — `feat: added export` est incorrect, utiliser `feat: add export`
+- **Ne pas mettre de majuscule à la description** — `feat: Add export` est incorrect, utiliser `feat: add export`
+- **Ne pas mettre de point final** — `feat: add export.` est incorrect
+
+#### Branche et pipeline
+
 - Branche principale : `main`
-- Semantic Release gère le versioning automatique depuis `main`
+- Semantic Release s'exécute uniquement sur les pushes vers `main`
+- Le pipeline CI (`ci.yml`) : lint → typecheck → test → build → semantic-release → Docker (si nouvelle release)
+- Le commit de release est automatique : `chore(release): <version> [skip ci]`
 
 ## CI/CD Pipeline
 
