@@ -48,6 +48,7 @@ const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'))
 const VerifyEmailPage = lazy(() => import('@/pages/VerifyEmailPage'))
 const FirstLoginPage = lazy(() => import('@/pages/FirstLoginPage'))
 const UserManagementPage = lazy(() => import('@/pages/UserManagementPage'))
+const SubscriptionPage = lazy(() => import('@/pages/SubscriptionPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function PageLoader() {
@@ -334,6 +335,14 @@ export const router = createHashRouter([
             <ExportsPage />
           </RoleGuard>
         ),
+      },
+      {
+        path: '/subscription',
+        element: <SubscriptionPage />,
+      },
+      {
+        path: '/subscription/success',
+        element: <SubscriptionPage />,
       },
     ],
   },
