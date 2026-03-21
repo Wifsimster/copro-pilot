@@ -1143,6 +1143,8 @@ export interface DashboardAlert {
   link: string
   copropriete_nom?: string
   date_echeance?: string
+  entity_type?: string
+  entity_id?: number
 }
 
 export interface DashboardTask {
@@ -1159,6 +1161,8 @@ export interface DashboardTask {
   copropriete_nom?: string
   date?: string
   priority: 'haute' | 'normale'
+  entity_type?: string
+  entity_id?: number
 }
 
 export type ActivityType =
@@ -1177,6 +1181,8 @@ export interface DashboardActivity {
   link: string
   copropriete_nom?: string
   date: string
+  entity_type?: string
+  entity_id?: number
 }
 
 export interface SyndicDashboardMetrics {
