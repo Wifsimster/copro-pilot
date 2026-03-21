@@ -4,6 +4,7 @@ import { RoleGuard } from './RoleGuard'
 import { MainLayout } from '@/components/layout/MainLayout'
 import { lazy, Suspense } from 'react'
 
+const LandingPage = lazy(() => import('@/pages/LandingPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
 const CoproprietesPage = lazy(() => import('@/pages/CoproprietesPage'))
@@ -71,6 +72,16 @@ function AuthenticatedLayout() {
 }
 
 export const router = createHashRouter([
+  // Landing page (public)
+  {
+    path: '/landing',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <LandingPage />
+      </Suspense>
+    ),
+  },
+
   // Public routes
   {
     path: '/login',
