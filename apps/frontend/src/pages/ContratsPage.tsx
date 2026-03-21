@@ -17,7 +17,7 @@ const STATUT_CONTRAT_LABELS: Record<string, string> = {
 const STATUT_CONTRAT_COLORS: Record<string, string> = {
   actif: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
   expire: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-  resilie: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+  resilie: 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300',
   en_attente: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
 }
 
@@ -59,21 +59,21 @@ export default function ContratsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Contrats & Prestataires</h1>
-          <p className="text-gray-500 dark:text-zinc-400">Gestion des contrats prestataires et suivi des echeances</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Contrats & Prestataires</h1>
+          <p className="text-stone-500 dark:text-stone-400">Gestion des contrats prestataires et suivi des echeances</p>
         </div>
       </div>
 
       {!selectedCoproId ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
-          <Handshake className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-gray-500 dark:text-zinc-400">Selectionnez une copropriete dans le menu lateral.</p>
+        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
+          <Handshake className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
+          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
       ) : (
         <>
           {/* Tabs */}
-          <div className="flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-zinc-800">
+          <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
             {([
               { key: 'contrats' as Tab, label: 'Contrats', icon: FileSignature },
               { key: 'prestataires' as Tab, label: 'Prestataires', icon: Building2 },
@@ -83,8 +83,8 @@ export default function ContratsPage() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === tab.key
-                    ? 'bg-white text-gray-900 shadow dark:bg-zinc-700 dark:text-white'
-                    : 'text-gray-500 hover:text-gray-700 dark:text-zinc-400'
+                    ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
+                    : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
                 }`}
               >
                 <tab.icon className="h-4 w-4" />
@@ -95,12 +95,12 @@ export default function ContratsPage() {
 
           {/* Contrats tab */}
           {activeTab === 'contrats' && (
-            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Contrats</h2>
+            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
+              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
+                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Contrats</h2>
                 <button
                   onClick={() => setShowContratDialog(true)}
-                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                  className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="h-4 w-4" />
                   Nouveau contrat
@@ -109,43 +109,43 @@ export default function ContratsPage() {
 
               {loadingContrats ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !contrats || contrats.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <FileSignature className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun contrat enregistre</p>
+                  <FileSignature className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun contrat enregistre</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Prestataire</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Objet</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Periode</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Montant annuel</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Frequence</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Prestataire</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Objet</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Periode</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant annuel</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Frequence</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {contrats.map((contrat: Contrat) => (
-                        <tr key={contrat.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
-                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                        <tr key={contrat.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
+                          <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">
                             {contrat.prestataire_nom}
                             {contrat.prestataire_specialite && (
-                              <span className="ml-2 text-xs text-gray-400">({contrat.prestataire_specialite})</span>
+                              <span className="ml-2 text-xs text-stone-400">({contrat.prestataire_specialite})</span>
                             )}
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{contrat.objet}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{contrat.objet}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             <div className="flex items-center gap-1">
                               {new Date(contrat.date_debut).toLocaleDateString('fr-FR')}
                               {contrat.date_fin && (
                                 <>
-                                  <span className="text-gray-400">→</span>
+                                  <span className="text-stone-400">→</span>
                                   <span className={isExpiringSoon(contrat.date_fin) ? 'text-orange-500 font-medium' : ''}>
                                     {new Date(contrat.date_fin).toLocaleDateString('fr-FR')}
                                   </span>
@@ -156,12 +156,12 @@ export default function ContratsPage() {
                               )}
                             </div>
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {contrat.montant_annuel
                               ? Number(contrat.montant_annuel).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
                               : '—'}
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {FREQUENCE_LABELS[contrat.frequence_paiement] || contrat.frequence_paiement}
                           </td>
                           <td className="px-4 py-3">
@@ -173,7 +173,7 @@ export default function ContratsPage() {
                             <div className="flex gap-1">
                               <button
                                 onClick={() => { setEditingContrat(contrat); setShowContratDialog(true) }}
-                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -181,7 +181,7 @@ export default function ContratsPage() {
                                 onClick={() => {
                                   if (window.confirm('Supprimer ce contrat ?')) deleteContrat.mutate(contrat.id)
                                 }}
-                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                                className="rounded p-1 text-stone-400 hover:text-red-600"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -217,12 +217,12 @@ export default function ContratsPage() {
 
           {/* Prestataires tab */}
           {activeTab === 'prestataires' && (
-            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Prestataires</h2>
+            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
+              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
+                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Prestataires</h2>
                 <button
                   onClick={() => setShowPrestataireDialog(true)}
-                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                  className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="h-4 w-4" />
                   Nouveau prestataire
@@ -231,44 +231,44 @@ export default function ContratsPage() {
 
               {loadingPrestataires ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !prestataires || prestataires.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <Building2 className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun prestataire enregistre</p>
+                  <Building2 className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun prestataire enregistre</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Nom</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Specialite</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">SIRET</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Contact</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Telephone</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Nom</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Specialite</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">SIRET</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Contact</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Telephone</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {prestataires.map((presta: Prestataire) => (
-                        <tr key={presta.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
-                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{presta.nom}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{presta.specialite || '—'}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300 font-mono text-xs">{presta.siret || '—'}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                        <tr key={presta.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
+                          <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">{presta.nom}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{presta.specialite || '—'}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300 font-mono text-xs">{presta.siret || '—'}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {presta.contact_nom || '—'}
                             {presta.contact_email && (
-                              <span className="ml-2 text-xs text-gray-400">{presta.contact_email}</span>
+                              <span className="ml-2 text-xs text-stone-400">{presta.contact_email}</span>
                             )}
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{presta.contact_telephone || '—'}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{presta.contact_telephone || '—'}</td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button
                                 onClick={() => { setEditingPrestataire(presta); setShowPrestataireDialog(true) }}
-                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -276,7 +276,7 @@ export default function ContratsPage() {
                                 onClick={() => {
                                   if (window.confirm('Supprimer ce prestataire ?')) deletePrestataire.mutate(presta.id)
                                 }}
-                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                                className="rounded p-1 text-stone-400 hover:text-red-600"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>

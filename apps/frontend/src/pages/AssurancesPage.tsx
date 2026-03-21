@@ -38,11 +38,11 @@ const STATUT_SINISTRE_LABELS: Record<string, string> = {
 }
 
 const STATUT_SINISTRE_COLORS: Record<string, string> = {
-  declare: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  declare: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
   en_instruction: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
   accepte: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
   refuse: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-  clos: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+  clos: 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300',
 }
 
 type Tab = 'assurances' | 'sinistres'
@@ -75,21 +75,21 @@ export default function AssurancesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Assurances & Sinistres</h1>
-          <p className="text-gray-500 dark:text-zinc-400">Gestion des polices d'assurance et suivi des sinistres</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Assurances & Sinistres</h1>
+          <p className="text-stone-500 dark:text-stone-400">Gestion des polices d'assurance et suivi des sinistres</p>
         </div>
       </div>
 
       {!selectedCoproId ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
-          <Shield className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-gray-500 dark:text-zinc-400">Selectionnez une copropriete dans le menu lateral.</p>
+        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
+          <Shield className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
+          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
       ) : (
         <>
           {/* Tabs */}
-          <div className="flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-zinc-800">
+          <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
             {([
               { key: 'assurances' as Tab, label: 'Assurances', icon: Shield },
               { key: 'sinistres' as Tab, label: 'Sinistres', icon: FileWarning },
@@ -99,8 +99,8 @@ export default function AssurancesPage() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === tab.key
-                    ? 'bg-white text-gray-900 shadow dark:bg-zinc-700 dark:text-white'
-                    : 'text-gray-500 hover:text-gray-700 dark:text-zinc-400'
+                    ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
+                    : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
                 }`}
               >
                 <tab.icon className="h-4 w-4" />
@@ -111,12 +111,12 @@ export default function AssurancesPage() {
 
           {/* Assurances tab */}
           {activeTab === 'assurances' && (
-            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Polices d'assurance</h2>
+            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
+              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
+                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Polices d'assurance</h2>
                 <button
                   onClick={() => setShowAssuranceDialog(true)}
-                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                  className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="h-4 w-4" />
                   Nouvelle assurance
@@ -125,34 +125,34 @@ export default function AssurancesPage() {
 
               {loadingAssurances ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !assurances || assurances.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <Shield className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune assurance enregistree</p>
+                  <Shield className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune assurance enregistree</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Compagnie</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">N° police</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Type</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Prime annuelle</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Echeance</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Compagnie</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">N° police</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Type</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Prime annuelle</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Echeance</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {assurances.map((assurance: Assurance) => (
-                        <tr key={assurance.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
-                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{assurance.compagnie}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{assurance.numero_police || '—'}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{TYPE_LABELS[assurance.type] || assurance.type}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                        <tr key={assurance.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
+                          <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">{assurance.compagnie}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{assurance.numero_police || '—'}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{TYPE_LABELS[assurance.type] || assurance.type}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {assurance.prime_annuelle
                               ? Number(assurance.prime_annuelle).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
                               : '—'}
@@ -162,7 +162,7 @@ export default function AssurancesPage() {
                               {STATUT_ASSURANCE_LABELS[assurance.statut]}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {assurance.date_fin
                               ? new Date(assurance.date_fin).toLocaleDateString('fr-FR')
                               : '—'}
@@ -171,7 +171,7 @@ export default function AssurancesPage() {
                             <div className="flex gap-1">
                               <button
                                 onClick={() => { setEditingAssurance(assurance); setShowAssuranceDialog(true) }}
-                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -179,7 +179,7 @@ export default function AssurancesPage() {
                                 onClick={() => {
                                   if (window.confirm('Supprimer cette assurance ?')) deleteAssurance.mutate(assurance.id)
                                 }}
-                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                                className="rounded p-1 text-stone-400 hover:text-red-600"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -214,12 +214,12 @@ export default function AssurancesPage() {
 
           {/* Sinistres tab */}
           {activeTab === 'sinistres' && (
-            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Sinistres</h2>
+            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
+              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
+                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Sinistres</h2>
                 <button
                   onClick={() => setShowSinistreDialog(true)}
-                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                  className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="h-4 w-4" />
                   Declarer un sinistre
@@ -228,40 +228,40 @@ export default function AssurancesPage() {
 
               {loadingSinistres ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !sinistres || sinistres.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <FileWarning className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun sinistre enregistre</p>
+                  <FileWarning className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun sinistre enregistre</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">N° sinistre</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Description</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Assurance</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Montant estime</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Indemnise</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Date</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">N° sinistre</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Description</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Assurance</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant estime</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Indemnise</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {sinistres.map((sinistre: Sinistre) => (
-                        <tr key={sinistre.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
-                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{sinistre.numero_sinistre || '—'}</td>
-                          <td className="max-w-xs truncate px-4 py-3 text-gray-600 dark:text-zinc-300">{sinistre.description || '—'}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{sinistre.assurance_compagnie || '—'}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                        <tr key={sinistre.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
+                          <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">{sinistre.numero_sinistre || '—'}</td>
+                          <td className="max-w-xs truncate px-4 py-3 text-stone-600 dark:text-stone-300">{sinistre.description || '—'}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{sinistre.assurance_compagnie || '—'}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {sinistre.montant_estime
                               ? Number(sinistre.montant_estime).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
                               : '—'}
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {sinistre.montant_indemnise
                               ? Number(sinistre.montant_indemnise).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
                               : '—'}
@@ -271,14 +271,14 @@ export default function AssurancesPage() {
                               {STATUT_SINISTRE_LABELS[sinistre.statut]}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {new Date(sinistre.date_sinistre).toLocaleDateString('fr-FR')}
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button
                                 onClick={() => { setEditingSinistre(sinistre); setShowSinistreDialog(true) }}
-                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -286,7 +286,7 @@ export default function AssurancesPage() {
                                 onClick={() => {
                                   if (window.confirm('Supprimer ce sinistre ?')) deleteSinistre.mutate(sinistre.id)
                                 }}
-                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                                className="rounded p-1 text-stone-400 hover:text-red-600"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>

@@ -31,7 +31,7 @@ const planPrices: Record<string, string> = {
 
 const statusLabels: Record<string, { label: string; color: string }> = {
   active: { label: 'Actif', color: 'text-green-600' },
-  trialing: { label: "Période d'essai", color: 'text-blue-600' },
+  trialing: { label: "Période d'essai", color: 'text-emerald-700' },
   past_due: {
     label: 'Paiement en retard',
     color: 'text-orange-600',

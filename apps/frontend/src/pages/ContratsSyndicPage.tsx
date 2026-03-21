@@ -27,7 +27,7 @@ const STATUT_LABELS: Record<string, string> = {
 const STATUT_COLORS: Record<string, string> = {
   en_cours: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
   expire: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-  resilie: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+  resilie: 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300',
   en_attente: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
 }
 
@@ -62,21 +62,21 @@ export default function ContratsSyndicPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Contrat de syndic</h1>
-          <p className="text-gray-500 dark:text-zinc-400">Gestion du contrat de syndic et mise en concurrence</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Contrat de syndic</h1>
+          <p className="text-stone-500 dark:text-stone-400">Gestion du contrat de syndic et mise en concurrence</p>
         </div>
       </div>
 
       {!selectedCoproId ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
-          <FileSignature className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-gray-500 dark:text-zinc-400">Selectionnez une copropriete dans le menu lateral.</p>
+        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
+          <FileSignature className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
+          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
       ) : (
         <>
           {/* Tabs */}
-          <div className="flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-zinc-800">
+          <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
             {([
               { key: 'contrats' as Tab, label: 'Contrats de syndic', icon: FileSignature },
               { key: 'propositions' as Tab, label: 'Mise en concurrence', icon: Users },
@@ -86,8 +86,8 @@ export default function ContratsSyndicPage() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === tab.key
-                    ? 'bg-white text-gray-900 shadow dark:bg-zinc-700 dark:text-white'
-                    : 'text-gray-500 hover:text-gray-700 dark:text-zinc-400'
+                    ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
+                    : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
                 }`}
               >
                 <tab.icon className="h-4 w-4" />
@@ -98,12 +98,12 @@ export default function ContratsSyndicPage() {
 
           {/* Contrats tab */}
           {activeTab === 'contrats' && (
-            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Contrats de syndic</h2>
+            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
+              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
+                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Contrats de syndic</h2>
                 <button
                   onClick={() => setShowContratDialog(true)}
-                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                  className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="h-4 w-4" />
                   Nouveau contrat
@@ -112,35 +112,35 @@ export default function ContratsSyndicPage() {
 
               {loadingContrats ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !contrats || contrats.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <FileSignature className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun contrat de syndic enregistre</p>
+                  <FileSignature className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun contrat de syndic enregistre</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Syndic</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Periode du mandat</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Forfait annuel</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Syndic</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Periode du mandat</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Forfait annuel</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {contrats.map((contrat: ContratSyndic) => (
-                        <tr key={contrat.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
-                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                        <tr key={contrat.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
+                          <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">
                             {contrat.syndic_nom}
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             <div className="flex items-center gap-1">
                               {new Date(contrat.date_debut).toLocaleDateString('fr-FR')}
-                              <span className="text-gray-400">→</span>
+                              <span className="text-stone-400">→</span>
                               <span className={isExpiringSoon(contrat.date_fin) ? 'text-orange-500 font-medium' : ''}>
                                 {new Date(contrat.date_fin).toLocaleDateString('fr-FR')}
                               </span>
@@ -149,7 +149,7 @@ export default function ContratsSyndicPage() {
                               )}
                             </div>
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {contrat.remuneration_forfait
                               ? Number(contrat.remuneration_forfait).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
                               : '—'}
@@ -163,7 +163,7 @@ export default function ContratsSyndicPage() {
                             <div className="flex gap-1">
                               <button
                                 onClick={() => { setEditingContrat(contrat); setShowContratDialog(true) }}
-                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -171,7 +171,7 @@ export default function ContratsSyndicPage() {
                                 onClick={() => {
                                   if (window.confirm('Supprimer ce contrat de syndic ?')) deleteContrat.mutate(contrat.id)
                                 }}
-                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                                className="rounded p-1 text-stone-400 hover:text-red-600"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -206,12 +206,12 @@ export default function ContratsSyndicPage() {
 
           {/* Propositions tab */}
           {activeTab === 'propositions' && (
-            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Propositions de syndic</h2>
+            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
+              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
+                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Propositions de syndic</h2>
                 <button
                   onClick={() => setShowPropositionDialog(true)}
-                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                  className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="h-4 w-4" />
                   Nouvelle proposition
@@ -220,35 +220,35 @@ export default function ContratsSyndicPage() {
 
               {loadingPropositions ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !propositions || propositions.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <Users className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune proposition de syndic enregistree</p>
+                  <Users className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune proposition de syndic enregistree</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Syndic</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Date de reception</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Montant propose</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Retenue</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Syndic</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date de reception</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant propose</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Retenue</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {propositions.map((proposition: PropositionSyndic) => (
-                        <tr key={proposition.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
-                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                        <tr key={proposition.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
+                          <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">
                             {proposition.syndic_nom}
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {new Date(proposition.date_reception).toLocaleDateString('fr-FR')}
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {proposition.montant_propose
                               ? Number(proposition.montant_propose).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
                               : '—'}
@@ -260,7 +260,7 @@ export default function ContratsSyndicPage() {
                                 Retenue
                               </span>
                             ) : (
-                              <span className="inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500 dark:bg-zinc-700 dark:text-zinc-400">
+                              <span className="inline-flex rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-500 dark:bg-stone-700 dark:text-stone-400">
                                 Non retenue
                               </span>
                             )}
@@ -269,7 +269,7 @@ export default function ContratsSyndicPage() {
                             <div className="flex gap-1">
                               <button
                                 onClick={() => { setEditingProposition(proposition); setShowPropositionDialog(true) }}
-                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -277,7 +277,7 @@ export default function ContratsSyndicPage() {
                                 onClick={() => {
                                   if (window.confirm('Supprimer cette proposition ?')) deleteProposition.mutate(proposition.id)
                                 }}
-                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                                className="rounded p-1 text-stone-400 hover:text-red-600"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>

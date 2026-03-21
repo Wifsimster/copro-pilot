@@ -32,7 +32,7 @@ export default function CoproprietairesPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
       </div>
     )
   }
@@ -42,14 +42,14 @@ export default function CoproprietairesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Copropriétaires</h1>
-          <p className="text-gray-500 dark:text-zinc-400">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Copropriétaires</h1>
+          <p className="text-stone-500 dark:text-stone-400">
             {coproprietaires?.length || 0} copropriétaire{(coproprietaires?.length || 0) > 1 ? 's' : ''} enregistré{(coproprietaires?.length || 0) > 1 ? 's' : ''}
           </p>
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800"
         >
           <Plus className="h-4 w-4" />
           Nouveau copropriétaire
@@ -63,21 +63,21 @@ export default function CoproprietairesPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Rechercher par nom, prénom ou email..."
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-500"
+          className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2 text-sm text-stone-900 placeholder:text-stone-400 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600 dark:border-stone-600 dark:bg-stone-800 dark:text-white dark:placeholder:text-stone-500"
         />
       </div>
 
       {/* List */}
       {(!filtered || filtered.length === 0) ? (
         <div className="flex flex-col items-center py-16">
-          <Users className="h-12 w-12 text-gray-300 dark:text-zinc-600" />
-          <p className="mt-4 text-lg text-gray-500 dark:text-zinc-400">
+          <Users className="h-12 w-12 text-stone-300 dark:text-stone-600" />
+          <p className="mt-4 text-lg text-stone-500 dark:text-stone-400">
             {search ? 'Aucun résultat' : 'Aucun copropriétaire enregistré'}
           </p>
           {!search && (
             <button
               onClick={() => setShowCreate(true)}
-              className="mt-4 flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+              className="mt-4 flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm text-white hover:bg-emerald-800"
             >
               <Plus className="h-4 w-4" />
               Ajouter un copropriétaire
@@ -89,17 +89,17 @@ export default function CoproprietairesPage() {
           {filtered.map((copro: Coproprietaire) => (
             <div
               key={copro.id}
-              className="rounded-xl border border-gray-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800"
+              className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800"
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
                     <span className="text-sm font-bold">
                       {copro.prenom[0]}{copro.nom[0]}
                     </span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                    <h3 className="font-semibold text-stone-900 dark:text-white">
                       {copro.prenom} {copro.nom}
                     </h3>
                   </div>
@@ -107,14 +107,14 @@ export default function CoproprietairesPage() {
                 <div className="flex gap-1">
                   <button
                     onClick={() => setEditingCopro(copro)}
-                    className="rounded p-1 text-gray-400 hover:text-blue-600"
+                    className="rounded p-1 text-stone-400 hover:text-emerald-700"
                     title="Modifier"
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(copro.id, copro.nom, copro.prenom)}
-                    className="rounded p-1 text-gray-400 hover:text-red-600"
+                    className="rounded p-1 text-stone-400 hover:text-red-600"
                     title="Supprimer"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -124,19 +124,19 @@ export default function CoproprietairesPage() {
 
               <div className="mt-3 space-y-1">
                 {copro.email && (
-                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-zinc-400">
+                  <div className="flex items-center gap-2 text-sm text-stone-500 dark:text-stone-400">
                     <Mail className="h-3.5 w-3.5" />
                     <span className="truncate">{copro.email}</span>
                   </div>
                 )}
                 {copro.telephone && (
-                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-zinc-400">
+                  <div className="flex items-center gap-2 text-sm text-stone-500 dark:text-stone-400">
                     <Phone className="h-3.5 w-3.5" />
                     <span>{copro.telephone}</span>
                   </div>
                 )}
                 {!copro.email && !copro.telephone && (
-                  <p className="text-sm italic text-gray-400 dark:text-zinc-500">Aucun contact renseigné</p>
+                  <p className="text-sm italic text-stone-400 dark:text-stone-500">Aucun contact renseigné</p>
                 )}
               </div>
             </div>

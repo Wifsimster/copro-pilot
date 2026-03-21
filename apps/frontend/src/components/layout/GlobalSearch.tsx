@@ -139,11 +139,11 @@ export function GlobalSearch() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex w-full max-w-md items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-500 transition-colors hover:bg-gray-100 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-600"
+        className="flex w-full max-w-md items-center gap-2 rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-sm text-stone-500 transition-colors hover:bg-stone-100 dark:border-stone-600 dark:bg-stone-700 dark:text-stone-400 dark:hover:bg-stone-700"
       >
         <Search className="h-4 w-4 shrink-0" />
         <span className="flex-1 text-left">Rechercher...</span>
-        <kbd className="pointer-events-none hidden h-5 shrink-0 select-none items-center gap-1 rounded border border-gray-300 bg-white px-1.5 font-mono text-[10px] font-medium text-gray-500 dark:border-zinc-500 dark:bg-zinc-600 dark:text-zinc-300 sm:flex">
+        <kbd className="pointer-events-none hidden h-5 shrink-0 select-none items-center gap-1 rounded border border-stone-300 bg-white px-1.5 font-mono text-[10px] font-medium text-stone-500 dark:border-stone-500 dark:bg-stone-600 dark:text-stone-300 sm:flex">
           <span className="text-xs">⌘</span>K
         </kbd>
       </button>
@@ -163,7 +163,7 @@ export function GlobalSearch() {
         <CommandList>
           {isLoading && (
             <div className="flex items-center justify-center py-6">
-              <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+              <Loader2 className="h-5 w-5 animate-spin text-stone-400" />
             </div>
           )}
 
@@ -183,7 +183,7 @@ export function GlobalSearch() {
                       handleSelect(`/coproprietes/${c.id}`)
                     }
                   >
-                    <Building2 className="text-blue-500" />
+                    <Building2 className="text-emerald-600" />
                     <span className="font-medium">{c.nom}</span>
                     <span className="text-muted-foreground ml-1 truncate text-xs">
                       {c.adresse}, {c.ville}
@@ -327,7 +327,7 @@ export function GlobalSearch() {
                     value={`nav-${item.name}`}
                     onSelect={() => handleSelect(item.href)}
                   >
-                    <item.icon className="text-gray-400" />
+                    <item.icon className="text-stone-400" />
                     {item.name}
                   </CommandItem>
                 ))}

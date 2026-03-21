@@ -101,10 +101,10 @@ const SEVERITY_STYLES: Record<
       'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
   },
   info: {
-    border: 'border-l-blue-500',
-    bg: 'bg-blue-50 dark:bg-blue-950/20',
+    border: 'border-l-emerald-500',
+    bg: 'bg-emerald-50 dark:bg-emerald-950/20',
     badge:
-      'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+      'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
   },
 }
 
@@ -140,7 +140,7 @@ const METRIC_CONFIG = [
     key: 'coproprietes' as const,
     label: 'Coproprietes',
     icon: Building2,
-    color: 'bg-blue-500',
+    color: 'bg-emerald-500',
     link: '/coproprietes',
   },
   {
@@ -383,7 +383,7 @@ function DailyTasks({
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
                     task.priority === 'haute'
                       ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'
-                      : 'bg-gray-100 text-gray-600 dark:bg-zinc-800 dark:text-zinc-400'
+                      : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400'
                   }`}
                 >
                   <Icon className="h-4 w-4" />

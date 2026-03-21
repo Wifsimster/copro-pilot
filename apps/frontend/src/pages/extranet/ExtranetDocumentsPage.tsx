@@ -76,7 +76,7 @@ export default function ExtranetDocumentsPage() {
                       )}
                     </p>
                     <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${ag.statut === 'terminee' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-700'}`}
+                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${ag.statut === 'terminee' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-stone-100 text-stone-700'}`}
                     >
                       {ag.statut}
                     </span>

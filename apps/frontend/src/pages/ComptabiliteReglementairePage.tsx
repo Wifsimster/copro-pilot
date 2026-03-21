@@ -541,7 +541,7 @@ function ExercicesTab({ coproprieteId, exercices, loadingExercices }: { copropri
                     <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
                       ex.statut === 'cloture'
                         ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                        : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                        : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
                     }`}>
                       {ex.statut === 'cloture' ? 'Cloture' : 'Ouvert'}
                     </span>

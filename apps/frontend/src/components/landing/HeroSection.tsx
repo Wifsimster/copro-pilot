@@ -90,12 +90,12 @@ function DashboardMockup() {
               </div>
             </div>
             <div
-              className="rounded-xl bg-blue-50
-                dark:bg-blue-950/40 p-3 text-center"
+              className="rounded-xl bg-emerald-50
+                dark:bg-emerald-950/40 p-3 text-center"
             >
               <Calendar
-                className="size-4 mx-auto text-blue-600
-                  dark:text-blue-400 mb-1"
+                className="size-4 mx-auto text-emerald-700
+                  dark:text-emerald-400 mb-1"
               />
               <div
                 className="text-lg font-bold text-stone-900

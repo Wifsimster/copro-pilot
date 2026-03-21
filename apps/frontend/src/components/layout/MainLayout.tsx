@@ -259,8 +259,8 @@ export function MainLayout({ children }: MainLayoutProps) {
         className={cn(
           'flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
           active
-            ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-            : 'text-gray-600 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700'
+            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+            : 'text-stone-600 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-700'
         )}
       >
         <item.icon className="h-4 w-4" />
@@ -273,7 +273,7 @@ export function MainLayout({ children }: MainLayoutProps) {
     if (!section.collapsible) {
       return (
         <div key={section.key} className="space-y-0.5">
-          <div className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400 dark:text-zinc-500">
+          <div className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-stone-400 dark:text-stone-500">
             {section.label}
           </div>
           {section.items.map(renderNavItem)}
@@ -290,7 +290,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         onOpenChange={() => toggleSection(section.key)}
         data-tour={`section-${section.key}`}
       >
-        <Collapsible.Trigger className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-gray-400 transition-colors hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300">
+        <Collapsible.Trigger className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-stone-400 transition-colors hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300">
           {section.label}
           <ChevronRight
             className={cn(
@@ -311,7 +311,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-zinc-900">
+    <div className="flex h-screen bg-[#FAF8F5] dark:bg-stone-950">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
@@ -324,24 +324,24 @@ export function MainLayout({ children }: MainLayoutProps) {
       <aside
         data-tour="sidebar"
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white shadow-lg transition-transform dark:bg-zinc-800 lg:static lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white shadow-lg transition-transform dark:bg-stone-900 lg:static lg:translate-x-0',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Logo */}
-        <div className="flex h-16 items-center gap-3 border-b border-gray-200 px-6 dark:border-zinc-700">
+        <div className="flex h-16 items-center gap-3 border-b border-stone-200 px-6 dark:border-stone-700">
           <img src="/logo.svg" alt="CoproPilot" className="h-8 w-8 rounded-lg" />
-          <span className="text-lg font-bold text-gray-900 dark:text-white">CoproPilot</span>
+          <span className="text-lg font-bold text-stone-900 dark:text-white">CoproPilot</span>
           <button
             onClick={() => setSidebarOpen(false)}
             className="ml-auto lg:hidden"
           >
-            <X className="h-5 w-5 text-gray-500" />
+            <X className="h-5 w-5 text-stone-500" />
           </button>
         </div>
 
         {/* Vue d'ensemble */}
-        <div data-tour="section-overview" className="border-b border-gray-200 px-4 pt-4 pb-3 dark:border-zinc-700">
+        <div data-tour="section-overview" className="border-b border-stone-200 px-4 pt-4 pb-3 dark:border-stone-700">
           {renderSection(filteredSections[0])}
         </div>
 
@@ -352,10 +352,10 @@ export function MainLayout({ children }: MainLayoutProps) {
         </nav>
 
         {/* User menu */}
-        <div data-tour="user-profile" className="border-t border-gray-200 p-2 dark:border-zinc-700">
+        <div data-tour="user-profile" className="border-t border-stone-200 p-2 dark:border-stone-700">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex w-full items-center gap-2 rounded-lg p-2 text-left transition-colors hover:bg-gray-100 data-[state=open]:bg-gray-100 dark:hover:bg-zinc-700 dark:data-[state=open]:bg-zinc-700">
+              <button className="flex w-full items-center gap-2 rounded-lg p-2 text-left transition-colors hover:bg-stone-100 data-[state=open]:bg-stone-100 dark:hover:bg-stone-800 dark:data-[state=open]:bg-stone-800">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarFallback className="rounded-lg">
                     {(user?.firstname?.[0] ?? '').toUpperCase()}
@@ -363,7 +363,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium text-gray-900 dark:text-white">
+                  <span className="truncate font-medium text-stone-900 dark:text-white">
                     {user?.firstname} {user?.lastname}
                   </span>
                   <span className="truncate text-xs text-muted-foreground">
@@ -446,16 +446,16 @@ export function MainLayout({ children }: MainLayoutProps) {
       {/* Main content */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top bar */}
-        <header className="flex h-16 items-center gap-3 border-b border-gray-200 bg-white px-4 dark:border-zinc-700 dark:bg-zinc-800">
+        <header className="flex h-16 items-center gap-3 border-b border-stone-200 bg-white px-4 dark:border-stone-700 dark:bg-stone-900">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-700 lg:hidden"
+            className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800 lg:hidden"
           >
             <Menu className="h-5 w-5" />
           </button>
           {!isCoproprietaire(user?.role) && (
             <div data-tour="copropriete-selector" className="relative shrink-0">
-              <Building2 className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
+              <Building2 className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400 dark:text-stone-500" />
               <select
                 value={selectedCoproprieteId ?? ''}
                 onChange={(e) => {
@@ -471,14 +471,14 @@ export function MainLayout({ children }: MainLayoutProps) {
                     setSelectedCoproprieteId(undefined)
                   }
                 }}
-                className="appearance-none rounded-lg border border-gray-200 bg-gray-50 py-2 pl-8 pr-8 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600 dark:focus:bg-zinc-700 dark:focus:border-blue-500"
+                className="appearance-none rounded-lg border border-stone-200 bg-stone-50 py-2 pl-8 pr-8 text-sm font-medium text-stone-900 transition-colors hover:bg-stone-100 focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 focus:outline-none dark:border-stone-600 dark:bg-stone-800 dark:text-white dark:hover:bg-stone-700 dark:focus:bg-stone-800 dark:focus:border-emerald-500"
               >
-                <option value="" className="dark:bg-zinc-800 dark:text-white">Toutes les copropriétés</option>
+                <option value="" className="dark:bg-stone-800 dark:text-white">Toutes les copropriétés</option>
                 {coproprietes?.map((c) => (
-                  <option key={c.id} value={c.id} className="dark:bg-zinc-800 dark:text-white">{c.nom}</option>
+                  <option key={c.id} value={c.id} className="dark:bg-stone-800 dark:text-white">{c.nom}</option>
                 ))}
               </select>
-              <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-400" />
+              <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400 dark:text-stone-500" />
             </div>
           )}
           <div data-tour="global-search" className="min-w-0 flex-1">

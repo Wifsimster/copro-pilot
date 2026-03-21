@@ -180,26 +180,26 @@ export function DeclarationFormDialog({
 
             {/* Tab: Identification + Gouvernance */}
             <TabsContent value="identification" className="mt-4 space-y-4">
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm dark:border-zinc-700 dark:bg-zinc-800/50">
-                <h4 className="font-medium text-gray-900 dark:text-white">Identification</h4>
-                <p className="mt-1 text-gray-600 dark:text-zinc-400">
+              <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
+                <h4 className="font-medium text-stone-900 dark:text-white">Identification</h4>
+                <p className="mt-1 text-stone-600 dark:text-stone-400">
                   {donnees.identification.nom} — {donnees.identification.adresse}, {donnees.identification.code_postal} {donnees.identification.ville}
                 </p>
                 {donnees.identification.numero_immatriculation && (
-                  <p className="text-gray-600 dark:text-zinc-400">
+                  <p className="text-stone-600 dark:text-stone-400">
                     N° immatriculation : {donnees.identification.numero_immatriculation}
                   </p>
                 )}
-                <p className="text-gray-600 dark:text-zinc-400">
+                <p className="text-stone-600 dark:text-stone-400">
                   {donnees.identification.nombre_batiments} batiment(s), {donnees.identification.nombre_ascenseurs} ascenseur(s)
                 </p>
                 {donnees.identification.periode_construction && (
-                  <p className="text-gray-600 dark:text-zinc-400">
+                  <p className="text-stone-600 dark:text-stone-400">
                     Periode de construction : {donnees.identification.periode_construction}
                   </p>
                 )}
                 {donnees.identification.type_chauffage && (
-                  <p className="text-gray-600 dark:text-zinc-400">
+                  <p className="text-stone-600 dark:text-stone-400">
                     Chauffage : {donnees.identification.type_chauffage}
                     {donnees.identification.energie_chauffage && ` (${donnees.identification.energie_chauffage})`}
                   </p>
@@ -207,23 +207,23 @@ export function DeclarationFormDialog({
               </div>
 
               {donnees.gouvernance && (
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm dark:border-zinc-700 dark:bg-zinc-800/50">
-                  <h4 className="font-medium text-gray-900 dark:text-white">Gouvernance — Syndic</h4>
-                  <p className="mt-1 text-gray-600 dark:text-zinc-400">
+                <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
+                  <h4 className="font-medium text-stone-900 dark:text-white">Gouvernance — Syndic</h4>
+                  <p className="mt-1 text-stone-600 dark:text-stone-400">
                     {donnees.gouvernance.syndic_nom}
                   </p>
-                  <p className="text-gray-600 dark:text-zinc-400">
+                  <p className="text-stone-600 dark:text-stone-400">
                     Contrat du {new Date(donnees.gouvernance.contrat_date_debut).toLocaleDateString('fr-FR')} au {new Date(donnees.gouvernance.contrat_date_fin).toLocaleDateString('fr-FR')}
                   </p>
                   {donnees.gouvernance.remuneration_forfait != null && (
-                    <p className="text-gray-600 dark:text-zinc-400">
+                    <p className="text-stone-600 dark:text-stone-400">
                       Remuneration forfaitaire : {formatCurrency(donnees.gouvernance.remuneration_forfait)}
                     </p>
                   )}
                   <span className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
                     donnees.gouvernance.contrat_statut === 'en_cours'
                       ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                      : 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300'
+                      : 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300'
                   }`}>
                     {donnees.gouvernance.contrat_statut === 'en_cours' ? 'En cours' : donnees.gouvernance.contrat_statut}
                   </span>
@@ -239,34 +239,34 @@ export function DeclarationFormDialog({
 
             {/* Tab: Patrimoine (Lots + Diagnostics) */}
             <TabsContent value="patrimoine" className="mt-4 space-y-4">
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm dark:border-zinc-700 dark:bg-zinc-800/50">
-                <h4 className="font-medium text-gray-900 dark:text-white">Lots</h4>
-                <p className="mt-1 text-gray-600 dark:text-zinc-400">
+              <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
+                <h4 className="font-medium text-stone-900 dark:text-white">Lots</h4>
+                <p className="mt-1 text-stone-600 dark:text-stone-400">
                   {donnees.lots.total} lot(s) — {donnees.lots.total_tantiemes} tantiemes — {donnees.lots.nombre_coproprietaires} coproprietaire(s)
                 </p>
                 {donnees.lots.par_type.length > 0 && (
-                  <p className="text-gray-500 dark:text-zinc-500">
+                  <p className="text-stone-500 dark:text-stone-500">
                     {donnees.lots.par_type.map(t => `${t.type}: ${t.count}`).join(', ')}
                   </p>
                 )}
               </div>
 
               {donnees.diagnostics && donnees.diagnostics.length > 0 ? (
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm dark:border-zinc-700 dark:bg-zinc-800/50">
-                  <h4 className="font-medium text-gray-900 dark:text-white">Diagnostics</h4>
+                <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
+                  <h4 className="font-medium text-stone-900 dark:text-white">Diagnostics</h4>
                   <div className="mt-2 space-y-2">
                     {donnees.diagnostics.map((d, i) => (
                       <div key={i} className="flex items-center justify-between">
-                        <span className="text-gray-600 dark:text-zinc-400 uppercase text-xs font-medium">
+                        <span className="text-stone-600 dark:text-stone-400 uppercase text-xs font-medium">
                           {d.type}
                         </span>
                         <div className="flex items-center gap-2">
                           {d.date_validite && (
-                            <span className="text-xs text-gray-500 dark:text-zinc-500">
+                            <span className="text-xs text-stone-500 dark:text-stone-500">
                               Valide jusqu'au {new Date(d.date_validite).toLocaleDateString('fr-FR')}
                             </span>
                           )}
-                          <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${DIAG_STATUT_COLORS[d.statut] || 'bg-gray-100 text-gray-700'}`}>
+                          <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${DIAG_STATUT_COLORS[d.statut] || 'bg-stone-100 text-stone-700'}`}>
                             {DIAG_STATUT_LABELS[d.statut] || d.statut}
                           </span>
                         </div>
@@ -275,36 +275,36 @@ export function DeclarationFormDialog({
                   </div>
                 </div>
               ) : (
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm dark:border-zinc-700 dark:bg-zinc-800/50">
-                  <h4 className="font-medium text-gray-900 dark:text-white">Diagnostics</h4>
-                  <p className="mt-1 text-gray-500 dark:text-zinc-500">Aucun diagnostic enregistre</p>
+                <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
+                  <h4 className="font-medium text-stone-900 dark:text-white">Diagnostics</h4>
+                  <p className="mt-1 text-stone-500 dark:text-stone-500">Aucun diagnostic enregistre</p>
                 </div>
               )}
             </TabsContent>
 
             {/* Tab: Finances + Procedures */}
             <TabsContent value="finances" className="mt-4 space-y-4">
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm dark:border-zinc-700 dark:bg-zinc-800/50">
-                <h4 className="font-medium text-gray-900 dark:text-white">Finances</h4>
+              <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
+                <h4 className="font-medium text-stone-900 dark:text-white">Finances</h4>
                 {donnees.finances.budget_montant != null ? (
-                  <p className="mt-1 text-gray-600 dark:text-zinc-400">
+                  <p className="mt-1 text-stone-600 dark:text-stone-400">
                     Budget {donnees.finances.budget_annee} : {formatCurrency(donnees.finances.budget_montant)} ({donnees.finances.budget_statut})
                   </p>
                 ) : (
-                  <p className="mt-1 text-gray-500 dark:text-zinc-500">Aucun budget pour cette annee</p>
+                  <p className="mt-1 text-stone-500 dark:text-stone-500">Aucun budget pour cette annee</p>
                 )}
-                <p className="text-gray-600 dark:text-zinc-400">
+                <p className="text-stone-600 dark:text-stone-400">
                   Appels de fonds : {donnees.finances.appels_fonds_nombre} ({formatCurrency(donnees.finances.appels_fonds_montant)})
                 </p>
                 {donnees.finances.fonds_travaux_solde != null && (
-                  <p className="text-gray-600 dark:text-zinc-400">
+                  <p className="text-stone-600 dark:text-stone-400">
                     Fonds travaux : {formatCurrency(donnees.finances.fonds_travaux_solde)}
                   </p>
                 )}
                 {donnees.finances.total_impayes != null && (
                   <p className={donnees.finances.total_impayes > 0
                     ? 'font-medium text-red-600 dark:text-red-400'
-                    : 'text-gray-600 dark:text-zinc-400'
+                    : 'text-stone-600 dark:text-stone-400'
                   }>
                     Impayes : {formatCurrency(donnees.finances.total_impayes)}
                   </p>
@@ -312,14 +312,14 @@ export function DeclarationFormDialog({
               </div>
 
               {donnees.procedures && (
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm dark:border-zinc-700 dark:bg-zinc-800/50">
-                  <h4 className="font-medium text-gray-900 dark:text-white">Procedures judiciaires</h4>
+                <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
+                  <h4 className="font-medium text-stone-900 dark:text-white">Procedures judiciaires</h4>
                   {donnees.procedures.nombre_actives > 0 ? (
                     <>
-                      <p className="mt-1 text-gray-600 dark:text-zinc-400">
+                      <p className="mt-1 text-stone-600 dark:text-stone-400">
                         {donnees.procedures.nombre_actives} procedure(s) active(s)
                       </p>
-                      <p className="text-gray-600 dark:text-zinc-400">
+                      <p className="text-stone-600 dark:text-stone-400">
                         Montant total reclame : {formatCurrency(donnees.procedures.montant_total_reclame)}
                       </p>
                     </>
@@ -333,9 +333,9 @@ export function DeclarationFormDialog({
             {/* Tab: Organisation (AG + Personnel) */}
             <TabsContent value="organisation" className="mt-4 space-y-4">
               {donnees.assemblee_generale ? (
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm dark:border-zinc-700 dark:bg-zinc-800/50">
-                  <h4 className="font-medium text-gray-900 dark:text-white">Derniere assemblee generale</h4>
-                  <p className="mt-1 text-gray-600 dark:text-zinc-400">
+                <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
+                  <h4 className="font-medium text-stone-900 dark:text-white">Derniere assemblee generale</h4>
+                  <p className="mt-1 text-stone-600 dark:text-stone-400">
                     {new Date(donnees.assemblee_generale.derniere_ag_date).toLocaleDateString('fr-FR')} — {donnees.assemblee_generale.derniere_ag_type === 'ordinaire' ? 'Ordinaire' : 'Extraordinaire'}
                   </p>
                 </div>
@@ -345,14 +345,14 @@ export function DeclarationFormDialog({
                 </div>
               )}
 
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm dark:border-zinc-700 dark:bg-zinc-800/50">
-                <h4 className="font-medium text-gray-900 dark:text-white">Personnel</h4>
+              <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
+                <h4 className="font-medium text-stone-900 dark:text-white">Personnel</h4>
                 {donnees.personnel.nombre_employes > 0 ? (
-                  <p className="mt-1 text-gray-600 dark:text-zinc-400">
+                  <p className="mt-1 text-stone-600 dark:text-stone-400">
                     {donnees.personnel.nombre_employes} employe(s) : {donnees.personnel.employes.map(e => `${e.prenom} ${e.nom} (${e.poste})`).join(', ')}
                   </p>
                 ) : (
-                  <p className="mt-1 text-gray-500 dark:text-zinc-500">Aucun employe</p>
+                  <p className="mt-1 text-stone-500 dark:text-stone-500">Aucun employe</p>
                 )}
               </div>
             </TabsContent>
