@@ -48,6 +48,8 @@ import declarationsRegistreRoutes from './declarations-registre.js'
 // Contrat de syndic & Mise en concurrence
 import contratsSyndicRoutes from './contrats-syndic.js'
 import propositionsSyndicRoutes from './propositions-syndic.js'
+// Ordres de Service
+import ordresServiceRoutes from './ordres-service.js'
 // Notifications
 import notificationsRoutes from './notifications.js'
 // Extranet copropriétaires
@@ -136,6 +138,9 @@ router.use('/declarations-registre', declarationsRegistreRoutes)
 // Contrat de syndic & Mise en concurrence
 router.use('/contrats-syndic', contratsSyndicRoutes)
 router.use('/propositions-syndic', propositionsSyndicRoutes)
+
+// Ordres de Service
+router.use('/ordres-service', ordresServiceRoutes)
 
 // Notifications
 router.use('/notifications', notificationsRoutes)

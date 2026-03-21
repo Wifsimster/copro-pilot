@@ -4,11 +4,13 @@ import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useIncidentsByCopropriete, useCreateIncident, useUpdateIncident, useDeleteIncident } from '@/hooks/useIncidents'
 import { useInterventionsByCopropriete, useCreateIntervention, useUpdateIntervention, useDeleteIntervention } from '@/hooks/useInterventions'
 import { useCarnetEntretienByCopropriete, useCreateCarnetEntretien, useUpdateCarnetEntretien, useDeleteCarnetEntretien } from '@/hooks/useCarnetEntretien'
+import { useOrdresServiceByCopropriete, useCreateOrdreService, useUpdateOrdreService, useDeleteOrdreService } from '@/hooks/useOrdresService'
 import { IncidentFormDialog } from '@/components/incidents/IncidentFormDialog'
 import { InterventionFormDialog } from '@/components/incidents/InterventionFormDialog'
 import { CarnetEntretienFormDialog } from '@/components/incidents/CarnetEntretienFormDialog'
-import type { Incident, Intervention, CarnetEntretien } from '@/types'
-import { Wrench, Plus, Trash2, Pencil, AlertTriangle, Hammer, BookOpen } from 'lucide-react'
+import { OrdreServiceFormDialog } from '@/components/travaux/OrdreServiceFormDialog'
+import type { Incident, Intervention, CarnetEntretien, OrdreService } from '@/types'
+import { Wrench, Plus, Trash2, Pencil, AlertTriangle, Hammer, BookOpen, ClipboardList } from 'lucide-react'
 
 const URGENCE_LABELS: Record<string, string> = {
   faible: 'Faible',
@@ -54,7 +56,37 @@ const STATUT_INTERVENTION_COLORS: Record<string, string> = {
   annulee: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
 }
 
-type Tab = 'incidents' | 'interventions' | 'carnet'
+const URGENCE_ODS_LABELS: Record<string, string> = {
+  normale: 'Normale',
+  urgente: 'Urgente',
+  tres_urgente: 'Tres urgente',
+}
+
+const URGENCE_ODS_COLORS: Record<string, string> = {
+  normale: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+  urgente: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+  tres_urgente: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+}
+
+const STATUT_ODS_LABELS: Record<string, string> = {
+  brouillon: 'Brouillon',
+  emis: 'Emis',
+  devis_recu: 'Devis recu',
+  accepte: 'Accepte',
+  termine: 'Termine',
+  annule: 'Annule',
+}
+
+const STATUT_ODS_COLORS: Record<string, string> = {
+  brouillon: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+  emis: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  devis_recu: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+  accepte: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+  termine: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  annule: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+}
+
+type Tab = 'incidents' | 'interventions' | 'carnet' | 'ordres-service'
 
 export default function TravauxPage() {
   const [searchParams] = useSearchParams()
@@ -68,12 +100,15 @@ export default function TravauxPage() {
   const [showIncidentDialog, setShowIncidentDialog] = useState(false)
   const [showInterventionDialog, setShowInterventionDialog] = useState(false)
   const [showCarnetDialog, setShowCarnetDialog] = useState(false)
+  const [showOrdreServiceDialog, setShowOrdreServiceDialog] = useState(false)
   const [editingIncident, setEditingIncident] = useState<Incident | null>(null)
   const [editingIntervention, setEditingIntervention] = useState<Intervention | null>(null)
+  const [editingOrdreService, setEditingOrdreService] = useState<OrdreService | null>(null)
 
   const { data: incidents, isLoading: loadingIncidents } = useIncidentsByCopropriete(selectedCoproId)
   const { data: interventions, isLoading: loadingInterventions } = useInterventionsByCopropriete(selectedCoproId)
   const { data: carnetEntretien, isLoading: loadingCarnet } = useCarnetEntretienByCopropriete(selectedCoproId)
+  const { data: ordresService, isLoading: loadingOrdresService } = useOrdresServiceByCopropriete(selectedCoproId)
   const createIncident = useCreateIncident()
   const updateIncident = useUpdateIncident()
   const deleteIncident = useDeleteIncident()
@@ -83,6 +118,9 @@ export default function TravauxPage() {
   const createCarnet = useCreateCarnetEntretien()
   const updateCarnet = useUpdateCarnetEntretien()
   const deleteCarnet = useDeleteCarnetEntretien()
+  const createOrdreService = useCreateOrdreService()
+  const updateOrdreService = useUpdateOrdreService()
+  const deleteOrdreService = useDeleteOrdreService()
   const [editingCarnet, setEditingCarnet] = useState<CarnetEntretien | null>(null)
 
   return (
@@ -108,6 +146,7 @@ export default function TravauxPage() {
               { key: 'incidents' as Tab, label: 'Incidents', icon: AlertTriangle },
               { key: 'interventions' as Tab, label: 'Interventions', icon: Hammer },
               { key: 'carnet' as Tab, label: "Carnet d'entretien", icon: BookOpen },
+              { key: 'ordres-service' as Tab, label: 'Ordres de service', icon: ClipboardList },
             ]).map((tab) => (
               <button
                 key={tab.key}
@@ -417,6 +456,117 @@ export default function TravauxPage() {
                   setEditingCarnet(null)
                 }}
                 isLoading={editingCarnet ? updateCarnet.isPending : createCarnet.isPending}
+              />
+            </div>
+          )}
+
+          {/* Ordres de service tab */}
+          {activeTab === 'ordres-service' && (
+            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Ordres de service</h2>
+                <button
+                  onClick={() => setShowOrdreServiceDialog(true)}
+                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                >
+                  <Plus className="h-4 w-4" />
+                  Nouvel ordre de service
+                </button>
+              </div>
+
+              {loadingOrdresService ? (
+                <div className="flex justify-center py-8">
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                </div>
+              ) : !ordresService || ordresService.length === 0 ? (
+                <div className="flex flex-col items-center py-12">
+                  <ClipboardList className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
+                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun ordre de service</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Numero</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Objet</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Prestataire</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Urgence</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Devis</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Date emission</th>
+                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ordresService.map((ods: OrdreService) => (
+                        <tr key={ods.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
+                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{ods.numero}</td>
+                          <td className="max-w-xs truncate px-4 py-3 font-medium text-gray-900 dark:text-white">
+                            {ods.objet}
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{ods.prestataire_nom || '—'}</td>
+                          <td className="px-4 py-3">
+                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${URGENCE_ODS_COLORS[ods.urgence]}`}>
+                              {URGENCE_ODS_LABELS[ods.urgence]}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUT_ODS_COLORS[ods.statut]}`}>
+                              {STATUT_ODS_LABELS[ods.statut]}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                            {ods.montant_devis
+                              ? Number(ods.montant_devis).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
+                              : '—'}
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                            {ods.date_emission
+                              ? new Date(ods.date_emission).toLocaleDateString('fr-FR')
+                              : '—'}
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => { setEditingOrdreService(ods); setShowOrdreServiceDialog(true) }}
+                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (window.confirm('Supprimer cet ordre de service ?')) deleteOrdreService.mutate(ods.id)
+                                }}
+                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              <OrdreServiceFormDialog
+                open={showOrdreServiceDialog}
+                onOpenChange={(open) => { setShowOrdreServiceDialog(open); if (!open) setEditingOrdreService(null) }}
+                coproprieteId={selectedCoproId}
+                defaultValues={editingOrdreService || undefined}
+                title={editingOrdreService ? 'Modifier l\'ordre de service' : 'Nouvel ordre de service'}
+                onSubmit={async (data) => {
+                  if (editingOrdreService) {
+                    await updateOrdreService.mutateAsync({ id: editingOrdreService.id, data })
+                  } else {
+                    await createOrdreService.mutateAsync(data)
+                  }
+                  setShowOrdreServiceDialog(false)
+                  setEditingOrdreService(null)
+                }}
+                isLoading={editingOrdreService ? updateOrdreService.isPending : createOrdreService.isPending}
               />
             </div>
           )}

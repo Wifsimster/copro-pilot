@@ -414,6 +414,7 @@ export interface DelaiVerification {
 export type UrgenceIncident = 'faible' | 'moyenne' | 'haute' | 'critique'
 export type StatutIncident = 'ouvert' | 'en_cours' | 'resolu' | 'ferme'
 export type StatutIntervention = 'en_attente' | 'planifiee' | 'en_cours' | 'terminee' | 'annulee'
+export type StatutOrdreService = 'brouillon' | 'emis' | 'devis_recu' | 'accepte' | 'termine' | 'annule'
 
 export interface Incident {
   id: number
@@ -450,6 +451,32 @@ export interface Intervention {
   incident_titre?: string
   created_at: string
   updated_at: string
+}
+
+export interface OrdreService {
+  id: number
+  copropriete_id: number
+  incident_id: number | null
+  prestataire_id: number | null
+  intervention_id: number | null
+  numero: string
+  objet: string
+  description: string | null
+  urgence: 'normale' | 'urgente' | 'tres_urgente'
+  statut: StatutOrdreService
+  montant_estime: number | null
+  montant_devis: number | null
+  montant_facture: number | null
+  date_emission: string | null
+  date_limite_reponse: string | null
+  date_acceptation: string | null
+  date_cloture: string | null
+  notes: string | null
+  created_at: string
+  updated_at: string
+  // Join fields
+  prestataire_nom?: string
+  incident_titre?: string
 }
 
 export interface CarnetEntretien {
