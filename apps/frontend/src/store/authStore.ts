@@ -102,6 +102,29 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       if (result.data?.user) {
         const userData = transformUser(result.data.user as SessionUser)
         get().setAuth(userData)
+
+        // Check for pending plan from landing page signup flow
+        const pendingPlan = sessionStorage.getItem('pending_plan')
+        if (pendingPlan && ['essentiel', 'pro', 'entreprise'].includes(pendingPlan)) {
+          sessionStorage.removeItem('pending_plan')
+          try {
+            const checkoutRes = await fetch('/api/stripe/checkout-session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ plan: pendingPlan }),
+            })
+            const checkoutData = await checkoutRes.json()
+            if (checkoutData.data?.url) {
+              window.location.href = checkoutData.data.url
+              return
+            }
+          } catch (err) {
+            logger.error('Stripe checkout redirect failed:', err)
+            // Fall through to dashboard if Stripe fails
+          }
+        }
+
         window.location.hash = '#/'
       }
     } catch (error) {

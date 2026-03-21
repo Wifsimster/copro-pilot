@@ -5,14 +5,24 @@ import {
   Loader2,
   CheckCircle,
   XCircle,
+  CreditCard,
 } from 'lucide-react'
 import { authClient } from '@/lib/auth-client'
+
+const PLAN_LABELS: Record<string, string> = {
+  essentiel: 'Essentiel',
+  pro: 'Pro',
+  entreprise: 'Entreprise',
+}
 
 export default function VerifyEmailPage() {
   const [status, setStatus] = useState<
     'loading' | 'success' | 'error'
   >('loading')
   const [error, setError] = useState('')
+
+  const pendingPlan = sessionStorage.getItem('pending_plan') || ''
+  const hasPendingPlan = pendingPlan in PLAN_LABELS
 
   const params = new URLSearchParams(
     window.location.hash.split('?')[1] || ''
@@ -80,17 +90,26 @@ export default function VerifyEmailPage() {
                     Email vérifié
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Votre adresse email a été vérifiée avec
-                    succès. Vous pouvez maintenant vous
-                    connecter.
+                    {hasPendingPlan
+                      ? `Votre email est vérifié. Connectez-vous pour activer votre plan ${PLAN_LABELS[pendingPlan]}.`
+                      : 'Votre adresse email a été vérifiée avec succès. Vous pouvez maintenant vous connecter.'}
                   </p>
                 </div>
                 <a
                   href="/#/login"
                   className="inline-flex items-center gap-2 text-sm text-primary hover:underline mt-2"
                 >
-                  <ArrowLeft className="size-4" />
-                  Se connecter
+                  {hasPendingPlan ? (
+                    <>
+                      <CreditCard className="size-4" />
+                      Se connecter et activer le plan {PLAN_LABELS[pendingPlan]}
+                    </>
+                  ) : (
+                    <>
+                      <ArrowLeft className="size-4" />
+                      Se connecter
+                    </>
+                  )}
                 </a>
               </>
             )}
