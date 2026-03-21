@@ -49,6 +49,7 @@ const VerifyEmailPage = lazy(() => import('@/pages/VerifyEmailPage'))
 const FirstLoginPage = lazy(() => import('@/pages/FirstLoginPage'))
 const UserManagementPage = lazy(() => import('@/pages/UserManagementPage'))
 const TachesPage = lazy(() => import('@/pages/TachesPage'))
+const ReconciliationPage = lazy(() => import('@/pages/ReconciliationPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function PageLoader() {
@@ -333,6 +334,14 @@ export const router = createHashRouter([
         element: (
           <RoleGuard allowedRoles={['syndic']}>
             <UserManagementPage />
+          </RoleGuard>
+        ),
+      },
+      {
+        path: '/reconciliation',
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <ReconciliationPage />
           </RoleGuard>
         ),
       },

@@ -1255,6 +1255,23 @@ export interface Tache {
 }
 
 // ============================================
+// Reconciliation Types
+// ============================================
+
+export interface SuggestedMatch {
+  mouvement_id: number
+  mouvement_libelle: string
+  mouvement_montant: number
+  mouvement_date: string
+  appel_fonds_id: number
+  appel_fonds_reference: string
+  appel_fonds_montant: number
+  appel_fonds_date: string
+  score: number
+  confidence: 'haute' | 'moyenne' | 'faible'
+}
+
+// ============================================
 // Domain Event Types
 // ============================================
 

@@ -70,6 +70,8 @@ import userManagementRoutes from './user-management.js'
 import tachesRoutes from './taches.js'
 // Timeline (domain events)
 import timelineRoutes from './timeline.js'
+// Reconciliation bancaire
+import reconciliationRoutes from './reconciliation.js'
 // SSE (Server-Sent Events)
 import sseRoutes from './sse.js'
 
@@ -173,6 +175,9 @@ router.use('/taches', tachesRoutes)
 
 // Timeline (domain events)
 router.use('/timeline', timelineRoutes)
+
+// Reconciliation bancaire
+router.use('/reconciliation', reconciliationRoutes)
 
 // SSE (Server-Sent Events)
 router.use('/sse', sseRoutes)

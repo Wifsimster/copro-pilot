@@ -43,6 +43,7 @@ import {
   CreditCard,
   PiggyBank,
   CheckSquare,
+  ArrowLeftRight,
   type LucideIcon,
 } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -110,6 +111,7 @@ const navigationSections: NavSection[] = [
     items: [
       { name: 'Comptabilite', href: '/comptabilite-reglementaire', icon: Calculator },
       { name: 'Comptes bancaires', href: '/comptes-bancaires', icon: Landmark },
+      { name: 'Reconciliation', href: '/reconciliation', icon: ArrowLeftRight },
       { name: 'Assurances', href: '/assurances', icon: Shield },
       { name: 'Contentieux', href: '/contentieux', icon: Scale },
     ],
