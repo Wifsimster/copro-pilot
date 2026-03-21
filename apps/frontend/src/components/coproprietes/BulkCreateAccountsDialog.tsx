@@ -95,7 +95,7 @@ export function BulkCreateAccountsDialog({
             {results.linked.length > 0 && (
               <div>
                 <h4 className="text-sm font-medium flex items-center gap-2 mb-2">
-                  <Link2 className="size-4 text-blue-600" />
+                  <Link2 className="size-4 text-emerald-700" />
                   Comptes existants liés (
                   {results.linked.length})
                 </h4>
@@ -162,7 +162,7 @@ export function BulkCreateAccountsDialog({
                   preview.toLink.length > 0 && (
                     <div>
                       <h4 className="text-sm font-medium flex items-center gap-2 mb-2">
-                        <Link2 className="size-4 text-blue-600" />
+                        <Link2 className="size-4 text-emerald-700" />
                         Comptes existants à lier (
                         {preview.toLink.length})
                       </h4>

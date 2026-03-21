@@ -67,19 +67,19 @@ const STATUT_BUDGET_LABELS: Record<string, string> = {
 
 function InfoRow({ label, value }: { label: string; value: string | number | null | undefined }) {
   return (
-    <div className="flex justify-between py-2 border-b border-gray-100 dark:border-zinc-700/50 last:border-0">
-      <span className="text-sm text-gray-500 dark:text-zinc-400">{label}</span>
-      <span className="text-sm font-medium text-gray-900 dark:text-white">{value ?? '—'}</span>
+    <div className="flex justify-between py-2 border-b border-stone-100 dark:border-stone-700/50 last:border-0">
+      <span className="text-sm text-stone-500 dark:text-stone-400">{label}</span>
+      <span className="text-sm font-medium text-stone-900 dark:text-white">{value ?? '—'}</span>
     </div>
   )
 }
 
 function SectionCard({ title, icon: Icon, children }: { title: string; icon: React.ElementType; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-      <div className="flex items-center gap-2 border-b border-gray-200 px-5 py-4 dark:border-zinc-700">
-        <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-        <h2 className="text-base font-semibold text-gray-900 dark:text-white">{title}</h2>
+    <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
+      <div className="flex items-center gap-2 border-b border-stone-200 px-5 py-4 dark:border-stone-700">
+        <Icon className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
+        <h2 className="text-base font-semibold text-stone-900 dark:text-white">{title}</h2>
       </div>
       <div className="px-5 py-4">{children}</div>
     </div>
@@ -94,27 +94,27 @@ export default function FicheSynthetiquePage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Fiche synthetique</h1>
-        <p className="text-gray-500 dark:text-zinc-400">
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Fiche synthetique</h1>
+        <p className="text-stone-500 dark:text-stone-400">
           Document reglementaire (decret du 28 juin 2016)
         </p>
       </div>
 
       {!selectedId ? (
         <div className="flex flex-col items-center py-16">
-          <FileText className="h-12 w-12 text-gray-300 dark:text-zinc-600" />
-          <p className="mt-4 text-gray-500 dark:text-zinc-400">
+          <FileText className="h-12 w-12 text-stone-300 dark:text-stone-600" />
+          <p className="mt-4 text-stone-500 dark:text-stone-400">
             Selectionnez une copropriete dans le menu lateral
           </p>
         </div>
       ) : loadingFiche ? (
         <div className="flex items-center justify-center h-64">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
         </div>
       ) : !fiche ? (
         <div className="flex flex-col items-center py-16">
           <AlertTriangle className="h-12 w-12 text-orange-400" />
-          <p className="mt-4 text-gray-500 dark:text-zinc-400">Impossible de charger la fiche synthetique</p>
+          <p className="mt-4 text-stone-500 dark:text-stone-400">Impossible de charger la fiche synthetique</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -142,11 +142,11 @@ export default function FicheSynthetiquePage() {
             <InfoRow label="Nombre de coproprietaires" value={fiche.lots.nombre_coproprietaires} />
             {fiche.lots.par_type.length > 0 && (
               <div className="mt-3 space-y-1">
-                <p className="text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Par type</p>
+                <p className="text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider">Par type</p>
                 {fiche.lots.par_type.map((lt) => (
                   <div key={lt.type} className="flex justify-between py-1">
-                    <span className="text-sm text-gray-600 dark:text-zinc-300">{TYPE_LOT_LABELS[lt.type] || lt.type}</span>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">{lt.count}</span>
+                    <span className="text-sm text-stone-600 dark:text-stone-300">{TYPE_LOT_LABELS[lt.type] || lt.type}</span>
+                    <span className="text-sm font-medium text-stone-900 dark:text-white">{lt.count}</span>
                   </div>
                 ))}
               </div>
@@ -166,29 +166,29 @@ export default function FicheSynthetiquePage() {
                 <InfoRow label="Statut du budget" value={STATUT_BUDGET_LABELS[fiche.finances.budget_previsionnel.statut] || fiche.finances.budget_previsionnel.statut} />
               </>
             ) : (
-              <p className="text-sm text-gray-500 dark:text-zinc-400 py-2">Aucun budget previsionnel</p>
+              <p className="text-sm text-stone-500 dark:text-stone-400 py-2">Aucun budget previsionnel</p>
             )}
             <InfoRow label="Impayes" value={`${fiche.finances.impayes.toLocaleString('fr-FR')} EUR`} />
             <InfoRow label="Fonds travaux" value={`${fiche.finances.fonds_travaux.toLocaleString('fr-FR')} EUR`} />
 
             {fiche.finances.postes_depenses.length > 0 && (
               <div className="mt-4">
-                <p className="text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Postes de depenses</p>
+                <p className="text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-2">Postes de depenses</p>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-200 dark:border-zinc-700">
-                        <th className="py-2 text-left font-medium text-gray-500 dark:text-zinc-400">Poste</th>
-                        <th className="py-2 text-right font-medium text-gray-500 dark:text-zinc-400">Prevu</th>
-                        <th className="py-2 text-right font-medium text-gray-500 dark:text-zinc-400">Reel</th>
+                      <tr className="border-b border-stone-200 dark:border-stone-700">
+                        <th className="py-2 text-left font-medium text-stone-500 dark:text-stone-400">Poste</th>
+                        <th className="py-2 text-right font-medium text-stone-500 dark:text-stone-400">Prevu</th>
+                        <th className="py-2 text-right font-medium text-stone-500 dark:text-stone-400">Reel</th>
                       </tr>
                     </thead>
                     <tbody>
                       {fiche.finances.postes_depenses.map((p, i) => (
-                        <tr key={i} className="border-b border-gray-100 dark:border-zinc-700/50">
-                          <td className="py-2 text-gray-900 dark:text-white">{p.nom}</td>
-                          <td className="py-2 text-right text-gray-600 dark:text-zinc-300">{p.montant_prevu.toLocaleString('fr-FR')} EUR</td>
-                          <td className="py-2 text-right text-gray-600 dark:text-zinc-300">{p.montant_reel ? `${p.montant_reel.toLocaleString('fr-FR')} EUR` : '—'}</td>
+                        <tr key={i} className="border-b border-stone-100 dark:border-stone-700/50">
+                          <td className="py-2 text-stone-900 dark:text-white">{p.nom}</td>
+                          <td className="py-2 text-right text-stone-600 dark:text-stone-300">{p.montant_prevu.toLocaleString('fr-FR')} EUR</td>
+                          <td className="py-2 text-right text-stone-600 dark:text-stone-300">{p.montant_reel ? `${p.montant_reel.toLocaleString('fr-FR')} EUR` : '—'}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -201,16 +201,16 @@ export default function FicheSynthetiquePage() {
           {/* Diagnostics */}
           <SectionCard title="Diagnostics techniques" icon={ClipboardCheck}>
             {fiche.diagnostics.length === 0 ? (
-              <p className="text-sm text-gray-500 dark:text-zinc-400 py-2">Aucun diagnostic enregistre</p>
+              <p className="text-sm text-stone-500 dark:text-stone-400 py-2">Aucun diagnostic enregistre</p>
             ) : (
               <div className="space-y-2">
                 {fiche.diagnostics.map((d, i) => (
-                  <div key={i} className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-zinc-700/50 last:border-0">
+                  <div key={i} className="flex items-center justify-between py-2 border-b border-stone-100 dark:border-stone-700/50 last:border-0">
                     <div>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      <span className="text-sm font-medium text-stone-900 dark:text-white">
                         {DIAGNOSTIC_LABELS[d.type] || d.type}
                       </span>
-                      <span className="ml-2 text-xs text-gray-500 dark:text-zinc-400">
+                      <span className="ml-2 text-xs text-stone-500 dark:text-stone-400">
                         {new Date(d.date_realisation).toLocaleDateString('fr-FR')}
                       </span>
                     </div>

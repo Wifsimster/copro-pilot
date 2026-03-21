@@ -18,7 +18,7 @@ const URGENCE_LABELS: Record<string, string> = {
 }
 
 const URGENCE_COLORS: Record<string, string> = {
-  faible: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+  faible: 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300',
   moyenne: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
   haute: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
   critique: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
@@ -32,10 +32,10 @@ const STATUT_INCIDENT_LABELS: Record<string, string> = {
 }
 
 const STATUT_INCIDENT_COLORS: Record<string, string> = {
-  ouvert: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  ouvert: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
   en_cours: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
   resolu: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  ferme: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+  ferme: 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300',
 }
 
 const STATUT_INTERVENTION_LABELS: Record<string, string> = {
@@ -47,8 +47,8 @@ const STATUT_INTERVENTION_LABELS: Record<string, string> = {
 }
 
 const STATUT_INTERVENTION_COLORS: Record<string, string> = {
-  en_attente: 'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
-  planifiee: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  en_attente: 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300',
+  planifiee: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
   en_cours: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
   terminee: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
   annulee: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
@@ -89,21 +89,21 @@ export default function TravauxPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Travaux & Incidents</h1>
-          <p className="text-gray-500 dark:text-zinc-400">Suivi des incidents, interventions et carnet d'entretien</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Travaux & Incidents</h1>
+          <p className="text-stone-500 dark:text-stone-400">Suivi des incidents, interventions et carnet d'entretien</p>
         </div>
       </div>
 
       {!selectedCoproId ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
-          <Wrench className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-gray-500 dark:text-zinc-400">Selectionnez une copropriete dans le menu lateral.</p>
+        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
+          <Wrench className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
+          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
       ) : (
         <>
           {/* Tabs */}
-          <div className="flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-zinc-800">
+          <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
             {([
               { key: 'incidents' as Tab, label: 'Incidents', icon: AlertTriangle },
               { key: 'interventions' as Tab, label: 'Interventions', icon: Hammer },
@@ -114,8 +114,8 @@ export default function TravauxPage() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === tab.key
-                    ? 'bg-white text-gray-900 shadow dark:bg-zinc-700 dark:text-white'
-                    : 'text-gray-500 hover:text-gray-700 dark:text-zinc-400'
+                    ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
+                    : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
                 }`}
               >
                 <tab.icon className="h-4 w-4" />
@@ -126,12 +126,12 @@ export default function TravauxPage() {
 
           {/* Incidents tab */}
           {activeTab === 'incidents' && (
-            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Incidents</h2>
+            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
+              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
+                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Incidents</h2>
                 <button
                   onClick={() => setShowIncidentDialog(true)}
-                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                  className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="h-4 w-4" />
                   Signaler un incident
@@ -140,31 +140,31 @@ export default function TravauxPage() {
 
               {loadingIncidents ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !incidents || incidents.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <AlertTriangle className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucun incident signale</p>
+                  <AlertTriangle className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun incident signale</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Titre</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Categorie</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Urgence</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Date</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Titre</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Categorie</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Urgence</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {incidents.map((incident: Incident) => (
-                        <tr key={incident.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
-                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{incident.titre}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{incident.categorie || '—'}</td>
+                        <tr key={incident.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
+                          <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">{incident.titre}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{incident.categorie || '—'}</td>
                           <td className="px-4 py-3">
                             <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${URGENCE_COLORS[incident.urgence]}`}>
                               {URGENCE_LABELS[incident.urgence]}
@@ -175,14 +175,14 @@ export default function TravauxPage() {
                               {STATUT_INCIDENT_LABELS[incident.statut]}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {new Date(incident.date_signalement).toLocaleDateString('fr-FR')}
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button
                                 onClick={() => { setEditingIncident(incident); setShowIncidentDialog(true) }}
-                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -190,7 +190,7 @@ export default function TravauxPage() {
                                 onClick={() => {
                                   if (window.confirm('Supprimer cet incident ?')) deleteIncident.mutate(incident.id)
                                 }}
-                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                                className="rounded p-1 text-stone-400 hover:text-red-600"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -225,12 +225,12 @@ export default function TravauxPage() {
 
           {/* Interventions tab */}
           {activeTab === 'interventions' && (
-            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Interventions</h2>
+            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
+              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
+                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Interventions</h2>
                 <button
                   onClick={() => setShowInterventionDialog(true)}
-                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                  className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="h-4 w-4" />
                   Nouvelle intervention
@@ -239,39 +239,39 @@ export default function TravauxPage() {
 
               {loadingInterventions ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !interventions || interventions.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <Hammer className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune intervention enregistree</p>
+                  <Hammer className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune intervention enregistree</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Description</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Prestataire</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Devis</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Facture</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Description</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Prestataire</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Devis</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Facture</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {interventions.map((inter: Intervention) => (
-                        <tr key={inter.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
-                          <td className="max-w-xs truncate px-4 py-3 font-medium text-gray-900 dark:text-white">
+                        <tr key={inter.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
+                          <td className="max-w-xs truncate px-4 py-3 font-medium text-stone-900 dark:text-white">
                             {inter.description || '—'}
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{inter.prestataire || '—'}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{inter.prestataire || '—'}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {inter.montant_devis
                               ? Number(inter.montant_devis).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
                               : '—'}
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {inter.montant_facture
                               ? Number(inter.montant_facture).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
                               : '—'}
@@ -285,7 +285,7 @@ export default function TravauxPage() {
                             <div className="flex gap-1">
                               <button
                                 onClick={() => { setEditingIntervention(inter); setShowInterventionDialog(true) }}
-                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -293,7 +293,7 @@ export default function TravauxPage() {
                                 onClick={() => {
                                   if (window.confirm('Supprimer cette intervention ?')) deleteIntervention.mutate(inter.id)
                                 }}
-                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                                className="rounded p-1 text-stone-400 hover:text-red-600"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -328,12 +328,12 @@ export default function TravauxPage() {
 
           {/* Carnet d'entretien tab */}
           {activeTab === 'carnet' && (
-            <div className="rounded-xl border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-              <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-zinc-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Carnet d'entretien</h2>
+            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
+              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
+                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Carnet d'entretien</h2>
                 <button
                   onClick={() => setShowCarnetDialog(true)}
-                  className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+                  className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="h-4 w-4" />
                   Nouvelle entree
@@ -342,45 +342,45 @@ export default function TravauxPage() {
 
               {loadingCarnet ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !carnetEntretien || carnetEntretien.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <BookOpen className="h-10 w-10 text-gray-300 dark:text-zinc-600" />
-                  <p className="mt-3 text-gray-500 dark:text-zinc-400">Aucune entree dans le carnet</p>
+                  <BookOpen className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune entree dans le carnet</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-200 text-left dark:border-zinc-700">
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Titre</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Categorie</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Prestataire</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Montant</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400">Date</th>
-                        <th className="px-4 py-3 font-medium text-gray-500 dark:text-zinc-400"></th>
+                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Titre</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Categorie</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Prestataire</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {carnetEntretien.map((entree: CarnetEntretien) => (
-                        <tr key={entree.id} className="border-b border-gray-100 hover:bg-gray-50 dark:border-zinc-700/50 dark:hover:bg-zinc-700/30">
-                          <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{entree.titre}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{entree.categorie || '—'}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">{entree.prestataire || '—'}</td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                        <tr key={entree.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
+                          <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">{entree.titre}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{entree.categorie || '—'}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{entree.prestataire || '—'}</td>
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {entree.montant
                               ? Number(entree.montant).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
                               : '—'}
                           </td>
-                          <td className="px-4 py-3 text-gray-600 dark:text-zinc-300">
+                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                             {new Date(entree.date_realisation).toLocaleDateString('fr-FR')}
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button
                                 onClick={() => { setEditingCarnet(entree); setShowCarnetDialog(true) }}
-                                className="rounded p-1 text-gray-400 hover:text-blue-600"
+                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -388,7 +388,7 @@ export default function TravauxPage() {
                                 onClick={() => {
                                   if (window.confirm('Supprimer cette entree ?')) deleteCarnet.mutate(entree.id)
                                 }}
-                                className="rounded p-1 text-gray-400 hover:text-red-600"
+                                className="rounded p-1 text-stone-400 hover:text-red-600"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>

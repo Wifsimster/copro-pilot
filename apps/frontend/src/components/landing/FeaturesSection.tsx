@@ -35,9 +35,9 @@ const featureGroups: FeatureGroup[] = [
     title: 'Ne ratez plus rien',
     subtitle: 'Pilotage & visibilité',
     icon: Shield,
-    accentColor: 'text-blue-700 dark:text-blue-400',
-    iconBg: 'bg-blue-50 dark:bg-blue-950/40',
-    borderAccent: 'group-hover:border-t-blue-400',
+    accentColor: 'text-emerald-800 dark:text-emerald-400',
+    iconBg: 'bg-emerald-50 dark:bg-emerald-950/40',
+    borderAccent: 'group-hover:border-t-emerald-400',
     bullets: [
       {
         icon: LayoutDashboard,

@@ -28,10 +28,10 @@ export function ProtectedRoute({
 
   if (isLoading || isValidating) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-zinc-900">
+      <div className="flex items-center justify-center h-screen bg-stone-50 dark:bg-stone-900">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-          <p className="text-gray-600 dark:text-zinc-400">Chargement...</p>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+          <p className="text-stone-600 dark:text-stone-400">Chargement...</p>
         </div>
       </div>
     )
@@ -60,8 +60,8 @@ export function PublicRoute({ children }: { children: ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-950">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+      <div className="flex items-center justify-center h-screen bg-stone-950">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
       </div>
     )
   }

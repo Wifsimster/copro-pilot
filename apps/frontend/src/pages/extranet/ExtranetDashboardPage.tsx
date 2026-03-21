@@ -22,9 +22,9 @@ const ROLE_LABELS: Record<string, string> = {
 
 const ROLE_COLORS: Record<string, string> = {
   president:
-    'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
   membre:
-    'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300',
+    'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300',
   suppleant:
     'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
 }
@@ -201,7 +201,7 @@ export default function ExtranetDashboardPage() {
             badge={{
               text: nextAG.statut,
               className:
-                'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
             }}
           />
         )}

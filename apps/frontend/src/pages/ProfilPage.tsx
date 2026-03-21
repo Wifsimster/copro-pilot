@@ -29,12 +29,12 @@ export default function ProfilPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center gap-3">
-        <User className="h-6 w-6 text-gray-600 dark:text-zinc-400" />
+        <User className="h-6 w-6 text-stone-600 dark:text-stone-400" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">
             Mon profil
           </h1>
-          <p className="text-sm text-gray-500 dark:text-zinc-400">
+          <p className="text-sm text-stone-500 dark:text-stone-400">
             Informations de votre compte
           </p>
         </div>
@@ -60,40 +60,40 @@ export default function ProfilPage() {
           <Separator />
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1">
-              <p className="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-zinc-500">
+              <p className="text-xs font-medium uppercase tracking-wider text-stone-400 dark:text-stone-500">
                 Prénom
               </p>
-              <p className="text-sm text-gray-900 dark:text-white">
+              <p className="text-sm text-stone-900 dark:text-white">
                 {user.firstname || '—'}
               </p>
             </div>
             <div className="space-y-1">
-              <p className="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-zinc-500">
+              <p className="text-xs font-medium uppercase tracking-wider text-stone-400 dark:text-stone-500">
                 Nom
               </p>
-              <p className="text-sm text-gray-900 dark:text-white">
+              <p className="text-sm text-stone-900 dark:text-white">
                 {user.lastname || '—'}
               </p>
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-1.5">
-                <Mail className="h-3.5 w-3.5 text-gray-400" />
-                <p className="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-zinc-500">
+                <Mail className="h-3.5 w-3.5 text-stone-400" />
+                <p className="text-xs font-medium uppercase tracking-wider text-stone-400 dark:text-stone-500">
                   Email
                 </p>
               </div>
-              <p className="text-sm text-gray-900 dark:text-white">
+              <p className="text-sm text-stone-900 dark:text-white">
                 {user.email}
               </p>
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-1.5">
-                <Shield className="h-3.5 w-3.5 text-gray-400" />
-                <p className="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-zinc-500">
+                <Shield className="h-3.5 w-3.5 text-stone-400" />
+                <p className="text-xs font-medium uppercase tracking-wider text-stone-400 dark:text-stone-500">
                   Rôle
                 </p>
               </div>
-              <p className="text-sm text-gray-900 dark:text-white">
+              <p className="text-sm text-stone-900 dark:text-white">
                 {roleLabels[user.role] ?? user.role}
               </p>
             </div>

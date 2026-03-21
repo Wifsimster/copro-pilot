@@ -44,7 +44,7 @@ export default function ForgotPasswordPage() {
         <div className="rounded-xl border bg-card p-6 shadow-sm space-y-6">
           {sent ? (
             <div className="flex flex-col items-center gap-4 py-4 text-center">
-              <div className="flex size-14 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+              <div className="flex size-14 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400">
                 <Mail className="size-7" />
               </div>
               <div>

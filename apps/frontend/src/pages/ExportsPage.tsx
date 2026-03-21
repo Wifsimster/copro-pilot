@@ -57,19 +57,19 @@ export default function ExportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Exports & Rapports</h1>
-        <p className="text-gray-500 dark:text-zinc-400">
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Exports & Rapports</h1>
+        <p className="text-stone-500 dark:text-stone-400">
           Generez et telechargez vos documents PDF et tableaux Excel
         </p>
       </div>
 
       {!selectedCoproId ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-12 dark:border-zinc-600">
-          <FileDown className="h-12 w-12 text-gray-400 dark:text-zinc-500" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
+        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
+          <FileDown className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">
             Aucune copropriete selectionnee
           </h3>
-          <p className="mt-2 text-gray-500 dark:text-zinc-400">
+          <p className="mt-2 text-stone-500 dark:text-stone-400">
             Selectionnez une copropriete dans le menu lateral pour acceder aux exports.
           </p>
         </div>
@@ -78,19 +78,19 @@ export default function ExportsPage() {
           {/* PDF Section */}
           <div>
             <div className="mb-4 flex items-center gap-2">
-              <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Documents PDF</h2>
+              <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
+              <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Documents PDF</h2>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {/* Budget previsionnel PDF */}
-              <div className="rounded-xl border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20">
-                    <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                    <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-gray-900 dark:text-white">Budget previsionnel</h3>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">
+                    <h3 className="font-medium text-stone-900 dark:text-white">Budget previsionnel</h3>
+                    <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
                       Exporte le budget previsionnel avec le detail des postes de depenses.
                     </p>
                   </div>
@@ -99,7 +99,7 @@ export default function ExportsPage() {
                   <select
                     value={selectedBudgetPdf}
                     onChange={(e) => setSelectedBudgetPdf(e.target.value ? Number(e.target.value) : '')}
-                    className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white"
+                    className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 dark:border-stone-600 dark:bg-stone-700 dark:text-white"
                   >
                     <option value="">Selectionner un budget</option>
                     {budgets?.map((b: BudgetPrevisionnel) => (
@@ -111,7 +111,7 @@ export default function ExportsPage() {
                   <button
                     onClick={() => handleExport(exportBudgetPdf, selectedBudgetPdf, 'Budget previsionnel')}
                     disabled={selectedBudgetPdf === '' || exportBudgetPdf.isPending}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {exportBudgetPdf.isPending ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -124,34 +124,34 @@ export default function ExportsPage() {
               </div>
 
               {/* Appel de fonds PDF */}
-              <div className="rounded-xl border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20">
-                    <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                    <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-gray-900 dark:text-white">Appel de fonds</h3>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">
+                    <h3 className="font-medium text-stone-900 dark:text-white">Appel de fonds</h3>
+                    <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
                       L'export PDF des appels de fonds est disponible depuis la page Charges & Comptabilite.
                     </p>
                   </div>
                 </div>
                 <div className="mt-4">
-                  <p className="rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-500 dark:bg-zinc-700 dark:text-zinc-400">
+                  <p className="rounded-lg bg-stone-50 px-3 py-2 text-xs text-stone-500 dark:bg-stone-700 dark:text-stone-400">
                     Rendez-vous dans Charges &gt; Appels de fonds pour exporter un appel specifique.
                   </p>
                 </div>
               </div>
 
               {/* Feuille de presence AG PDF */}
-              <div className="rounded-xl border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20">
-                    <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                    <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-gray-900 dark:text-white">Feuille de presence AG</h3>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">
+                    <h3 className="font-medium text-stone-900 dark:text-white">Feuille de presence AG</h3>
+                    <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
                       Exporte la feuille de presence d'une assemblee generale.
                     </p>
                   </div>
@@ -160,7 +160,7 @@ export default function ExportsPage() {
                   <select
                     value={selectedAgPdf}
                     onChange={(e) => setSelectedAgPdf(e.target.value ? Number(e.target.value) : '')}
-                    className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white"
+                    className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 dark:border-stone-600 dark:bg-stone-700 dark:text-white"
                   >
                     <option value="">Selectionner une AG</option>
                     {assemblees?.map((ag: AssembleeGenerale) => (
@@ -172,7 +172,7 @@ export default function ExportsPage() {
                   <button
                     onClick={() => handleExport(exportFeuillePresencePdf, selectedAgPdf, 'Feuille de presence')}
                     disabled={selectedAgPdf === '' || exportFeuillePresencePdf.isPending}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {exportFeuillePresencePdf.isPending ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -185,14 +185,14 @@ export default function ExportsPage() {
               </div>
 
               {/* Carnet d'entretien PDF */}
-              <div className="rounded-xl border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20">
-                    <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                    <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-gray-900 dark:text-white">Carnet d'entretien</h3>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">
+                    <h3 className="font-medium text-stone-900 dark:text-white">Carnet d'entretien</h3>
+                    <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
                       Exporte le carnet d'entretien complet de la copropriete.
                     </p>
                   </div>
@@ -201,7 +201,7 @@ export default function ExportsPage() {
                   <button
                     onClick={() => handleExportCopro(exportCarnetEntretienPdf, 'Carnet d\'entretien')}
                     disabled={exportCarnetEntretienPdf.isPending}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {exportCarnetEntretienPdf.isPending ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -214,14 +214,14 @@ export default function ExportsPage() {
               </div>
 
               {/* Etat des impayes PDF */}
-              <div className="rounded-xl border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20">
-                    <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                    <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-gray-900 dark:text-white">Etat des impayes</h3>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">
+                    <h3 className="font-medium text-stone-900 dark:text-white">Etat des impayes</h3>
+                    <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
                       Exporte l'etat des impayes de la copropriete au format PDF.
                     </p>
                   </div>
@@ -230,7 +230,7 @@ export default function ExportsPage() {
                   <button
                     onClick={() => handleExportCopro(exportEtatImpayesPdf, 'Etat des impayes PDF')}
                     disabled={exportEtatImpayesPdf.isPending}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {exportEtatImpayesPdf.isPending ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -248,18 +248,18 @@ export default function ExportsPage() {
           <div>
             <div className="mb-4 flex items-center gap-2">
               <FileSpreadsheet className="h-5 w-5 text-green-600 dark:text-green-400" />
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Tableaux Excel</h2>
+              <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Tableaux Excel</h2>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {/* Liste des coproprietaires Excel */}
-              <div className="rounded-xl border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
                     <FileSpreadsheet className="h-5 w-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-gray-900 dark:text-white">Liste des coproprietaires</h3>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">
+                    <h3 className="font-medium text-stone-900 dark:text-white">Liste des coproprietaires</h3>
+                    <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
                       Exporte la liste complete des coproprietaires au format Excel.
                     </p>
                   </div>
@@ -284,14 +284,14 @@ export default function ExportsPage() {
               </div>
 
               {/* Balance des comptes Excel */}
-              <div className="rounded-xl border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
                     <FileSpreadsheet className="h-5 w-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-gray-900 dark:text-white">Balance des comptes</h3>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">
+                    <h3 className="font-medium text-stone-900 dark:text-white">Balance des comptes</h3>
+                    <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
                       Exporte la balance des comptes de la copropriete au format Excel.
                     </p>
                   </div>
@@ -313,14 +313,14 @@ export default function ExportsPage() {
               </div>
 
               {/* Etat des charges Excel */}
-              <div className="rounded-xl border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
                     <FileSpreadsheet className="h-5 w-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-gray-900 dark:text-white">Etat des charges</h3>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">
+                    <h3 className="font-medium text-stone-900 dark:text-white">Etat des charges</h3>
+                    <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
                       Exporte l'etat des charges par budget au format Excel.
                     </p>
                   </div>
@@ -329,7 +329,7 @@ export default function ExportsPage() {
                   <select
                     value={selectedBudgetExcel}
                     onChange={(e) => setSelectedBudgetExcel(e.target.value ? Number(e.target.value) : '')}
-                    className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white"
+                    className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 dark:border-stone-600 dark:bg-stone-700 dark:text-white"
                   >
                     <option value="">Selectionner un budget</option>
                     {budgets?.map((b: BudgetPrevisionnel) => (
@@ -354,14 +354,14 @@ export default function ExportsPage() {
               </div>
 
               {/* Etat des impayes Excel */}
-              <div className="rounded-xl border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
                     <FileSpreadsheet className="h-5 w-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-gray-900 dark:text-white">Etat des impayes</h3>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">
+                    <h3 className="font-medium text-stone-900 dark:text-white">Etat des impayes</h3>
+                    <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
                       Exporte l'etat des impayes de la copropriete au format Excel.
                     </p>
                   </div>
