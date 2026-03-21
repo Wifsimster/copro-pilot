@@ -11,7 +11,7 @@ export default function NotFoundPage() {
         to="/"
         className="mt-6 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
       >
-        Retour au tableau de bord
+        Retour à l'accueil
       </Link>
     </div>
   )
