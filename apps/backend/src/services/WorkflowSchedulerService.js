@@ -1,6 +1,7 @@
 import cron from 'node-cron'
 import knexDatabase from '../config/knex-database.js'
 import { NotificationModel } from '../models/Notification.js'
+import { tacheGeneratorService } from './TacheGeneratorService.js'
 import logger from '../logger.js'
 
 const getDb = () => knexDatabase.getKnex()
@@ -24,6 +25,11 @@ class WorkflowSchedulerService {
           this.checkDiagnosticExpirations(),
           this.checkAgPreparation(),
           this.checkSyndicContractRenewal(),
+          tacheGeneratorService.generateAll().catch(err =>
+            logger.error(
+              `[WorkflowScheduler] TacheGenerator error: ${err.message}`
+            )
+          ),
         ])
         logger.info('[WorkflowScheduler] Daily checks completed')
       } catch (error) {
