@@ -1231,6 +1231,30 @@ export interface SyndicDashboard {
 }
 
 // ============================================
+// Tache Types
+// ============================================
+
+export type StatutTache = 'a_faire' | 'en_cours' | 'fait' | 'annule'
+export type PrioriteTache = 'basse' | 'normale' | 'haute' | 'urgente'
+
+export interface Tache {
+  id: number
+  user_id: string | null
+  copropriete_id: number | null
+  titre: string
+  description: string | null
+  date_echeance: string | null
+  rappel_date: string | null
+  entite_type: string | null
+  entite_id: number | null
+  statut: StatutTache
+  priorite: PrioriteTache
+  auto_generated: boolean
+  created_at: string
+  updated_at: string
+}
+
+// ============================================
 // Domain Event Types
 // ============================================
 

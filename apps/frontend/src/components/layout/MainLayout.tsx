@@ -42,6 +42,7 @@ import {
   CircleHelp,
   CreditCard,
   PiggyBank,
+  CheckSquare,
   type LucideIcon,
 } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -75,6 +76,7 @@ const navigationSections: NavSection[] = [
     collapsible: false,
     items: [
       { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
+      { name: 'Taches', href: '/taches', icon: CheckSquare },
       { name: 'Espace copropriétaire', href: '/extranet', icon: UserCircle },
       { name: 'Copropriétés', href: '/coproprietes', icon: Building2 },
       { name: 'Copropriétaires', href: '/coproprietaires', icon: Users },
