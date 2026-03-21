@@ -8,7 +8,7 @@ export default function NotFoundPage() {
         Page non trouvée
       </p>
       <Link
-        to="/"
+        to="/dashboard"
         className="mt-6 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
       >
         Retour au tableau de bord

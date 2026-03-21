@@ -1,9 +1,11 @@
-import { createHashRouter, Outlet } from 'react-router-dom'
+import { createHashRouter, Navigate, Outlet } from 'react-router-dom'
 import { ProtectedRoute, PublicRoute } from './ProtectedRoute'
 import { RoleGuard } from './RoleGuard'
 import { MainLayout } from '@/components/layout/MainLayout'
-import { lazy, Suspense } from 'react'
+import { useAuthStore } from '@/store/authStore'
+import { lazy, Suspense, useEffect, useState } from 'react'
 
+const LandingPage = lazy(() => import('@/pages/LandingPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
 const CoproprietesPage = lazy(() => import('@/pages/CoproprietesPage'))
@@ -61,6 +63,33 @@ function PageLoader() {
   )
 }
 
+function LandingOrDashboard() {
+  const { isAuthenticated, isLoading, isInitialized, validateToken } =
+    useAuthStore()
+  const [isValidating, setIsValidating] = useState(!isInitialized)
+
+  useEffect(() => {
+    if (!isInitialized) {
+      setIsValidating(true)
+      validateToken().finally(() => setIsValidating(false))
+    }
+  }, [isInitialized, validateToken])
+
+  if (isLoading || isValidating) {
+    return <PageLoader />
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />
+  }
+
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <LandingPage />
+    </Suspense>
+  )
+}
+
 function AuthenticatedLayout() {
   return (
     <ProtectedRoute>
@@ -74,6 +103,12 @@ function AuthenticatedLayout() {
 }
 
 export const router = createHashRouter([
+  // Landing page (public root)
+  {
+    path: '/',
+    element: <LandingOrDashboard />,
+  },
+
   // Public routes
   {
     path: '/login',
@@ -133,7 +168,7 @@ export const router = createHashRouter([
     element: <AuthenticatedLayout />,
     children: [
       {
-        path: '/',
+        path: '/dashboard',
         element: (
           <RoleGuard allowedRoles={['user', 'syndic']}>
             <DashboardPage />

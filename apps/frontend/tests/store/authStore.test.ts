@@ -141,7 +141,7 @@ describe('authStore', () => {
 
       await useAuthStore.getState().signIn('a@b.com', 'pass')
 
-      expect(window.location.hash).toBe('#/')
+      expect(window.location.hash).toBe('#/dashboard')
     })
 
     it('throws on API error', async () => {

@@ -17,6 +17,6 @@ export function RoleGuard({ children, allowedRoles }: RoleGuardProps) {
   if (isAdmin(role)) return <>{children}</>
   if (allowedRoles.includes(role)) return <>{children}</>
 
-  const redirectTo = isCoproprietaire(role) ? '/extranet' : '/'
+  const redirectTo = isCoproprietaire(role) ? '/extranet' : '/dashboard'
   return <Navigate to={redirectTo} replace />
 }

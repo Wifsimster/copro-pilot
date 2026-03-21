@@ -77,7 +77,7 @@ const navigationSections: NavSection[] = [
     label: 'Vue d\'ensemble',
     collapsible: false,
     items: [
-      { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
+      { name: 'Tableau de bord', href: '/dashboard', icon: LayoutDashboard },
       { name: 'Taches', href: '/taches', icon: CheckSquare },
       { name: 'Espace copropriétaire', href: '/extranet', icon: UserCircle },
       { name: 'Copropriétés', href: '/coproprietes', icon: Building2 },
@@ -219,7 +219,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   }, [user?.role])
 
   const isItemActive = (href: string) =>
-    href === '/' || href === '/extranet'
+    href === '/dashboard' || href === '/extranet'
       ? pathname === href
       : pathname.startsWith(href)
 
