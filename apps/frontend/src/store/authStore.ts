@@ -187,7 +187,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     } finally {
       set({ isLoading: false })
     }
-    window.location.hash = '#/login'
+    window.location.hash = '#/'
   },
 
   validateToken: async () => {
