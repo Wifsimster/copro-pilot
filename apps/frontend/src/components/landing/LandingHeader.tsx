@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Building2, Menu, X } from 'lucide-react'
 
 const navLinks = [
-  { label: 'Fonctionnalités', href: '#fonctionnalites' },
+  { label: 'Fonctionnalites', href: '#fonctionnalites' },
   { label: 'Tarifs', href: '#tarifs' },
   { label: 'FAQ', href: '#faq' },
 ]
@@ -29,20 +29,32 @@ export function LandingHeader() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/95 dark:bg-slate-950/95 backdrop-blur-sm shadow-sm'
-          : 'bg-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all
+        duration-500 ${
+          scrolled
+            ? 'bg-[#FAF8F5]/90 dark:bg-stone-950/90 backdrop-blur-md'
+              + ' shadow-[0_1px_0_rgb(0,0,0,0.06)]'
+              + ' dark:shadow-[0_1px_0_rgb(255,255,255,0.05)]'
+            : 'bg-transparent'
+        }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <a
             href="/#/"
-            className="flex items-center gap-2 text-slate-900 dark:text-white"
+            className="flex items-center gap-2.5 group"
           >
-            <Building2 className="size-7 text-primary" />
-            <span className="text-lg font-bold">CoproPilot</span>
+            <div className="flex size-9 items-center justify-center
+              rounded-lg bg-emerald-700 dark:bg-emerald-600
+              transition-transform group-hover:scale-105"
+            >
+              <Building2 className="size-5 text-white" />
+            </div>
+            <span className="font-display text-xl font-semibold
+              text-stone-900 dark:text-stone-50 tracking-tight"
+            >
+              CoproPilot
+            </span>
           </a>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -50,7 +62,13 @@ export function LandingHeader() {
               <button
                 key={link.href}
                 onClick={() => scrollTo(link.href)}
-                className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+                className="text-sm font-medium text-stone-500
+                  hover:text-stone-900 dark:text-stone-400
+                  dark:hover:text-stone-100 transition-colors
+                  relative after:absolute after:bottom-0
+                  after:left-0 after:h-px after:w-0
+                  after:bg-emerald-600 after:transition-all
+                  hover:after:w-full"
               >
                 {link.label}
               </button>
@@ -58,12 +76,20 @@ export function LandingHeader() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" size="sm" asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="text-stone-600 dark:text-stone-400
+                hover:text-stone-900 dark:hover:text-stone-100"
+            >
               <a href="/#/login">Se connecter</a>
             </Button>
             <Button
               size="sm"
-              className="bg-green-600 hover:bg-green-700 text-white"
+              className="bg-emerald-700 hover:bg-emerald-800
+                dark:bg-emerald-600 dark:hover:bg-emerald-700
+                text-white rounded-lg"
               asChild
             >
               <a href="/#/login">Essai gratuit</a>
@@ -72,19 +98,29 @@ export function LandingHeader() {
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-2 text-slate-600 dark:text-slate-400"
+            className="md:hidden p-2 text-stone-600
+              dark:text-stone-400"
           >
-            {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            {mobileOpen ? (
+              <X className="size-5" />
+            ) : (
+              <Menu className="size-5" />
+            )}
           </button>
         </div>
 
         {mobileOpen && (
-          <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 pb-4">
+          <div className="md:hidden border-t border-stone-200
+            dark:border-stone-800 bg-[#FAF8F5]
+            dark:bg-stone-950 pb-4"
+          >
             {navLinks.map(link => (
               <button
                 key={link.href}
                 onClick={() => scrollTo(link.href)}
-                className="block w-full text-left px-4 py-3 text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900"
+                className="block w-full text-left px-4 py-3
+                  text-sm text-stone-600 dark:text-stone-400
+                  hover:bg-stone-100 dark:hover:bg-stone-900"
               >
                 {link.label}
               </button>
@@ -95,7 +131,8 @@ export function LandingHeader() {
               </Button>
               <Button
                 size="sm"
-                className="bg-green-600 hover:bg-green-700 text-white"
+                className="bg-emerald-700
+                  hover:bg-emerald-800 text-white"
                 asChild
               >
                 <a href="/#/login">Essai gratuit</a>

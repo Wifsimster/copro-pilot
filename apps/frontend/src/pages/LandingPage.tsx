@@ -13,7 +13,7 @@ import { LandingFooter } from '@/components/landing/LandingFooter'
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen font-body antialiased">
       <LandingHeader />
       <HeroSection />
       <TrustBar />

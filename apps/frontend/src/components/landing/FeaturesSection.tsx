@@ -22,66 +22,74 @@ interface FeatureBullet {
 
 interface FeatureGroup {
   title: string
+  subtitle: string
   icon: LucideIcon
   accentColor: string
   iconBg: string
+  borderAccent: string
   bullets: FeatureBullet[]
 }
 
 const featureGroups: FeatureGroup[] = [
   {
     title: 'Ne ratez plus rien',
+    subtitle: 'Pilotage & visibilite',
     icon: Shield,
-    accentColor: 'text-blue-600 dark:text-blue-400',
-    iconBg: 'bg-blue-100 dark:bg-blue-950/50',
+    accentColor: 'text-blue-700 dark:text-blue-400',
+    iconBg: 'bg-blue-50 dark:bg-blue-950/40',
+    borderAccent: 'group-hover:border-t-blue-400',
     bullets: [
       {
         icon: LayoutDashboard,
-        text: 'Dashboard actionnable : agissez depuis un seul écran',
+        text: 'Dashboard actionnable depuis un seul ecran',
       },
       {
         icon: ListChecks,
-        text: 'Tâches auto-générées : rappels pour contrats, diagnostics, AG',
+        text: 'Taches auto-generees : contrats, diagnostics, AG',
       },
       {
         icon: BellRing,
-        text: 'Notifications temps réel : informations instantanées',
+        text: 'Notifications temps reel instantanees',
       },
     ],
   },
   {
-    title: 'Gérez les incidents de A à Z',
+    title: 'Gerez les incidents de A a Z',
+    subtitle: 'Maintenance & suivi',
     icon: Wrench,
     accentColor: 'text-orange-600 dark:text-orange-400',
-    iconBg: 'bg-orange-100 dark:bg-orange-950/50',
+    iconBg: 'bg-orange-50 dark:bg-orange-950/40',
+    borderAccent: 'group-hover:border-t-orange-400',
     bullets: [
       {
         icon: FileText,
-        text: "Ordres de service : workflow guidé de l'incident à la résolution",
+        text: "Ordres de service du signalement a la resolution",
       },
       {
         icon: Clock,
-        text: 'Timeline : historique complet de chaque intervention',
+        text: 'Timeline complete de chaque intervention',
       },
     ],
   },
   {
-    title: 'Maîtrisez vos finances',
+    title: 'Maitrisez vos finances',
+    subtitle: 'Comptabilite & tresorerie',
     icon: TrendingUp,
-    accentColor: 'text-green-600 dark:text-green-400',
-    iconBg: 'bg-green-100 dark:bg-green-950/50',
+    accentColor: 'text-emerald-700 dark:text-emerald-400',
+    iconBg: 'bg-emerald-50 dark:bg-emerald-950/40',
+    borderAccent: 'group-hover:border-t-emerald-400',
     bullets: [
       {
         icon: ArrowLeftRight,
-        text: 'Réconciliation bancaire : matching intelligent des mouvements',
+        text: 'Reconciliation bancaire intelligente',
       },
       {
         icon: Calculator,
-        text: 'Régularisation post-AG : budget et appels de fonds en 1 clic',
+        text: 'Regularisation post-AG en 1 clic',
       },
       {
         icon: BarChart3,
-        text: 'Cash flow : prévisions de trésorerie à 30, 60 et 90 jours',
+        text: 'Previsions de tresorerie a 30, 60 et 90 jours',
       },
     ],
   },
@@ -94,44 +102,92 @@ export function FeaturesSection() {
   return (
     <section
       id="fonctionnalites"
-      className="py-16 sm:py-24 bg-slate-50 dark:bg-slate-900"
+      className="py-20 sm:py-28 bg-white dark:bg-stone-900"
     >
-      <div ref={ref} className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div
+        ref={ref}
+        className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+      >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+          <p
+            className="text-sm font-semibold uppercase
+              tracking-widest text-emerald-700
+              dark:text-emerald-400 mb-3"
+          >
+            Fonctionnalites
+          </p>
+          <h2
+            className="font-display text-3xl sm:text-4xl
+              font-semibold text-stone-900
+              dark:text-stone-50"
+          >
             Tout ce dont vous avez besoin
           </h2>
-          <p className="mt-3 text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            Trois piliers pour gérer vos copropriétés en toute sérénité
+          <p
+            className="mt-4 text-stone-500
+              dark:text-stone-400 max-w-2xl mx-auto"
+          >
+            Trois piliers pour gerer vos coproprietes
+            en toute serenite
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        <div
+          className="grid grid-cols-1 md:grid-cols-3
+            gap-6 lg:gap-8"
+        >
           {featureGroups.map((group, index) => {
             const GroupIcon = group.icon
             return (
               <motion.div
                 key={group.title}
                 initial={{ opacity: 0, y: 30 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: index * 0.15, duration: 0.5 }}
-                className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 p-6 transition-shadow hover:shadow-sm"
+                animate={
+                  isInView ? { opacity: 1, y: 0 } : {}
+                }
+                transition={{
+                  delay: index * 0.15,
+                  duration: 0.5,
+                }}
+                className={`group rounded-xl border-t-2
+                  border-t-transparent border
+                  border-stone-200/60 dark:border-stone-800
+                  bg-[#FAF8F5] dark:bg-stone-950 p-6
+                  transition-all duration-300
+                  hover:shadow-lg
+                  dark:hover:shadow-stone-950/50
+                  ${group.borderAccent}`}
               >
-                <div
-                  className={`mb-4 flex size-12 items-center justify-center rounded-lg ${group.iconBg}`}
-                >
-                  <GroupIcon className={`size-6 ${group.accentColor}`} />
+                <div className="flex items-center gap-3 mb-5">
+                  <div
+                    className={`flex size-11 items-center
+                      justify-center rounded-xl ${group.iconBg}`}
+                  >
+                    <GroupIcon
+                      className={`size-5 ${group.accentColor}`}
+                    />
+                  </div>
+                  <div>
+                    <h3
+                      className={`text-base font-semibold
+                        ${group.accentColor}`}
+                    >
+                      {group.title}
+                    </h3>
+                    <p
+                      className="text-xs text-stone-400
+                        dark:text-stone-500"
+                    >
+                      {group.subtitle}
+                    </p>
+                  </div>
                 </div>
-                <h3
-                  className={`text-lg font-semibold mb-4 ${group.accentColor}`}
-                >
-                  {group.title}
-                </h3>
+
                 <ul className="space-y-3">
                   {group.bullets.map(bullet => {
                     const BulletIcon = bullet.icon
@@ -140,8 +196,14 @@ export function FeaturesSection() {
                         key={bullet.text}
                         className="flex items-start gap-3"
                       >
-                        <BulletIcon className="size-4 mt-0.5 shrink-0 text-slate-400 dark:text-slate-500" />
-                        <span className="text-sm text-slate-600 dark:text-slate-400">
+                        <BulletIcon
+                          className="size-4 mt-0.5 shrink-0
+                            text-stone-400 dark:text-stone-500"
+                        />
+                        <span
+                          className="text-sm text-stone-600
+                            dark:text-stone-400 leading-relaxed"
+                        >
                           {bullet.text}
                         </span>
                       </li>
