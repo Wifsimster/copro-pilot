@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import {
@@ -16,6 +17,8 @@ import { interventionsApi } from '@/api/interventions'
 import {
   AlertTriangle,
   Calendar,
+  ChevronDown,
+  ChevronRight,
   FileText,
   Wrench,
   ExternalLink,
@@ -27,6 +30,7 @@ import type {
   Contrat,
   Intervention,
 } from '@/types'
+import { EntityTimeline } from './EntityTimeline'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -442,6 +446,11 @@ function DetailSkeleton() {
 // Main component
 // ---------------------------------------------------------------------------
 
+const TIMELINE_ENTITY_TYPES = [
+  'incident',
+  'intervention',
+]
+
 export function DetailDrawer({
   open,
   onOpenChange,
@@ -449,12 +458,20 @@ export function DetailDrawer({
   entityId,
   link,
 }: DetailDrawerProps) {
+  const [timelineOpen, setTimelineOpen] =
+    useState(false)
+
   const canFetch =
     entityType != null &&
     entityId != null &&
     ['incident', 'ag', 'contrat', 'intervention'].includes(
       entityType
     )
+
+  const hasTimeline =
+    entityType != null &&
+    entityId != null &&
+    TIMELINE_ENTITY_TYPES.includes(entityType)
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['detail-drawer', entityType, entityId],
@@ -539,6 +556,33 @@ export function DetailDrawer({
         </SheetHeader>
 
         <div className="flex-1 px-4">{renderContent()}</div>
+
+        {hasTimeline && (
+          <div className="px-4 pt-2">
+            <button
+              type="button"
+              onClick={() =>
+                setTimelineOpen(prev => !prev)
+              }
+              className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm font-medium text-foreground hover:bg-accent transition-colors"
+            >
+              {timelineOpen ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+              Historique
+            </button>
+            {timelineOpen && (
+              <div className="mt-2">
+                <EntityTimeline
+                  entityType={entityType!}
+                  entityId={entityId!}
+                />
+              </div>
+            )}
+          </div>
+        )}
 
         <SheetFooter>
           {link && (

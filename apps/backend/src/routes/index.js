@@ -66,6 +66,8 @@ import searchRoutes from './search.js'
 import gdprRoutes from './gdpr.js'
 // User management (syndic + admin)
 import userManagementRoutes from './user-management.js'
+// Taches & Rappels
+import tachesRoutes from './taches.js'
 // Timeline (domain events)
 import timelineRoutes from './timeline.js'
 // SSE (Server-Sent Events)
@@ -165,6 +167,9 @@ router.use('/gdpr', gdprRoutes)
 
 // User management
 router.use('/user-management', userManagementRoutes)
+
+// Taches & Rappels
+router.use('/taches', tachesRoutes)
 
 // Timeline (domain events)
 router.use('/timeline', timelineRoutes)
