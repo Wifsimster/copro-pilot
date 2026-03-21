@@ -10,8 +10,8 @@ import {
 const painPoints = [
   {
     icon: Banknote,
-    pain: 'Votre syndic coute trop cher ?',
-    relief: 'CoproPilot demarre a 0 EUR et reste 10x moins cher'
+    pain: 'Votre syndic coûte trop cher ?',
+    relief: 'CoproPilot démarre à 0 EUR et reste 10x moins cher'
       + ' que les solutions traditionnelles.',
     accent: 'border-l-red-400 dark:border-l-red-500',
     iconColor: 'text-red-500 dark:text-red-400',
@@ -20,7 +20,7 @@ const painPoints = [
   {
     icon: FileSpreadsheet,
     pain: 'Excel et papier partout ?',
-    relief: 'Tout est centralise dans une interface claire.'
+    relief: 'Tout est centralisé dans une interface claire.'
       + ' Fini les fichiers perdus et les doublons.',
     accent: 'border-l-amber-400 dark:border-l-amber-500',
     iconColor: 'text-amber-500 dark:text-amber-400',
@@ -29,8 +29,8 @@ const painPoints = [
   {
     icon: Puzzle,
     pain: 'Logiciels complexes faits pour les gros cabinets ?',
-    relief: 'Concu pour etre simple, meme sans formation.'
-      + ' Operationnel en 5 minutes.',
+    relief: 'Conçu pour être simple, même sans formation.'
+      + ' Opérationnel en 5 minutes.',
     accent: 'border-l-orange-400 dark:border-l-orange-500',
     iconColor: 'text-orange-500 dark:text-orange-400',
     iconBg: 'bg-orange-50 dark:bg-orange-950/30',
@@ -60,7 +60,7 @@ export function PainReliefSection() {
             className="font-display text-3xl sm:text-4xl
               font-semibold text-stone-900 dark:text-stone-50"
           >
-            On connait vos frustrations.
+            On connaît vos frustrations.
           </h2>
           <p
             className="mt-3 text-stone-500 dark:text-stone-400

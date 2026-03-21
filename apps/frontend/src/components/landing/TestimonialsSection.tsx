@@ -11,33 +11,33 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     quote:
-      "Je suis passee de 3 tableurs Excel a un seul outil."
-      + " Honnetement, c'est pas parfait sur tout, mais pour"
-      + " les appels de fonds et le suivi des charges, ca m'a"
-      + " change la vie. Je gagnais facile 2h par semaine.",
+      "Je suis passée de 3 tableurs Excel à un seul outil."
+      + " Honnêtement, c'est pas parfait sur tout, mais pour"
+      + " les appels de fonds et le suivi des charges, ça m'a"
+      + " changé la vie. Je gagnais facile 2h par semaine.",
     name: 'Nathalie M.',
-    role: 'Syndic benevole, 18 lots',
+    role: 'Syndic bénévole, 18 lots',
     initials: 'NM',
   },
   {
     quote:
-      "Notre ancien logiciel nous coutait 4,50 EUR/lot/mois et"
-      + " l'interface datait de 2010. On a bascule nos 5 petites"
-      + " copros sur CoproPilot, le plus dur c'etait la reprise"
-      + " des donnees. Depuis, les coproprietaires ont acces a"
+      "Notre ancien logiciel nous coûtait 4,50 EUR/lot/mois et"
+      + " l'interface datait de 2010. On a basculé nos 5 petites"
+      + " copros sur CoproPilot, le plus dur c'était la reprise"
+      + " des données. Depuis, les copropriétaires ont accès à"
       + " leurs documents en ligne.",
-    name: 'Frederic B.',
-    role: 'Syndic professionnel, 5 coproprietes',
+    name: 'Frédéric B.',
+    role: 'Syndic professionnel, 5 copropriétés',
     initials: 'FB',
   },
   {
     quote:
-      "Mon mari est president du CS et c'est lui qui m'en a"
-      + " parle. J'ai cree mon compte en 5 minutes, je vois les"
-      + " PV d'AG, les budgets votes, l'etat de nos charges."
-      + " Avant il fallait redemander au syndic a chaque fois.",
+      "Mon mari est président du CS et c'est lui qui m'en a"
+      + " parlé. J'ai créé mon compte en 5 minutes, je vois les"
+      + " PV d'AG, les budgets votés, l'état de nos charges."
+      + " Avant il fallait redemander au syndic à chaque fois.",
     name: 'Catherine L.',
-    role: 'Coproprietaire, residence de 42 lots',
+    role: 'Copropriétaire, résidence de 42 lots',
     initials: 'CL',
   },
 ]
@@ -65,14 +65,14 @@ export function TestimonialsSection() {
               tracking-widest text-amber-600
               dark:text-amber-400 mb-3"
           >
-            Temoignages
+            Témoignages
           </p>
           <h2
             className="font-display text-3xl sm:text-4xl
               font-semibold text-stone-900
               dark:text-stone-50"
           >
-            Ils gerent deja avec CoproPilot
+            Ils gèrent déjà avec CoproPilot
           </h2>
         </motion.div>
 

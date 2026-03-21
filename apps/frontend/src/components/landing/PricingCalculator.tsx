@@ -123,7 +123,7 @@ export function PricingCalculator() {
                 font-medium text-stone-700 dark:text-stone-300"
             >
               <Building2 className="size-3.5" />
-              Coproprietes
+              Copropriétés
             </label>
             <span
               className="text-sm font-bold text-stone-900
@@ -142,7 +142,7 @@ export function PricingCalculator() {
             className="w-full h-2 rounded-full appearance-none
               cursor-pointer bg-stone-200 dark:bg-stone-700
               accent-emerald-600"
-            aria-label={`${copros} coproprietes`}
+            aria-label={`${copros} copropriétés`}
           />
           <div
             className="flex justify-between text-xs text-stone-400
@@ -201,7 +201,7 @@ export function PricingCalculator() {
             className="text-sm font-medium text-emerald-800
               dark:text-emerald-300"
           >
-            Plan recommande :{' '}
+            Plan recommandé :{' '}
             <strong>{result.plan.name}</strong>
           </span>
           <span
@@ -232,7 +232,7 @@ export function PricingCalculator() {
           Soit{' '}
           <strong>{perLotPrice} EUR/lot/mois</strong>{' '}
           (moyenne 30 lots/copro) — les logiciels traditionnels
-          facturent 3 a 8 EUR/lot/mois
+          facturent 3 à 8 EUR/lot/mois
         </p>
       </div>
     </motion.div>

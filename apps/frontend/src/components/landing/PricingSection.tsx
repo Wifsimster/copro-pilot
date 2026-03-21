@@ -22,14 +22,14 @@ const tiers: PricingTier[] = [
     id: 'gratuit',
     name: 'Cloud Gratuit',
     price: 0,
-    description: 'Pour demarrer avec une copropriete',
-    included: { coproprietes: '1 copropriete', users: '3 utilisateurs' },
+    description: 'Pour démarrer avec une copropriété',
+    included: { coproprietes: '1 copropriété', users: '3 utilisateurs' },
     features: [
-      "Jusqu'a 20 lots",
-      'Gestion complete (CRUD)',
+      "Jusqu'à 20 lots",
+      'Gestion complète (CRUD)',
       'Dashboard & notifications',
       'Documents & incidents',
-      'Donnees hebergees en France',
+      'Données hébergées en France',
     ],
     cta: {
       label: 'Commencer gratuitement',
@@ -40,17 +40,17 @@ const tiers: PricingTier[] = [
     id: 'essentiel',
     name: 'Essentiel',
     price: 19,
-    description: 'Pour une copropriete plus importante',
+    description: 'Pour une copropriété plus importante',
     included: {
-      coproprietes: '3 coproprietes',
+      coproprietes: '3 copropriétés',
       users: '5 utilisateurs',
     },
     features: [
-      'Lots illimites',
+      'Lots illimités',
       'Tout du plan Gratuit',
-      'Assemblees generales & PV',
+      'Assemblées générales & PV',
       'Exports PDF & Excel',
-      'Comptabilite reglementaire',
+      'Comptabilité réglementaire',
     ],
     cta: {
       label: 'Essai gratuit',
@@ -61,19 +61,19 @@ const tiers: PricingTier[] = [
     id: 'pro',
     name: 'Pro',
     price: 49,
-    description: 'Pour les syndics gerant plusieurs immeubles',
+    description: 'Pour les syndics gérant plusieurs immeubles',
     included: {
-      coproprietes: '20 coproprietes',
+      coproprietes: '20 copropriétés',
       users: '10 utilisateurs',
     },
-    overage: '+3 EUR/copro, +5 EUR/utilisateur supplementaire',
+    overage: '+3 EUR/copro, +5 EUR/utilisateur supplémentaire',
     features: [
-      'Lots illimites',
+      'Lots illimités',
       'Tout du plan Essentiel',
-      'Reconciliation bancaire',
-      'Workflows automatises',
-      'Temps reel (SSE)',
-      'Cash flow previsionnel',
+      'Réconciliation bancaire',
+      'Workflows automatisés',
+      'Temps réel (SSE)',
+      'Cash flow prévisionnel',
     ],
     cta: {
       label: 'Essai gratuit',
@@ -88,17 +88,17 @@ const tiers: PricingTier[] = [
     price: 149,
     description: 'Pour les cabinets de syndic',
     included: {
-      coproprietes: '50 coproprietes',
+      coproprietes: '50 copropriétés',
       users: '25 utilisateurs',
     },
-    overage: '+2 EUR/copro, +4 EUR/utilisateur supplementaire',
+    overage: '+2 EUR/copro, +4 EUR/utilisateur supplémentaire',
     features: [
       'Tout du plan Pro',
       'SSO (Azure AD)',
-      'API & integrations',
+      'API & intégrations',
       'Audit trail complet',
       'SLA & support prioritaire',
-      'Migration assistee',
+      'Migration assistée',
     ],
     cta: {
       label: 'Essai gratuit',
@@ -304,8 +304,8 @@ export function PricingSection() {
             className="mt-4 text-stone-500
               dark:text-stone-400 max-w-2xl mx-auto"
           >
-            Commencez gratuitement, evoluez quand vous etes
-            pret. Sans engagement, sans carte bancaire.
+            Commencez gratuitement, évoluez quand vous êtes
+            prêt. Sans engagement, sans carte bancaire.
           </p>
         </motion.div>
 
@@ -316,7 +316,7 @@ export function PricingSection() {
           className="text-center text-sm text-amber-600
             dark:text-amber-400 font-semibold mb-12"
         >
-          Soit a partir de 0,38 EUR/lot/mois — jusqu'a 10x
+          Soit à partir de 0,38 EUR/lot/mois — jusqu'à 10x
           moins cher que les logiciels traditionnels
         </motion.p>
 
@@ -357,14 +357,14 @@ export function PricingSection() {
               transition-colors"
           >
             <Github className="size-4" />
-            Developpeurs ? Decouvrez la version auto-hebergee
+            Développeurs ? Découvrez la version auto-hébergée
             (Community, gratuite et open-source)
           </a>
           <p
             className="text-xs text-stone-400
               dark:text-stone-500"
           >
-            Besoin d'un devis personnalise ?{' '}
+            Besoin d'un devis personnalisé ?{' '}
             <a
               href="mailto:contact@copropilot.fr"
               className="underline hover:text-stone-600

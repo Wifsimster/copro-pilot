@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Building2, Menu, X } from 'lucide-react'
 
 const navLinks = [
-  { label: 'Fonctionnalites', href: '#fonctionnalites' },
+  { label: 'Fonctionnalités', href: '#fonctionnalites' },
   { label: 'Tarifs', href: '#tarifs' },
   { label: 'FAQ', href: '#faq' },
 ]

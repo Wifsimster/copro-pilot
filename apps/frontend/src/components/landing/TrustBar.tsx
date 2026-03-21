@@ -4,9 +4,9 @@ import { Shield, MapPin, Headphones, Code2 } from 'lucide-react'
 
 const trustItems = [
   { icon: Shield, label: 'Conforme RGPD' },
-  { icon: MapPin, label: 'Heberge en France' },
+  { icon: MapPin, label: 'Hébergé en France' },
   { icon: Code2, label: 'Code auditable' },
-  { icon: Headphones, label: 'Support reactif' },
+  { icon: Headphones, label: 'Support réactif' },
 ]
 
 export function TrustBar() {
