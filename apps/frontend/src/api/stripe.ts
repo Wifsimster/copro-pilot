@@ -17,6 +17,21 @@ interface PortalSessionResponse {
   data: { url: string }
 }
 
+interface UsageQuota {
+  current: number
+  limit: number | null
+  extra: number
+  extra_cost: number
+}
+
+export interface UsageResponse {
+  data: {
+    coproprietes: UsageQuota
+    users: UsageQuota
+    total_extra_cost: number
+  }
+}
+
 export const stripeApi = {
   createCheckoutSession: (plan: string) =>
     api.post<CheckoutSessionResponse>('/stripe/checkout-session', {
@@ -31,4 +46,6 @@ export const stripeApi = {
 
   createPortalSession: () =>
     api.post<PortalSessionResponse>('/stripe/portal-session'),
+
+  getUsage: () => api.get<UsageResponse>('/stripe/usage'),
 }

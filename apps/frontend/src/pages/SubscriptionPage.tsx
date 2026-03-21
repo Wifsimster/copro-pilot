@@ -4,12 +4,15 @@ import {
   useSubscription,
   useCheckout,
   usePortalSession,
+  useUsage,
 } from '@/hooks/useSubscription'
 import {
   CreditCard,
   CheckCircle,
   AlertTriangle,
   ExternalLink,
+  Building2,
+  Users,
 } from 'lucide-react'
 
 const planLabels: Record<string, string> = {
@@ -23,21 +26,78 @@ const planPrices: Record<string, string> = {
   gratuit: '0 €/mois',
   essentiel: '19 €/mois',
   pro: '49 €/mois',
-  entreprise: '99 €+/mois',
+  entreprise: '149 €/mois',
 }
 
 const statusLabels: Record<string, { label: string; color: string }> = {
   active: { label: 'Actif', color: 'text-green-600' },
-  trialing: { label: 'Période d\'essai', color: 'text-blue-600' },
-  past_due: { label: 'Paiement en retard', color: 'text-orange-600' },
+  trialing: { label: "Période d'essai", color: 'text-blue-600' },
+  past_due: {
+    label: 'Paiement en retard',
+    color: 'text-orange-600',
+  },
   canceled: { label: 'Résilié', color: 'text-red-600' },
   incomplete: { label: 'Incomplet', color: 'text-amber-600' },
+}
+
+function UsageBar({
+  current,
+  limit,
+  label,
+  icon: Icon,
+}: {
+  current: number
+  limit: number | null
+  label: string
+  icon: React.ElementType
+}) {
+  if (limit === null) return null
+
+  const pct = Math.min((current / limit) * 100, 100)
+  const isNearLimit = pct >= 80
+  const isAtLimit = current >= limit
+
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between text-sm">
+        <span className="flex items-center gap-1.5 text-muted-foreground">
+          <Icon className="size-3.5" />
+          {label}
+        </span>
+        <span
+          className={`font-medium ${
+            isAtLimit
+              ? 'text-red-600'
+              : isNearLimit
+                ? 'text-amber-600'
+                : 'text-foreground'
+          }`}
+        >
+          {current} / {limit}
+        </span>
+      </div>
+      <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all ${
+            isAtLimit
+              ? 'bg-red-500'
+              : isNearLimit
+                ? 'bg-amber-500'
+                : 'bg-emerald-500'
+          }`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  )
 }
 
 export default function SubscriptionPage() {
   const [searchParams] = useSearchParams()
   const sessionId = searchParams.get('session_id') || undefined
-  const { data: subscription, isLoading } = useSubscription(sessionId)
+  const { data: subscription, isLoading } =
+    useSubscription(sessionId)
+  const { data: usage } = useUsage()
   const checkout = useCheckout()
   const portal = usePortalSession()
 
@@ -66,7 +126,8 @@ export default function SubscriptionPage() {
               Paiement confirmé !
             </p>
             <p className="text-sm text-green-700 dark:text-green-400">
-              Votre abonnement {planLabels[plan]} est maintenant actif.
+              Votre abonnement {planLabels[plan]} est maintenant
+              actif.
             </p>
           </div>
         </div>
@@ -85,7 +146,9 @@ export default function SubscriptionPage() {
               </p>
             </div>
           </div>
-          <span className={`text-sm font-medium ${statusInfo.color}`}>
+          <span
+            className={`text-sm font-medium ${statusInfo.color}`}
+          >
             {statusInfo.label}
           </span>
         </div>
@@ -94,8 +157,8 @@ export default function SubscriptionPage() {
           <div className="rounded-lg border border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950/30 p-3 flex items-start gap-2">
             <AlertTriangle className="size-4 text-orange-500 mt-0.5 shrink-0" />
             <p className="text-sm text-orange-700 dark:text-orange-300">
-              Un paiement a échoué. Mettez à jour votre moyen de paiement
-              pour éviter l'interruption du service.
+              Un paiement a échoué. Mettez à jour votre moyen de
+              paiement pour éviter l'interruption du service.
             </p>
           </div>
         )}
@@ -103,24 +166,28 @@ export default function SubscriptionPage() {
         {subscription?.current_period_end && (
           <p className="text-sm text-muted-foreground">
             Prochaine facturation :{' '}
-            {new Date(subscription.current_period_end).toLocaleDateString(
-              'fr-FR',
-              { day: 'numeric', month: 'long', year: 'numeric' }
-            )}
+            {new Date(
+              subscription.current_period_end
+            ).toLocaleDateString('fr-FR', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })}
           </p>
         )}
 
         <div className="flex flex-wrap gap-3 pt-2">
-          {plan !== 'gratuit' && subscription?.stripe_customer_id && (
-            <Button
-              variant="outline"
-              onClick={() => portal.mutate()}
-              disabled={portal.isPending}
-            >
-              <ExternalLink className="size-4" />
-              Gérer mon abonnement
-            </Button>
-          )}
+          {plan !== 'gratuit' &&
+            subscription?.stripe_customer_id && (
+              <Button
+                variant="outline"
+                onClick={() => portal.mutate()}
+                disabled={portal.isPending}
+              >
+                <ExternalLink className="size-4" />
+                Gérer mon abonnement
+              </Button>
+            )}
 
           {plan === 'gratuit' && (
             <Button
@@ -143,6 +210,50 @@ export default function SubscriptionPage() {
           )}
         </div>
       </div>
+
+      {usage && (
+        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 p-6 space-y-4">
+          <h2 className="text-lg font-semibold">Utilisation</h2>
+
+          <div className="space-y-4">
+            <UsageBar
+              current={usage.coproprietes.current}
+              limit={usage.coproprietes.limit}
+              label="Copropriétés"
+              icon={Building2}
+            />
+            <UsageBar
+              current={usage.users.current}
+              limit={usage.users.limit}
+              label="Utilisateurs"
+              icon={Users}
+            />
+          </div>
+
+          {usage.total_extra_cost > 0 && (
+            <div className="rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 p-3">
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                Surcoût estimé ce mois :{' '}
+                <strong>{usage.total_extra_cost} €</strong>
+                {usage.coproprietes.extra > 0 && (
+                  <span>
+                    {' '}
+                    ({usage.coproprietes.extra} copropriété(s)
+                    supplémentaire(s))
+                  </span>
+                )}
+                {usage.users.extra > 0 && (
+                  <span>
+                    {' '}
+                    ({usage.users.extra} utilisateur(s)
+                    supplémentaire(s))
+                  </span>
+                )}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

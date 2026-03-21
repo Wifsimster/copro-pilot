@@ -1,5 +1,11 @@
-import { getStripe, PLAN_PRICE_MAP } from '../config/stripe.js'
+import {
+  getStripe,
+  PLAN_PRICE_MAP,
+  PLAN_QUOTAS,
+  OVERAGE_PRICE_MAP,
+} from '../config/stripe.js'
 import { SubscriptionModel } from '../models/Subscription.js'
+import { getUserUsage } from '../middleware/requireQuota.js'
 import logger from '../logger.js'
 
 class StripeService {
@@ -124,7 +130,10 @@ class StripeService {
       const stripeCustomerId = session.customer
       const stripeSubscriptionId = session.subscription
 
-      // Upsert subscription record
+      // Resolve plan quotas
+      const quota = PLAN_QUOTAS[plan] || PLAN_QUOTAS.gratuit
+
+      // Upsert subscription record with quota limits
       const subscription = await SubscriptionModel.upsertByStripeCustomerId(
         stripeCustomerId,
         {
@@ -132,6 +141,8 @@ class StripeService {
           stripe_subscription_id: stripeSubscriptionId,
           plan,
           status: 'active',
+          copropriete_limit: quota.coproprietes ?? null,
+          user_limit: quota.users ?? null,
         }
       )
 
@@ -231,6 +242,92 @@ class StripeService {
     } catch (error) {
       logger.error(
         `[StripeService] Error handling subscription deletion: ${error.message}`
+      )
+      throw error
+    }
+  }
+
+  /**
+   * Report metered usage to Stripe for overage billing.
+   * Called periodically (e.g. daily cron or before invoice finalization).
+   */
+  async reportUsage(userId) {
+    try {
+      const stripe = getStripe()
+      if (!stripe) return
+
+      const subscription = await SubscriptionModel.getByUserId(userId)
+      if (!subscription?.stripe_subscription_id) return
+
+      const plan = subscription.plan
+      const overagePrices = OVERAGE_PRICE_MAP[plan]
+      if (!overagePrices) return
+
+      const usage = await getUserUsage(userId, plan)
+
+      // Get subscription items from Stripe to find metered items
+      const stripeSubscription = await stripe.subscriptions.retrieve(
+        subscription.stripe_subscription_id,
+        { expand: ['items.data'] }
+      )
+
+      for (const item of stripeSubscription.items.data) {
+        const priceId = item.price?.id
+
+        if (priceId === overagePrices.copropriete && usage.coproprietes.extra > 0) {
+          await stripe.subscriptionItems.createUsageRecord(item.id, {
+            quantity: usage.coproprietes.extra,
+            action: 'set',
+          })
+          logger.info(
+            `[StripeService] Reported ${usage.coproprietes.extra} extra copros for user ${userId}`
+          )
+        }
+
+        if (priceId === overagePrices.user && usage.users.extra > 0) {
+          await stripe.subscriptionItems.createUsageRecord(item.id, {
+            quantity: usage.users.extra,
+            action: 'set',
+          })
+          logger.info(
+            `[StripeService] Reported ${usage.users.extra} extra users for user ${userId}`
+          )
+        }
+      }
+
+      // Update local overage tracking
+      await SubscriptionModel.update(userId, {
+        extra_coproprietes: usage.coproprietes.extra,
+        extra_users: usage.users.extra,
+      })
+    } catch (error) {
+      logger.error(
+        `[StripeService] Error reporting usage for user ${userId}: ${error.message}`
+      )
+    }
+  }
+
+  /**
+   * Report usage for all active subscriptions with overage-eligible plans.
+   * Should be called by a periodic job (cron).
+   */
+  async reportAllUsage() {
+    try {
+      const subscriptions = await SubscriptionModel.getActiveWithOverage()
+      let reported = 0
+
+      for (const sub of subscriptions) {
+        await this.reportUsage(sub.user_id)
+        reported++
+      }
+
+      logger.info(
+        `[StripeService] Usage reported for ${reported} subscriptions`
+      )
+      return reported
+    } catch (error) {
+      logger.error(
+        `[StripeService] Error in bulk usage reporting: ${error.message}`
       )
       throw error
     }

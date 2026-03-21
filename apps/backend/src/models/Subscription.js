@@ -76,4 +76,12 @@ export class SubscriptionModel {
     const db = getDb()
     await db('user').where('id', userId).update({ plan })
   }
+
+  static async getActiveWithOverage() {
+    const db = getDb()
+    return db('subscriptions')
+      .whereIn('plan', ['pro', 'entreprise'])
+      .where('status', 'active')
+      .whereNotNull('stripe_subscription_id')
+  }
 }
