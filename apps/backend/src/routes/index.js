@@ -68,6 +68,8 @@ import userManagementRoutes from './user-management.js'
 import timelineRoutes from './timeline.js'
 // SSE (Server-Sent Events)
 import sseRoutes from './sse.js'
+// Stripe (subscriptions & billing)
+import stripeRoutes from './stripe.js'
 
 const router = Router()
 
@@ -166,6 +168,9 @@ router.use('/timeline', timelineRoutes)
 
 // SSE (Server-Sent Events)
 router.use('/sse', sseRoutes)
+
+// Stripe (subscriptions & billing)
+router.use('/stripe', stripeRoutes)
 
 // Root health check
 router.get('/', (req, res) => {

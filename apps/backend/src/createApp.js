@@ -75,6 +75,12 @@ export function createApp({ getDb, auth } = {}) {
     app.all('/api/auth/*splat', authLimiter, toNodeHandler(auth))
   }
 
+  // Stripe webhook needs raw body for signature verification (before express.json)
+  app.post(
+    '/api/stripe/webhook',
+    express.raw({ type: 'application/json' })
+  )
+
   // Body parsing middleware
   app.use(express.json({ limit: '10mb' }))
   app.use(express.urlencoded({ extended: true, limit: '10mb' }))

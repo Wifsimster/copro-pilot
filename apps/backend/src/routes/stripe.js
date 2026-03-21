@@ -1,0 +1,28 @@
+import { Router } from 'express'
+import { StripeController } from '../controllers/StripeController.js'
+import { requireAuth } from '../middleware/auth.js'
+
+const router = Router()
+
+// Authenticated endpoints
+router.post(
+  '/checkout-session',
+  requireAuth(),
+  StripeController.createCheckoutSession
+)
+router.get(
+  '/subscription',
+  requireAuth(),
+  StripeController.getSubscription
+)
+router.post(
+  '/portal-session',
+  requireAuth(),
+  StripeController.createPortalSession
+)
+
+// Webhook — NO auth (verified via Stripe signature)
+// Note: raw body parsing is handled in createApp.js
+router.post('/webhook', StripeController.handleWebhook)
+
+export default router
