@@ -4,10 +4,11 @@ import { GdprExportController } from '../controllers/GdprExportController.js'
 import { GdprErasureController } from '../controllers/GdprErasureController.js'
 import { AuditLogController } from '../controllers/AuditLogController.js'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
+import { requirePlan } from '../middleware/requirePlan.js'
 
 const router = Router()
 
-// Consent management
+// Consent management — free for all (legal requirement)
 router.get(
   '/consents',
   requireAuth(),
@@ -24,25 +25,26 @@ router.delete(
   GdprConsentController.revokeAll
 )
 
-// Data portability (Art. 20)
+// Data portability (Art. 20) — free for all (legal requirement)
 router.get(
   '/export',
   requireAuth(),
   GdprExportController.exportMyData
 )
 
-// Right to erasure (Art. 17)
+// Right to erasure (Art. 17) — free for all (legal requirement)
 router.post(
   '/erasure',
   requireAuth(),
   GdprErasureController.requestErasure
 )
 
-// Audit log (admin only)
+// Audit log (admin only) — requires Entreprise plan
 router.get(
   '/audit-log',
   requireAuth(),
   requireAdmin,
+  requirePlan('entreprise'),
   AuditLogController.query
 )
 

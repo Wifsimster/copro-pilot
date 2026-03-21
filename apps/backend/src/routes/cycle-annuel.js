@@ -1,10 +1,13 @@
 import { Router } from 'express'
 import { CycleAnnuelController } from '../controllers/CycleAnnuelController.js'
 import { requireAuth } from '../middleware/auth.js'
+import { requirePlan } from '../middleware/requirePlan.js'
 
 const router = Router()
 
+// Cycle annuel workflow requires Pro plan
 router.use(requireAuth())
+router.use(requirePlan('pro'))
 
 // Definitions des taches
 router.get(
