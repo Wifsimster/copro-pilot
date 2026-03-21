@@ -39,7 +39,7 @@ export function LandingFooter() {
               className="text-sm text-stone-500
                 hover:text-stone-300 transition-colors"
             >
-              Confidentialite
+              Confidentialité
             </a>
             <a
               href="mailto:contact@copropilot.fr"

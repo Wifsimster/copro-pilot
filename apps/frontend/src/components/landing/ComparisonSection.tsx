@@ -12,7 +12,7 @@ interface ComparisonRow {
 const rows: ComparisonRow[] = [
   {
     feature: 'Prix moyen / lot / mois',
-    coproPilot: 'A partir de 0 EUR',
+    coproPilot: 'À partir de 0 EUR',
     traditional: '3 - 8 EUR',
     excel: '0 EUR',
   },
@@ -29,7 +29,7 @@ const rows: ComparisonRow[] = [
     excel: 'no',
   },
   {
-    feature: 'Comptabilite reglementaire',
+    feature: 'Comptabilité réglementaire',
     coproPilot: 'yes',
     traditional: 'yes',
     excel: 'no',
@@ -41,7 +41,7 @@ const rows: ComparisonRow[] = [
     excel: 'no',
   },
   {
-    feature: 'Notifications temps reel',
+    feature: 'Notifications temps réel',
     coproPilot: 'yes',
     traditional: 'partial',
     excel: 'no',
@@ -53,7 +53,7 @@ const rows: ComparisonRow[] = [
     excel: 'yes',
   },
   {
-    feature: 'Donnees hebergees en France',
+    feature: 'Données hébergées en France',
     coproPilot: 'yes',
     traditional: 'partial',
     excel: 'no',

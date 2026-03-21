@@ -11,25 +11,25 @@ const faqs: FaqItem[] = [
   {
     question: "C'est vraiment gratuit ?",
     answer:
-      "Oui. Le plan Cloud Gratuit vous donne acces a la gestion"
-      + " complete d'une copropriete de 20 lots maximum, sans"
-      + " limite de duree et sans carte bancaire. Vous n'evoluez"
+      "Oui. Le plan Cloud Gratuit vous donne accès à la gestion"
+      + " complète d'une copropriété de 20 lots maximum, sans"
+      + " limite de durée et sans carte bancaire. Vous n'évoluez"
       + " vers un plan payant que si vous en avez besoin.",
   },
   {
     question:
-      'Je suis syndic benevole, est-ce fait pour moi ?',
+      'Je suis syndic bénévole, est-ce fait pour moi ?',
     answer:
       "Absolument, c'est notre cible principale. CoproPilot a"
-      + " ete concu pour etre utilisable sans formation, meme si"
-      + " vous n'etes pas a l'aise avec l'informatique."
-      + " L'interface est simple et vous guide a chaque etape.",
+      + " été conçu pour être utilisable sans formation, même si"
+      + " vous n'êtes pas à l'aise avec l'informatique."
+      + " L'interface est simple et vous guide à chaque étape.",
   },
   {
     question:
-      'Est-ce que mes donnees sont en securite ?',
+      'Est-ce que mes données sont en sécurité ?',
     answer:
-      'Vos donnees sont hebergees en France, conformement au'
+      'Vos données sont hébergées en France, conformément au'
       + ' RGPD. Nous effectuons des sauvegardes quotidiennes et'
       + ' utilisons un chiffrement pour toutes les'
       + ' communications. Le code source est auditable'
@@ -37,27 +37,27 @@ const faqs: FaqItem[] = [
   },
   {
     question:
-      'Puis-je importer mes donnees existantes ?',
+      'Puis-je importer mes données existantes ?',
     answer:
-      "Oui, vous pouvez importer vos donnees depuis un fichier"
+      "Oui, vous pouvez importer vos données depuis un fichier"
       + " Excel. Pour les plans Entreprise, nous proposons une"
-      + " migration assistee depuis les logiciels traditionnels"
+      + " migration assistée depuis les logiciels traditionnels"
       + " (POWIMO, Thetrawin, etc.).",
   },
   {
-    question: 'Que se passe-t-il si je depasse 20 lots ?',
+    question: 'Que se passe-t-il si je dépasse 20 lots ?',
     answer:
-      "Vous recevrez une notification vous invitant a passer au"
-      + " plan Essentiel (19 EUR/mois). Vos donnees restent"
+      "Vous recevrez une notification vous invitant à passer au"
+      + " plan Essentiel (19 EUR/mois). Vos données restent"
       + " accessibles en lecture, vous ne perdez jamais rien."
-      + " La mise a niveau se fait en un clic.",
+      + " La mise à niveau se fait en un clic.",
   },
   {
     question: "Y a-t-il un engagement ?",
     answer:
       "Aucun engagement. Tous les plans payants sont mensuels,"
-      + " resiliables a tout moment. Vous pouvez exporter"
-      + " l'integralite de vos donnees en un clic a tout moment.",
+      + " résiliables à tout moment. Vous pouvez exporter"
+      + " l'intégralité de vos données en un clic à tout moment.",
   },
 ]
 
@@ -143,7 +143,7 @@ export function FaqSection() {
               font-semibold text-stone-900
               dark:text-stone-50"
           >
-            Questions frequentes
+            Questions fréquentes
           </h2>
         </motion.div>
 

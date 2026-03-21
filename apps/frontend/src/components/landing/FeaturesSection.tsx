@@ -33,7 +33,7 @@ interface FeatureGroup {
 const featureGroups: FeatureGroup[] = [
   {
     title: 'Ne ratez plus rien',
-    subtitle: 'Pilotage & visibilite',
+    subtitle: 'Pilotage & visibilité',
     icon: Shield,
     accentColor: 'text-blue-700 dark:text-blue-400',
     iconBg: 'bg-blue-50 dark:bg-blue-950/40',
@@ -41,20 +41,20 @@ const featureGroups: FeatureGroup[] = [
     bullets: [
       {
         icon: LayoutDashboard,
-        text: 'Dashboard actionnable depuis un seul ecran',
+        text: 'Dashboard actionnable depuis un seul écran',
       },
       {
         icon: ListChecks,
-        text: 'Taches auto-generees : contrats, diagnostics, AG',
+        text: 'Tâches auto-générées : contrats, diagnostics, AG',
       },
       {
         icon: BellRing,
-        text: 'Notifications temps reel instantanees',
+        text: 'Notifications temps réel instantanées',
       },
     ],
   },
   {
-    title: 'Gerez les incidents de A a Z',
+    title: 'Gérez les incidents de A à Z',
     subtitle: 'Maintenance & suivi',
     icon: Wrench,
     accentColor: 'text-orange-600 dark:text-orange-400',
@@ -63,17 +63,17 @@ const featureGroups: FeatureGroup[] = [
     bullets: [
       {
         icon: FileText,
-        text: "Ordres de service du signalement a la resolution",
+        text: "Ordres de service du signalement à la résolution",
       },
       {
         icon: Clock,
-        text: 'Timeline complete de chaque intervention',
+        text: 'Timeline complète de chaque intervention',
       },
     ],
   },
   {
-    title: 'Maitrisez vos finances',
-    subtitle: 'Comptabilite & tresorerie',
+    title: 'Maîtrisez vos finances',
+    subtitle: 'Comptabilité & trésorerie',
     icon: TrendingUp,
     accentColor: 'text-emerald-700 dark:text-emerald-400',
     iconBg: 'bg-emerald-50 dark:bg-emerald-950/40',
@@ -81,15 +81,15 @@ const featureGroups: FeatureGroup[] = [
     bullets: [
       {
         icon: ArrowLeftRight,
-        text: 'Reconciliation bancaire intelligente',
+        text: 'Réconciliation bancaire intelligente',
       },
       {
         icon: Calculator,
-        text: 'Regularisation post-AG en 1 clic',
+        text: 'Régularisation post-AG en 1 clic',
       },
       {
         icon: BarChart3,
-        text: 'Previsions de tresorerie a 30, 60 et 90 jours',
+        text: 'Prévisions de trésorerie à 30, 60 et 90 jours',
       },
     ],
   },
@@ -119,7 +119,7 @@ export function FeaturesSection() {
               tracking-widest text-emerald-700
               dark:text-emerald-400 mb-3"
           >
-            Fonctionnalites
+            Fonctionnalités
           </p>
           <h2
             className="font-display text-3xl sm:text-4xl
@@ -132,8 +132,8 @@ export function FeaturesSection() {
             className="mt-4 text-stone-500
               dark:text-stone-400 max-w-2xl mx-auto"
           >
-            Trois piliers pour gerer vos coproprietes
-            en toute serenite
+            Trois piliers pour gérer vos copropriétés
+            en toute sérénité
           </p>
         </motion.div>
 

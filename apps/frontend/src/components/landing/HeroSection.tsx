@@ -65,7 +65,7 @@ function DashboardMockup() {
                 className="text-[10px] text-stone-500
                   dark:text-stone-400"
               >
-                Coproprietes
+                Copropriétés
               </div>
             </div>
             <div
@@ -117,7 +117,7 @@ function DashboardMockup() {
               className="text-[10px] font-semibold text-stone-400
                 dark:text-stone-500 uppercase tracking-widest"
             >
-              Taches en cours
+              Tâches en cours
             </div>
             <div
               className="flex items-center gap-2 rounded-lg
@@ -145,7 +145,7 @@ function DashboardMockup() {
                 className="text-xs text-stone-600
                   dark:text-stone-300"
               >
-                Envoyer PV assemblee
+                Envoyer PV assemblée
               </span>
             </div>
           </div>
@@ -237,7 +237,7 @@ export function HeroSection() {
                     rounded-full bg-emerald-500"
                 />
               </span>
-              Gratuit pour demarrer
+              Gratuit pour démarrer
             </motion.div>
 
             <motion.h1
@@ -249,7 +249,7 @@ export function HeroSection() {
                 dark:text-stone-50 leading-[1.1]"
             >
               <span className="text-4xl sm:text-5xl lg:text-6xl">
-                Gerez vos coproprietes
+                Gérez vos copropriétés
               </span>
               <br />
               <span
@@ -286,8 +286,8 @@ export function HeroSection() {
                 dark:text-stone-400 max-w-xl mx-auto
                 lg:mx-0 leading-relaxed"
             >
-              L'outil moderne pour syndics benevoles et
-              professionnels. Operationnel en 5 minutes,
+              L'outil moderne pour syndics bénévoles et
+              professionnels. Opérationnel en 5 minutes,
               sans installation.
             </motion.p>
 
@@ -348,7 +348,7 @@ export function HeroSection() {
               >
                 &middot;
               </span>
-              <span>Donnees hebergees en France</span>
+              <span>Données hébergées en France</span>
             </motion.p>
           </div>
 

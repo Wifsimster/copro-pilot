@@ -34,12 +34,12 @@ export function FinalCTA() {
             lg:text-5xl font-semibold text-white
             leading-tight"
         >
-          Pret a simplifier
+          Prêt à simplifier
           <br />
           <span
             className="italic text-emerald-400"
           >
-            votre copropriete ?
+            votre copropriété ?
           </span>
         </motion.h2>
 
@@ -49,7 +49,7 @@ export function FinalCTA() {
           transition={{ delay: 0.1, duration: 0.6 }}
           className="mt-6 text-lg text-stone-400"
         >
-          Rejoignez les syndics qui ont choisi la simplicite.
+          Rejoignez les syndics qui ont choisi la simplicité.
         </motion.p>
 
         <motion.div
@@ -75,7 +75,7 @@ export function FinalCTA() {
           </Button>
           <p className="mt-5 text-sm text-stone-500">
             Sans engagement &middot; Sans carte bancaire
-            &middot; Operationnel en 5 min
+            &middot; Opérationnel en 5 min
           </p>
         </motion.div>
       </div>

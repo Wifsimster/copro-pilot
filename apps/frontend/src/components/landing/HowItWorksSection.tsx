@@ -10,25 +10,25 @@ const steps = [
   {
     number: '01',
     icon: UserPlus,
-    title: 'Creez votre compte',
+    title: 'Créez votre compte',
     description:
       'Inscription gratuite en 30 secondes, sans carte bancaire.',
   },
   {
     number: '02',
     icon: Building2,
-    title: 'Ajoutez votre copropriete',
+    title: 'Ajoutez votre copropriété',
     description:
       'Renseignez les informations de base : adresse, lots,'
-      + ' coproprietaires.',
+      + ' copropriétaires.',
   },
   {
     number: '03',
     icon: LayoutDashboard,
-    title: 'Gerez tout depuis un tableau de bord',
+    title: 'Gérez tout depuis un tableau de bord',
     description:
-      'Comptabilite, incidents, AG, documents —'
-      + ' tout est centralise.',
+      'Comptabilité, incidents, AG, documents —'
+      + ' tout est centralisé.',
   },
 ]
 
@@ -55,14 +55,14 @@ export function HowItWorksSection() {
               font-semibold text-stone-900
               dark:text-stone-50"
           >
-            Operationnel en 5 minutes
+            Opérationnel en 5 minutes
           </h2>
           <p
             className="mt-3 text-stone-500
               dark:text-stone-400"
           >
             Pas de formation, pas d'installation,
-            pas de prise de tete
+            pas de prise de tête
           </p>
         </motion.div>
 
