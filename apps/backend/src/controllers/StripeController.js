@@ -94,6 +94,25 @@ export class StripeController {
   }
 
   /**
+   * POST /api/stripe/report-usage
+   * Triggers usage reporting for all active overage-eligible subscriptions.
+   * Intended to be called by a cron job or admin.
+   */
+  static async reportUsage(req, res) {
+    try {
+      const count = await stripeService.reportAllUsage()
+      res.json({ data: { reported: count } })
+    } catch (error) {
+      logger.error(
+        `[StripeController] Report usage error: ${error.message}`
+      )
+      res
+        .status(500)
+        .json({ error: "Erreur lors du reporting d'utilisation" })
+    }
+  }
+
+  /**
    * POST /api/stripe/webhook
    * Handles Stripe webhook events (no auth — verified via signature).
    */
@@ -131,6 +150,16 @@ export class StripeController {
           break
         case 'customer.subscription.deleted':
           await stripeService.handleSubscriptionDeleted(event.data.object)
+          break
+        case 'invoice.upcoming':
+          // Sync usage before Stripe finalizes the invoice
+          if (event.data.object.subscription) {
+            const sub = event.data.object
+            logger.info(
+              `[StripeController] Invoice upcoming for subscription ${sub.subscription}, syncing usage`
+            )
+            await stripeService.reportAllUsage()
+          }
           break
         case 'invoice.payment_failed':
           await stripeService.handlePaymentFailed(event.data.object)

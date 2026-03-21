@@ -29,6 +29,21 @@ export const PLAN_PRICE_MAP = {
 }
 
 /**
+ * Maps overage metered price IDs from environment variables.
+ * These are Stripe metered prices for per-copro and per-user overages.
+ */
+export const OVERAGE_PRICE_MAP = {
+  pro: {
+    copropriete: process.env.STRIPE_PRICE_PRO_EXTRA_COPRO,
+    user: process.env.STRIPE_PRICE_PRO_EXTRA_USER,
+  },
+  entreprise: {
+    copropriete: process.env.STRIPE_PRICE_ENTREPRISE_EXTRA_COPRO,
+    user: process.env.STRIPE_PRICE_ENTREPRISE_EXTRA_USER,
+  },
+}
+
+/**
  * Plan hierarchy for requirePlan middleware.
  * Higher index = higher tier.
  */

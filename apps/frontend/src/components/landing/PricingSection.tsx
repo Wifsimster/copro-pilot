@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { motion, useInView } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import { Check, Github, Users } from 'lucide-react'
+import { PricingCalculator } from './PricingCalculator'
 
 interface PricingTier {
   id: string
@@ -337,6 +338,8 @@ export function PricingSection() {
             </motion.div>
           ))}
         </div>
+
+        <PricingCalculator />
 
         <motion.div
           initial={{ opacity: 0 }}

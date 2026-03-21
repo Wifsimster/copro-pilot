@@ -26,6 +26,13 @@ router.get(
   StripeController.getUsage
 )
 
+// Usage reporting (admin/cron trigger)
+router.post(
+  '/report-usage',
+  requireAuth(),
+  StripeController.reportUsage
+)
+
 // Webhook — NO auth (verified via Stripe signature)
 // Note: raw body parsing is handled in createApp.js
 router.post('/webhook', StripeController.handleWebhook)
