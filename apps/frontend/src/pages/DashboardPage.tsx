@@ -4,6 +4,7 @@ import { motion } from 'motion/react'
 import { useSyndicDashboard } from '@/hooks/useStats'
 import { useAuthStore } from '@/store/authStore'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
+import { DetailDrawer } from '@/components/layout/DetailDrawer'
 import type {
   AlertSeverity,
   AlertCategory,
@@ -72,6 +73,61 @@ function formatEuro(value: number): string {
     currency: 'EUR',
     maximumFractionDigits: 0,
   }).format(value)
+}
+
+// ---------------------------------------------------------------------------
+// Entity parsing — extract entity_type & entity_id from dashboard item id
+// ---------------------------------------------------------------------------
+
+interface DrawerTarget {
+  entityType: string
+  entityId: number
+  link: string
+}
+
+/**
+ * Parse the composite `id` string returned by the syndic-dashboard endpoint.
+ *
+ * Alert ids  :  incident-5, ag-conv-3, contrat-5, assurance-2, ...
+ * Task ids   :  intervention-5, ag-3, cycle-5, appel-3, relance-5
+ * Activity ids: act-incident-5, act-paiement-3, act-intervention-5, ...
+ *
+ * Category mapping to entity type for the detail drawer:
+ *   incident  -> incident
+ *   ag / ag-conv -> ag
+ *   contrat   -> contrat
+ *   intervention -> intervention
+ */
+const CATEGORY_TO_ENTITY: Record<string, string> = {
+  incident: 'incident',
+  ag: 'ag',
+  contrat: 'contrat',
+  intervention: 'intervention',
+}
+
+function parseEntityFromId(
+  id: string,
+  _link: string
+): { entityType: string; entityId: number } | null {
+  // Strip "act-" prefix for activity items
+  const normalized = id.startsWith('act-')
+    ? id.slice(4)
+    : id
+
+  // Try to extract the numeric id from the end
+  const match = normalized.match(/^(.+?)-(\d+)$/)
+  if (!match) return null
+
+  const [, rawType, rawId] = match
+  const entityId = Number(rawId)
+
+  // Normalize type prefixes like "ag-conv" -> "ag"
+  const baseType = rawType.replace(/-conv$/, '')
+
+  const entityType = CATEGORY_TO_ENTITY[baseType]
+  if (!entityType) return null
+
+  return { entityType, entityId }
 }
 
 // ---------------------------------------------------------------------------
@@ -240,10 +296,13 @@ function ListSkeleton({ rows = 4 }: { rows?: number }) {
 
 function AlertsBanner({
   alerts,
+  onOpenDrawer,
 }: {
   alerts: DashboardAlert[]
+  onOpenDrawer: (target: DrawerTarget) => void
 }) {
   const [expanded, setExpanded] = useState(true)
+  const navigate = useNavigate()
 
   if (alerts.length === 0) return null
 
@@ -270,6 +329,18 @@ function AlertsBanner({
     summaryParts.push(
       `${moyennes.length} moyenne${moyennes.length > 1 ? 's' : ''}`
     )
+
+  function handleAlertClick(alert: DashboardAlert) {
+    const parsed = parseEntityFromId(
+      alert.id,
+      alert.link
+    )
+    if (parsed) {
+      onOpenDrawer({ ...parsed, link: alert.link })
+    } else {
+      navigate(alert.link)
+    }
+  }
 
   return (
     <motion.div
@@ -307,10 +378,13 @@ function AlertsBanner({
                 CATEGORY_ICONS[alert.category] ||
                 AlertTriangle
               return (
-                <Link
+                <button
                   key={alert.id}
-                  to={alert.link}
-                  className={`flex items-center gap-3 border-l-3 px-4 py-3 transition-colors hover:bg-accent/50 ${style.border}`}
+                  type="button"
+                  onClick={() =>
+                    handleAlertClick(alert)
+                  }
+                  className={`flex w-full items-center gap-3 border-l-3 px-4 py-3 text-left transition-colors hover:bg-accent/50 ${style.border}`}
                 >
                   <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
                   <div className="min-w-0 flex-1">
@@ -334,7 +408,7 @@ function AlertsBanner({
                   >
                     {alert.severity}
                   </span>
-                </Link>
+                </button>
               )
             })}
           </div>
@@ -346,9 +420,25 @@ function AlertsBanner({
 
 function DailyTasks({
   tasks,
+  onOpenDrawer,
 }: {
   tasks: DashboardTask[]
+  onOpenDrawer: (target: DrawerTarget) => void
 }) {
+  const navigate = useNavigate()
+
+  function handleTaskClick(task: DashboardTask) {
+    const parsed = parseEntityFromId(
+      task.id,
+      task.link
+    )
+    if (parsed) {
+      onOpenDrawer({ ...parsed, link: task.link })
+    } else {
+      navigate(task.link)
+    }
+  }
+
   return (
     <Card className="py-0">
       <div className="flex items-center justify-between border-b p-4">
@@ -374,10 +464,11 @@ function DailyTasks({
             const Icon =
               TASK_ICONS[task.type] || ListChecks
             return (
-              <Link
+              <button
                 key={task.id}
-                to={task.link}
-                className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/50"
+                type="button"
+                onClick={() => handleTaskClick(task)}
+                className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-accent/50"
               >
                 <div
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
@@ -410,7 +501,7 @@ function DailyTasks({
                   </span>
                 )}
                 <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-              </Link>
+              </button>
             )
           })}
         </div>
@@ -485,9 +576,27 @@ function MetricsGrid({
 
 function ActivityFeed({
   activity,
+  onOpenDrawer,
 }: {
   activity: DashboardActivity[]
+  onOpenDrawer: (target: DrawerTarget) => void
 }) {
+  const navigate = useNavigate()
+
+  function handleActivityClick(
+    item: DashboardActivity
+  ) {
+    const parsed = parseEntityFromId(
+      item.id,
+      item.link
+    )
+    if (parsed) {
+      onOpenDrawer({ ...parsed, link: item.link })
+    } else {
+      navigate(item.link)
+    }
+  }
+
   return (
     <Card className="py-0">
       <div className="flex items-center justify-between border-b p-4">
@@ -508,10 +617,13 @@ function ActivityFeed({
             const Icon =
               ACTIVITY_ICONS[item.type] || FileUp
             return (
-              <Link
+              <button
                 key={item.id}
-                to={item.link}
-                className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-accent/50"
+                type="button"
+                onClick={() =>
+                  handleActivityClick(item)
+                }
+                className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-accent/50"
               >
                 <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
                 <div className="min-w-0 flex-1">
@@ -530,7 +642,7 @@ function ActivityFeed({
                     <span>{timeAgo(item.date)}</span>
                   </div>
                 </div>
-              </Link>
+              </button>
             )
           })}
         </div>
@@ -551,6 +663,8 @@ export default function DashboardPage() {
     useSyndicDashboard(selectedCoproprieteId)
   const user = useAuthStore(s => s.user)
   const navigate = useNavigate()
+
+  const [drawer, setDrawer] = useState<DrawerTarget | null>(null)
 
   const firstName = user?.firstname || ''
 
@@ -623,7 +737,10 @@ export default function DashboardPage() {
 
       {/* Alerts banner */}
       {dashboard && dashboard.alerts.length > 0 && (
-        <AlertsBanner alerts={dashboard.alerts} />
+        <AlertsBanner
+          alerts={dashboard.alerts}
+          onOpenDrawer={setDrawer}
+        />
       )}
 
       {/* Metrics grid */}
@@ -647,7 +764,10 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.3 }}
         >
-          <DailyTasks tasks={dashboard?.tasks ?? []} />
+          <DailyTasks
+            tasks={dashboard?.tasks ?? []}
+            onOpenDrawer={setDrawer}
+          />
         </motion.div>
 
         <motion.div
@@ -658,6 +778,7 @@ export default function DashboardPage() {
         >
           <ActivityFeed
             activity={dashboard?.activity ?? []}
+            onOpenDrawer={setDrawer}
           />
         </motion.div>
       </div>
@@ -681,6 +802,17 @@ export default function DashboardPage() {
           </Button>
         ))}
       </motion.div>
+
+      {/* Detail drawer */}
+      <DetailDrawer
+        open={drawer !== null}
+        onOpenChange={open => {
+          if (!open) setDrawer(null)
+        }}
+        entityType={drawer?.entityType ?? null}
+        entityId={drawer?.entityId ?? null}
+        link={drawer?.link ?? null}
+      />
     </div>
   )
 }
