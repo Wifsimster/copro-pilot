@@ -132,7 +132,7 @@ describe('authStore', () => {
       expect(state.isLoading).toBe(false)
     })
 
-    it('redirects to home on success', async () => {
+    it('redirects to dashboard on success', async () => {
       mockSignInEmail.mockResolvedValue({
         data: {
           user: { id: 'usr-1', email: 'a@b.com', name: 'A B', role: 'user' },
@@ -141,7 +141,7 @@ describe('authStore', () => {
 
       await useAuthStore.getState().signIn('a@b.com', 'pass')
 
-      expect(window.location.hash).toBe('#/')
+      expect(window.location.hash).toBe('#/dashboard')
     })
 
     it('throws on API error', async () => {
