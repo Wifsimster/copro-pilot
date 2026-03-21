@@ -1,7 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'motion/react'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Check, Github } from 'lucide-react'
 
 interface PricingTier {
@@ -13,7 +12,6 @@ interface PricingTier {
   cta: { label: string; href: string }
   badge?: string
   promoted?: boolean
-  muted?: boolean
 }
 
 const tiers: PricingTier[] = [
@@ -21,29 +19,32 @@ const tiers: PricingTier[] = [
     id: 'gratuit',
     name: 'Cloud Gratuit',
     price: 0,
-    description: 'Pour démarrer avec une copropriété',
+    description: 'Pour demarrer avec une copropriete',
     features: [
-      '1 copropriété',
-      "Jusqu'à 20 lots",
-      'Gestion complète (CRUD)',
+      '1 copropriete',
+      "Jusqu'a 20 lots",
+      'Gestion complete (CRUD)',
       'Dashboard & notifications',
       'Documents & incidents',
-      'Données hébergées en France',
+      'Donnees hebergees en France',
     ],
-    cta: { label: 'Commencer gratuitement', href: '/#/login' },
+    cta: {
+      label: 'Commencer gratuitement',
+      href: '/#/login',
+    },
   },
   {
     id: 'essentiel',
     name: 'Essentiel',
     price: 19,
-    description: 'Pour une copropriété plus importante',
+    description: 'Pour une copropriete plus importante',
     features: [
-      '1 copropriété',
-      "Jusqu'à 50 lots",
+      '1 copropriete',
+      "Jusqu'a 50 lots",
       'Tout du plan Gratuit',
-      'Assemblées générales & PV',
+      'Assemblees generales & PV',
       'Exports PDF & Excel',
-      'Comptabilité réglementaire',
+      'Comptabilite reglementaire',
     ],
     cta: {
       label: 'Essai gratuit',
@@ -54,15 +55,15 @@ const tiers: PricingTier[] = [
     id: 'pro',
     name: 'Pro',
     price: 49,
-    description: 'Pour les syndics gérant plusieurs immeubles',
+    description: 'Pour les syndics gerant plusieurs immeubles',
     features: [
-      "Jusqu'à 20 copropriétés",
-      'Lots illimités',
+      "Jusqu'a 20 coproprietes",
+      'Lots illimites',
       'Tout du plan Essentiel',
-      'Réconciliation bancaire',
-      'Workflows automatisés',
-      'Temps réel (SSE)',
-      'Cash flow prévisionnel',
+      'Reconciliation bancaire',
+      'Workflows automatises',
+      'Temps reel (SSE)',
+      'Cash flow previsionnel',
     ],
     cta: {
       label: 'Essai gratuit',
@@ -77,13 +78,13 @@ const tiers: PricingTier[] = [
     price: 99,
     description: 'Pour les cabinets de syndic',
     features: [
-      'Copropriétés illimitées',
+      'Coproprietes illimitees',
       'Tout du plan Pro',
       'SSO (Azure AD)',
-      'API & intégrations',
+      'API & integrations',
       'Audit trail complet',
       'SLA & support prioritaire',
-      'Migration assistée',
+      'Migration assistee',
     ],
     cta: {
       label: 'Essai gratuit',
@@ -95,23 +96,45 @@ const tiers: PricingTier[] = [
 function PricingCard({ tier }: { tier: PricingTier }) {
   return (
     <div
-      className={`relative rounded-xl border p-6 flex flex-col ${
-        tier.promoted
-          ? 'border-primary ring-2 ring-primary bg-white dark:bg-slate-950 shadow-lg md:scale-105 z-10'
-          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950'
-      } ${tier.muted ? 'opacity-80' : ''}`}
+      className={`relative rounded-xl flex flex-col
+        transition-all duration-300 ${
+          tier.promoted
+            ? 'border-2 border-emerald-600'
+              + ' dark:border-emerald-500 bg-white'
+              + ' dark:bg-stone-950 shadow-xl'
+              + ' shadow-emerald-700/10'
+              + ' dark:shadow-emerald-600/10'
+              + ' md:scale-105 z-10'
+            : 'border border-stone-200/60'
+              + ' dark:border-stone-800 bg-white'
+              + ' dark:bg-stone-950'
+              + ' hover:shadow-md'
+              + ' dark:hover:shadow-stone-950/50'
+        } p-6`}
     >
       {tier.badge && (
-        <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3">
+        <span
+          className="absolute -top-3 left-1/2
+            -translate-x-1/2 inline-flex items-center
+            rounded-full bg-amber-500 dark:bg-amber-400
+            px-3 py-0.5 text-xs font-bold text-white
+            dark:text-stone-950 tracking-wide"
+        >
           {tier.badge}
-        </Badge>
+        </span>
       )}
 
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+        <h3
+          className="text-lg font-semibold text-stone-900
+            dark:text-white"
+        >
           {tier.name}
         </h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+        <p
+          className="text-sm text-stone-400
+            dark:text-stone-500 mt-1"
+        >
           {tier.description}
         </p>
       </div>
@@ -119,24 +142,39 @@ function PricingCard({ tier }: { tier: PricingTier }) {
       <div className="mb-6">
         {tier.price === 0 ? (
           <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-bold text-slate-900 dark:text-white">
-              0 €
+            <span
+              className="font-display text-5xl font-bold
+                text-stone-900 dark:text-white"
+            >
+              0 EUR
             </span>
-            <span className="text-sm text-slate-500 dark:text-slate-400">
+            <span
+              className="text-sm text-stone-400
+                dark:text-stone-500"
+            >
               / mois
             </span>
           </div>
         ) : tier.price !== null ? (
           <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-bold text-slate-900 dark:text-white">
-              {tier.price} €
+            <span
+              className="font-display text-5xl font-bold
+                text-stone-900 dark:text-white"
+            >
+              {tier.price} EUR
             </span>
-            <span className="text-sm text-slate-500 dark:text-slate-400">
+            <span
+              className="text-sm text-stone-400
+                dark:text-stone-500"
+            >
               / mois
             </span>
           </div>
         ) : (
-          <div className="text-4xl font-bold text-slate-900 dark:text-white">
+          <div
+            className="font-display text-5xl font-bold
+              text-stone-900 dark:text-white"
+          >
             Sur devis
           </div>
         )}
@@ -144,9 +182,12 @@ function PricingCard({ tier }: { tier: PricingTier }) {
 
       <Button
         asChild
-        className={`w-full mb-6 ${
+        className={`w-full mb-6 rounded-lg ${
           tier.promoted
-            ? 'bg-green-600 hover:bg-green-700 text-white'
+            ? 'bg-emerald-700 hover:bg-emerald-800'
+              + ' dark:bg-emerald-600'
+              + ' dark:hover:bg-emerald-700 text-white'
+              + ' shadow-lg shadow-emerald-700/20'
             : ''
         }`}
         variant={tier.promoted ? 'default' : 'outline'}
@@ -156,9 +197,18 @@ function PricingCard({ tier }: { tier: PricingTier }) {
 
       <ul className="space-y-3 flex-1">
         {tier.features.map(feature => (
-          <li key={feature} className="flex items-start gap-2.5">
-            <Check className="size-4 mt-0.5 shrink-0 text-green-500" />
-            <span className="text-sm text-slate-600 dark:text-slate-400">
+          <li
+            key={feature}
+            className="flex items-start gap-2.5"
+          >
+            <Check
+              className="size-4 mt-0.5 shrink-0
+                text-emerald-500 dark:text-emerald-400"
+            />
+            <span
+              className="text-sm text-stone-600
+                dark:text-stone-400"
+            >
               {feature}
             </span>
           </li>
@@ -175,21 +225,39 @@ export function PricingSection() {
   return (
     <section
       id="tarifs"
-      className="py-16 sm:py-24 bg-white dark:bg-slate-950"
+      className="py-20 sm:py-28 bg-[#FAF8F5]
+        dark:bg-stone-950"
     >
-      <div ref={ref} className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div
+        ref={ref}
+        className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+      >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
           className="text-center mb-4"
         >
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+          <p
+            className="text-sm font-semibold uppercase
+              tracking-widest text-emerald-700
+              dark:text-emerald-400 mb-3"
+          >
+            Tarifs
+          </p>
+          <h2
+            className="font-display text-3xl sm:text-4xl
+              font-semibold text-stone-900
+              dark:text-stone-50"
+          >
             Des tarifs simples et transparents
           </h2>
-          <p className="mt-3 text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            Commencez gratuitement, évoluez quand vous êtes prêt.
-            Sans engagement, sans carte bancaire.
+          <p
+            className="mt-4 text-stone-500
+              dark:text-stone-400 max-w-2xl mx-auto"
+          >
+            Commencez gratuitement, evoluez quand vous etes
+            pret. Sans engagement, sans carte bancaire.
           </p>
         </motion.div>
 
@@ -197,13 +265,17 @@ export function PricingSection() {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ delay: 0.1, duration: 0.5 }}
-          className="text-center text-sm text-green-600 dark:text-green-400 font-medium mb-10"
+          className="text-center text-sm text-amber-600
+            dark:text-amber-400 font-semibold mb-12"
         >
-          Soit à partir de 0,38 €/lot/mois — jusqu'à 10x moins cher
-          que les logiciels traditionnels
+          Soit a partir de 0,38 EUR/lot/mois — jusqu'a 10x
+          moins cher que les logiciels traditionnels
         </motion.p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4 items-start">
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2
+            lg:grid-cols-4 gap-6 lg:gap-4 items-start"
+        >
           {tiers.map((tier, index) => (
             <motion.div
               key={tier.id}
@@ -223,23 +295,30 @@ export function PricingSection() {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ delay: 0.4, duration: 0.5 }}
-          className="mt-10 text-center space-y-3"
+          className="mt-12 text-center space-y-3"
         >
           <a
             href="https://github.com/Wifsimster/immo-ia"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+            className="inline-flex items-center gap-2 text-sm
+              text-stone-400 dark:text-stone-500
+              hover:text-stone-600 dark:hover:text-stone-300
+              transition-colors"
           >
             <Github className="size-4" />
-            Développeurs ? Découvrez la version auto-hébergée
+            Developpeurs ? Decouvrez la version auto-hebergee
             (Community, gratuite et open-source)
           </a>
-          <p className="text-xs text-slate-400 dark:text-slate-500">
-            Besoin d'un devis personnalisé ?{' '}
+          <p
+            className="text-xs text-stone-400
+              dark:text-stone-500"
+          >
+            Besoin d'un devis personnalise ?{' '}
             <a
               href="mailto:contact@copropilot.fr"
-              className="underline hover:text-slate-600 dark:hover:text-slate-300"
+              className="underline hover:text-stone-600
+                dark:hover:text-stone-300"
             >
               Contactez-nous
             </a>

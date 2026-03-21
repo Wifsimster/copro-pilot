@@ -1,28 +1,39 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'motion/react'
-import { Banknote, FileSpreadsheet, Puzzle } from 'lucide-react'
+import {
+  Banknote,
+  FileSpreadsheet,
+  Puzzle,
+  ArrowRight,
+} from 'lucide-react'
 
 const painPoints = [
   {
     icon: Banknote,
-    pain: 'Votre syndic professionnel coûte trop cher ?',
-    relief: 'CoproPilot démarre à 0 € et reste 10x moins cher.',
-    color: 'text-red-500 dark:text-red-400',
-    bg: 'bg-red-50 dark:bg-red-950/30',
+    pain: 'Votre syndic coute trop cher ?',
+    relief: 'CoproPilot demarre a 0 EUR et reste 10x moins cher'
+      + ' que les solutions traditionnelles.',
+    accent: 'border-l-red-400 dark:border-l-red-500',
+    iconColor: 'text-red-500 dark:text-red-400',
+    iconBg: 'bg-red-50 dark:bg-red-950/30',
   },
   {
     icon: FileSpreadsheet,
-    pain: 'Excel et papier pour gérer votre copropriété ?',
-    relief: 'Tout est centralisé dans une interface claire et moderne.',
-    color: 'text-orange-500 dark:text-orange-400',
-    bg: 'bg-orange-50 dark:bg-orange-950/30',
+    pain: 'Excel et papier partout ?',
+    relief: 'Tout est centralise dans une interface claire.'
+      + ' Fini les fichiers perdus et les doublons.',
+    accent: 'border-l-amber-400 dark:border-l-amber-500',
+    iconColor: 'text-amber-500 dark:text-amber-400',
+    iconBg: 'bg-amber-50 dark:bg-amber-950/30',
   },
   {
     icon: Puzzle,
     pain: 'Logiciels complexes faits pour les gros cabinets ?',
-    relief: 'Conçu pour être simple, même sans formation.',
-    color: 'text-amber-500 dark:text-amber-400',
-    bg: 'bg-amber-50 dark:bg-amber-950/30',
+    relief: 'Concu pour etre simple, meme sans formation.'
+      + ' Operationnel en 5 minutes.',
+    accent: 'border-l-orange-400 dark:border-l-orange-500',
+    iconColor: 'text-orange-500 dark:text-orange-400',
+    iconBg: 'bg-orange-50 dark:bg-orange-950/30',
   },
 ]
 
@@ -31,8 +42,34 @@ export function PainReliefSection() {
   const isInView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
-    <section className="py-16 sm:py-24 bg-white dark:bg-slate-950">
-      <div ref={ref} className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section
+      className="py-20 sm:py-28 bg-[#FAF8F5]
+        dark:bg-stone-950"
+    >
+      <div
+        ref={ref}
+        className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-14"
+        >
+          <h2
+            className="font-display text-3xl sm:text-4xl
+              font-semibold text-stone-900 dark:text-stone-50"
+          >
+            On connait vos frustrations.
+          </h2>
+          <p
+            className="mt-3 text-stone-500 dark:text-stone-400
+              max-w-xl mx-auto"
+          >
+            Et on a construit exactement ce qu'il vous faut.
+          </p>
+        </motion.div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {painPoints.map((item, index) => {
             const Icon = item.icon
@@ -40,17 +77,46 @@ export function PainReliefSection() {
               <motion.div
                 key={item.pain}
                 initial={{ opacity: 0, y: 24 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                className={`rounded-xl ${item.bg} p-6`}
+                animate={
+                  isInView ? { opacity: 1, y: 0 } : {}
+                }
+                transition={{
+                  delay: index * 0.12,
+                  duration: 0.5,
+                }}
+                className={`rounded-xl border-l-4 ${item.accent}
+                  bg-white dark:bg-stone-900
+                  border border-stone-200/60
+                  dark:border-stone-800
+                  p-6 transition-all hover:shadow-md
+                  dark:hover:shadow-stone-950/50`}
               >
-                <Icon className={`size-8 ${item.color} mb-4`} />
-                <h3 className="text-base font-semibold text-slate-900 dark:text-white mb-2">
+                <div className={`inline-flex size-10
+                  items-center justify-center rounded-lg
+                  ${item.iconBg} mb-4`}
+                >
+                  <Icon className={`size-5 ${item.iconColor}`} />
+                </div>
+                <h3
+                  className="text-base font-semibold
+                    text-stone-900 dark:text-white mb-2"
+                >
                   {item.pain}
                 </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
+                <p
+                  className="text-sm text-stone-500
+                    dark:text-stone-400 leading-relaxed"
+                >
                   {item.relief}
                 </p>
+                <div
+                  className="mt-4 flex items-center gap-1.5
+                    text-xs font-medium text-emerald-700
+                    dark:text-emerald-400"
+                >
+                  Notre solution
+                  <ArrowRight className="size-3" />
+                </div>
               </motion.div>
             )
           })}
