@@ -183,6 +183,46 @@ class WorkflowEventService {
     }
   }
 
+  // --- Event: Ordre de service emis ---
+
+  async onOrdreServiceEmis(ordreService) {
+    try {
+      await this._notifySyndics(ordreService.copropriete_id, {
+        type: 'general',
+        titre: `Ordre de service emis : ${ordreService.numero}`,
+        message: `L'ordre de service "${ordreService.objet}" a ete emis.`,
+        lien: '/ordres-service',
+      })
+      logger.info(
+        `[WorkflowEvent] Ordre de service emis notification sent (ID: ${ordreService.id})`
+      )
+    } catch (error) {
+      logger.error(
+        `[WorkflowEvent] onOrdreServiceEmis error: ${error.message}`
+      )
+    }
+  }
+
+  // --- Event: Ordre de service termine ---
+
+  async onOrdreServiceTermine(ordreService) {
+    try {
+      await this._notifySyndics(ordreService.copropriete_id, {
+        type: 'general',
+        titre: `Ordre de service termine : ${ordreService.numero}`,
+        message: `L'ordre de service "${ordreService.objet}" est termine.${ordreService.montant_facture ? ` Montant facture: ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(ordreService.montant_facture)}` : ''}`,
+        lien: '/ordres-service',
+      })
+      logger.info(
+        `[WorkflowEvent] Ordre de service termine notification sent (ID: ${ordreService.id})`
+      )
+    } catch (error) {
+      logger.error(
+        `[WorkflowEvent] onOrdreServiceTermine error: ${error.message}`
+      )
+    }
+  }
+
   // --- Event: Sinistre created ---
 
   async onSinistreCreated(sinistre) {
