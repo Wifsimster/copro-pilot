@@ -18,7 +18,7 @@ RUN npm install --legacy-peer-deps && npm cache clean --force
 # Copy frontend source and build
 WORKDIR /app
 COPY apps/frontend/ ./apps/frontend/
-RUN cd apps/frontend && npm run build
+RUN cd apps/frontend && npx vite build
 
 # Stage 2: Production image
 FROM node:24-alpine
