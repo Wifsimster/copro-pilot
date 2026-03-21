@@ -1,15 +1,24 @@
 # CoproPilot
 
-Plateforme de gestion de copropriété conçue pour les syndics professionnels. Elle centralise la gestion des immeubles, des copropriétaires, de la comptabilité, des assemblées générales et de l'ensemble de la vie de la copropriété.
+**Le logiciel de gestion de copropriété simple, moderne et 10x moins cher.**
+
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
+
+CoproPilot est une plateforme open-source de gestion de copropriété pour les syndics bénévoles et professionnels. Elle centralise la gestion des immeubles, des copropriétaires, de la comptabilité, des assemblées générales et de l'ensemble de la vie de la copropriété.
+
+**Gratuit pour démarrer** · Sans engagement · Données hébergées en France
 
 ## Table des matières
 
 - [À quoi sert ce produit ?](#à-quoi-sert-ce-produit-)
 - [Fonctionnalités principales](#fonctionnalités-principales)
+- [Démarrage rapide](#démarrage-rapide)
 - [Comment ça fonctionne](#comment-ça-fonctionne)
 - [Environnements](#environnements)
 - [Déploiement](#déploiement)
 - [Stack technique](#stack-technique)
+- [Contribuer](#contribuer)
+- [Licence](#licence)
 - [Documentation complémentaire](#documentation-complémentaire)
 
 ### Documentation technique
@@ -22,6 +31,7 @@ Plateforme de gestion de copropriété conçue pour les syndics professionnels. 
 | [Référence API](docs/api.md) | Liste complète des points d'accès de l'API REST |
 | [Authentification](docs/authentification.md) | Mécanismes de connexion, rôles et protection des données |
 | [Conformité RGPD](docs/GDPR-COMPLIANCE-REVIEW.md) | Audit de conformité au RGPD |
+| [Stratégie open-core](docs/open-core-strategy.md) | Modèle de distribution, grille tarifaire et stratégie d'acquisition |
 
 ## À quoi sert ce produit ?
 
@@ -68,12 +78,14 @@ Plateforme de gestion de copropriété conçue pour les syndics professionnels. 
 graph LR
     A[Utilisateur] --> B[Application Web]
     B -->|Requêtes API| C[Serveur Backend]
+    B -->|Temps réel| G[SSE]
     C --> D[Base de données PostgreSQL]
     C --> E[Microsoft Azure AD]
     C --> F[Génération PDF & Excel]
+    C --> G
 ```
 
-L'utilisateur accède à l'application web depuis son navigateur. L'application communique avec le serveur backend via une API REST. Le backend gère la logique métier, stocke les données dans PostgreSQL et délègue l'authentification à Microsoft Azure AD. Il génère également des documents PDF et Excel à la demande.
+L'utilisateur accède à l'application web depuis son navigateur. L'application communique avec le serveur backend via une API REST. Le backend gère la logique métier, stocke les données dans PostgreSQL et délègue l'authentification à Microsoft Azure AD. Il génère des documents PDF et Excel à la demande. Les mises à jour en temps réel sont transmises via SSE (Server-Sent Events).
 
 En production, le backend sert aussi les fichiers statiques de l'application web.
 
@@ -106,6 +118,33 @@ Le pipeline CI/CD (Intégration et Déploiement Continus) s'exécute via GitHub 
 - **Base de données :** PostgreSQL 18
 - **Infrastructure :** Docker, Docker Compose, Semantic Release
 
+## Démarrage rapide
+
+### Version cloud (recommandée)
+
+Créez un compte gratuitement sur la plateforme hébergée — opérationnel en 5 minutes, sans installation.
+
+### Auto-hébergement (développeurs)
+
+```bash
+git clone https://github.com/Wifsimster/immo-ia.git
+cd immo-ia
+docker compose -f compose.local.yml up -d
+```
+
+L'application est disponible sur `http://localhost:3000`. Voir [CONTRIBUTING.md](CONTRIBUTING.md) pour le setup de développement complet.
+
+## Contribuer
+
+Les contributions sont les bienvenues ! Consultez le guide [CONTRIBUTING.md](CONTRIBUTING.md) pour :
+- Installer l'environnement de développement
+- Comprendre les conventions de code et de commit
+- Soumettre une Pull Request
+
+## Licence
+
+CoproPilot est distribué sous licence [AGPL-3.0](LICENSE). Vous êtes libre d'utiliser, modifier et distribuer ce logiciel, à condition que toute version modifiée hébergée publiquement soit également publiée sous AGPL-3.0.
+
 ## Documentation complémentaire
 
 Une documentation technique détaillée est disponible dans le répertoire `docs/`.
@@ -118,3 +157,4 @@ Une documentation technique détaillée est disponible dans le répertoire `docs
 | [Référence API](docs/api.md) | Liste complète des points d'accès de l'API REST |
 | [Authentification](docs/authentification.md) | Mécanismes de connexion, rôles et protection des données |
 | [Conformité RGPD](docs/GDPR-COMPLIANCE-REVIEW.md) | Audit de conformité au RGPD |
+| [Stratégie open-core](docs/open-core-strategy.md) | Modèle de distribution, grille tarifaire et stratégie d'acquisition |
