@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/authStore'
 import {
   Building2,
@@ -12,6 +12,7 @@ import {
   Sun,
   Check,
   Play,
+  CreditCard,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -74,6 +75,32 @@ const features = [
   { icon: KeyRound, title: 'Multi-accès', desc: 'Syndics, copropriétaires, locataires' },
 ]
 
+const PAID_PLANS: Record<string, { label: string; price: string }> = {
+  essentiel: { label: 'Essentiel', price: '19 €/mois' },
+  pro: { label: 'Pro', price: '49 €/mois' },
+  entreprise: { label: 'Entreprise', price: '99 €+/mois' },
+}
+
+function PlanBanner({ plan }: { plan: string }) {
+  const info = PAID_PLANS[plan]
+  if (!info) return null
+
+  return (
+    <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 dark:bg-primary/10 p-3">
+      <CreditCard className="size-5 text-primary shrink-0" />
+      <div className="text-sm">
+        <span className="text-foreground">
+          Vous avez choisi le plan{' '}
+          <strong>{info.label}</strong>
+        </span>
+        <span className="text-muted-foreground">
+          {' '}({info.price})
+        </span>
+      </div>
+    </div>
+  )
+}
+
 export default function LoginPage() {
   const { signIn, signUp, isLoading } = useAuthStore()
 
@@ -88,6 +115,20 @@ export default function LoginPage() {
   const [signUpError, setSignUpError] = useState('')
   const [signUpSuccess, setSignUpSuccess] = useState(false)
   const [consentAccepted, setConsentAccepted] = useState(false)
+
+  // Detect ?plan= query param from landing page CTAs
+  const params = new URLSearchParams(
+    window.location.hash.split('?')[1] || ''
+  )
+  const selectedPlan = params.get('plan') || ''
+  const hasPaidPlan = selectedPlan in PAID_PLANS
+
+  // Store plan in sessionStorage for post-verification redirect
+  useEffect(() => {
+    if (hasPaidPlan) {
+      sessionStorage.setItem('pending_plan', selectedPlan)
+    }
+  }, [hasPaidPlan, selectedPlan])
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -189,15 +230,20 @@ export default function LoginPage() {
             <h1 className="text-2xl font-bold text-foreground">CoproPilot</h1>
           </div>
 
+          {/* Plan banner from landing page CTAs */}
+          {hasPaidPlan && <PlanBanner plan={selectedPlan} />}
+
           {/* Tabs — signin / signup */}
-          <Tabs defaultValue="signin" className="w-full space-y-6">
+          <Tabs defaultValue={hasPaidPlan ? 'signup' : 'signin'} className="w-full space-y-6">
             {/* Header — changes with active tab via CSS */}
             <div className="space-y-2">
               <h2 className="text-2xl font-bold text-foreground">
                 Bienvenue
               </h2>
               <p className="text-sm text-muted-foreground">
-                Connectez-vous ou créez un compte pour continuer
+                {hasPaidPlan
+                  ? 'Créez votre compte pour démarrer votre essai'
+                  : 'Connectez-vous ou créez un compte pour continuer'}
               </p>
             </div>
 
@@ -323,7 +369,14 @@ export default function LoginPage() {
                     </div>
                     <div>
                       <p className="font-semibold text-foreground">Compte créé avec succès !</p>
-                      <p className="text-sm text-muted-foreground mt-1">Un email de vérification a été envoyé à votre adresse. Veuillez cliquer sur le lien pour activer votre compte.</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Un email de vérification a été envoyé à votre adresse. Veuillez cliquer sur le lien pour activer votre compte.
+                      </p>
+                      {hasPaidPlan && (
+                        <p className="text-sm text-primary mt-2">
+                          Après vérification, vous serez redirigé vers le paiement pour le plan {PAID_PLANS[selectedPlan]?.label}.
+                        </p>
+                      )}
                     </div>
                   </div>
                 ) : (
