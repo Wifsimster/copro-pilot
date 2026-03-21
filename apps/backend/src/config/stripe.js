@@ -33,3 +33,24 @@ export const PLAN_PRICE_MAP = {
  * Higher index = higher tier.
  */
 export const PLAN_HIERARCHY = ['gratuit', 'essentiel', 'pro', 'entreprise']
+
+/**
+ * Plan quotas: copropriete and user limits per plan.
+ * null = unlimited.
+ */
+export const PLAN_QUOTAS = {
+  gratuit: { coproprietes: 1, users: 3 },
+  essentiel: { coproprietes: 3, users: 5 },
+  pro: {
+    coproprietes: 20,
+    users: 10,
+    extraCoproPrice: 3,
+    extraUserPrice: 5,
+  },
+  entreprise: {
+    coproprietes: 50,
+    users: 25,
+    extraCoproPrice: 2,
+    extraUserPrice: 4,
+  },
+}

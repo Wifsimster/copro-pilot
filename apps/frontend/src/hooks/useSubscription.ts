@@ -29,3 +29,11 @@ export function usePortalSession() {
     },
   })
 }
+
+export function useUsage() {
+  return useQuery({
+    queryKey: ['subscription-usage'],
+    queryFn: () => stripeApi.getUsage(),
+    select: data => data.data,
+  })
+}

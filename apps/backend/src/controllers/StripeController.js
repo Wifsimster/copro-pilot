@@ -1,5 +1,6 @@
 import { getStripe } from '../config/stripe.js'
 import { stripeService } from '../services/StripeService.js'
+import { getUserUsage } from '../middleware/requireQuota.js'
 import logger from '../logger.js'
 
 export class StripeController {
@@ -70,6 +71,25 @@ export class StripeController {
       res
         .status(500)
         .json({ error: 'Impossible de créer la session de gestion' })
+    }
+  }
+
+  /**
+   * GET /api/stripe/usage
+   * Returns the current user's plan usage (coproprietes + users vs limits).
+   */
+  static async getUsage(req, res) {
+    try {
+      const userPlan = req.user?.plan || 'gratuit'
+      const usage = await getUserUsage(req.user.id, userPlan)
+      res.json({ data: usage })
+    } catch (error) {
+      logger.error(
+        `[StripeController] Get usage error: ${error.message}`
+      )
+      res
+        .status(500)
+        .json({ error: "Impossible de récupérer l'utilisation" })
     }
   }
 

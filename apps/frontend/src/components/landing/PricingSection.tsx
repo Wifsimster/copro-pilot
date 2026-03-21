@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'motion/react'
 import { Button } from '@/components/ui/button'
-import { Check, Github } from 'lucide-react'
+import { Check, Github, Users } from 'lucide-react'
 
 interface PricingTier {
   id: string
@@ -9,6 +9,8 @@ interface PricingTier {
   price: number | null
   description: string
   features: string[]
+  included: { coproprietes: string; users: string }
+  overage?: string
   cta: { label: string; href: string }
   badge?: string
   promoted?: boolean
@@ -20,8 +22,8 @@ const tiers: PricingTier[] = [
     name: 'Cloud Gratuit',
     price: 0,
     description: 'Pour demarrer avec une copropriete',
+    included: { coproprietes: '1 copropriete', users: '3 utilisateurs' },
     features: [
-      '1 copropriete',
       "Jusqu'a 20 lots",
       'Gestion complete (CRUD)',
       'Dashboard & notifications',
@@ -38,9 +40,12 @@ const tiers: PricingTier[] = [
     name: 'Essentiel',
     price: 19,
     description: 'Pour une copropriete plus importante',
+    included: {
+      coproprietes: '3 coproprietes',
+      users: '5 utilisateurs',
+    },
     features: [
-      '1 copropriete',
-      "Jusqu'a 50 lots",
+      'Lots illimites',
       'Tout du plan Gratuit',
       'Assemblees generales & PV',
       'Exports PDF & Excel',
@@ -56,8 +61,12 @@ const tiers: PricingTier[] = [
     name: 'Pro',
     price: 49,
     description: 'Pour les syndics gerant plusieurs immeubles',
+    included: {
+      coproprietes: '20 coproprietes',
+      users: '10 utilisateurs',
+    },
+    overage: '+3 EUR/copro, +5 EUR/utilisateur supplementaire',
     features: [
-      "Jusqu'a 20 coproprietes",
       'Lots illimites',
       'Tout du plan Essentiel',
       'Reconciliation bancaire',
@@ -75,10 +84,14 @@ const tiers: PricingTier[] = [
   {
     id: 'entreprise',
     name: 'Entreprise',
-    price: 99,
+    price: 149,
     description: 'Pour les cabinets de syndic',
+    included: {
+      coproprietes: '50 coproprietes',
+      users: '25 utilisateurs',
+    },
+    overage: '+2 EUR/copro, +4 EUR/utilisateur supplementaire',
     features: [
-      'Coproprietes illimitees',
       'Tout du plan Pro',
       'SSO (Azure AD)',
       'API & integrations',
@@ -177,6 +190,40 @@ function PricingCard({ tier }: { tier: PricingTier }) {
           >
             Sur devis
           </div>
+        )}
+      </div>
+
+      <div
+        className="mb-4 rounded-lg bg-stone-50 dark:bg-stone-900
+          p-3 space-y-1.5"
+      >
+        <div className="flex items-center gap-2">
+          <span
+            className="text-sm font-medium text-stone-700
+              dark:text-stone-300"
+          >
+            {tier.included.coproprietes}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Users
+            className="size-3.5 text-emerald-500
+              dark:text-emerald-400"
+          />
+          <span
+            className="text-sm font-medium text-stone-700
+              dark:text-stone-300"
+          >
+            {tier.included.users} inclus
+          </span>
+        </div>
+        {tier.overage && (
+          <p
+            className="text-xs text-stone-400
+              dark:text-stone-500 pt-0.5"
+          >
+            {tier.overage}
+          </p>
         )}
       </div>
 

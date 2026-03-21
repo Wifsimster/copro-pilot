@@ -20,6 +20,11 @@ router.post(
   requireAuth(),
   StripeController.createPortalSession
 )
+router.get(
+  '/usage',
+  requireAuth(),
+  StripeController.getUsage
+)
 
 // Webhook — NO auth (verified via Stripe signature)
 // Note: raw body parsing is handled in createApp.js

@@ -4,7 +4,7 @@ import { CreditCard, Lock } from 'lucide-react'
 const planLabels: Record<string, string> = {
   essentiel: 'Essentiel (19 €/mois)',
   pro: 'Pro (49 €/mois)',
-  entreprise: 'Entreprise (99 €+/mois)',
+  entreprise: 'Entreprise (149 €/mois)',
 }
 
 interface PlanGuardProps {
