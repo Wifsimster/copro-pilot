@@ -74,6 +74,10 @@ import timelineRoutes from './timeline.js'
 import reconciliationRoutes from './reconciliation.js'
 // SSE (Server-Sent Events)
 import sseRoutes from './sse.js'
+// Regularisation post-AG
+import regularisationRoutes from './regularisation.js'
+// Cash Flow Forecast
+import cashFlowRoutes from './cash-flow.js'
 
 const router = Router()
 
@@ -181,6 +185,12 @@ router.use('/reconciliation', reconciliationRoutes)
 
 // SSE (Server-Sent Events)
 router.use('/sse', sseRoutes)
+
+// Regularisation post-AG
+router.use('/regularisation', regularisationRoutes)
+
+// Cash Flow Forecast
+router.use('/cash-flow', cashFlowRoutes)
 
 // Root health check
 router.get('/', (req, res) => {

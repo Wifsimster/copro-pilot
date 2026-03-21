@@ -1272,6 +1272,43 @@ export interface SuggestedMatch {
 }
 
 // ============================================
+// Cash Flow Forecast Types
+// ============================================
+
+export interface CashFlowForecast {
+  total_du: number
+  total_paye: number
+  taux_recouvrement: number
+  solde_impaye: number
+  projections: {
+    j30: number
+    j60: number
+    j90: number
+  }
+  coproprietaires_a_risque: Array<{
+    coproprietaire_id: number
+    nom: string
+    prenom: string
+    taux_recouvrement: number
+    montant_impaye: number
+  }>
+}
+
+// ============================================
+// Regularisation Types
+// ============================================
+
+export interface RegularisationBudgetResponse {
+  data: BudgetPrevisionnel
+  message: string
+}
+
+export interface RegularisationAppelsResponse {
+  data: AppelFonds[]
+  message: string
+}
+
+// ============================================
 // Domain Event Types
 // ============================================
 
