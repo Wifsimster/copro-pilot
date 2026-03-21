@@ -13,7 +13,7 @@ export function RoleGuard({ children, allowedRoles }: RoleGuardProps) {
   const user = useAuthStore(state => state.user)
   const role = user?.role
 
-  if (!role) return <Navigate to="/login" replace />
+  if (!role) return <Navigate to="/" replace />
   if (isAdmin(role)) return <>{children}</>
   if (allowedRoles.includes(role)) return <>{children}</>
 
