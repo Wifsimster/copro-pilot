@@ -1,5 +1,4 @@
 import { sinistreService } from '../services/SinistreService.js'
-import { workflowEventService } from '../services/WorkflowEventService.js'
 import logger from '../logger.js'
 
 export class SinistreController {
@@ -47,7 +46,6 @@ export class SinistreController {
             }
             const sinistre = await sinistreService.create(req.body)
             res.status(201).json({ data: sinistre, message: 'Sinistre créé avec succès' })
-            workflowEventService.onSinistreCreated(sinistre).catch(() => {})
         } catch (error) {
             logger.error(`[SinistreController] Error creating sinistre: ${error.message}`)
             res.status(500).json({ error: 'Impossible de créer le sinistre' })

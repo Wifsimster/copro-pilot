@@ -11,6 +11,7 @@ import { migrate } from './config/migrate.js'
 import logger from './logger.js'
 import { createApp, errorHandler, notFoundHandler } from './createApp.js'
 import { workflowSchedulerService } from './services/WorkflowSchedulerService.js'
+import { initializeEvents, getSseManager } from './events/index.js'
 
 // Application configuration
 const APP_NAME = 'copro-pilot-backend'
@@ -126,6 +127,9 @@ async function main() {
     // Initialize Better Auth
     await initializeBetterAuth()
 
+    // Initialize event system (EventBus + SSE)
+    initializeEvents()
+
     // Initialize Express app
     const frontendUrl = process.env.BASE_URL || process.env.FRONTEND_URL
 
@@ -224,6 +228,10 @@ async function main() {
 
         try {
           workflowSchedulerService.stop()
+          try {
+            getSseManager().destroy()
+            logger.info(`[${APP_NAME}] SSE connections closed`)
+          } catch { /* ignore if not initialized */ }
           await knexDatabase.close()
           logger.info(`[${APP_NAME}] Database connections closed`)
         } catch (dbError) {

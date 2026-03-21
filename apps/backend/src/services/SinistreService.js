@@ -1,4 +1,5 @@
 import { SinistreModel } from '../models/Sinistre.js'
+import { workflowEventService } from './WorkflowEventService.js'
 import logger from '../logger.js'
 
 class SinistreService {
@@ -33,6 +34,9 @@ class SinistreService {
         try {
             const result = await SinistreModel.create(data)
             logger.info(`[SinistreService] Sinistre créé: ${result.numero_sinistre || 'N/A'} (ID: ${result.id})`)
+            workflowEventService.onSinistreCreated(result).catch(err =>
+                logger.error(`[SinistreService] Workflow event error: ${err.message}`)
+            )
             return result
         } catch (error) {
             logger.error(`[SinistreService] Error creating sinistre: ${error.message}`)

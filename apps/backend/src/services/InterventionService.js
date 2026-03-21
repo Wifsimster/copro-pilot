@@ -1,4 +1,5 @@
 import { InterventionModel } from '../models/Intervention.js'
+import { workflowEventService } from './WorkflowEventService.js'
 import logger from '../logger.js'
 
 class InterventionService {
@@ -46,6 +47,11 @@ class InterventionService {
             if (!existing) return null
             const result = await InterventionModel.update(id, data)
             logger.info(`[InterventionService] Intervention mise à jour (ID: ${id})`)
+            if (result.statut === 'terminee') {
+                workflowEventService.onInterventionTerminee(result).catch(err =>
+                    logger.error(`[InterventionService] Workflow event error: ${err.message}`)
+                )
+            }
             return result
         } catch (error) {
             logger.error(`[InterventionService] Error updating intervention ${id}: ${error.message}`)

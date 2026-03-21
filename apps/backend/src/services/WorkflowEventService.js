@@ -7,6 +7,10 @@ const getDb = () => knexDatabase.getKnex()
 class WorkflowEventService {
   // --- Helpers ---
 
+  // Returns all syndic/user role users. In the current single-tenant
+  // setup every syndic manages all coproprietes, so filtering by
+  // coproprieteId is not required. When multi-tenant support is added,
+  // this should be scoped to users linked to the given copropriete.
   async _getSyndicUsersForCopropriete(coproprieteId) {
     const db = getDb()
     return db('user').whereIn('role', ['syndic', 'user'])
@@ -134,6 +138,17 @@ class WorkflowEventService {
   async onInterventionTerminee(intervention) {
     try {
       const db = getDb()
+
+      // Idempotency: skip if entry already exists for this intervention
+      const existing = await db('carnet_entretien')
+        .where('intervention_id', intervention.id)
+        .first()
+      if (existing) {
+        logger.info(
+          `[WorkflowEvent] Carnet entry already exists for intervention ${intervention.id}, skipping`
+        )
+        return
+      }
 
       // Auto-create carnet d'entretien entry
       await db('carnet_entretien').insert({

@@ -1,5 +1,4 @@
 import { incidentService } from '../services/IncidentService.js'
-import { workflowEventService } from '../services/WorkflowEventService.js'
 import logger from '../logger.js'
 
 export class IncidentController {
@@ -34,8 +33,6 @@ export class IncidentController {
             }
             const result = await incidentService.create(req.body)
             res.status(201).json({ data: result, message: 'Incident créé avec succès' })
-            // Fire-and-forget workflow event
-            workflowEventService.onIncidentCreated(result).catch(() => {})
         } catch (error) {
             logger.error(`[IncidentController] Error creating: ${error.message}`)
             res.status(500).json({ error: 'Impossible de créer l\'incident' })
@@ -49,6 +46,9 @@ export class IncidentController {
             if (!result) return res.status(404).json({ error: 'Incident non trouvé' })
             res.json({ data: result, message: 'Incident mis à jour avec succès' })
         } catch (error) {
+            if (error.code === 'INVALID_STATUS_TRANSITION') {
+                return res.status(400).json({ error: error.message })
+            }
             logger.error(`[IncidentController] Error updating: ${error.message}`)
             res.status(500).json({ error: 'Impossible de mettre à jour l\'incident' })
         }

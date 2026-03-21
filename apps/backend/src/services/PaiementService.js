@@ -1,4 +1,5 @@
 import { PaiementModel } from '../models/Paiement.js'
+import { workflowEventService } from './WorkflowEventService.js'
 import logger from '../logger.js'
 
 class PaiementService {
@@ -42,6 +43,9 @@ class PaiementService {
         try {
             const result = await PaiementModel.create(data)
             logger.info(`[PaiementService] Paiement créé: ${result.montant}€ (ID: ${result.id})`)
+            workflowEventService.onPaiementCreated(result).catch(err =>
+                logger.error(`[PaiementService] Workflow event error: ${err.message}`)
+            )
             return result
         } catch (error) {
             logger.error(`[PaiementService] Error creating paiement: ${error.message}`)

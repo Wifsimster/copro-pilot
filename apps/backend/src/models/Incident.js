@@ -55,9 +55,17 @@ export class IncidentModel {
 
     static async update(id, data) {
         const db = getDb()
+        const allowedFields = [
+            'titre', 'description', 'categorie', 'urgence',
+            'statut', 'lot_id', 'signale_par_id',
+            'date_signalement', 'date_resolution', 'notes',
+        ]
+        const sanitized = Object.fromEntries(
+            Object.entries(data).filter(([key]) => allowedFields.includes(key))
+        )
         const [result] = await db('incidents')
             .where('id', id)
-            .update({ ...data, updated_at: db.fn.now() })
+            .update({ ...sanitized, updated_at: db.fn.now() })
             .returning('*')
         return result
     }

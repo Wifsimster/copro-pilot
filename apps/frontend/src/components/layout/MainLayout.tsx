@@ -9,6 +9,7 @@ import { NotificationBell } from './NotificationBell'
 import { GlobalSearch } from './GlobalSearch'
 import { NavigationTour } from './NavigationTour'
 import { canAccessRoute, isCoproprietaire } from '@/utils/roleAccess'
+import { useEventStream } from '@/hooks/useEventStream'
 import {
   Building2,
   LayoutDashboard,
@@ -169,6 +170,8 @@ export function MainLayout({ children }: MainLayoutProps) {
   const { user, logout } = useAuthStore()
   const { selectedCoproprieteId, setSelectedCoproprieteId } = useCoproprieteStore()
   const { data: coproprietes } = useCoproprietes()
+
+  useEventStream()
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [tourRunning, setTourRunning] = useState(false)
