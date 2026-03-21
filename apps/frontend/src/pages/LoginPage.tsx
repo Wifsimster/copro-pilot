@@ -173,49 +173,50 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen bg-background">
       {/* Left Panel — Branding */}
-      <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] relative overflow-hidden bg-gradient-to-br from-primary via-primary/85 to-indigo-900 dark:from-primary/80 dark:via-primary/50 dark:to-slate-950 text-white flex-col justify-between p-10">
-        {/* Decorative circles */}
-        <div className="absolute -top-24 -left-24 size-96 rounded-full bg-white/5 dark:bg-white/[0.03]" />
-        <div className="absolute -bottom-32 -right-32 size-[500px] rounded-full bg-white/5 dark:bg-white/[0.03]" />
-        <div className="absolute top-1/2 left-1/3 size-64 rounded-full bg-white/[0.03] dark:bg-white/[0.02]" />
+      <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] relative overflow-hidden bg-stone-900 dark:bg-stone-950 text-white flex-col justify-between p-10">
+        {/* Decorative gradient orbs — matching landing page */}
+        <div className="absolute -top-24 -left-24 size-96 rounded-full bg-emerald-600/10 blur-3xl" />
+        <div className="absolute -bottom-32 -right-32 size-[500px] rounded-full bg-amber-600/8 blur-3xl" />
+        <div className="absolute top-1/2 left-1/3 size-64 rounded-full bg-emerald-500/5 blur-2xl" />
 
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-2">
-            <div className="flex size-11 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm">
+            <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-700">
               <Building2 className="size-6" />
             </div>
-            <span className="text-2xl font-bold tracking-tight">CoproPilot</span>
+            <span className="font-display text-2xl font-semibold tracking-tight">CoproPilot</span>
           </div>
-          <p className="text-primary-foreground/70 text-sm mt-1">
+          <p className="text-stone-400 text-sm mt-1">
             Plateforme de gestion de copropriété
           </p>
         </div>
 
         <div className="relative z-10 space-y-8">
-          <h2 className="text-3xl font-bold leading-tight">
-            Simplifiez la gestion <br />de vos copropriétés
+          <h2 className="font-display text-3xl font-semibold leading-tight">
+            Simplifiez la gestion <br />
+            <span className="italic text-emerald-400">de vos copropriétés</span>
           </h2>
           <div className="grid grid-cols-2 gap-4">
             {features.map((f) => (
               <div
                 key={f.title}
-                className="rounded-xl bg-white/10 dark:bg-white/5 backdrop-blur-sm p-4 space-y-2 border border-white/10 dark:border-white/[0.06]"
+                className="rounded-xl bg-white/5 p-4 space-y-2 border border-stone-700/60"
               >
-                <f.icon className="size-5 text-primary-foreground/70" />
+                <f.icon className="size-5 text-emerald-400" />
                 <p className="font-semibold text-sm">{f.title}</p>
-                <p className="text-xs text-primary-foreground/50 leading-relaxed">{f.desc}</p>
+                <p className="text-xs text-stone-400 leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <p className="relative z-10 text-xs text-primary-foreground/40">
+        <p className="relative z-10 text-xs text-stone-500">
           &copy; {new Date().getFullYear()} CoproPilot. Tous droits réservés. &middot; v{__APP_VERSION__}
         </p>
       </div>
 
       {/* Right Panel — Forms */}
-      <div className="relative flex flex-1 items-center justify-center bg-secondary/50 dark:bg-background p-6 sm:p-10">
+      <div className="relative flex flex-1 items-center justify-center bg-[#FAF8F5] dark:bg-stone-950 p-6 sm:p-10">
         {/* Theme toggle — top right */}
         <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
           <ThemeToggle />
