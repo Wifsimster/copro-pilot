@@ -42,12 +42,12 @@ export function ProtectedRoute({
   }
 
   if (requiresAdmin && user?.role !== 'admin') {
-    return <Navigate to="/" replace />
+    return <Navigate to="/dashboard" replace />
   }
 
   if (allowedRoles && user?.role) {
     if (!allowedRoles.includes(user.role) && user.role !== 'admin') {
-      const redirectTo = isCoproprietaire(user.role) ? '/extranet' : '/'
+      const redirectTo = isCoproprietaire(user.role) ? '/extranet' : '/dashboard'
       return <Navigate to={redirectTo} replace />
     }
   }
@@ -67,7 +67,7 @@ export function PublicRoute({ children }: { children: ReactNode }) {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/" replace />
+    return <Navigate to="/dashboard" replace />
   }
 
   return <>{children}</>

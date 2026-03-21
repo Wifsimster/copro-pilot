@@ -102,7 +102,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       if (result.data?.user) {
         const userData = transformUser(result.data.user as SessionUser)
         get().setAuth(userData)
-        window.location.hash = '#/'
+        window.location.hash = '#/dashboard'
       }
     } catch (error) {
       logger.error('Sign in failed:', error)
