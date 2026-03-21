@@ -74,7 +74,7 @@ const navigationSections: NavSection[] = [
     label: 'Vue d\'ensemble',
     collapsible: false,
     items: [
-      { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
+      { name: 'Tableau de bord', href: '/dashboard', icon: LayoutDashboard },
       { name: 'Espace copropriétaire', href: '/extranet', icon: UserCircle },
       { name: 'Copropriétés', href: '/coproprietes', icon: Building2 },
       { name: 'Copropriétaires', href: '/coproprietaires', icon: Users },

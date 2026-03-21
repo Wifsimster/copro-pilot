@@ -73,9 +73,9 @@ function AuthenticatedLayout() {
 }
 
 export const router = createHashRouter([
-  // Landing page (public)
+  // Landing page (public, default route)
   {
-    path: '/landing',
+    path: '/',
     element: (
       <Suspense fallback={<PageLoader />}>
         <LandingPage />
@@ -142,7 +142,7 @@ export const router = createHashRouter([
     element: <AuthenticatedLayout />,
     children: [
       {
-        path: '/',
+        path: '/dashboard',
         element: (
           <RoleGuard allowedRoles={['user', 'syndic']}>
             <DashboardPage />

@@ -12,24 +12,24 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     quote:
-      "Avant CoproPilot, je passais mes dimanches sur Excel. Maintenant tout est centralisé et je gère ma copropriété en quelques clics.",
-    name: 'Marie D.',
-    role: 'Syndic bénévole, 24 lots',
-    initials: 'MD',
+      "Je suis passée de 3 tableurs Excel à un seul outil. Honnêtement, c'est pas parfait sur tout, mais pour les appels de fonds et le suivi des charges, ça m'a changé la vie. Je gagnais facile 2h par semaine.",
+    name: 'Nathalie M.',
+    role: 'Syndic bénévole, 18 lots',
+    initials: 'NM',
   },
   {
     quote:
-      "On payait 5 €/lot/mois avec notre ancien logiciel. CoproPilot nous fait économiser plus de 2 000 € par an pour un service équivalent.",
-    name: 'Jean-Pierre L.',
-    role: 'Syndic professionnel, 8 copropriétés',
-    initials: 'JL',
+      "Notre ancien logiciel nous coûtait 4,50 €/lot/mois et l'interface datait de 2010. On a basculé nos 5 petites copros sur CoproPilot, le plus dur c'était la reprise des données. Depuis, les copropriétaires ont accès à leurs documents en ligne et on a quasiment plus d'appels pour ça.",
+    name: 'Frédéric B.',
+    role: 'Syndic professionnel, 5 copropriétés',
+    initials: 'FB',
   },
   {
     quote:
-      "L'interface est tellement intuitive que même les membres du conseil syndical l'utilisent. Aucune formation nécessaire.",
-    name: 'Sophie R.',
-    role: 'Présidente du conseil syndical, 36 lots',
-    initials: 'SR',
+      "Mon mari est président du CS et c'est lui qui m'en a parlé. J'ai créé mon compte en 5 minutes, je vois les PV d'AG, les budgets votés, l'état de nos charges. Avant il fallait redemander au syndic à chaque fois.",
+    name: 'Catherine L.',
+    role: 'Copropriétaire, résidence de 42 lots',
+    initials: 'CL',
   },
 ]
 
@@ -47,7 +47,7 @@ export function TestimonialsSection() {
           className="text-center mb-12"
         >
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
-            Retours de nos bêta-testeurs
+            Retours de nos utilisateurs
           </h2>
           <p className="mt-3 text-slate-600 dark:text-slate-400">
             Ils gèrent déjà leur copropriété avec CoproPilot

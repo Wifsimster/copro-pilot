@@ -125,7 +125,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
           }
         }
 
-        window.location.hash = '#/'
+        window.location.hash = '#/dashboard'
       }
     } catch (error) {
       logger.error('Sign in failed:', error)
