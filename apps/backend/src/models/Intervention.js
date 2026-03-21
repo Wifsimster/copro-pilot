@@ -49,9 +49,17 @@ export class InterventionModel {
 
     static async update(id, data) {
         const db = getDb()
+        const allowedFields = [
+            'incident_id', 'prestataire', 'description',
+            'montant_devis', 'montant_facture', 'date_prevue',
+            'date_realisation', 'statut', 'notes',
+        ]
+        const sanitized = Object.fromEntries(
+            Object.entries(data).filter(([key]) => allowedFields.includes(key))
+        )
         const [result] = await db('interventions')
             .where('id', id)
-            .update({ ...data, updated_at: db.fn.now() })
+            .update({ ...sanitized, updated_at: db.fn.now() })
             .returning('*')
         return result
     }

@@ -1,6 +1,7 @@
 import { AssembleeGeneraleModel } from '../models/AssembleeGenerale.js'
 import { CoproprieteModel } from '../models/Copropriete.js'
 import { pvGenerationService } from './PvGenerationService.js'
+import { workflowEventService } from './WorkflowEventService.js'
 import logger from '../logger.js'
 
 class AssembleeGeneraleService {
@@ -43,6 +44,11 @@ class AssembleeGeneraleService {
             if (!existing) return null
             const result = await AssembleeGeneraleModel.update(id, data)
             logger.info(`[AGService] AG mise à jour (ID: ${id})`)
+            if (result.statut === 'terminee') {
+                workflowEventService.onAssembleeTerminee(result).catch(err =>
+                    logger.error(`[AGService] Workflow event error: ${err.message}`)
+                )
+            }
             return result
         } catch (error) {
             logger.error(`[AGService] Error updating AG ${id}: ${error.message}`)

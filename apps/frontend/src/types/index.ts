@@ -1196,3 +1196,20 @@ export interface SyndicDashboard {
   metrics: SyndicDashboardMetrics
   activity: DashboardActivity[]
 }
+
+// ============================================
+// Domain Event Types
+// ============================================
+
+export interface DomainEvent {
+  id: string
+  event_type: string
+  entity_type: string
+  entity_id: number
+  copropriete_id: number | null
+  actor_id: string | null
+  payload: Record<string, unknown>
+  metadata: Record<string, unknown>
+  created_at: string
+  processed_at: string | null
+}

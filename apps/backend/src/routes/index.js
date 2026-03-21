@@ -64,6 +64,10 @@ import searchRoutes from './search.js'
 import gdprRoutes from './gdpr.js'
 // User management (syndic + admin)
 import userManagementRoutes from './user-management.js'
+// Timeline (domain events)
+import timelineRoutes from './timeline.js'
+// SSE (Server-Sent Events)
+import sseRoutes from './sse.js'
 
 const router = Router()
 
@@ -156,6 +160,12 @@ router.use('/gdpr', gdprRoutes)
 
 // User management
 router.use('/user-management', userManagementRoutes)
+
+// Timeline (domain events)
+router.use('/timeline', timelineRoutes)
+
+// SSE (Server-Sent Events)
+router.use('/sse', sseRoutes)
 
 // Root health check
 router.get('/', (req, res) => {
