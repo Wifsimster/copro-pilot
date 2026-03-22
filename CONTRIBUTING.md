@@ -16,8 +16,8 @@ CoproPilot est distribué sous licence **AGPL-3.0**. En contribuant, vous accept
 
 ```bash
 # Cloner le dépôt
-git clone https://github.com/Wifsimster/immo-ia.git
-cd immo-ia
+git clone https://github.com/Wifsimster/copro-pilot.git
+cd copro-pilot
 
 # Installer les dépendances
 npm install --workspaces --include-workspace-root
@@ -105,7 +105,7 @@ npm run test --workspace=copro-pilot-frontend   # Frontend uniquement
 
 ## Signaler un bug
 
-Ouvrez une [issue GitHub](https://github.com/Wifsimster/immo-ia/issues) avec :
+Ouvrez une [issue GitHub](https://github.com/Wifsimster/copro-pilot/issues) avec :
 - Description du problème
 - Étapes pour reproduire
 - Comportement attendu vs observé

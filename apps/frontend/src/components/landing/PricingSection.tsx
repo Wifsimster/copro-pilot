@@ -348,7 +348,7 @@ export function PricingSection() {
           className="mt-12 text-center space-y-3"
         >
           <a
-            href="https://github.com/Wifsimster/immo-ia"
+            href="https://github.com/Wifsimster/copro-pilot"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm

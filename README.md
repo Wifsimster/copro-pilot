@@ -127,8 +127,8 @@ Créez un compte gratuitement sur la plateforme hébergée — opérationnel en 
 ### Auto-hébergement (développeurs)
 
 ```bash
-git clone https://github.com/Wifsimster/immo-ia.git
-cd immo-ia
+git clone https://github.com/Wifsimster/copro-pilot.git
+cd copro-pilot
 docker compose -f compose.local.yml up -d
 ```
 

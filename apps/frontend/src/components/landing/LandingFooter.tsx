@@ -49,7 +49,7 @@ export function LandingFooter() {
               Contact
             </a>
             <a
-              href="https://github.com/Wifsimster/immo-ia"
+              href="https://github.com/Wifsimster/copro-pilot"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-stone-500
