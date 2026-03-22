@@ -314,7 +314,7 @@ Le workflow GitHub Actions (`.github/workflows/ci.yml`) exécute :
 
 1. **CI** (push sur `main` + PRs) : install → lint backend → lint frontend → typecheck → build frontend
 2. **Release** (push sur `main` uniquement) : semantic-release (bump version, tag, GitHub release)
-3. **Docker** (après une nouvelle release) : build multi-plateforme → push DockerHub (`wifsimster/copro-pilot:latest` + tag de version)
+3. **Docker** (après une nouvelle release) : build multi-plateforme → push GitHub Container Registry (`ghcr.io/<owner>/copro-pilot:latest` + tag de version)
 
 ## Variables d'environnement
 
