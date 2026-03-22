@@ -93,12 +93,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase repository name
+        id: repo
+        run: echo "name=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
+
       - uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ needs.release.outputs.new-release-version }}
+            ghcr.io/${{ steps.repo.outputs.name }}:latest
+            ghcr.io/${{ steps.repo.outputs.name }}:${{ needs.release.outputs.new-release-version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
