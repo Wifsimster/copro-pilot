@@ -24,9 +24,9 @@ const planLabels: Record<string, string> = {
 
 const planPrices: Record<string, string> = {
   gratuit: '0 €/mois',
-  essentiel: '19 €/mois',
-  pro: '49 €/mois',
-  entreprise: '149 €/mois',
+  essentiel: '9 €/mois',
+  pro: '29 €/mois',
+  entreprise: '99 €/mois',
 }
 
 const statusLabels: Record<string, { label: string; color: string }> = {
