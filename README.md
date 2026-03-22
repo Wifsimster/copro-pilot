@@ -12,11 +12,11 @@ CoproPilot est une plateforme open-source de gestion de copropriété pour les s
 
 - [À quoi sert ce produit ?](#à-quoi-sert-ce-produit-)
 - [Fonctionnalités principales](#fonctionnalités-principales)
-- [Démarrage rapide](#démarrage-rapide)
 - [Comment ça fonctionne](#comment-ça-fonctionne)
 - [Environnements](#environnements)
 - [Déploiement](#déploiement)
 - [Stack technique](#stack-technique)
+- [Démarrage rapide](#démarrage-rapide)
 - [Contribuer](#contribuer)
 - [Licence](#licence)
 - [Documentation complémentaire](#documentation-complémentaire)
@@ -25,19 +25,34 @@ CoproPilot est une plateforme open-source de gestion de copropriété pour les s
 
 | Document | Description |
 |----------|-------------|
-| [Architecture](docs/architecture.md) | Vue d'ensemble de l'architecture, couches backend et frontend, déploiement Docker |
-| [Modules fonctionnels](docs/modules.md) | Guide des modules métier avec diagrammes de flux |
-| [Schéma des données](docs/donnees.md) | Description des tables de la base de données et de leurs relations |
-| [Référence API](docs/api.md) | Liste complète des points d'accès de l'API REST |
-| [Authentification](docs/authentification.md) | Mécanismes de connexion, rôles et protection des données |
-| [Conformité RGPD](docs/GDPR-COMPLIANCE-REVIEW.md) | Audit de conformité au RGPD |
-| [Stratégie open-core](docs/open-core-strategy.md) | Modèle de distribution, grille tarifaire et stratégie d'acquisition |
+| [Architecture](docs/architecture.md) | Vue d'ensemble des couches backend et frontend, déploiement Docker |
+| [Modules fonctionnels](docs/modules.md) | Guide des 5 modules métier avec diagrammes de flux |
+| [Schéma des données](docs/donnees.md) | Tables de la base de données et relations entre entités |
+| [Référence API](docs/api.md) | Liste complète des 58+ points d'accès de l'API REST |
+| [Authentification](docs/authentification.md) | Connexion email/mot de passe, rôles et sécurité |
+| [Cycle annuel](docs/cycle-annuel.md) | 13 tâches réglementaires obligatoires et suivi de conformité |
+| [Convocations AG](docs/convocations.md) | Processus de convocation en 4 étapes avec délai légal 21 jours |
+| [Notifications](docs/notifications.md) | Système de notifications temps réel via SSE |
+| [Exports](docs/exports.md) | Génération de 5 documents PDF et fichiers Excel |
+| [Extranet copropriétaires](docs/extranet.md) | Espace en lecture seule pour les copropriétaires |
+| [Gestion des utilisateurs](docs/user-management.md) | Création de comptes en masse et parcours de première connexion |
+| [Conformité RGPD](docs/GDPR-COMPLIANCE-REVIEW.md) | Audit de conformité au Règlement Général sur la Protection des Données |
+| [Stratégie open-core](docs/open-core-strategy.md) | Modèle AGPL-3.0, grille tarifaire et stratégie d'acquisition |
+| [Roadmap disruptive](docs/disruptive-roadmap.md) | Roadmap 2026 : 4 piliers, 16 fonctionnalités, 10 sprints |
+| [Base POWIMO](docs/legacy-knowledge-base.md) | Analyse de l'application legacy POWIMO (Square Habitat) |
+| [Analyse fondations P1](docs/meeting-p1-analysis.md) | Décisions architecture event-driven et priorités sprint 1 |
+| [Intégration Stripe](docs/stripe-integration.md) | Abonnements, facturation à l'usage et contrôle des quotas |
+| [Événements de domaine](docs/domain-events.md) | EventBus, SSE temps réel et timeline des entités |
+| [Système d'emails](docs/emails.md) | Emails transactionnels, templates et configuration SMTP |
+| [Intégration Stripe](docs/stripe-integration.md) | Abonnements, facturation à l'usage et contrôle des quotas |
+| [Événements de domaine](docs/domain-events.md) | EventBus, SSE temps réel et timeline des entités |
+| [Système d'emails](docs/emails.md) | Emails transactionnels, templates et configuration SMTP |
 
 ## À quoi sert ce produit ?
 
 - Centraliser la gestion de vos copropriétés dans un seul outil
 - Administrer l'annuaire des copropriétaires, locataires et mutations
-- Suivre la comptabilité : budgets, appels de fonds, paiements et comptabilité réglementaire (loi ALUR)
+- Suivre la comptabilité : budgets, appels de fonds et comptabilité réglementaire (loi ALUR)
 - Organiser vos assemblées générales avec résolutions, votes et feuilles de présence
 - Déclarer et suivre les incidents, interventions et contrats de prestataires
 - Gérer les documents, assurances, contentieux et obligations réglementaires
@@ -61,15 +76,17 @@ CoproPilot est une plateforme open-source de gestion de copropriété pour les s
 - **Assurances & sinistres** — Suivi des polices d'assurance et déclaration de sinistres
 - **Contentieux & recouvrement** — Relances et procédures pour les impayés
 - **Documents (GED)** — Gestion électronique des documents avec téléversement et téléchargement
-- **Extranet copropriétaires** — Espace dédié avec accès aux documents selon le rôle
+- **Extranet copropriétaires** — Espace dédié en lecture seule avec accès selon le rôle
 - **Règlement de copropriété** — Consultation et gestion du règlement
 - **Immatriculation** — Déclarations au registre national des copropriétés
 - **Contrat de syndic** — Gestion du mandat et mise en concurrence
 - **Fiche synthétique** — Vue consolidée des informations clés de chaque copropriété
-- **Notifications** — Alertes et suivi des événements importants
-- **Exports** — Génération de documents PDF et fichiers Excel
+- **Cycle annuel** — Suivi des 13 tâches réglementaires obligatoires avec indicateur de conformité
+- **Notifications temps réel** — Alertes via Server-Sent Events (SSE)
+- **Exports** — Génération de documents PDF (PDFKit) et fichiers Excel (ExcelJS)
 - **Tableau de bord** — Indicateurs clés, incidents récents et prochaines assemblées
 - **Authentification sécurisée** — Connexion par email ou via Microsoft Azure AD (SSO)
+- **Abonnements Stripe** — Gestion des plans tarifaires avec facturation à l'usage
 - **Mode sombre** — Interface adaptable selon vos préférences visuelles
 
 ## Comment ça fonctionne
@@ -82,10 +99,11 @@ graph LR
     C --> D[Base de données PostgreSQL]
     C --> E[Microsoft Azure AD]
     C --> F[Génération PDF & Excel]
+    C --> H[Stripe]
     C --> G
 ```
 
-L'utilisateur accède à l'application web depuis son navigateur. L'application communique avec le serveur backend via une API REST. Le backend gère la logique métier, stocke les données dans PostgreSQL et délègue l'authentification à Microsoft Azure AD. Il génère des documents PDF et Excel à la demande. Les mises à jour en temps réel sont transmises via SSE (Server-Sent Events).
+L'utilisateur accède à l'application web depuis son navigateur. L'application communique avec le serveur backend via une API REST. Le backend gère la logique métier, stocke les données dans PostgreSQL et délègue l'authentification à Better Auth (email/mot de passe ou Microsoft Azure AD). Il génère des documents PDF et Excel à la demande. Les mises à jour en temps réel sont transmises via SSE (Server-Sent Events). Stripe gère les abonnements et la facturation à l'usage.
 
 En production, le backend sert aussi les fichiers statiques de l'application web.
 
@@ -106,17 +124,17 @@ graph LR
     C -->|Oui| D[Semantic Release]
     C -->|Non| E[Notification erreur]
     D -->|Nouvelle version| F[Build Docker]
-    F -->|Push| G[DockerHub]
+    F -->|Push| G[GitHub Container Registry]
 ```
 
-Le pipeline CI/CD (Intégration et Déploiement Continus) s'exécute via GitHub Actions à chaque push sur la branche principale. Il lance le lint, les tests et le build du frontend. Si tout réussit, Semantic Release détermine le numéro de version. Une image Docker multi-étapes est alors construite et publiée sur DockerHub. Docker Compose orchestre l'application et la base de données PostgreSQL en production.
+Le pipeline CI/CD (Intégration et Déploiement Continus) s'exécute via GitHub Actions à chaque push sur la branche principale. Il lance le lint, les tests et le build du frontend. Si tout réussit, Semantic Release détermine le numéro de version. Une image Docker multi-étapes est alors construite et publiée sur GitHub Container Registry (GHCR). Docker Compose orchestre l'application et la base de données PostgreSQL en production.
 
 ## Stack technique
 
-- **Frontend :** React 19, TypeScript, TailwindCSS v4, Radix UI, React Query, Zustand, Recharts, Motion
-- **Backend :** Node.js 24, Express 5, Knex.js (query builder), Better Auth, PDFKit, ExcelJS
-- **Base de données :** PostgreSQL 18
-- **Infrastructure :** Docker, Docker Compose, Semantic Release
+- **Frontend :** React 19, TypeScript 5.7, TailwindCSS v4, Radix UI (shadcn/ui), React Query 5, Zustand 5, Recharts, Motion
+- **Backend :** Node.js 24, Express 5, Knex.js 3 (query builder), Better Auth 1.4, Stripe, PDFKit, ExcelJS, Nodemailer
+- **Base de données :** PostgreSQL 18 (29 migrations, 21 fichiers de seed)
+- **Infrastructure :** Docker, Docker Compose, GitHub Actions, Semantic Release, GHCR
 
 ## Démarrage rapide
 
@@ -147,14 +165,26 @@ CoproPilot est distribué sous licence [AGPL-3.0](LICENSE). Vous êtes libre d'u
 
 ## Documentation complémentaire
 
-Une documentation technique détaillée est disponible dans le répertoire `docs/`.
+Une documentation technique détaillée est disponible dans le répertoire `docs/` (19 documents).
 
 | Document | Description |
 |---|---|
-| [Architecture](docs/architecture.md) | Vue d'ensemble de l'architecture, couches backend et frontend, déploiement Docker |
-| [Modules fonctionnels](docs/modules.md) | Guide des modules métier avec diagrammes de flux |
-| [Schéma des données](docs/donnees.md) | Description des tables de la base de données et de leurs relations |
-| [Référence API](docs/api.md) | Liste complète des points d'accès de l'API REST |
-| [Authentification](docs/authentification.md) | Mécanismes de connexion, rôles et protection des données |
-| [Conformité RGPD](docs/GDPR-COMPLIANCE-REVIEW.md) | Audit de conformité au RGPD |
-| [Stratégie open-core](docs/open-core-strategy.md) | Modèle de distribution, grille tarifaire et stratégie d'acquisition |
+| [Architecture](docs/architecture.md) | Vue d'ensemble des couches backend et frontend, déploiement Docker |
+| [Modules fonctionnels](docs/modules.md) | Guide des 5 modules métier avec diagrammes de flux |
+| [Schéma des données](docs/donnees.md) | Tables de la base de données et relations entre entités |
+| [Référence API](docs/api.md) | Liste complète des 58+ points d'accès de l'API REST |
+| [Authentification](docs/authentification.md) | Connexion email/mot de passe, rôles et sécurité |
+| [Cycle annuel](docs/cycle-annuel.md) | 13 tâches réglementaires obligatoires et suivi de conformité |
+| [Convocations AG](docs/convocations.md) | Processus de convocation en 4 étapes avec délai légal 21 jours |
+| [Notifications](docs/notifications.md) | Système de notifications temps réel via SSE |
+| [Exports](docs/exports.md) | Génération de 5 documents PDF et fichiers Excel |
+| [Extranet copropriétaires](docs/extranet.md) | Espace en lecture seule pour les copropriétaires |
+| [Gestion des utilisateurs](docs/user-management.md) | Création de comptes en masse et parcours de première connexion |
+| [Conformité RGPD](docs/GDPR-COMPLIANCE-REVIEW.md) | Audit de conformité au Règlement Général sur la Protection des Données |
+| [Stratégie open-core](docs/open-core-strategy.md) | Modèle AGPL-3.0, grille tarifaire et stratégie d'acquisition |
+| [Roadmap disruptive](docs/disruptive-roadmap.md) | Roadmap 2026 : 4 piliers, 16 fonctionnalités, 10 sprints |
+| [Base POWIMO](docs/legacy-knowledge-base.md) | Analyse de l'application legacy POWIMO (Square Habitat) |
+| [Analyse fondations P1](docs/meeting-p1-analysis.md) | Décisions architecture event-driven et priorités sprint 1 |
+| [Intégration Stripe](docs/stripe-integration.md) | Abonnements, facturation à l'usage et contrôle des quotas |
+| [Événements de domaine](docs/domain-events.md) | EventBus, SSE temps réel et timeline des entités |
+| [Système d'emails](docs/emails.md) | Emails transactionnels, templates et configuration SMTP |

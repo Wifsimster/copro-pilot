@@ -1,6 +1,6 @@
 # Architecture technique
 
-Ce document présente l'architecture de CoproPilot. Il vous permet de comprendre comment les composants de la plateforme interagissent entre eux.
+Ce document présente l'architecture de CoproPilot et l'interaction entre ses composants.
 
 ## Vue d'ensemble
 
@@ -8,15 +8,20 @@ Ce document présente l'architecture de CoproPilot. Il vous permet de comprendre
 graph LR
     A[Navigateur] --> B[Application Web]
     B -->|Requêtes API| C[Serveur Backend]
+    B -->|Temps réel| G[SSE]
     C --> D[Base de données PostgreSQL]
-    C --> E[Azure AD - SSO Microsoft]
+    C --> E[Better Auth + Azure AD]
+    C --> F[Stripe]
+    C --> G
 ```
 
 - Le **navigateur** affiche l'application web (interface utilisateur).
-- L'**application web** envoie des requêtes au serveur backend via une API REST (Interface de Programmation Applicative).
+- L'**application web** envoie des requêtes au serveur backend via une API REST.
 - Le **serveur backend** traite la logique métier et communique avec la base de données.
 - **PostgreSQL** stocke toutes les données de la plateforme.
-- **Azure AD** (Active Directory) gère l'authentification Microsoft SSO (Single Sign-On).
+- **Better Auth** gère l'authentification (email/mot de passe + Azure AD SSO).
+- **SSE** (Server-Sent Events) transmet les notifications en temps réel.
+- **Stripe** gère les abonnements et la facturation à l'usage.
 
 ## Couches du backend
 
@@ -78,6 +83,6 @@ Le déploiement en production fonctionne ainsi :
 
 | Environnement | Adresse | Usage |
 |---|---|---|
-| Développement frontend | `localhost:5173` | Interface avec rechargement automatique |
-| Développement backend | `localhost:3001` | API avec redémarrage automatique |
+| Développement frontend | `localhost:3000` | Interface Vite avec proxy /api vers le backend |
+| Développement backend | `localhost:3001` | API Express avec redémarrage automatique |
 | Production Docker | `localhost:3000` | Application complète conteneurisée |
