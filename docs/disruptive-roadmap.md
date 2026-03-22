@@ -1,306 +1,237 @@
-# Roadmap disruptif CoproPilot — Analyse Fast Meeting
+# Roadmap disruptive CoproPilot
 
-> Date : 2026-03-21
-> Participants : Sprint Zero Sarah (PO), Pixel-Perfect Hugo (Frontend), Whiteboard Damien (Architecte), Dashboard Estelle (BI Finance)
-> Methode : Fast Meeting avec 4 personas en parallele, synthese facilitateur
+Ce document présente la roadmap de transformation de CoproPilot en 4 piliers et 10 sprints. Il s'adresse aux parties prenantes produit et techniques.
 
----
+> **Date :** 2026-03-21 | **Méthode :** Fast Meeting avec 4 personas IA
 
 ## Vision
 
-Passer de **"CRUD moderne pour syndics"** a **"plateforme workflow-driven avec intelligence financiere"**.
+Passer de **"CRUD moderne pour syndics"** à **"plateforme workflow-driven avec intelligence financière"**.
 
-CoproPilot a deja 58 routes API, 30 pages, 80+ types TypeScript. La couverture fonctionnelle depasse POWIMO sur plusieurs axes (extranet, contentieux, convocations legales, diagnostics). Le probleme n'est pas le manque de features — c'est que chaque module est un tableau CRUD avec des form dialogs. Il manque :
-1. Des workflows structures qui guident le syndic
-2. De la vitesse d'interaction (trop de clics, trop de navigations)
-3. De l'intelligence sur les donnees existantes
+CoproPilot couvre déjà 58+ routes API et 30+ pages. La couverture fonctionnelle dépasse POWIMO sur plusieurs axes. Le problème n'est pas le manque de features — c'est :
 
----
+- Des **workflows structurés** qui guident le syndic au lieu de tableaux passifs
+- De la **vitesse d'interaction** (moins de clics, moins de navigation)
+- De l'**intelligence sur les données existantes** (prédictions, auto-matching)
 
-## Pilier 1 — Fondations architecturales event-driven
+## Les 4 piliers
 
-### 1.1 Domain Event Log + EventBus in-process
-
-**Probleme actuel :** Le `WorkflowEventService` est appele manuellement depuis les controllers. Pas de bus d'evenements, pas de chaine de reactions, pas d'historique metier.
-
-**Solution :**
-
-Migration `domain_events` :
-```
-id | aggregate_type | aggregate_id | event_type | payload (jsonb) | copropriete_id | user_id | created_at
-```
-
-`EventBus.js` : wrapper autour de Node `EventEmitter` avec :
-- `emit(eventType, payload)` — persiste dans `domain_events` + dispatch aux handlers
-- `on(eventType, handler)` — enregistre un handler
-- Execution synchrone apres commit de la transaction Knex
-
-**Impact :** Chaque service qui mute un etat emet un evenement. Nouveaux side effects = nouveau handler, zero modification du code existant. Audit trail gratuit. Timeline par entite gratuite (query sur `domain_events WHERE aggregate_type + aggregate_id`).
-
-**Effort :** 1 migration + 1 service EventBus + refactoring de 5 services critiques (Incident, Intervention, AG, Paiement, Sinistre).
-
-### 1.2 Workflow Engine (state machine declarative)
-
-**Probleme actuel :** Les transitions de statut sont des `UPDATE SET status = ?` sans validation, sans guards, sans effets. Le `IncidentService.update()` accepte n'importe quel statut.
-
-**Solution :**
-
-`WorkflowEngine.js` avec configuration declarative :
-```js
-{
-  entity: 'incident',
-  states: ['ouvert', 'en_cours', 'resolu', 'ferme'],
-  transitions: [
-    { from: 'ouvert', to: 'en_cours', action: 'assign', guards: ['hasPrestataire'], effects: ['notifySyndics', 'createIntervention'] },
-    { from: 'en_cours', to: 'resolu', action: 'resolve', effects: ['notifySignaleur', 'updateCarnetEntretien'] },
-    { from: 'resolu', to: 'ferme', action: 'close', effects: ['emitDomainEvent'] }
-  ]
-}
+```mermaid
+graph TD
+    A[Roadmap Disruptive] --> B[P1 — Fondations Event-Driven]
+    A --> C[P2 — Vitesse UX]
+    A --> D[P3 — Workflows Métier]
+    A --> E[P4 — Intelligence Financière]
+    B --> B1[EventBus + Domain Events]
+    B --> B2[Workflow Engine]
+    B --> B3[SSE Temps Réel]
+    C --> C1[Édition inline]
+    C --> C2[Command Palette]
+    C --> C3[Raccourcis clavier]
+    C --> C4[Dashboard Action Drawers]
+    D --> D1[Ordres de Service]
+    D --> D2[Tâches & Rappels]
+    D --> D3[Devis & Comparaison]
+    D --> D4[Timeline par entité]
+    E --> E1[Réconciliation bancaire]
+    E --> E2[Régularisation post-AG]
+    E --> E3[Prévision trésorerie]
+    E --> E4[Auto-répartition charges]
 ```
 
-**Regle critique :** Chaque state machine supporte un `override` pour le role syndic (bypass des guards, mais l'evenement est quand meme emis). Guide, pas cage.
+## Pilier 1 — Fondations event-driven
 
-**Appliquer en priorite a :** Incident, AG (planifiee→convoquee→en_cours→terminee), Contentieux (relance→procedure).
+**Bénéfice :** Chaque action crée un historique auditable. Nouvelles automatisations sans modifier le code existant.
 
-### 1.3 Server-Sent Events (SSE) pour notifications temps reel
+### 1.1 Domain Events + EventBus
 
-**Probleme actuel :** Le `NotificationBell` ne sait pas qu'il y a de nouvelles notifications sans refresh ou polling.
+- Table `domain_events` qui enregistre chaque mutation métier
+- EventBus en mémoire : persiste l'événement puis dispatche aux handlers
+- Timeline gratuite par entité (requête sur `domain_events`)
+- Audit trail intégré sans développement supplémentaire
+- **Effort :** 1 migration + 1 service + refactoring de 5 services critiques
 
-**Solution :**
+### 1.2 Workflow Engine (machine à états)
 
-Endpoint SSE : `GET /api/events/stream` — 50 lignes de middleware. Quand l'EventBus fire, push aux clients connectes. Le frontend souscrit une fois au login via un hook `useEventStream` qui trigger `queryClient.invalidateQueries()`.
+Transitions de statut déclaratives avec guards et effets automatiques :
 
-**Pourquoi SSE et pas WebSocket :** Unidirectionnel (serveur → client), passe a travers le proxy Vite existant, zero dependance, fallback gracieux.
+```mermaid
+graph LR
+    A[Ouvert] -->|Assigner| B[En cours]
+    B -->|Résoudre| C[Résolu]
+    C -->|Clôturer| D[Fermé]
+```
 
----
+- Chaque transition peut déclencher des notifications et créer des entités
+- Le syndic peut outrepasser les guards (guide, pas cage)
+- **Appliquer en priorité à :** Incident, AG, Contentieux
+
+### 1.3 SSE temps réel
+
+- Endpoint `GET /api/sse/stream` — notifications push sans polling
+- Le frontend rafraîchit automatiquement les données concernées
+- SSE choisi plutôt que WebSocket : unidirectionnel, passe par le proxy Vite, zéro dépendance
 
 ## Pilier 2 — Vitesse d'interaction UX
 
-### 2.1 Inline Table Editing (tuer le round-trip dialog)
+**Bénéfice :** 80% des actions quotidiennes réalisables en 2-3 clics au lieu de 8-12.
 
-**Probleme actuel :** Changer le telephone d'un coproprietaire = clic edit → attente dialog → modifier → submit → attente fermeture. 4-5 interactions pour 1 champ.
+### 2.1 Édition inline des tableaux
 
-**Solution :**
-
-Composant `EditableCell` wrappant shadcn `Input`/`Select` :
-- Activation : double-clic ou Enter
-- Submit : blur ou Enter
+- Double-clic sur une cellule pour modifier directement
 - Mutation optimiste via React Query
 - Validation inline via Zod
-- Feedback visuel : checkmark succes ou shake erreur
+- **Priorité :** téléphone/email copropriétaire, statut incident, statut paiement
+- Conserver les form dialogs uniquement pour la création
 
-**Deployer en priorite sur :** CoproprietairesPage (telephone, email), TravauxPage (statut incident, urgence), ChargesPage (statut paiement).
+### 2.2 Command Palette avec actions
 
-**Conserver les form dialogs uniquement pour la creation** (multiples champs vides a remplir).
+Ajouter des actions au `GlobalSearch` existant :
 
-### 2.2 Command Palette avec Actions (pas juste navigation)
-
-**Probleme actuel :** Le `GlobalSearch` ne fait que chercher et naviguer. C'est une barre de recherche, pas un command palette.
-
-**Solution :**
-
-Ajouter un `CommandGroup` "Actions" dans le `CommandDialog` :
-- "Signaler un incident" → ouvre le form pre-rempli avec la copropriete selectionnee
-- "Changer statut incident X" → changement inline
-- "Basculer copropriete [nom]" → switch le selector
-- "Exporter [entite] en CSV" → trigger export
-- "Aller a AG du [date]" → deep link
-
-**Modele :** Superhuman, Linear — `Cmd+K` comme interface principale pour les power users.
+- "Signaler un incident" → formulaire pré-rempli
+- "Changer statut incident X" → modification inline
+- "Exporter copropriétaires en CSV" → export immédiat
+- Modèle : Superhuman, Linear — `Cmd+K` comme interface principale
 
 ### 2.3 Raccourcis clavier
 
-**Solution :**
+- `n` : créer une nouvelle entité
+- `j`/`k` : naviguer dans les lignes
+- `e` : éditer la ligne sélectionnée
+- `?` : afficher l'aide des raccourcis
 
-Hook `useHotkeys` (ou `react-hotkeys-hook`) enregistre au niveau `MainLayout` :
-- `n` : creer nouvelle entite sur la page courante
-- `j`/`k` : naviguer dans les lignes du tableau
-- `Enter` : ouvrir le detail
-- `e` : editer la ligne selectionnee inline
-- `Escape` : deselectionner
-- `?` : afficher l'overlay des raccourcis
+### 2.4 Dashboard Action Drawers
 
-**Protection :** Desactive quand un input/textarea est focus.
+Remplacer les liens du dashboard par des panneaux latéraux (Sheet shadcn/ui). Le syndic voit une alerte, clique, et agit directement sans navigation.
 
-### 2.4 Dashboard Action Drawers (zero-navigation pattern)
+### 2.5 Tables virtualisées + actions groupées
 
-**Probleme actuel :** Dashboard → clic sur alerte → navigation vers la page → trouver l'entite → agir. 3-4 clics minimum.
+- `@tanstack/react-virtual` pour les listes 10K+
+- Multi-sélection avec checkbox + actions en masse (email, changement de statut, export)
+- Pagination par curseur côté backend
 
-**Solution :**
+## Pilier 3 — Workflows métier structurés
 
-Remplacer les `Link` du dashboard par des `Sheet` (slide-over panels shadcn/ui). Quand le syndic voit "Incident critique: fuite toiture", il clique et un drawer s'ouvre avec : details, statut, bouton "Emettre ordre de service", dropdown prestataire. Zero navigation.
+**Bénéfice :** Chaque processus métier est guidé étape par étape. Le syndic ne peut pas oublier une action.
 
-**Impact :** 80% des actions quotidiennes sans quitter le dashboard. C'est le differenciateur qui empeche le churn.
+### 3.1 Ordres de service (workflow GDI)
 
-### 2.5 Tables virtualisees + Multi-select + Bulk actions
+Gap principal vs POWIMO. C'est le workflow quotidien n°1 du syndic.
 
-**Solution :**
-
-`@tanstack/react-virtual` pour les listes 10K+ (coproprietaires, tiers). Colonne checkbox pour multi-select. Barre d'actions bulk : email groupé, changement de statut, export.
-
-Backend : pagination par curseur (`.where('id', '>', lastId).limit(50)`) au lieu d'offset.
-
----
-
-## Pilier 3 — Workflows metier structures
-
-### 3.1 Ordres de Service (workflow GDI complet)
-
-**Gap principal vs POWIMO.** C'est le workflow quotidien n°1 du syndic. CoproPilot a incidents et interventions comme entites plates.
-
-**Solution :**
-
-State machine complete :
-```
-Incident signale → Ordre de service emis → Devis recu → Devis accepte → Intervention planifiee → Realisation → Facture recue → Cloture
+```mermaid
+graph LR
+    A[Incident signalé] --> B[Ordre de service émis]
+    B --> C[Devis reçu]
+    C --> D[Devis accepté]
+    D --> E[Intervention planifiée]
+    E --> F[Réalisation]
+    F --> G[Facture reçue]
+    G --> H[Clôture]
 ```
 
-Chaque transition :
-- Notifie le prestataire (table `prestataires` existante)
-- Auto-cree l'etape suivante
-- Alimente la timeline
+- Chaque transition notifie le prestataire et alimente la timeline
+- Nouvelle table `ordres_service` liée aux incidents et prestataires
 
-**Migration :** `ordres_service` (id, incident_id, prestataire_id, type, montant_provisionnel, statut, date_emission, date_reponse, copropriete_id).
+### 3.2 Tâches & rappels cross-module
 
-**UX :** Timeline verticale sur la page detail incident, avec clic sur le noeud suivant pour avancer l'etat.
+Auto-génération depuis les données existantes :
 
-### 3.2 Taches & Rappels Engine (cross-module)
+- Contrat approchant du préavis → tâche automatique
+- Diagnostic expirant → tâche automatique
+- AG à J-21 sans convocation → tâche automatique
+- Assurance expirant dans 30 jours → tâche automatique
 
-**Gap vs POWIMO.** POWIMO a des rappels manuels. CoproPilot a le cycle annuel mais pas de taches generales.
+### 3.3 Devis & comparaison
 
-**Solution :**
+- Vue comparaison côte à côte (max 3 devis)
+- Un clic "Accepter" → transition dans la machine à états
+- Nouvelle table `devis` liée aux interventions
 
-Migration `taches` : user_id, copropriete_id, titre, description, date_echeance, rappel_date, entite_type (polymorphique), entite_id, statut, priorite.
+### 3.4 Timeline par entité
 
-**Auto-generation depuis les donnees existantes :**
-- Contrat atteignant `preavis_mois` avant `date_fin` → tache auto
-- Diagnostic `date_validite` approchant → tache auto
-- AG a J-21 sans convocation → tache auto
-- Assurance expirant dans 30j → tache auto
+Composant `EntityTimeline` réutilisable sur toutes les pages détail. Requête sur `domain_events` filtrée par entité.
 
-**UX :** Sidebar persistante ou section command palette "Taches du jour" / "En retard" / "A venir".
+## Pilier 4 — Intelligence financière
 
-### 3.3 Module Devis & Comparaison
+**Bénéfice :** Réduire le temps de réconciliation de plusieurs heures à 10 minutes par mois.
 
-**Solution :**
+### 4.1 Réconciliation bancaire auto-match
 
-Migration `devis` : intervention_id, prestataire_id, montant_ht, montant_ttc, date_reception, date_validite, statut (recu/accepte/refuse/expire), document_url, notes.
+```mermaid
+graph LR
+    A[Mouvement bancaire] -->|Matching automatique| B{Confiance}
+    B -->|90%+| C[Suggestion verte]
+    B -->|50-90%| D[Suggestion orange]
+    B -->|Pas de match| E[Manuel]
+    C --> F[Confirmation humaine]
+    D --> F
+```
 
-**UX :** Vue comparaison cote-a-cote (max 3 devis). Un clic "Accepter" → transition de l'ordre de service dans la state machine.
+- Fuzzy matching : montant ±2%, date ±5 jours, référence substring
+- Jamais d'auto-confirmation — toujours un clic humain
+- **Cible :** 80% de taux d'auto-match
 
-### 3.4 Timeline par entite (generalisation du pattern GDI)
+### 4.2 Régularisation automatique post-AG
 
-**Solution :**
+Quand une résolution "approbation budget" est adoptée :
 
-Endpoint generique : `GET /api/{entity}/{id}/timeline` → query sur `domain_events WHERE aggregate_type AND aggregate_id ORDER BY created_at`.
+- Auto-génération du budget en brouillon avec les montants votés
+- Création du calendrier d'appels de fonds pour le nouvel exercice
+- Le syndic valide en 1 clic
 
-Composant `EntityTimeline` reutilisable sur toutes les pages detail (incident, AG, contrat, sinistre).
+### 4.3 Prévision de trésorerie
 
----
+- Score de fiabilité par copropriétaire basé sur l'historique de paiements
+- Projection 30/60/90 jours des encaissements vs dépenses
+- Minimum 2 exercices complets avant d'afficher des prédictions
 
-## Pilier 4 — Intelligence financiere
+### 4.4 Auto-répartition des charges
 
-### 4.1 Reconciliation bancaire auto-match
-
-**Probleme actuel :** Les mouvements bancaires ont un `rapprochement_status` mais le matching est manuel.
-
-**Solution :**
-
-Endpoint `suggested_matches` : fuzzy matching (montant ±2%, date ±5j, reference substring) entre mouvements et appels de fonds + factures fournisseurs. Score de confiance. Le syndic confirme ou rejette.
-
-**Regle critique :** Jamais d'auto-confirmation. Toujours un clic humain. Match < 90% = orange.
-
-**Cible :** 80% de taux d'auto-match. Economies : 4-6h/semaine/syndic.
-
-### 4.2 Regularisation automatique post-AG
-
-**Solution :**
-
-Quand une resolution de type "approbation budget" est marquee `adoptee` → auto-generation du budget en statut brouillon avec les montants votes → creation du calendrier d'appels de fonds pour le nouvel exercice.
-
-Le syndic review et valide en 1 clic au lieu de re-saisir manuellement.
-
-### 4.3 Cash Flow Forecast & Scoring delinquance
-
-**Solution :**
-
-`PaymentAnalyticsService` : score de fiabilite par coproprietaire base sur l'historique de paiements (paiements effectues / paiements dus sur N periodes).
-
-Endpoint `/api/coproprietes/:id/cash-flow-forecast` : projection 30/60/90 jours des encaissements vs depenses prevues.
-
-**Dashboard widget :** Graphique barres simple (pas de librairie lourde — canvas lightweight).
-
-**Garde-fou :** Minimum 2 exercices complets avant d'afficher des predictions. Sinon afficher "Donnees insuffisantes".
-
-### 4.4 Auto-repartition des charges
-
-**Solution :**
-
-A la creation d'une charge → calcul automatique de la quote-part par lot basee sur la cle de repartition assignee → generation des lignes d'appel de fonds individuelles → diff si la cle a change depuis le dernier exercice.
-
-Table `repartition_audit` pour la tracabilite legale.
-
-### 4.5 Dashboard action-oriented (pas juste des metriques)
-
-**Solution :**
-
-Remplacer la grille de 7 metriques par une **file d'actions priorisees** :
-- "3 coproprietaires a risque d'impaye en avril — envoyer rappels"
-- "12 mouvements bancaires non rapproches — verifier les matchs"
-- "AG du 15 avril : 2 resolutions non finalisees"
-- "Police assurance X expire dans 30j"
-
-Chaque carte a un seul bouton qui mene directement a la resolution (via action drawer, pas navigation).
-
----
+- Calcul automatique de la quote-part par lot selon la clé de répartition
+- Génération des lignes d'appel de fonds individuelles
+- Table `repartition_audit` pour la traçabilité légale
 
 ## Matrice de priorisation
 
-| Feature | Impact quotidien | Effort | Prerequis | Sprint |
-|---------|-----------------|--------|-----------|--------|
-| Domain Events + EventBus | Fondation | M | Aucun | S1 |
-| SSE Notifications | Eleve | S | EventBus | S2 |
-| Workflow Engine | Fondation | M | EventBus | S2 |
-| Inline Table Editing | Tres eleve | S | Aucun | S3 |
-| Command Palette Actions | Eleve | S | Aucun | S3 |
-| Keyboard Shortcuts | Moyen | XS | Aucun | S3 |
-| Dashboard Action Drawers | Tres eleve | M | Aucun | S4 |
-| Ordres de Service | Tres eleve | L | WorkflowEngine | S5 |
-| Taches & Rappels | Tres eleve | M | EventBus | S5 |
-| Timeline par entite | Eleve | S | DomainEvents | S6 |
-| Devis & Comparaison | Eleve | M | OrdresDeService | S7 |
-| Bank Reconciliation | Tres eleve | M | Aucun | S8 |
-| Regularisation post-AG | Eleve | M | EventBus | S8 |
-| Cash Flow Forecast | Moyen | M | Data historique | S9 |
-| Auto-repartition | Moyen | M | Aucun | S10 |
-| Multi-select + Batch | Moyen | M | Aucun | S10 |
-| Import POWIMO (CSV) | Critique (migration) | L | Aucun | Parallele |
+| Feature | Impact | Effort | Sprint |
+|---------|--------|--------|--------|
+| Domain Events + EventBus | Fondation | M | S1 |
+| SSE Notifications | Élevé | S | S2 |
+| Workflow Engine | Fondation | M | S2 |
+| Édition inline tableaux | Très élevé | S | S3 |
+| Command Palette Actions | Élevé | S | S3 |
+| Raccourcis clavier | Moyen | XS | S3 |
+| Dashboard Action Drawers | Très élevé | M | S4 |
+| Ordres de Service | Très élevé | L | S5 |
+| Tâches & Rappels | Très élevé | M | S5 |
+| Timeline par entité | Élevé | S | S6 |
+| Devis & Comparaison | Élevé | M | S7 |
+| Réconciliation bancaire | Très élevé | M | S8 |
+| Régularisation post-AG | Élevé | M | S8 |
+| Prévision trésorerie | Moyen | M | S9 |
+| Auto-répartition charges | Moyen | M | S10 |
+| Import POWIMO (CSV) | Critique | L | Parallèle |
 
----
+## Décisions explicites
 
-## Ce qu'on ne fait PAS (decisions explicites)
+- **Couverture CRUD complète :** 30+ pages suffisent, priorité aux workflows
+- **SSE plutôt que WebSocket :** push unidirectionnel, zéro dépendance
+- **EventEmitter in-process :** pas de message broker (Kafka/RabbitMQ)
+- **Machine à états maison :** pas de workflow engine externe (Temporal/n8n)
+- **Heuristiques déterministes :** pas de ML tant que les données sont insuffisantes
+- **Pas d'app mobile :** le responsive suffit pour l'extranet
+- **Pas d'équipements immeuble :** saisie sans valeur workflow (30+ checkboxes POWIMO)
 
-1. **Pas d'ajout d'ecrans CRUD supplementaires** — la couverture est suffisante
-2. **Pas de WebSocket** — SSE suffit pour le push unidirectionnel
-3. **Pas de message broker (Kafka/RabbitMQ)** — EventEmitter in-process + PostgreSQL comme log durable
-4. **Pas de workflow engine externe (Temporal/n8n)** — 200 lignes de state machine suffisent
-5. **Pas de ML pour les predictions** — heuristiques deterministes d'abord, ML quand on a les donnees
-6. **Pas de mobile app** — le syndic travaille sur desktop, le responsive suffit pour l'extranet
-7. **Pas d'equipements immeuble (30+ checkboxes POWIMO)** — data entry sans valeur workflow
-8. **Pas de multi-agence** — feature enterprise, a construire quand les premieres agences sont live
+## Métriques de succès
 
----
-
-## Metriques de succes
-
-| Metrique | Baseline (actuel) | Cible post-P2 | Cible post-P4 |
-|----------|-------------------|---------------|---------------|
+| Métrique | Actuel | Cible post-P2 | Cible post-P4 |
+|----------|--------|---------------|---------------|
 | Clics pour traiter un incident | ~12 | ~4 | ~2 |
-| Temps reconciliation bancaire/mois | Manuel (heures) | 30 min | 10 min |
-| Taches oubliees (echeances manquees) | Non mesure | -60% | -90% |
-| Temps preparation AG | ~2h | ~45 min | ~20 min |
-| Navigation pages/action quotidienne | ~8 pages | ~3 pages | ~1 (dashboard) |
+| Temps réconciliation bancaire/mois | Manuel (heures) | 30 min | 10 min |
+| Tâches oubliées (échéances manquées) | Non mesuré | -60% | -90% |
+| Temps préparation AG | ~2h | ~45 min | ~20 min |
+| Pages visitées par action | ~8 | ~3 | ~1 (dashboard) |
 
 ---
 
-_Analyse generee par Fast Meeting — 4 personas IA en parallele_
+*Analyse générée par Fast Meeting — 4 personas IA en parallèle, 2026-03-21*
