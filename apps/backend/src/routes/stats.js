@@ -334,7 +334,7 @@ router.get('/syndic-dashboard', requireAuth(), async (req, res) => {
         'assemblees_generales.copropriete_id'
       ),
 
-      // 3. Overdue annual tasks
+      // 3. Overdue annual tasks (table may not exist yet)
       scoped(
         db('taches_annuelles')
           .select(
@@ -353,7 +353,7 @@ router.get('/syndic-dashboard', requireAuth(), async (req, res) => {
           .orderBy('taches_annuelles.date_echeance', 'asc')
           .limit(10),
         'taches_annuelles.copropriete_id'
-      ),
+      ).catch(() => []),
 
       // 4. Draft appels de fonds
       scoped(
