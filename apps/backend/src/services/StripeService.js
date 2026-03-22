@@ -249,6 +249,7 @@ class StripeService {
 
   /**
    * Report metered usage to Stripe for overage billing.
+   * Uses Stripe Billing Meters API (2025-03-31.basil+).
    * Called periodically (e.g. daily cron or before invoice finalization).
    */
   async reportUsage(userId) {
@@ -257,7 +258,7 @@ class StripeService {
       if (!stripe) return
 
       const subscription = await SubscriptionModel.getByUserId(userId)
-      if (!subscription?.stripe_subscription_id) return
+      if (!subscription?.stripe_customer_id) return
 
       const plan = subscription.plan
       const overagePrices = OVERAGE_PRICE_MAP[plan]
@@ -265,34 +266,30 @@ class StripeService {
 
       const usage = await getUserUsage(userId, plan)
 
-      // Get subscription items from Stripe to find metered items
-      const stripeSubscription = await stripe.subscriptions.retrieve(
-        subscription.stripe_subscription_id,
-        { expand: ['items.data'] }
-      )
+      if (usage.coproprietes.extra > 0) {
+        await stripe.billing.meterEvents.create({
+          event_name: 'extra_coproprietes',
+          payload: {
+            stripe_customer_id: subscription.stripe_customer_id,
+            value: String(usage.coproprietes.extra),
+          },
+        })
+        logger.info(
+          `[StripeService] Reported ${usage.coproprietes.extra} extra copros for user ${userId}`
+        )
+      }
 
-      for (const item of stripeSubscription.items.data) {
-        const priceId = item.price?.id
-
-        if (priceId === overagePrices.copropriete && usage.coproprietes.extra > 0) {
-          await stripe.subscriptionItems.createUsageRecord(item.id, {
-            quantity: usage.coproprietes.extra,
-            action: 'set',
-          })
-          logger.info(
-            `[StripeService] Reported ${usage.coproprietes.extra} extra copros for user ${userId}`
-          )
-        }
-
-        if (priceId === overagePrices.user && usage.users.extra > 0) {
-          await stripe.subscriptionItems.createUsageRecord(item.id, {
-            quantity: usage.users.extra,
-            action: 'set',
-          })
-          logger.info(
-            `[StripeService] Reported ${usage.users.extra} extra users for user ${userId}`
-          )
-        }
+      if (usage.users.extra > 0) {
+        await stripe.billing.meterEvents.create({
+          event_name: 'extra_users',
+          payload: {
+            stripe_customer_id: subscription.stripe_customer_id,
+            value: String(usage.users.extra),
+          },
+        })
+        logger.info(
+          `[StripeService] Reported ${usage.users.extra} extra users for user ${userId}`
+        )
       }
 
       // Update local overage tracking
