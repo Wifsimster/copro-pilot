@@ -1,12 +1,10 @@
 import { Router } from 'express'
 import { requireAuth } from '../middleware/auth.js'
-import { requirePlan } from '../middleware/requirePlan.js'
 import { getSseManager } from '../events/index.js'
 
 const router = Router()
 
-// Real-time SSE requires Pro plan
-router.get('/stream', requireAuth(), requirePlan('pro'), (req, res) => {
+router.get('/stream', requireAuth(), (req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',

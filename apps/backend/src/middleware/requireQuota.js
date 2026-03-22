@@ -26,7 +26,6 @@ export const requireCoproprieteQuota = () => {
       }
 
       const [{ count }] = await db('coproprietes')
-        .where('created_by', req.user.id)
         .count('id as count')
 
       const currentCount = parseInt(count, 10)
@@ -69,11 +68,10 @@ export async function getUserUsage(userId, userPlan) {
   const quota = PLAN_QUOTAS[userPlan] || PLAN_QUOTAS.gratuit
 
   const [coproResult] = await db('coproprietes')
-    .where('created_by', userId)
     .count('id as count')
 
   const [userResult] = await db('user')
-    .where('created_by', userId)
+    .whereNull('deletedAt')
     .count('id as count')
 
   const coproCount = parseInt(coproResult?.count || '0', 10)
