@@ -436,7 +436,7 @@ export function MainLayout({ children }: MainLayoutProps) {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <div className="px-2 py-1.5 text-center text-[10px] text-muted-foreground">
-                v{__APP_VERSION__} · {new Date(__BUILD_DATE__).toLocaleDateString('fr-FR')}
+                v{__APP_VERSION__} · {new Date(__BUILD_DATE__).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })}
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
