@@ -76,8 +76,8 @@ export default function ReglementsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Reglement de copropriete</h1>
-          <p className="text-stone-500 dark:text-stone-400">Gestion du reglement et de ses articles</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Règlement de copropriété</h1>
+          <p className="text-stone-500 dark:text-stone-400">Gestion du règlement et de ses articles</p>
         </div>
       </div>
 
@@ -88,7 +88,7 @@ export default function ReglementsPage() {
           {/* Tabs */}
           <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
             {([
-              { key: 'reglements' as Tab, label: 'Reglements', icon: FileText },
+              { key: 'reglements' as Tab, label: 'Règlements', icon: FileText },
               { key: 'articles' as Tab, label: 'Articles', icon: ListOrdered },
             ]).map((tab) => (
               <button type="button"

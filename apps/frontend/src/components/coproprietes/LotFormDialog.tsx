@@ -88,7 +88,7 @@ export function LotFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations du lot. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations du lot. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}

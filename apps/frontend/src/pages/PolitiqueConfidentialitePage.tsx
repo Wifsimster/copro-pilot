@@ -177,7 +177,7 @@ export default function PolitiqueConfidentialitePage() {
           </p>
           <ul className="list-disc space-y-1 pl-6">
             <li>
-              <strong>Droit d&apos;accès</strong> : consulter
+              <strong>Droit d&apos;acces</strong> : consulter
               l&apos;ensemble de vos données via votre espace
               personnel
             </li>

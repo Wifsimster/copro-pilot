@@ -90,7 +90,7 @@ export function PaiementFormDialog({
   const onFormSubmit = async (data: FormData) => {
     const finalCoproId = coproprietaireId || selectedCoproId
     if (!finalCoproId) {
-      setCoproError('Le coproprietaire est obligatoire')
+      setCoproError('Le copropriétaire est obligatoire')
       return
     }
     setCoproError('')
@@ -109,7 +109,7 @@ export function PaiementFormDialog({
       open={open}
       onOpenChange={handleOpenChange}
       title={title}
-      description="Enregistrez un paiement. Les champs marques d'un * sont obligatoires."
+      description="Enregistrez un paiement. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={onFormSubmit}
       isLoading={isLoading}
@@ -125,7 +125,7 @@ export function PaiementFormDialog({
                 onValueChange={(val) => { setSelectedCoproId(parseInt(val)); setCoproError('') }}
               >
                 <SelectTrigger aria-label="Coproprietaire">
-                  <SelectValue placeholder="Selectionner un coproprietaire..." />
+                  <SelectValue placeholder="Sélectionner un copropriétaire..." />
                 </SelectTrigger>
                 <SelectContent>
                   {coproprietaires!.map((c) => (

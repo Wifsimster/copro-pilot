@@ -10,9 +10,9 @@ import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected
 import { UsersRound, Plus, Trash2, Pencil, Crown } from 'lucide-react'
 
 const ROLE_LABELS: Record<string, string> = {
-  president: 'President',
+  president: 'Président',
   membre: 'Membre',
-  suppleant: 'Suppleant',
+  suppleant: 'Suppléant',
 }
 
 const ROLE_COLORS: Record<string, string> = {
@@ -72,16 +72,16 @@ export default function ConseilSyndicalPage() {
           ) : !membres || membres.length === 0 ? (
             <div className="flex flex-col items-center py-12">
               <UsersRound className="size-10 text-stone-300 dark:text-stone-600" />
-              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun membre enregistre</p>
+              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun membre enregistré</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-stone-200 text-left dark:border-stone-700">
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Coproprietaire</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Role</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date d'election</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Copropriétaire</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Rôle</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date d'élection</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Fin de mandat</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Notes</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>

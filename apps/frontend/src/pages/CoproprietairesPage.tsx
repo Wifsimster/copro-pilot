@@ -151,7 +151,7 @@ export default function CoproprietairesPage() {
         open={showCreate || !!editingCopro}
         onOpenChange={(open) => { if (!open) { setShowCreate(false); setEditingCopro(null) } }}
         defaultValues={editingCopro || undefined}
-        title={editingCopro ? 'Modifier le coproprietaire' : 'Nouveau coproprietaire'}
+        title={editingCopro ? 'Modifier le copropriétaire' : 'Nouveau copropriétaire'}
         onSubmit={async (data) => {
           if (editingCopro) {
             await updateCoproprietaire.mutateAsync({ id: editingCopro.id, data })

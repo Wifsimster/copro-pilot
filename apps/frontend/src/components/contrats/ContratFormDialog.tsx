@@ -27,7 +27,7 @@ const contratSchema = z.object({
   prestataire_id: z.coerce.number().min(1, 'Le prestataire est obligatoire'),
   objet: z.string().min(1, 'L\'objet est obligatoire'),
   type: z.string().optional(),
-  date_debut: z.string().min(1, 'La date de debut est obligatoire'),
+  date_debut: z.string().min(1, 'La date de début est obligatoire'),
   date_fin: z.string().optional(),
   montant_annuel: z.coerce.number().optional(),
   frequence_paiement: z.enum(['mensuel', 'trimestriel', 'semestriel', 'annuel']),
@@ -99,7 +99,7 @@ export function ContratFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Definissez les informations du contrat. Les champs marques d'un * sont obligatoires."
+      description="Définissez les informations du contrat. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -118,7 +118,7 @@ export function ContratFormDialog({
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selectionnez un prestataire" />
+                    <SelectValue placeholder="Sélectionnez un prestataire" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -158,7 +158,7 @@ export function ContratFormDialog({
                 <Select onValueChange={field.onChange} value={field.value || ''}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Selectionnez un type" />
+                      <SelectValue placeholder="Sélectionnez un type" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -188,8 +188,8 @@ export function ContratFormDialog({
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="actif">Actif</SelectItem>
-                    <SelectItem value="expire">Expire</SelectItem>
-                    <SelectItem value="resilie">Resilie</SelectItem>
+                    <SelectItem value="expire">Expiré</SelectItem>
+                    <SelectItem value="resilie">Résilié</SelectItem>
                     <SelectItem value="en_attente">En attente</SelectItem>
                   </SelectContent>
                 </Select>
@@ -207,7 +207,7 @@ export function ContratFormDialog({
             name="date_debut"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date de debut *</FormLabel>
+                <FormLabel>Date de début *</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>
@@ -249,7 +249,7 @@ export function ContratFormDialog({
             name="frequence_paiement"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Frequence de paiement *</FormLabel>
+                <FormLabel>Fréquence de paiement *</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -277,7 +277,7 @@ export function ContratFormDialog({
             name="preavis_mois"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Preavis (mois)</FormLabel>
+                <FormLabel>Préavis (mois)</FormLabel>
                 <FormControl>
                   <Input type="number" placeholder="3" {...field} />
                 </FormControl>
@@ -313,9 +313,9 @@ export function ContratFormDialog({
           name="conditions_resiliation"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Conditions de resiliation</FormLabel>
+              <FormLabel>Conditions de résiliation</FormLabel>
               <FormControl>
-                <Textarea rows={3} placeholder="Conditions de resiliation..." {...field} />
+                <Textarea rows={3} placeholder="Conditions de résiliation..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -331,7 +331,7 @@ export function ContratFormDialog({
             <FormItem>
               <FormLabel>Notes</FormLabel>
               <FormControl>
-                <Textarea rows={3} placeholder="Notes supplementaires..." {...field} />
+                <Textarea rows={3} placeholder="Notes supplémentaires..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

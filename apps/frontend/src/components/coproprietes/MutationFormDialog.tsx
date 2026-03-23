@@ -73,7 +73,7 @@ export function MutationFormDialog({ open, onOpenChange, lotId, onSubmit, isLoad
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations de la mutation. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations de la mutation. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={onFormSubmit}
       isLoading={isLoading}
@@ -147,11 +147,11 @@ export function MutationFormDialog({ open, onOpenChange, lotId, onSubmit, isLoad
             name="nouveau_proprietaire_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nouveau proprietaire *</FormLabel>
+                <FormLabel>Nouveau propriétaire *</FormLabel>
                 <Select onValueChange={(val) => field.onChange(Number(val))} value={String(field.value || 0)}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="— Selectionner —" />
+                      <SelectValue placeholder="— Sélectionner —" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>

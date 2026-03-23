@@ -52,7 +52,7 @@ export default function ExportsPage() {
   ) => {
     if (!selectedCoproId) return
     mutate.mutate(selectedCoproId)
-    toast.success(`Export "${label}" lance`)
+    toast.success(`Export "${label}" lancé`)
   }
 
   return (
@@ -60,7 +60,7 @@ export default function ExportsPage() {
       <div>
         <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Exports & Rapports</h1>
         <p className="text-stone-500 dark:text-stone-400">
-          Generez et telechargez vos documents PDF et tableaux Excel
+          Générez et téléchargez vos documents PDF et tableaux Excel
         </p>
       </div>
 
@@ -68,10 +68,10 @@ export default function ExportsPage() {
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
           <FileDown className="size-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">
-            Aucune copropriete selectionnee
+            Aucune copropriété sélectionnée
           </h3>
           <p className="mt-2 text-stone-500 dark:text-stone-400">
-            Selectionnez une copropriete dans le menu lateral pour acceder aux exports.
+            Sélectionnez une copropriété dans le menu latéral pour accéder aux exports.
           </p>
         </div>
       ) : (

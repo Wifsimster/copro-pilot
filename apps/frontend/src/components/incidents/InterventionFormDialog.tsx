@@ -84,7 +84,7 @@ export function InterventionFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Planifiez une intervention. Les champs marques d'un * sont obligatoires."
+      description="Planifiez une intervention. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -98,7 +98,7 @@ export function InterventionFormDialog({
             <FormItem>
               <FormLabel>Description *</FormLabel>
               <FormControl>
-                <Textarea rows={3} placeholder="Reparation de la fuite..." {...field} />
+                <Textarea rows={3} placeholder="Réparation de la fuite..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -133,10 +133,10 @@ export function InterventionFormDialog({
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="en_attente">En attente</SelectItem>
-                    <SelectItem value="planifiee">Planifiee</SelectItem>
+                    <SelectItem value="planifiee">Planifiée</SelectItem>
                     <SelectItem value="en_cours">En cours</SelectItem>
-                    <SelectItem value="terminee">Terminee</SelectItem>
-                    <SelectItem value="annulee">Annulee</SelectItem>
+                    <SelectItem value="terminee">Terminée</SelectItem>
+                    <SelectItem value="annulee">Annulée</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -182,7 +182,7 @@ export function InterventionFormDialog({
             name="date_prevue"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date prevue</FormLabel>
+                <FormLabel>Date prévue</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>
@@ -195,7 +195,7 @@ export function InterventionFormDialog({
             name="date_realisation"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date realisation</FormLabel>
+                <FormLabel>Date réalisation</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>

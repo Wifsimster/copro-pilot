@@ -70,9 +70,9 @@ export default function AssembleeDetailPage() {
   if (!ag) {
     return (
       <div className="text-center py-12">
-        <p className="text-stone-500 dark:text-stone-400">Assemblee generale non trouvee</p>
+        <p className="text-stone-500 dark:text-stone-400">Assemblée générale non trouvée</p>
         <Link to="/assemblees" className="mt-4 inline-block text-emerald-700 hover:underline">
-          Retour aux assemblees
+          Retour aux assemblées
         </Link>
       </div>
     )
@@ -129,7 +129,7 @@ export default function AssembleeDetailPage() {
           }`}
         >
           <Vote className="size-4" />
-          Resolutions
+          Résolutions
         </button>
         <button type="button"
           onClick={() => patchUi({ activeTab: 'presences' })}
@@ -140,7 +140,7 @@ export default function AssembleeDetailPage() {
           }`}
         >
           <Users className="size-4" />
-          Presences
+          Présences
         </button>
         <button type="button"
           onClick={() => patchUi({ activeTab: 'convocations' })}

@@ -102,7 +102,7 @@ export function SinistreFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations du sinistre. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations du sinistre. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}

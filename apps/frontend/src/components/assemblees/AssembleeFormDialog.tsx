@@ -50,7 +50,7 @@ export function AssembleeFormDialog({
   onSubmit,
   isLoading,
   defaultValues,
-  title = 'Nouvelle assemblee generale',
+  title = 'Nouvelle assemblée générale',
 }: AssembleeFormDialogProps) {
   const form = useForm<AGFormData>({
     resolver: zodResolver(agSchema),
@@ -80,7 +80,7 @@ export function AssembleeFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Planifiez une assemblee generale. Les champs marques d'un * sont obligatoires."
+      description="Planifiez une assemblée générale. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}

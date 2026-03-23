@@ -103,7 +103,7 @@ export default function ImmatriculationPage() {
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div>
-                <p className="text-sm text-stone-500 dark:text-stone-400">Numero d'immatriculation</p>
+                <p className="text-sm text-stone-500 dark:text-stone-400">Numéro d'immatriculation</p>
                 <p className="font-medium text-stone-900 dark:text-white">
                   {selectedCopropriete?.numero_immatriculation || '—'}
                 </p>
@@ -147,7 +147,7 @@ export default function ImmatriculationPage() {
               onOpenChange={(open) => { patchUi({ showDialog: open }); if (!open) { patchUi({ editingDeclaration: null }); patchUi({ donneesPreparees: null }) } }}
               coproprieteId={selectedCoproId}
               defaultValues={editingDeclaration || undefined}
-              title={editingDeclaration ? 'Modifier la declaration' : 'Nouvelle declaration'}
+              title={editingDeclaration ? 'Modifier la déclaration' : 'Nouvelle déclaration'}
               donneesPreparees={donneesPreparees}
               onSubmit={async (data) => {
                 if (editingDeclaration) {

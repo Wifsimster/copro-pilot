@@ -21,8 +21,8 @@ import { FileSignature, Plus, Trash2, Pencil, Users, AlertTriangle, CheckCircle2
 
 const STATUT_LABELS: Record<string, string> = {
   en_cours: 'En cours',
-  expire: 'Expire',
-  resilie: 'Resilie',
+  expire: 'Expiré',
+  resilie: 'Résilié',
   en_attente: 'En attente',
 }
 
@@ -127,7 +127,7 @@ export default function ContratsSyndicPage() {
               ) : !contrats || contrats.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <FileSignature className="size-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun contrat de syndic enregistre</p>
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun contrat de syndic enregistré</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -135,7 +135,7 @@ export default function ContratsSyndicPage() {
                     <thead>
                       <tr className="border-b border-stone-200 text-left dark:border-stone-700">
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Syndic</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Periode du mandat</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Période du mandat</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Forfait annuel</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
@@ -235,7 +235,7 @@ export default function ContratsSyndicPage() {
               ) : !propositions || propositions.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <Users className="size-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune proposition de syndic enregistree</p>
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune proposition de syndic enregistrée</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -243,8 +243,8 @@ export default function ContratsSyndicPage() {
                     <thead>
                       <tr className="border-b border-stone-200 text-left dark:border-stone-700">
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Syndic</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date de reception</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant propose</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date de réception</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant proposé</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Retenue</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>

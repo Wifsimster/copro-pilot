@@ -70,8 +70,8 @@ export default function ChargesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Charges & Comptabilite</h1>
-          <p className="text-stone-500 dark:text-stone-400">Budgets previsionnels, appels de fonds et fonds travaux</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Charges & Comptabilité</h1>
+          <p className="text-stone-500 dark:text-stone-400">Budgets prévisionnels, appels de fonds et fonds travaux</p>
         </div>
       </div>
 

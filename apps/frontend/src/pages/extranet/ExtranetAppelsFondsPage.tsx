@@ -21,7 +21,7 @@ export default function ExtranetAppelsFondsPage() {
         </div>
       ) : !appels?.length ? (
         <p className="text-sm text-muted-foreground">
-          Aucun appel de fonds sur les 3 dernieres annees.
+          Aucun appel de fonds sur les 3 dernières années.
         </p>
       ) : (
         <div className="overflow-x-auto rounded-lg border border-border">
