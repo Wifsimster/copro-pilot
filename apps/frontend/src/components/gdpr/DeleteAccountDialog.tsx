@@ -56,15 +56,15 @@ export function DeleteAccountDialog() {
           </DialogTitle>
           <DialogDescription className="space-y-2 text-left">
             <p>
-              Cette action est <strong>irreversible</strong>.
-              Votre compte sera supprime et vos donnees
-              personnelles seront anonymisees.
+              Cette action est <strong>irréversible</strong>.
+              Votre compte sera supprimé et vos données
+              personnelles seront anonymisées.
             </p>
             <p>
-              Conformement a la legislation francaise, vos
-              donnees financieres (paiements, charges) seront
-              conservees de maniere anonyme pendant la duree
-              legale de 10 ans.
+              Conformément à la législation française, vos
+              données financières (paiements, charges) seront
+              conservées de manière anonyme pendant la durée
+              légale de 10 ans.
             </p>
           </DialogDescription>
         </DialogHeader>
@@ -76,7 +76,7 @@ export function DeleteAccountDialog() {
             onClick={() => gdprApi.exportMyData()}
           >
             <Download className="mr-2 h-4 w-4" />
-            Telecharger mes donnees avant suppression
+            Télécharger mes données avant suppression
           </Button>
 
           <div className="space-y-2">

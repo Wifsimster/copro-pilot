@@ -138,7 +138,7 @@ const ACTIVITY_ICONS: Record<ActivityType, LucideIcon> = {
 const METRIC_CONFIG = [
   {
     key: 'coproprietes' as const,
-    label: 'Coproprietes',
+    label: 'Copropriétés',
     icon: Building2,
     color: 'bg-emerald-500',
     link: '/coproprietes',
@@ -154,7 +154,7 @@ const METRIC_CONFIG = [
   },
   {
     key: 'impayes' as const,
-    label: 'Impayes',
+    label: 'Impayés',
     icon: Receipt,
     color: 'bg-amber-500',
     link: '/charges',
@@ -365,7 +365,7 @@ function DailyTasks({
         <div className="flex flex-col items-center py-8">
           <ListChecks className="h-8 w-8 text-muted-foreground/40" />
           <p className="mt-2 text-sm text-muted-foreground">
-            Aucune tache cette semaine
+            Aucune tâche cette semaine
           </p>
         </div>
       ) : (
@@ -499,7 +499,7 @@ function ActivityFeed({
         <div className="flex flex-col items-center py-8">
           <FileUp className="h-8 w-8 text-muted-foreground/40" />
           <p className="mt-2 text-sm text-muted-foreground">
-            Aucune activite recente
+            Aucune activité récente
           </p>
         </div>
       ) : (
@@ -566,12 +566,12 @@ export default function DashboardPage() {
       action: () => navigate('/assemblees'),
     },
     {
-      label: 'Ajouter une copropriete',
+      label: 'Ajouter une copropriété',
       icon: Plus,
       action: () => navigate('/coproprietes'),
     },
     {
-      label: 'Gerer les charges',
+      label: 'Gérer les charges',
       icon: Receipt,
       action: () => navigate('/charges'),
     },

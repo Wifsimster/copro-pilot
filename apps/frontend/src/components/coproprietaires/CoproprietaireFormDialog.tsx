@@ -39,7 +39,7 @@ export function CoproprietaireFormDialog({
   onSubmit,
   isLoading,
   defaultValues,
-  title = 'Nouveau coproprietaire',
+  title = 'Nouveau copropriétaire',
 }: CoproprietaireFormDialogProps) {
   const form = useForm<CoproprietaireFormData>({
     resolver: zodResolver(coproprietaireSchema),
@@ -67,7 +67,7 @@ export function CoproprietaireFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations du coproprietaire. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations du copropriétaire. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}

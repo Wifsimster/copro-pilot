@@ -74,10 +74,10 @@ export default function CoproprietesPage() {
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
           <Building2 className="h-12 w-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">
-            {search ? 'Aucun resultat' : 'Aucune copropriete'}
+            {search ? 'Aucun résultat' : 'Aucune copropriété'}
           </h3>
           <p className="mt-2 text-stone-500 dark:text-stone-400">
-            {search ? 'Essayez un autre terme de recherche.' : 'Commencez par creer votre premiere copropriete.'}
+            {search ? 'Essayez un autre terme de recherche.' : 'Commencez par créer votre première copropriété.'}
           </p>
           {!search && (
             <button
@@ -85,7 +85,7 @@ export default function CoproprietesPage() {
               className="mt-4 flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm text-white hover:bg-emerald-800"
             >
               <Plus className="h-4 w-4" />
-              Creer une copropriete
+              Créer une copropriété
             </button>
           )}
         </div>
@@ -154,7 +154,7 @@ export default function CoproprietesPage() {
         open={showCreate || !!editingCopro}
         onOpenChange={(open) => { if (!open) { setShowCreate(false); setEditingCopro(null) } }}
         defaultValues={editingCopro || undefined}
-        title={editingCopro ? 'Modifier la copropriete' : 'Nouvelle copropriete'}
+        title={editingCopro ? 'Modifier la copropriété' : 'Nouvelle copropriété'}
         onSubmit={async (data) => {
           if (editingCopro) {
             await updateMutation.mutateAsync({ id: editingCopro.id, data })

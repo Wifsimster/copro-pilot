@@ -106,7 +106,7 @@ const navigationSections: NavSection[] = [
     label: 'Finances',
     collapsible: true,
     items: [
-      { name: 'Comptabilite', href: '/comptabilite-reglementaire', icon: Calculator },
+      { name: 'Comptabilité', href: '/comptabilite-reglementaire', icon: Calculator },
       { name: 'Comptes bancaires', href: '/comptes-bancaires', icon: Landmark },
       { name: 'Assurances', href: '/assurances', icon: Shield },
       { name: 'Contentieux', href: '/contentieux', icon: Scale },

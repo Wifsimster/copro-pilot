@@ -52,7 +52,7 @@ export function CoproprieteFormDialog({
   onSubmit,
   isLoading,
   defaultValues,
-  title = 'Nouvelle copropriete',
+  title = 'Nouvelle copropriété',
 }: CoproprieteFormDialogProps) {
   const form = useForm<CoproprieteFormData>({
     resolver: zodResolver(coproprieteSchema),
@@ -86,13 +86,13 @@ export function CoproprieteFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations de la copropriete. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations de la copropriété. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
       size="lg"
     >
-      <FormSection icon={Building2} label="Informations generales">
+      <FormSection icon={Building2} label="Informations générales">
         <FormField
           control={form.control}
           name="nom"
@@ -100,7 +100,7 @@ export function CoproprieteFormDialog({
             <FormItem>
               <FormLabel>Nom *</FormLabel>
               <FormControl>
-                <Input placeholder="Residence Les Tilleuls" {...field} />
+                <Input placeholder="Résidence Les Tilleuls" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -152,7 +152,7 @@ export function CoproprieteFormDialog({
         </div>
       </FormSection>
 
-      <FormSection icon={Info} label="Informations complementaires">
+      <FormSection icon={Info} label="Informations complémentaires">
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -183,14 +183,14 @@ export function CoproprieteFormDialog({
         </div>
       </FormSection>
 
-      <FormSection icon={Building2} label="Caracteristiques du batiment">
+      <FormSection icon={Building2} label="Caractéristiques du bâtiment">
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="nombre_batiments"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nombre de batiments</FormLabel>
+                <FormLabel>Nombre de bâtiments</FormLabel>
                 <FormControl>
                   <Input type="number" {...field} />
                 </FormControl>
@@ -217,7 +217,7 @@ export function CoproprieteFormDialog({
           name="periode_construction"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Periode de construction</FormLabel>
+              <FormLabel>Période de construction</FormLabel>
               <FormControl>
                 <Input placeholder="ex: 1960-1970" {...field} />
               </FormControl>
@@ -253,7 +253,7 @@ export function CoproprieteFormDialog({
             name="energie_chauffage"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Energie</FormLabel>
+                <FormLabel>Énergie</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ''}>
                   <FormControl>
                     <SelectTrigger>
@@ -262,11 +262,11 @@ export function CoproprieteFormDialog({
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="gaz">Gaz</SelectItem>
-                    <SelectItem value="electricite">Electricite</SelectItem>
+                    <SelectItem value="electricite">Électricité</SelectItem>
                     <SelectItem value="fioul">Fioul</SelectItem>
                     <SelectItem value="bois">Bois</SelectItem>
-                    <SelectItem value="pompe_chaleur">Pompe a chaleur</SelectItem>
-                    <SelectItem value="reseau_chaleur">Reseau de chaleur</SelectItem>
+                    <SelectItem value="pompe_chaleur">Pompe à chaleur</SelectItem>
+                    <SelectItem value="reseau_chaleur">Réseau de chaleur</SelectItem>
                     <SelectItem value="autre">Autre</SelectItem>
                   </SelectContent>
                 </Select>

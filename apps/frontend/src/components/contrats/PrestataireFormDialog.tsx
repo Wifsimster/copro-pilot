@@ -85,7 +85,7 @@ export function PrestataireFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations du prestataire. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations du prestataire. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -130,7 +130,7 @@ export function PrestataireFormDialog({
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selectionnez une specialite" />
+                    <SelectValue placeholder="Sélectionnez une spécialité" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -138,10 +138,10 @@ export function PrestataireFormDialog({
                   <SelectItem value="Nettoyage">Nettoyage</SelectItem>
                   <SelectItem value="Gardiennage">Gardiennage</SelectItem>
                   <SelectItem value="Plomberie">Plomberie</SelectItem>
-                  <SelectItem value="Electricite">Electricite</SelectItem>
+                  <SelectItem value="Electricite">Électricité</SelectItem>
                   <SelectItem value="Chauffage">Chauffage</SelectItem>
                   <SelectItem value="Espaces verts">Espaces verts</SelectItem>
-                  <SelectItem value="Securite">Securite</SelectItem>
+                  <SelectItem value="Securite">Sécurité</SelectItem>
                   <SelectItem value="Autre">Autre</SelectItem>
                 </SelectContent>
               </Select>

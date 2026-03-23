@@ -12,11 +12,11 @@ import { useQuery } from '@tanstack/react-query'
 import { CONVOCATIONS_QUERY_KEY } from '@/hooks/useConvocations'
 
 const STATUT_LABELS: Record<string, string> = {
-  planifiee: 'Planifiee',
-  convoquee: 'Convoquee',
+  planifiee: 'Planifiée',
+  convoquee: 'Convoquée',
   en_cours: 'En cours',
-  terminee: 'Terminee',
-  annulee: 'Annulee',
+  terminee: 'Terminée',
+  annulee: 'Annulée',
 }
 
 const STATUT_COLORS: Record<string, string> = {
@@ -31,13 +31,13 @@ const MAJORITE_LABELS: Record<string, string> = {
   article_24: 'Art. 24',
   article_25: 'Art. 25',
   article_26: 'Art. 26',
-  unanimite: 'Unanimite',
+  unanimite: 'Unanimité',
 }
 
 const RESULTAT_LABELS: Record<string, string> = {
-  adoptee: 'Adoptee',
-  rejetee: 'Rejetee',
-  ajournee: 'Ajournee',
+  adoptee: 'Adoptée',
+  rejetee: 'Rejetée',
+  ajournee: 'Ajournée',
 }
 
 const RESULTAT_COLORS: Record<string, string> = {
@@ -48,9 +48,9 @@ const RESULTAT_COLORS: Record<string, string> = {
 
 const CONVOC_STATUT_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
-  validee: 'Validee',
-  envoyee: 'Envoyee',
-  cloturee: 'Cloturee',
+  validee: 'Validée',
+  envoyee: 'Envoyée',
+  cloturee: 'Clôturée',
 }
 
 const CONVOC_STATUT_COLORS: Record<string, string> = {
@@ -62,9 +62,9 @@ const CONVOC_STATUT_COLORS: Record<string, string> = {
 
 const DEST_STATUT_LABELS: Record<string, string> = {
   en_attente: 'En attente',
-  envoyee: 'Envoyee',
-  recue: 'Recue',
-  ar_signe: 'AR signe',
+  envoyee: 'Envoyée',
+  recue: 'Reçue',
+  ar_signe: 'AR signé',
 }
 
 const DEST_STATUT_COLORS: Record<string, string> = {
@@ -76,7 +76,7 @@ const DEST_STATUT_COLORS: Record<string, string> = {
 
 const MODE_ENVOI_LABELS: Record<string, string> = {
   email: 'Email',
-  courrier_recommande: 'Courrier recommande',
+  courrier_recommande: 'Courrier recommandé',
   les_deux: 'Email + Courrier',
 }
 
@@ -132,9 +132,9 @@ export default function AssembleeDetailPage() {
   if (!ag) {
     return (
       <div className="text-center py-12">
-        <p className="text-stone-500 dark:text-stone-400">Assemblee generale non trouvee</p>
+        <p className="text-stone-500 dark:text-stone-400">Assemblée générale non trouvée</p>
         <Link to="/assemblees" className="mt-4 inline-block text-emerald-700 hover:underline">
-          Retour aux assemblees
+          Retour aux assemblées
         </Link>
       </div>
     )
@@ -155,7 +155,7 @@ export default function AssembleeDetailPage() {
 
   const handleEnvoyer = async (convocId: number) => {
     if (!delai?.valide) {
-      if (!window.confirm('Le delai legal de 21 jours n\'est pas respecte. Envoyer quand meme ?')) return
+      if (!window.confirm('Le délai légal de 21 jours n\'est pas respecté. Envoyer quand même ?')) return
     }
     await envoyerConvocation.mutateAsync(convocId)
   }
@@ -196,7 +196,7 @@ export default function AssembleeDetailPage() {
             ) : (
               <Download className="h-4 w-4" />
             )}
-            Generer le PV
+            Générer le PV
           </button>
         )}
       </div>
@@ -227,19 +227,19 @@ export default function AssembleeDetailPage() {
       {/* Info cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
         <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
-          <p className="text-sm text-stone-500 dark:text-stone-400">Resolutions</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400">Résolutions</p>
           <p className="text-2xl font-bold text-stone-900 dark:text-white">{ag.resolutions?.length || 0}</p>
         </div>
         <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
-          <p className="text-sm text-stone-500 dark:text-stone-400">Presents</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400">Présents</p>
           <p className="text-2xl font-bold text-stone-900 dark:text-white">{presenceStats?.presents || 0}</p>
         </div>
         <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
-          <p className="text-sm text-stone-500 dark:text-stone-400">Representes</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400">Représentés</p>
           <p className="text-2xl font-bold text-stone-900 dark:text-white">{presenceStats?.representes || 0}</p>
         </div>
         <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
-          <p className="text-sm text-stone-500 dark:text-stone-400">Tantiemes representes</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400">Tantièmes représentés</p>
           <p className="text-2xl font-bold text-stone-900 dark:text-white">{presenceStats?.totalTantiemes || 0}</p>
         </div>
       </div>
@@ -263,7 +263,7 @@ export default function AssembleeDetailPage() {
           }`}
         >
           <Vote className="h-4 w-4" />
-          Resolutions
+          Résolutions
         </button>
         <button
           onClick={() => setActiveTab('presences')}
@@ -274,7 +274,7 @@ export default function AssembleeDetailPage() {
           }`}
         >
           <Users className="h-4 w-4" />
-          Presences
+          Présences
         </button>
         <button
           onClick={() => setActiveTab('convocations')}
@@ -298,7 +298,7 @@ export default function AssembleeDetailPage() {
       {activeTab === 'resolutions' && (
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
-            <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Resolutions</h2>
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Résolutions</h2>
             <button
               onClick={() => setShowResolutionDialog(true)}
               disabled={createResolution.isPending}
@@ -312,7 +312,7 @@ export default function AssembleeDetailPage() {
           {(!ag.resolutions || ag.resolutions.length === 0) ? (
             <div className="flex flex-col items-center py-12">
               <FileText className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune resolution enregistree</p>
+              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune résolution enregistrée</p>
             </div>
           ) : (
             <div className="divide-y divide-stone-100 dark:divide-stone-700/50">
@@ -368,7 +368,7 @@ export default function AssembleeDetailPage() {
                       </button>
                       <button
                         onClick={() => {
-                          if (window.confirm('Supprimer cette resolution ?')) deleteResolution.mutate(res.id)
+                          if (window.confirm('Supprimer cette résolution ?')) deleteResolution.mutate(res.id)
                         }}
                         className="rounded p-1 text-stone-400 hover:text-red-600"
                       >
@@ -388,7 +388,7 @@ export default function AssembleeDetailPage() {
               agId={agId}
               numero={nextNumero}
               defaultValues={editingResolution ?? undefined}
-              title={editingResolution ? `Modifier la resolution #${editingResolution.numero}` : undefined}
+              title={editingResolution ? `Modifier la résolution #${editingResolution.numero}` : undefined}
               onSubmit={async (data) => {
                 if (editingResolution) {
                   await updateResolution.mutateAsync({ id: editingResolution.id, data })
@@ -408,7 +408,7 @@ export default function AssembleeDetailPage() {
       {activeTab === 'presences' && (
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
-            <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Feuille de presence</h2>
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Feuille de présence</h2>
             <button
               onClick={() => setShowPresenceDialog(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
@@ -421,17 +421,17 @@ export default function AssembleeDetailPage() {
           {(!ag.presences || ag.presences.length === 0) ? (
             <div className="flex flex-col items-center py-12">
               <Users className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune presence enregistree</p>
+              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune présence enregistrée</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-stone-200 text-left dark:border-stone-700">
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Coproprietaire</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Copropriétaire</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Represente par</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Tantiemes</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Représenté par</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Tantièmes</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                   </tr>
                 </thead>
@@ -449,7 +449,7 @@ export default function AssembleeDetailPage() {
                             ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
                             : 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300'
                         }`}>
-                          {p.statut === 'present' ? 'Present' : p.statut === 'represente' ? 'Represente' : 'Absent'}
+                          {p.statut === 'present' ? 'Présent' : p.statut === 'represente' ? 'Représenté' : 'Absent'}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
@@ -466,7 +466,7 @@ export default function AssembleeDetailPage() {
                           </button>
                           <button
                             onClick={() => {
-                              if (window.confirm('Retirer cette presence ?')) deletePresence.mutate(p.id)
+                              if (window.confirm('Retirer cette présence ?')) deletePresence.mutate(p.id)
                             }}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                           >
@@ -487,7 +487,7 @@ export default function AssembleeDetailPage() {
               onOpenChange={(open) => { setShowPresenceDialog(open); if (!open) setEditingPresence(null) }}
               agId={agId}
               defaultValues={editingPresence ?? undefined}
-              title={editingPresence ? 'Modifier la presence' : 'Ajouter une presence'}
+              title={editingPresence ? 'Modifier la présence' : 'Ajouter une présence'}
               onSubmit={async (data) => {
                 await setPresence.mutateAsync(data)
                 setShowPresenceDialog(false)
@@ -517,8 +517,8 @@ export default function AssembleeDetailPage() {
             {(!convocations || convocations.length === 0) ? (
               <div className="flex flex-col items-center py-12">
                 <Mail className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-                <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune convocation creee</p>
-                <p className="text-xs text-stone-400 dark:text-stone-500">Creez une convocation pour envoyer aux coproprietaires</p>
+                <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune convocation créée</p>
+                <p className="text-xs text-stone-400 dark:text-stone-500">Créez une convocation pour envoyer aux copropriétaires</p>
               </div>
             ) : (
               <div className="divide-y divide-stone-100 dark:divide-stone-700/50">
@@ -537,7 +537,7 @@ export default function AssembleeDetailPage() {
                           </div>
                           {convoc.date_envoi && (
                             <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
-                              Envoyee le {new Date(convoc.date_envoi).toLocaleDateString('fr-FR')}
+                              Envoyée le {new Date(convoc.date_envoi).toLocaleDateString('fr-FR')}
                             </p>
                           )}
                           {convoc.notes && (
@@ -551,7 +551,7 @@ export default function AssembleeDetailPage() {
                                 onClick={() => genererDestinataires.mutate(convoc.id)}
                                 disabled={genererDestinataires.isPending}
                                 className="flex items-center gap-1 rounded px-2 py-1 text-xs text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
-                                title="Generer les destinataires"
+                                title="Générer les destinataires"
                               >
                                 <UserPlus className="h-3.5 w-3.5" />
                                 Destinataires
@@ -616,7 +616,7 @@ export default function AssembleeDetailPage() {
                           </div>
                         ) : expandedDestinataires.length === 0 ? (
                           <p className="text-sm text-stone-400 dark:text-stone-500">
-                            Aucun destinataire. Cliquez "Destinataires" pour generer la liste.
+                            Aucun destinataire. Cliquez "Destinataires" pour générer la liste.
                           </p>
                         ) : (
                           <div className="overflow-x-auto">
@@ -627,7 +627,7 @@ export default function AssembleeDetailPage() {
                                   <th className="pb-2 pr-4">Email</th>
                                   <th className="pb-2 pr-4">Mode</th>
                                   <th className="pb-2 pr-4">Statut</th>
-                                  <th className="pb-2 pr-4">Reception</th>
+                                  <th className="pb-2 pr-4">Réception</th>
                                   <th className="pb-2">AR</th>
                                 </tr>
                               </thead>

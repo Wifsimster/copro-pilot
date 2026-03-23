@@ -20,12 +20,12 @@ export default function PolitiqueConfidentialitePage() {
           Retour
         </Button>
         <h1 className="text-2xl font-bold">
-          Politique de confidentialite
+          Politique de confidentialité
         </h1>
       </div>
 
       <p className="text-sm text-muted-foreground">
-        Derniere mise a jour : 19 fevrier 2026
+        Dernière mise à jour : 19 février 2026
       </p>
 
       <Card>
@@ -34,15 +34,15 @@ export default function PolitiqueConfidentialitePage() {
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <p>
-            Le responsable du traitement des donnees
-            personnelles collectees via la plateforme CoproPilot
-            est le syndic de copropriete utilisant cette
+            Le responsable du traitement des données
+            personnelles collectées via la plateforme CoproPilot
+            est le syndic de copropriété utilisant cette
             application.
           </p>
           <p>
-            Pour toute question relative a la protection de vos
-            donnees, vous pouvez contacter le syndic via les
-            coordonnees fournies dans votre contrat de syndic.
+            Pour toute question relative à la protection de vos
+            données, vous pouvez contacter le syndic via les
+            coordonnées fournies dans votre contrat de syndic.
           </p>
         </CardContent>
       </Card>
@@ -50,13 +50,13 @@ export default function PolitiqueConfidentialitePage() {
       <Card>
         <CardHeader>
           <CardTitle>
-            2. Finalites du traitement
+            2. Finalités du traitement
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <p>
-            Vos donnees personnelles sont collectees et traitees
-            pour les finalites suivantes :
+            Vos données personnelles sont collectées et traitées
+            pour les finalités suivantes :
           </p>
           <ul className="list-disc space-y-1 pl-6">
             <li>
@@ -64,16 +64,16 @@ export default function PolitiqueConfidentialitePage() {
               authentification
             </li>
             <li>
-              Gestion de la copropriete (appels de fonds,
+              Gestion de la copropriété (appels de fonds,
               charges, paiements)
             </li>
             <li>
-              Communication relative aux assemblees generales
+              Communication relative aux assemblées générales
             </li>
             <li>Gestion des incidents et travaux</li>
-            <li>Tenue de la comptabilite de la copropriete</li>
+            <li>Tenue de la comptabilité de la copropriété</li>
             <li>
-              Respect des obligations legales du syndic (loi du
+              Respect des obligations légales du syndic (loi du
               10 juillet 1965, loi ALUR, loi ELAN)
             </li>
           </ul>
@@ -82,23 +82,23 @@ export default function PolitiqueConfidentialitePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>3. Base legale du traitement</CardTitle>
+          <CardTitle>3. Base légale du traitement</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <p>
-            Le traitement de vos donnees repose sur les bases
-            legales suivantes :
+            Le traitement de vos données repose sur les bases
+            légales suivantes :
           </p>
           <ul className="list-disc space-y-1 pl-6">
             <li>
-              <strong>Execution du contrat</strong> : gestion de
-              votre qualite de coproprietaire et des obligations
-              associees
+              <strong>Exécution du contrat</strong> : gestion de
+              votre qualité de copropriétaire et des obligations
+              associées
             </li>
             <li>
-              <strong>Obligation legale</strong> : tenue
+              <strong>Obligation légale</strong> : tenue
               comptable (Code de commerce art. L123-22),
-              registre national des coproprietes, obligations du
+              registre national des copropriétés, obligations du
               syndic
             </li>
             <li>
@@ -113,25 +113,25 @@ export default function PolitiqueConfidentialitePage() {
       <Card>
         <CardHeader>
           <CardTitle>
-            4. Donnees collectees
+            4. Données collectées
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <ul className="list-disc space-y-1 pl-6">
             <li>
-              <strong>Identite</strong> : nom, prenom, adresse
+              <strong>Identité</strong> : nom, prénom, adresse
               email
             </li>
             <li>
-              <strong>Coordonnees</strong> : telephone, adresse
+              <strong>Coordonnées</strong> : téléphone, adresse
               de correspondance
             </li>
             <li>
-              <strong>Donnees financieres</strong> : paiements,
+              <strong>Données financières</strong> : paiements,
               charges, appels de fonds
             </li>
             <li>
-              <strong>Donnees de connexion</strong> : identifiant
+              <strong>Données de connexion</strong> : identifiant
               de session (cookie technique)
             </li>
           </ul>
@@ -140,27 +140,27 @@ export default function PolitiqueConfidentialitePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>5. Duree de conservation</CardTitle>
+          <CardTitle>5. Durée de conservation</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <ul className="list-disc space-y-1 pl-6">
             <li>
-              <strong>Donnees de compte</strong> : conservees
-              pendant la duree de votre qualite de
-              coproprietaire, puis anonymisees sur demande
+              <strong>Données de compte</strong> : conservées
+              pendant la durée de votre qualité de
+              copropriétaire, puis anonymisées sur demande
             </li>
             <li>
-              <strong>Donnees financieres</strong> : conservees
-              10 ans conformement au Code de commerce (art.
+              <strong>Données financières</strong> : conservées
+              10 ans conformément au Code de commerce (art.
               L123-22)
             </li>
             <li>
-              <strong>Donnees de session</strong> : supprimees a
+              <strong>Données de session</strong> : supprimées à
               expiration de la session
             </li>
             <li>
-              <strong>Notifications</strong> : conservees 1 an
-              apres lecture
+              <strong>Notifications</strong> : conservées 1 an
+              après lecture
             </li>
           </ul>
         </CardContent>
@@ -172,50 +172,50 @@ export default function PolitiqueConfidentialitePage() {
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <p>
-            Conformement au RGPD, vous disposez des droits
+            Conformément au RGPD, vous disposez des droits
             suivants :
           </p>
           <ul className="list-disc space-y-1 pl-6">
             <li>
               <strong>Droit d&apos;acces</strong> : consulter
-              l&apos;ensemble de vos donnees via votre espace
+              l&apos;ensemble de vos données via votre espace
               personnel
             </li>
             <li>
               <strong>Droit de rectification</strong> : modifier
-              vos coordonnees depuis votre profil
+              vos coordonnées depuis votre profil
             </li>
             <li>
-              <strong>Droit a la portabilite</strong> :
-              telecharger vos donnees au format JSON depuis votre
-              espace &laquo; Mes donnees personnelles &raquo;
+              <strong>Droit à la portabilité</strong> :
+              télécharger vos données au format JSON depuis votre
+              espace &laquo; Mes données personnelles &raquo;
             </li>
             <li>
               <strong>Droit a l&apos;effacement</strong> :
               demander la suppression de votre compte (les
-              donnees financieres seront anonymisees mais
-              conservees conformement a la loi)
+              données financières seront anonymisées mais
+              conservées conformément à la loi)
             </li>
             <li>
               <strong>Droit d&apos;opposition</strong> : vous
-              opposer au traitement de vos donnees a des fins
+              opposer au traitement de vos données à des fins
               marketing
             </li>
             <li>
               <strong>Droit de retrait du consentement</strong>{' '}
-              : retirer vos consentements a tout moment depuis
+              : retirer vos consentements à tout moment depuis
               votre espace personnel
             </li>
           </ul>
           <p className="mt-4">
             Pour exercer ces droits, rendez-vous dans la section
-            &laquo; Mes donnees personnelles &raquo; de votre
+            &laquo; Mes données personnelles &raquo; de votre
             espace utilisateur, ou contactez votre syndic.
           </p>
           <p>
-            Vous pouvez egalement introduire une reclamation
-            aupres de la CNIL (Commission Nationale de
-            l&apos;Informatique et des Libertes) sur{' '}
+            Vous pouvez également introduire une réclamation
+            auprès de la CNIL (Commission Nationale de
+            l&apos;Informatique et des Libertés) sur{' '}
             <span className="font-medium">www.cnil.fr</span>.
           </p>
         </CardContent>
@@ -228,24 +228,24 @@ export default function PolitiqueConfidentialitePage() {
         <CardContent className="space-y-2 text-sm">
           <p>
             CoproPilot utilise uniquement des cookies techniques
-            necessaires au fonctionnement du service
+            nécessaires au fonctionnement du service
             (authentification de session). Aucun cookie
-            publicitaire ou de pistage n&apos;est utilise.
+            publicitaire ou de pistage n&apos;est utilisé.
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>8. Securite</CardTitle>
+          <CardTitle>8. Sécurité</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <p>
             Nous mettons en oeuvre des mesures techniques et
-            organisationnelles appropriees pour proteger vos
-            donnees personnelles : chiffrement des mots de passe,
-            controle d&apos;acces par roles, journalisation des
-            acces, en-tetes de securite HTTP.
+            organisationnelles appropriées pour protéger vos
+            données personnelles : chiffrement des mots de passe,
+            contrôle d&apos;accès par rôles, journalisation des
+            accès, en-têtes de sécurité HTTP.
           </p>
         </CardContent>
       </Card>

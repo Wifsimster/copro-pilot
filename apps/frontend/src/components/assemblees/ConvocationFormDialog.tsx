@@ -41,13 +41,13 @@ interface ConvocationFormDialogProps {
 
 const DEFAULT_TEMPLATE = `Madame, Monsieur,
 
-Nous avons l'honneur de vous convoquer a l'Assemblee Generale de votre copropriete.
+Nous avons l'honneur de vous convoquer à l'Assemblée Générale de votre copropriété.
 
-Conformement a l'article 9 du decret du 17 mars 1967, nous vous rappelons que vous disposez de la possibilite de vous faire representer par un mandataire de votre choix.
+Conformément à l'article 9 du décret du 17 mars 1967, nous vous rappelons que vous disposez de la possibilité de vous faire représenter par un mandataire de votre choix.
 
-Veuillez trouver ci-joints les documents preparatoires a cette assemblee.
+Veuillez trouver ci-joints les documents préparatoires à cette assemblée.
 
-Nous vous prions d'agreer, Madame, Monsieur, l'expression de nos salutations distinguees.
+Nous vous prions d'agréer, Madame, Monsieur, l'expression de nos salutations distinguées.
 
 Le Syndic`
 
@@ -83,7 +83,7 @@ export function ConvocationFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Redigez la convocation et choisissez le mode d'envoi."
+      description="Rédigez la convocation et choisissez le mode d'envoi."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -103,7 +103,7 @@ export function ConvocationFormDialog({
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="email">Email</SelectItem>
-                  <SelectItem value="courrier_recommande">Courrier recommande</SelectItem>
+                  <SelectItem value="courrier_recommande">Courrier recommandé</SelectItem>
                   <SelectItem value="les_deux">Les deux (email + courrier)</SelectItem>
                 </SelectContent>
               </Select>
@@ -135,7 +135,7 @@ export function ConvocationFormDialog({
             <FormItem>
               <FormLabel>Notes internes</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="Notes internes (non envoyees)..." {...field} />
+                <Textarea rows={2} placeholder="Notes internes (non envoyées)..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -60,7 +60,7 @@ export default function ContratsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Contrats & Prestataires</h1>
-          <p className="text-stone-500 dark:text-stone-400">Gestion des contrats prestataires et suivi des echeances</p>
+          <p className="text-stone-500 dark:text-stone-400">Gestion des contrats prestataires et suivi des échéances</p>
         </div>
       </div>
 

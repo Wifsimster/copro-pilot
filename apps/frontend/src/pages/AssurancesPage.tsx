@@ -11,7 +11,7 @@ import { Shield, Plus, Trash2, Pencil, FileWarning } from 'lucide-react'
 
 const TYPE_LABELS: Record<string, string> = {
   multirisque_immeuble: 'Multirisque immeuble',
-  responsabilite_civile: 'Responsabilite civile',
+  responsabilite_civile: 'Responsabilité civile',
   dommages_ouvrage: 'Dommages-ouvrage',
   protection_juridique: 'Protection juridique',
   autre: 'Autre',
@@ -19,8 +19,8 @@ const TYPE_LABELS: Record<string, string> = {
 
 const STATUT_ASSURANCE_LABELS: Record<string, string> = {
   actif: 'Actif',
-  expire: 'Expire',
-  resilie: 'Resilie',
+  expire: 'Expiré',
+  resilie: 'Résilié',
 }
 
 const STATUT_ASSURANCE_COLORS: Record<string, string> = {
@@ -30,10 +30,10 @@ const STATUT_ASSURANCE_COLORS: Record<string, string> = {
 }
 
 const STATUT_SINISTRE_LABELS: Record<string, string> = {
-  declare: 'Declare',
+  declare: 'Déclaré',
   en_instruction: 'En instruction',
-  accepte: 'Accepte',
-  refuse: 'Refuse',
+  accepte: 'Accepté',
+  refuse: 'Refusé',
   clos: 'Clos',
 }
 
@@ -83,8 +83,8 @@ export default function AssurancesPage() {
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
           <Shield className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
+          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriété sélectionnée</h3>
+          <p className="mt-2 text-stone-500 dark:text-stone-400">Sélectionnez une copropriété dans le menu latéral.</p>
         </div>
       ) : (
         <>
@@ -130,7 +130,7 @@ export default function AssurancesPage() {
               ) : !assurances || assurances.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <Shield className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune assurance enregistree</p>
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune assurance enregistrée</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -142,7 +142,7 @@ export default function AssurancesPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Type</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Prime annuelle</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Echeance</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Échéance</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                       </tr>
                     </thead>
@@ -222,7 +222,7 @@ export default function AssurancesPage() {
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="h-4 w-4" />
-                  Declarer un sinistre
+                  Déclarer un sinistre
                 </button>
               </div>
 
@@ -233,7 +233,7 @@ export default function AssurancesPage() {
               ) : !sinistres || sinistres.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <FileWarning className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun sinistre enregistre</p>
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun sinistre enregistré</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -243,8 +243,8 @@ export default function AssurancesPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">N° sinistre</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Description</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Assurance</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant estime</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Indemnise</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant estimé</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Indemnisé</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
@@ -304,7 +304,7 @@ export default function AssurancesPage() {
                 onOpenChange={(open) => { setShowSinistreDialog(open); if (!open) setEditingSinistre(null) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingSinistre || undefined}
-                title={editingSinistre ? 'Modifier le sinistre' : 'Declarer un sinistre'}
+                title={editingSinistre ? 'Modifier le sinistre' : 'Déclarer un sinistre'}
                 assurances={assurances || []}
                 incidents={incidents || []}
                 onSubmit={async (data) => {

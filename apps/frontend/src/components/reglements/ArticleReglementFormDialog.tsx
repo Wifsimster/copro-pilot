@@ -23,7 +23,7 @@ import { FormSection } from '@/components/ui/form-section'
 import type { ArticleReglement } from '@/types'
 
 const articleSchema = z.object({
-  numero: z.string().min(1, 'Le numero est obligatoire'),
+  numero: z.string().min(1, 'Le numéro est obligatoire'),
   titre: z.string().min(1, 'Le titre est obligatoire'),
   contenu: z.string().optional(),
   categorie: z.enum(['parties_privatives', 'parties_communes', 'charges', 'usage', 'travaux', 'conseil_syndical', 'ag', 'autre']),
@@ -79,7 +79,7 @@ export function ArticleReglementFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations de l'article du reglement. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations de l'article du règlement. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -92,7 +92,7 @@ export function ArticleReglementFormDialog({
             name="numero"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Numero *</FormLabel>
+                <FormLabel>Numéro *</FormLabel>
                 <FormControl>
                   <Input placeholder="Art. 1, 2.1..." {...field} />
                 </FormControl>
@@ -134,7 +134,7 @@ export function ArticleReglementFormDialog({
           name="categorie"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Categorie *</FormLabel>
+              <FormLabel>Catégorie *</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -148,7 +148,7 @@ export function ArticleReglementFormDialog({
                   <SelectItem value="usage">Usage</SelectItem>
                   <SelectItem value="travaux">Travaux</SelectItem>
                   <SelectItem value="conseil_syndical">Conseil syndical</SelectItem>
-                  <SelectItem value="ag">Assemblee generale</SelectItem>
+                  <SelectItem value="ag">Assemblée générale</SelectItem>
                   <SelectItem value="autre">Autre</SelectItem>
                 </SelectContent>
               </Select>
@@ -180,7 +180,7 @@ export function ArticleReglementFormDialog({
             <FormItem>
               <FormLabel>Notes</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="Notes complementaires..." {...field} />
+                <Textarea rows={2} placeholder="Notes complémentaires..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

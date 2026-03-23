@@ -89,8 +89,8 @@ export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmi
     <FormDialog
       open={open}
       onOpenChange={onOpenChange}
-      title={title ?? `Resolution #${defaultValues?.numero ?? numero}`}
-      description="Ajoutez une resolution a l'ordre du jour. Les champs marques d'un * sont obligatoires."
+      title={title ?? `Résolution #${defaultValues?.numero ?? numero}`}
+      description="Ajoutez une résolution à l'ordre du jour. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={onFormSubmit}
       isLoading={isLoading}

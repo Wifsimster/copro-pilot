@@ -24,7 +24,7 @@ import type { BudgetPrevisionnel } from '@/types'
 
 const budgetSchema = z.object({
   annee: z.coerce.number().min(2000).max(2100),
-  montant_total: z.coerce.number().min(0, 'Le montant doit etre positif'),
+  montant_total: z.coerce.number().min(0, 'Le montant doit être positif'),
   statut: z.enum(['brouillon', 'vote', 'approuve']),
   notes: z.string().optional(),
 })
@@ -74,7 +74,7 @@ export function BudgetFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Definissez le budget previsionnel. Les champs marques d'un * sont obligatoires."
+      description="Définissez le budget prévisionnel. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -87,7 +87,7 @@ export function BudgetFormDialog({
             name="annee"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Annee *</FormLabel>
+                <FormLabel>Année *</FormLabel>
                 <FormControl>
                   <Input type="number" {...field} />
                 </FormControl>
@@ -124,8 +124,8 @@ export function BudgetFormDialog({
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="brouillon">Brouillon</SelectItem>
-                  <SelectItem value="vote">Vote</SelectItem>
-                  <SelectItem value="approuve">Approuve</SelectItem>
+                  <SelectItem value="vote">Voté</SelectItem>
+                  <SelectItem value="approuve">Approuvé</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -142,7 +142,7 @@ export function BudgetFormDialog({
             <FormItem>
               <FormLabel>Notes</FormLabel>
               <FormControl>
-                <Textarea rows={3} placeholder="Notes supplementaires..." {...field} />
+                <Textarea rows={3} placeholder="Notes supplémentaires..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

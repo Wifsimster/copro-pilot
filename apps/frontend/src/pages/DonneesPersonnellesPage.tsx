@@ -20,10 +20,10 @@ export default function DonneesPersonnellesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">
-          Mes donnees personnelles
+          Mes données personnelles
         </h1>
         <p className="text-muted-foreground">
-          Gerez vos donnees personnelles conformement au RGPD.
+          Gérez vos données personnelles conformément au RGPD.
         </p>
       </div>
 
@@ -33,10 +33,10 @@ export default function DonneesPersonnellesPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Download className="h-5 w-5" />
-            Portabilite des donnees
+            Portabilité des données
           </CardTitle>
           <CardDescription>
-            Telechargez l&apos;ensemble de vos donnees
+            Téléchargez l&apos;ensemble de vos données
             personnelles au format JSON (Article 20 du RGPD).
           </CardDescription>
         </CardHeader>
@@ -46,7 +46,7 @@ export default function DonneesPersonnellesPage() {
             onClick={() => gdprApi.exportMyData()}
           >
             <Download className="mr-2 h-4 w-4" />
-            Telecharger mes donnees
+            Télécharger mes données
           </Button>
         </CardContent>
       </Card>
@@ -55,10 +55,10 @@ export default function DonneesPersonnellesPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Politique de confidentialite
+            Politique de confidentialité
           </CardTitle>
           <CardDescription>
-            Consultez notre politique de traitement des donnees
+            Consultez notre politique de traitement des données
             personnelles.
           </CardDescription>
         </CardHeader>
@@ -73,7 +73,7 @@ export default function DonneesPersonnellesPage() {
             }
           >
             <ExternalLink className="mr-2 h-4 w-4" />
-            Voir la politique de confidentialite
+            Voir la politique de confidentialité
           </Button>
         </CardContent>
       </Card>
@@ -84,9 +84,9 @@ export default function DonneesPersonnellesPage() {
             Zone dangereuse
           </CardTitle>
           <CardDescription>
-            La suppression de votre compte est irreversible. Vos
-            donnees personnelles seront anonymisees. Les donnees
-            financieres seront conservees conformement a la loi
+            La suppression de votre compte est irréversible. Vos
+            données personnelles seront anonymisées. Les données
+            financières seront conservées conformément à la loi
             (10 ans).
           </CardDescription>
         </CardHeader>

@@ -88,7 +88,7 @@ export function AssuranceFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations de la police d'assurance. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations de la police d'assurance. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}

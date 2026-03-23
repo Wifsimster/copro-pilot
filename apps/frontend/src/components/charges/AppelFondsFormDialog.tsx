@@ -24,7 +24,7 @@ import type { AppelFonds } from '@/types'
 const appelSchema = z.object({
   trimestre: z.coerce.number().min(1).max(4),
   annee: z.coerce.number().min(2000).max(2100),
-  montant_total: z.coerce.number().min(0, 'Le montant doit etre positif'),
+  montant_total: z.coerce.number().min(0, 'Le montant doit être positif'),
   date_emission: z.string().min(1, 'La date est obligatoire'),
   date_echeance: z.string().min(1, 'La date est obligatoire'),
 })
@@ -77,13 +77,13 @@ export function AppelFondsFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Creez un appel de fonds trimestriel. Les champs marques d'un * sont obligatoires."
+      description="Créez un appel de fonds trimestriel. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
       size="md"
     >
-      <FormSection icon={Receipt} label="Periode et montant">
+      <FormSection icon={Receipt} label="Période et montant">
         <div className="grid grid-cols-3 gap-4">
           <FormField
             control={form.control}
@@ -113,7 +113,7 @@ export function AppelFondsFormDialog({
             name="annee"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Annee *</FormLabel>
+                <FormLabel>Année *</FormLabel>
                 <FormControl>
                   <Input type="number" {...field} />
                 </FormControl>
@@ -144,7 +144,7 @@ export function AppelFondsFormDialog({
             name="date_emission"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date d'emission *</FormLabel>
+                <FormLabel>Date d'émission *</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>
@@ -157,7 +157,7 @@ export function AppelFondsFormDialog({
             name="date_echeance"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date d'echeance *</FormLabel>
+                <FormLabel>Date d'échéance *</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>

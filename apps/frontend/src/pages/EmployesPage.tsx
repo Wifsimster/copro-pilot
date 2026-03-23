@@ -14,7 +14,7 @@ import { HardHat, Plus, Trash2, Pencil, Home } from 'lucide-react'
 const TYPE_CONTRAT_LABELS: Record<string, string> = {
   cdi: 'CDI',
   cdd: 'CDD',
-  interim: 'Interim',
+  interim: 'Intérim',
   saisonnier: 'Saisonnier',
 }
 
@@ -49,27 +49,27 @@ export default function EmployesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Employes du syndicat</h1>
-          <p className="text-stone-500 dark:text-stone-400">Gestion du personnel de la copropriete</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Employés du syndicat</h1>
+          <p className="text-stone-500 dark:text-stone-400">Gestion du personnel de la copropriété</p>
         </div>
       </div>
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
           <HardHat className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
+          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriété sélectionnée</h3>
+          <p className="mt-2 text-stone-500 dark:text-stone-400">Sélectionnez une copropriété dans le menu latéral.</p>
         </div>
       ) : (
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
-            <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Liste des employes</h2>
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Liste des employés</h2>
             <button
               onClick={() => setShowDialog(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
               <Plus className="h-4 w-4" />
-              Nouvel employe
+              Nouvel employé
             </button>
           </div>
 
@@ -80,7 +80,7 @@ export default function EmployesPage() {
           ) : !employes || employes.length === 0 ? (
             <div className="flex flex-col items-center py-12">
               <HardHat className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun employe enregistre</p>
+              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun employé enregistré</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -88,7 +88,7 @@ export default function EmployesPage() {
                 <thead>
                   <tr className="border-b border-stone-200 text-left dark:border-stone-700">
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Nom</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Prenom</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Prénom</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Poste</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Contrat</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Salaire brut</th>
@@ -133,7 +133,7 @@ export default function EmployesPage() {
                           </button>
                           <button
                             onClick={() => {
-                              if (window.confirm('Supprimer cet employe ?')) deleteEmploye.mutate(employe.id)
+                              if (window.confirm('Supprimer cet employé ?')) deleteEmploye.mutate(employe.id)
                             }}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                           >
@@ -153,7 +153,7 @@ export default function EmployesPage() {
             onOpenChange={(open) => { setShowDialog(open); if (!open) setEditingEmploye(null) }}
             coproprieteId={selectedCoproId}
             defaultValues={editingEmploye || undefined}
-            title={editingEmploye ? 'Modifier l\'employe' : 'Nouvel employe'}
+            title={editingEmploye ? 'Modifier l\'employé' : 'Nouvel employé'}
             onSubmit={async (data) => {
               if (editingEmploye) {
                 await updateEmploye.mutateAsync({ id: editingEmploye.id, data })

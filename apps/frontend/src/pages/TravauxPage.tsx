@@ -27,8 +27,8 @@ const URGENCE_COLORS: Record<string, string> = {
 const STATUT_INCIDENT_LABELS: Record<string, string> = {
   ouvert: 'Ouvert',
   en_cours: 'En cours',
-  resolu: 'Resolu',
-  ferme: 'Ferme',
+  resolu: 'Résolu',
+  ferme: 'Fermé',
 }
 
 const STATUT_INCIDENT_COLORS: Record<string, string> = {
@@ -40,10 +40,10 @@ const STATUT_INCIDENT_COLORS: Record<string, string> = {
 
 const STATUT_INTERVENTION_LABELS: Record<string, string> = {
   en_attente: 'En attente',
-  planifiee: 'Planifiee',
+  planifiee: 'Planifiée',
   en_cours: 'En cours',
-  terminee: 'Terminee',
-  annulee: 'Annulee',
+  terminee: 'Terminée',
+  annulee: 'Annulée',
 }
 
 const STATUT_INTERVENTION_COLORS: Record<string, string> = {
@@ -97,8 +97,8 @@ export default function TravauxPage() {
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
           <Wrench className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
+          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriété sélectionnée</h3>
+          <p className="mt-2 text-stone-500 dark:text-stone-400">Sélectionnez une copropriété dans le menu latéral.</p>
         </div>
       ) : (
         <>
@@ -145,7 +145,7 @@ export default function TravauxPage() {
               ) : !incidents || incidents.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <AlertTriangle className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun incident signale</p>
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun incident signalé</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -153,7 +153,7 @@ export default function TravauxPage() {
                     <thead>
                       <tr className="border-b border-stone-200 text-left dark:border-stone-700">
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Titre</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Categorie</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Catégorie</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Urgence</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
@@ -244,7 +244,7 @@ export default function TravauxPage() {
               ) : !interventions || interventions.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <Hammer className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune intervention enregistree</p>
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune intervention enregistrée</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -336,7 +336,7 @@ export default function TravauxPage() {
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="h-4 w-4" />
-                  Nouvelle entree
+                  Nouvelle entrée
                 </button>
               </div>
 
@@ -347,7 +347,7 @@ export default function TravauxPage() {
               ) : !carnetEntretien || carnetEntretien.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <BookOpen className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune entree dans le carnet</p>
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune entrée dans le carnet</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -355,7 +355,7 @@ export default function TravauxPage() {
                     <thead>
                       <tr className="border-b border-stone-200 text-left dark:border-stone-700">
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Titre</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Categorie</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Catégorie</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Prestataire</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
@@ -386,7 +386,7 @@ export default function TravauxPage() {
                               </button>
                               <button
                                 onClick={() => {
-                                  if (window.confirm('Supprimer cette entree ?')) deleteCarnet.mutate(entree.id)
+                                  if (window.confirm('Supprimer cette entrée ?')) deleteCarnet.mutate(entree.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                               >
@@ -406,7 +406,7 @@ export default function TravauxPage() {
                 onOpenChange={(open) => { setShowCarnetDialog(open); if (!open) setEditingCarnet(null) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingCarnet || undefined}
-                title={editingCarnet ? 'Modifier l\'entree' : 'Nouvelle entree au carnet'}
+                title={editingCarnet ? 'Modifier l\'entrée' : 'Nouvelle entrée au carnet'}
                 onSubmit={async (data) => {
                   if (editingCarnet) {
                     await updateCarnet.mutateAsync({ id: editingCarnet.id, data })

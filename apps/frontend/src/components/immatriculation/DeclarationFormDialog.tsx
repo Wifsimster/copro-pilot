@@ -24,7 +24,7 @@ import { FormSection } from '@/components/ui/form-section'
 import type { DeclarationRegistre, DonneesDeclarees } from '@/types'
 
 const declarationSchema = z.object({
-  annee: z.coerce.number().min(2000, 'Annee invalide').max(2100, 'Annee invalide'),
+  annee: z.coerce.number().min(2000, 'Année invalide').max(2100, 'Année invalide'),
   date_declaration: z.string().optional(),
   statut: z.enum(['brouillon', 'soumis', 'valide']),
   notes: z.string().optional(),
@@ -40,8 +40,8 @@ const DIAG_STATUT_COLORS: Record<string, string> = {
 
 const DIAG_STATUT_LABELS: Record<string, string> = {
   valide: 'Valide',
-  expire: 'Expire',
-  a_renouveler: 'A renouveler',
+  expire: 'Expiré',
+  a_renouveler: 'À renouveler',
 }
 
 const formatCurrency = (value: number) =>
@@ -65,7 +65,7 @@ export function DeclarationFormDialog({
   onSubmit,
   isLoading,
   defaultValues,
-  title = 'Nouvelle declaration',
+  title = 'Nouvelle déclaration',
   donneesPreparees,
 }: DeclarationFormDialogProps) {
   const form = useForm<DeclarationFormData>({
@@ -96,20 +96,20 @@ export function DeclarationFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations de la declaration annuelle au registre national."
+      description="Renseignez les informations de la déclaration annuelle au registre national."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
       size="2xl"
     >
-      <FormSection icon={CalendarDays} label="Informations generales">
+      <FormSection icon={CalendarDays} label="Informations générales">
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="annee"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Annee *</FormLabel>
+                <FormLabel>Année *</FormLabel>
                 <FormControl>
                   <Input type="number" {...field} />
                 </FormControl>
@@ -122,7 +122,7 @@ export function DeclarationFormDialog({
             name="date_declaration"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date de declaration</FormLabel>
+                <FormLabel>Date de déclaration</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>
@@ -147,7 +147,7 @@ export function DeclarationFormDialog({
                 <SelectContent>
                   <SelectItem value="brouillon">Brouillon</SelectItem>
                   <SelectItem value="soumis">Soumis</SelectItem>
-                  <SelectItem value="valide">Valide</SelectItem>
+                  <SelectItem value="valide">Validé</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -157,7 +157,7 @@ export function DeclarationFormDialog({
       </FormSection>
 
       {donnees && (
-        <FormSection icon={FileText} label="Donnees declarees">
+        <FormSection icon={FileText} label="Données déclarées">
           <Tabs defaultValue="identification" className="w-full">
             <TabsList className="w-full">
               <TabsTrigger value="identification" className="flex items-center gap-1.5">
@@ -191,11 +191,11 @@ export function DeclarationFormDialog({
                   </p>
                 )}
                 <p className="text-stone-600 dark:text-stone-400">
-                  {donnees.identification.nombre_batiments} batiment(s), {donnees.identification.nombre_ascenseurs} ascenseur(s)
+                  {donnees.identification.nombre_batiments} bâtiment(s), {donnees.identification.nombre_ascenseurs} ascenseur(s)
                 </p>
                 {donnees.identification.periode_construction && (
                   <p className="text-stone-600 dark:text-stone-400">
-                    Periode de construction : {donnees.identification.periode_construction}
+                    Période de construction : {donnees.identification.periode_construction}
                   </p>
                 )}
                 {donnees.identification.type_chauffage && (
@@ -217,7 +217,7 @@ export function DeclarationFormDialog({
                   </p>
                   {donnees.gouvernance.remuneration_forfait != null && (
                     <p className="text-stone-600 dark:text-stone-400">
-                      Remuneration forfaitaire : {formatCurrency(donnees.gouvernance.remuneration_forfait)}
+                      Rémunération forfaitaire : {formatCurrency(donnees.gouvernance.remuneration_forfait)}
                     </p>
                   )}
                   <span className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -242,7 +242,7 @@ export function DeclarationFormDialog({
               <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
                 <h4 className="font-medium text-stone-900 dark:text-white">Lots</h4>
                 <p className="mt-1 text-stone-600 dark:text-stone-400">
-                  {donnees.lots.total} lot(s) — {donnees.lots.total_tantiemes} tantiemes — {donnees.lots.nombre_coproprietaires} coproprietaire(s)
+                  {donnees.lots.total} lot(s) — {donnees.lots.total_tantiemes} tantièmes — {donnees.lots.nombre_coproprietaires} copropriétaire(s)
                 </p>
                 {donnees.lots.par_type.length > 0 && (
                   <p className="text-stone-500 dark:text-stone-500">
@@ -277,7 +277,7 @@ export function DeclarationFormDialog({
               ) : (
                 <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
                   <h4 className="font-medium text-stone-900 dark:text-white">Diagnostics</h4>
-                  <p className="mt-1 text-stone-500 dark:text-stone-500">Aucun diagnostic enregistre</p>
+                  <p className="mt-1 text-stone-500 dark:text-stone-500">Aucun diagnostic enregistré</p>
                 </div>
               )}
             </TabsContent>
@@ -291,7 +291,7 @@ export function DeclarationFormDialog({
                     Budget {donnees.finances.budget_annee} : {formatCurrency(donnees.finances.budget_montant)} ({donnees.finances.budget_statut})
                   </p>
                 ) : (
-                  <p className="mt-1 text-stone-500 dark:text-stone-500">Aucun budget pour cette annee</p>
+                  <p className="mt-1 text-stone-500 dark:text-stone-500">Aucun budget pour cette année</p>
                 )}
                 <p className="text-stone-600 dark:text-stone-400">
                   Appels de fonds : {donnees.finances.appels_fonds_nombre} ({formatCurrency(donnees.finances.appels_fonds_montant)})
@@ -306,25 +306,25 @@ export function DeclarationFormDialog({
                     ? 'font-medium text-red-600 dark:text-red-400'
                     : 'text-stone-600 dark:text-stone-400'
                   }>
-                    Impayes : {formatCurrency(donnees.finances.total_impayes)}
+                    Impayés : {formatCurrency(donnees.finances.total_impayes)}
                   </p>
                 )}
               </div>
 
               {donnees.procedures && (
                 <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
-                  <h4 className="font-medium text-stone-900 dark:text-white">Procedures judiciaires</h4>
+                  <h4 className="font-medium text-stone-900 dark:text-white">Procédures judiciaires</h4>
                   {donnees.procedures.nombre_actives > 0 ? (
                     <>
                       <p className="mt-1 text-stone-600 dark:text-stone-400">
-                        {donnees.procedures.nombre_actives} procedure(s) active(s)
+                        {donnees.procedures.nombre_actives} procédure(s) active(s)
                       </p>
                       <p className="text-stone-600 dark:text-stone-400">
-                        Montant total reclame : {formatCurrency(donnees.procedures.montant_total_reclame)}
+                        Montant total réclamé : {formatCurrency(donnees.procedures.montant_total_reclame)}
                       </p>
                     </>
                   ) : (
-                    <p className="mt-1 text-green-600 dark:text-green-400">Aucune procedure active</p>
+                    <p className="mt-1 text-green-600 dark:text-green-400">Aucune procédure active</p>
                   )}
                 </div>
               )}
@@ -334,14 +334,14 @@ export function DeclarationFormDialog({
             <TabsContent value="organisation" className="mt-4 space-y-4">
               {donnees.assemblee_generale ? (
                 <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
-                  <h4 className="font-medium text-stone-900 dark:text-white">Derniere assemblee generale</h4>
+                  <h4 className="font-medium text-stone-900 dark:text-white">Dernière assemblée générale</h4>
                   <p className="mt-1 text-stone-600 dark:text-stone-400">
                     {new Date(donnees.assemblee_generale.derniere_ag_date).toLocaleDateString('fr-FR')} — {donnees.assemblee_generale.derniere_ag_type === 'ordinaire' ? 'Ordinaire' : 'Extraordinaire'}
                   </p>
                 </div>
               ) : (
                 <div className="rounded-lg border border-orange-200 bg-orange-50 p-4 text-sm dark:border-orange-900/50 dark:bg-orange-900/20">
-                  <p className="text-orange-700 dark:text-orange-400">Aucune assemblee generale terminee</p>
+                  <p className="text-orange-700 dark:text-orange-400">Aucune assemblée générale terminée</p>
                 </div>
               )}
 
@@ -349,10 +349,10 @@ export function DeclarationFormDialog({
                 <h4 className="font-medium text-stone-900 dark:text-white">Personnel</h4>
                 {donnees.personnel.nombre_employes > 0 ? (
                   <p className="mt-1 text-stone-600 dark:text-stone-400">
-                    {donnees.personnel.nombre_employes} employe(s) : {donnees.personnel.employes.map(e => `${e.prenom} ${e.nom} (${e.poste})`).join(', ')}
+                    {donnees.personnel.nombre_employes} employé(s) : {donnees.personnel.employes.map(e => `${e.prenom} ${e.nom} (${e.poste})`).join(', ')}
                   </p>
                 ) : (
-                  <p className="mt-1 text-stone-500 dark:text-stone-500">Aucun employe</p>
+                  <p className="mt-1 text-stone-500 dark:text-stone-500">Aucun employé</p>
                 )}
               </div>
             </TabsContent>
@@ -367,7 +367,7 @@ export function DeclarationFormDialog({
           <FormItem>
             <FormLabel>Notes</FormLabel>
             <FormControl>
-              <Textarea rows={3} placeholder="Informations complementaires..." {...field} />
+              <Textarea rows={3} placeholder="Informations complémentaires..." {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

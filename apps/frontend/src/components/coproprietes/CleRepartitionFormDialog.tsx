@@ -32,7 +32,7 @@ interface Props {
   title?: string
 }
 
-export function CleRepartitionFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading, defaultValues, title = 'Nouvelle cle de repartition' }: Props) {
+export function CleRepartitionFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading, defaultValues, title = 'Nouvelle clé de répartition' }: Props) {
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -51,7 +51,7 @@ export function CleRepartitionFormDialog({ open, onOpenChange, coproprieteId, on
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Definissez une cle de repartition pour les charges. Les champs marques d'un * sont obligatoires."
+      description="Définissez une clé de répartition pour les charges. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={onFormSubmit}
       isLoading={isLoading}
@@ -65,7 +65,7 @@ export function CleRepartitionFormDialog({ open, onOpenChange, coproprieteId, on
             <FormItem>
               <FormLabel>Nom *</FormLabel>
               <FormControl>
-                <Input placeholder="Charges generales, Ascenseur..." {...field} />
+                <Input placeholder="Charges générales, Ascenseur..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

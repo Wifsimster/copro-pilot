@@ -60,16 +60,16 @@ export default function ComptabiliteReglementairePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Comptabilite reglementaire</h1>
+        <h1 className="text-2xl font-bold text-foreground">Comptabilité réglementaire</h1>
         <p className="text-muted-foreground">Journal, grand livre, balance et annexes (loi ALUR)</p>
       </div>
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-16">
           <BookOpen className="h-16 w-16 text-muted-foreground/40" />
-          <h3 className="mt-6 text-lg font-medium text-foreground">Aucune copropriete selectionnee</h3>
+          <h3 className="mt-6 text-lg font-medium text-foreground">Aucune copropriété sélectionnée</h3>
           <p className="mt-2 max-w-md text-center text-muted-foreground">
-            Selectionnez une copropriete dans le menu lateral.
+            Sélectionnez une copropriété dans le menu latéral.
           </p>
         </div>
       ) : (
@@ -86,7 +86,7 @@ export default function ComptabiliteReglementairePage() {
                 >
                   {exercices.map((ex) => (
                     <option key={ex.id} value={ex.id}>
-                      {ex.annee} ({ex.statut === 'cloture' ? 'Cloture' : 'Ouvert'})
+                      {ex.annee} ({ex.statut === 'cloture' ? 'Clôturé' : 'Ouvert'})
                     </option>
                   ))}
                 </select>
@@ -94,7 +94,7 @@ export default function ComptabiliteReglementairePage() {
               </div>
               {currentExercice?.statut === 'cloture' && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                  <Lock className="size-3" /> Cloture
+                  <Lock className="size-3" /> Clôturé
                 </span>
               )}
             </div>
@@ -153,12 +153,12 @@ function JournalTab({ exerciceId }: { exerciceId: number | undefined }) {
         </div>
         {exerciceId && (
           <button
-            onClick={() => { if (confirm('Regenerer les ecritures automatiques ? Les ecritures existantes seront remplacees.')) generer.mutate(exerciceId) }}
+            onClick={() => { if (confirm('Régénérer les écritures automatiques ? Les écritures existantes seront remplacées.')) generer.mutate(exerciceId) }}
             disabled={generer.isPending}
             className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             <RefreshCw className={`size-4 ${generer.isPending ? 'animate-spin' : ''}`} />
-            {generer.isPending ? 'Generation...' : 'Generer ecritures'}
+            {generer.isPending ? 'Génération...' : 'Générer écritures'}
           </button>
         )}
       </div>
@@ -172,8 +172,8 @@ function JournalTab({ exerciceId }: { exerciceId: number | undefined }) {
       ) : !ecritures?.length ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-12">
           <List className="h-12 w-12 text-muted-foreground/40" />
-          <h3 className="mt-4 text-base font-medium">Aucune ecriture</h3>
-          <p className="mt-1 text-sm text-muted-foreground">Generez les ecritures automatiques ou saisissez-en manuellement.</p>
+          <h3 className="mt-4 text-base font-medium">Aucune écriture</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Générez les écritures automatiques ou saisissez-en manuellement.</p>
         </div>
       ) : (
         <div className="overflow-x-auto rounded-lg border border-border">
@@ -182,10 +182,10 @@ function JournalTab({ exerciceId }: { exerciceId: number | undefined }) {
               <tr>
                 <th className="px-3 py-2 text-left font-medium text-muted-foreground">Date</th>
                 <th className="px-3 py-2 text-left font-medium text-muted-foreground">Compte</th>
-                <th className="px-3 py-2 text-left font-medium text-muted-foreground">Libelle</th>
-                <th className="px-3 py-2 text-left font-medium text-muted-foreground">Piece</th>
-                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Debit</th>
-                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Credit</th>
+                <th className="px-3 py-2 text-left font-medium text-muted-foreground">Libellé</th>
+                <th className="px-3 py-2 text-left font-medium text-muted-foreground">Pièce</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Débit</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Crédit</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -235,8 +235,8 @@ function GrandLivreTab({ exerciceId }: { exerciceId: number | undefined }) {
       ) : !totals.length ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-12">
           <BookOpen className="h-12 w-12 text-muted-foreground/40" />
-          <h3 className="mt-4 text-base font-medium">Aucune donnee</h3>
-          <p className="mt-1 text-sm text-muted-foreground">Generez d'abord les ecritures dans l'onglet Journal.</p>
+          <h3 className="mt-4 text-base font-medium">Aucune donnée</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Générez d'abord les écritures dans l'onglet Journal.</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -251,7 +251,7 @@ function GrandLivreTab({ exerciceId }: { exerciceId: number | undefined }) {
                 >
                   <div className="flex items-center gap-3">
                     <span className="font-mono text-sm font-medium">{t.compte_code}</span>
-                    <span className="text-sm text-muted-foreground">({compteEcritures.length} ecritures)</span>
+                    <span className="text-sm text-muted-foreground">({compteEcritures.length} écritures)</span>
                   </div>
                   <div className="flex items-center gap-6">
                     <span className="text-sm">D: {formatEur(t.total_debit)}</span>
@@ -268,9 +268,9 @@ function GrandLivreTab({ exerciceId }: { exerciceId: number | undefined }) {
                       <thead className="bg-muted/30">
                         <tr>
                           <th className="px-4 py-1.5 text-left text-xs font-medium text-muted-foreground">Date</th>
-                          <th className="px-4 py-1.5 text-left text-xs font-medium text-muted-foreground">Libelle</th>
-                          <th className="px-4 py-1.5 text-right text-xs font-medium text-muted-foreground">Debit</th>
-                          <th className="px-4 py-1.5 text-right text-xs font-medium text-muted-foreground">Credit</th>
+                          <th className="px-4 py-1.5 text-left text-xs font-medium text-muted-foreground">Libellé</th>
+                          <th className="px-4 py-1.5 text-right text-xs font-medium text-muted-foreground">Débit</th>
+                          <th className="px-4 py-1.5 text-right text-xs font-medium text-muted-foreground">Crédit</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/50">
@@ -308,7 +308,7 @@ function BalanceTab({ exerciceId }: { exerciceId: number | undefined }) {
   const classeLabels: Record<number, string> = {
     1: 'Classe 1 - Capitaux',
     4: 'Classe 4 - Tiers',
-    5: 'Classe 5 - Tresorerie',
+    5: 'Classe 5 - Trésorerie',
     6: 'Classe 6 - Charges',
     7: 'Classe 7 - Produits',
   }
@@ -327,8 +327,8 @@ function BalanceTab({ exerciceId }: { exerciceId: number | undefined }) {
       {balance && balance.length > 0 && (
         <div className={`rounded-lg border p-3 text-sm ${isBalanced ? 'border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400' : 'border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400'}`}>
           {isBalanced
-            ? `Balance equilibree — Total: ${formatEur(totalDebit)}`
-            : `Balance desequilibree — Debit: ${formatEur(totalDebit)} / Credit: ${formatEur(totalCredit)} (ecart: ${formatEur(Math.abs(totalDebit - totalCredit))})`}
+            ? `Balance équilibrée — Total: ${formatEur(totalDebit)}`
+            : `Balance déséquilibrée — Débit: ${formatEur(totalDebit)} / Crédit: ${formatEur(totalCredit)} (écart: ${formatEur(Math.abs(totalDebit - totalCredit))})`}
         </div>
       )}
 
@@ -341,8 +341,8 @@ function BalanceTab({ exerciceId }: { exerciceId: number | undefined }) {
       ) : !balance?.length ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-12">
           <Calculator className="h-12 w-12 text-muted-foreground/40" />
-          <h3 className="mt-4 text-base font-medium">Aucune donnee</h3>
-          <p className="mt-1 text-sm text-muted-foreground">Generez d'abord les ecritures dans l'onglet Journal.</p>
+          <h3 className="mt-4 text-base font-medium">Aucune donnée</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Générez d'abord les écritures dans l'onglet Journal.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -356,9 +356,9 @@ function BalanceTab({ exerciceId }: { exerciceId: number | undefined }) {
                   <thead className="bg-muted/50">
                     <tr>
                       <th className="px-3 py-2 text-left font-medium text-muted-foreground">Compte</th>
-                      <th className="px-3 py-2 text-left font-medium text-muted-foreground">Libelle</th>
-                      <th className="px-3 py-2 text-right font-medium text-muted-foreground">Total debit</th>
-                      <th className="px-3 py-2 text-right font-medium text-muted-foreground">Total credit</th>
+                      <th className="px-3 py-2 text-left font-medium text-muted-foreground">Libellé</th>
+                      <th className="px-3 py-2 text-right font-medium text-muted-foreground">Total débit</th>
+                      <th className="px-3 py-2 text-right font-medium text-muted-foreground">Total crédit</th>
                       <th className="px-3 py-2 text-right font-medium text-muted-foreground">Solde</th>
                     </tr>
                   </thead>
@@ -397,11 +397,11 @@ function AnnexesTab({ coproprieteId, annee }: { coproprieteId: number; annee: nu
   const { data: annexe5 } = useAnnexe5(selectedAnnexe === 5 ? coproprieteId : undefined, selectedAnnexe === 5 ? year : undefined)
 
   const ANNEXES = [
-    { num: 1, title: 'Annexe 1 — Etat financier', desc: 'Charges et produits de l\'exercice' },
-    { num: 2, title: 'Annexe 2 — Situation de tresorerie', desc: 'Soldes des comptes bancaires et mouvements non rapproches' },
-    { num: 3, title: 'Annexe 3 — Creances et dettes', desc: 'Etat des impayes par coproprietaire' },
+    { num: 1, title: 'Annexe 1 — État financier', desc: 'Charges et produits de l\'exercice' },
+    { num: 2, title: 'Annexe 2 — Situation de trésorerie', desc: 'Soldes des comptes bancaires et mouvements non rapprochés' },
+    { num: 3, title: 'Annexe 3 — Créances et dettes', desc: 'État des impayés par copropriétaire' },
     { num: 4, title: 'Annexe 4 — Fonds de travaux', desc: 'Cotisations et solde du fonds travaux (loi ALUR)' },
-    { num: 5, title: 'Annexe 5 — Budget previsionnel', desc: 'Postes de depenses previsionnels vs realises' },
+    { num: 5, title: 'Annexe 5 — Budget prévisionnel', desc: 'Postes de dépenses prévisionnels vs réalisés' },
   ]
 
    
@@ -410,7 +410,7 @@ function AnnexesTab({ coproprieteId, annee }: { coproprieteId: number; annee: nu
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Annexes reglementaires a presenter en Assemblee Generale (decret du 14 mars 2005) — Exercice {year}
+        Annexes réglementaires à présenter en Assemblée Générale (décret du 14 mars 2005) — Exercice {year}
       </p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {ANNEXES.map(({ num, title, desc }) => (
@@ -473,8 +473,8 @@ function ExercicesTab({ coproprieteId, exercices, loadingExercices }: { copropri
             <h3 className="text-sm font-semibold">Plan comptable</h3>
             <p className="text-xs text-muted-foreground">
               {planComptable?.length
-                ? `${planComptable.length} comptes configures`
-                : 'Aucun plan comptable configure'}
+                ? `${planComptable.length} comptes configurés`
+                : 'Aucun plan comptable configuré'}
             </p>
           </div>
           {!planComptable?.length && (
@@ -529,7 +529,7 @@ function ExercicesTab({ coproprieteId, exercices, loadingExercices }: { copropri
           <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-8">
             <Settings className="h-10 w-10 text-muted-foreground/40" />
             <h3 className="mt-3 text-sm font-medium">Aucun exercice</h3>
-            <p className="mt-1 text-xs text-muted-foreground">Creez un exercice comptable pour commencer.</p>
+            <p className="mt-1 text-xs text-muted-foreground">Créez un exercice comptable pour commencer.</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -543,22 +543,22 @@ function ExercicesTab({ coproprieteId, exercices, loadingExercices }: { copropri
                         ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                         : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
                     }`}>
-                      {ex.statut === 'cloture' ? 'Cloture' : 'Ouvert'}
+                      {ex.statut === 'cloture' ? 'Clôturé' : 'Ouvert'}
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground">
                     Du {new Date(ex.date_debut).toLocaleDateString('fr-FR')} au {new Date(ex.date_fin).toLocaleDateString('fr-FR')}
-                    {ex.date_cloture && ` — Cloture le ${new Date(ex.date_cloture).toLocaleDateString('fr-FR')}`}
+                    {ex.date_cloture && ` — Clôturé le ${new Date(ex.date_cloture).toLocaleDateString('fr-FR')}`}
                   </p>
                 </div>
                 {ex.statut === 'ouvert' && (
                   <button
-                    onClick={() => { if (confirm(`Cloturer l'exercice ${ex.annee} ? Cette action est irreversible.`)) clotureExercice.mutate(ex.id) }}
+                    onClick={() => { if (confirm(`Clôturer l'exercice ${ex.annee} ? Cette action est irréversible.`)) clotureExercice.mutate(ex.id) }}
                     disabled={clotureExercice.isPending}
                     className="flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50"
                   >
                     <Lock className="size-3.5" />
-                    Cloturer
+                    Clôturer
                   </button>
                 )}
               </div>

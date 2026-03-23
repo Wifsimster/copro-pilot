@@ -23,7 +23,7 @@ import { FormSection } from '@/components/ui/form-section'
 import type { Procedure } from '@/types'
 
 const procedureSchema = z.object({
-  coproprietaire_id: z.coerce.number().min(1, 'Le coproprietaire est obligatoire'),
+  coproprietaire_id: z.coerce.number().min(1, 'Le copropriétaire est obligatoire'),
   avocat: z.string().optional(),
   tribunal: z.string().optional(),
   reference_dossier: z.string().optional(),
@@ -102,7 +102,7 @@ export function ProcedureFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Enregistrez une procedure judiciaire. Les champs marques d'un * sont obligatoires."
+      description="Enregistrez une procédure judiciaire. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -114,9 +114,9 @@ export function ProcedureFormDialog({
           name="coproprietaire_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Coproprietaire ID *</FormLabel>
+              <FormLabel>Copropriétaire ID *</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="ID du coproprietaire" {...field} />
+                <Input type="number" placeholder="ID du copropriétaire" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

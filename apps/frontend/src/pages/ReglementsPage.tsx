@@ -35,7 +35,7 @@ const CATEGORIE_LABELS: Record<string, string> = {
   usage: 'Usage',
   travaux: 'Travaux',
   conseil_syndical: 'Conseil syndical',
-  ag: 'Assemblee generale',
+  ag: 'Assemblée générale',
   autre: 'Autre',
 }
 
@@ -88,23 +88,23 @@ export default function ReglementsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Reglement de copropriete</h1>
-          <p className="text-stone-500 dark:text-stone-400">Gestion du reglement et de ses articles</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Règlement de copropriété</h1>
+          <p className="text-stone-500 dark:text-stone-400">Gestion du règlement et de ses articles</p>
         </div>
       </div>
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
           <BookOpen className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
+          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriété sélectionnée</h3>
+          <p className="mt-2 text-stone-500 dark:text-stone-400">Sélectionnez une copropriété dans le menu latéral.</p>
         </div>
       ) : (
         <>
           {/* Tabs */}
           <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
             {([
-              { key: 'reglements' as Tab, label: 'Reglements', icon: FileText },
+              { key: 'reglements' as Tab, label: 'Règlements', icon: FileText },
               { key: 'articles' as Tab, label: 'Articles', icon: ListOrdered },
             ]).map((tab) => (
               <button
@@ -126,13 +126,13 @@ export default function ReglementsPage() {
           {activeTab === 'reglements' && (
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
-                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Reglements</h2>
+                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Règlements</h2>
                 <button
                   onClick={() => setShowReglementDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="h-4 w-4" />
-                  Nouveau reglement
+                  Nouveau règlement
                 </button>
               </div>
 
@@ -143,14 +143,14 @@ export default function ReglementsPage() {
               ) : !reglements || reglements.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <FileText className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun reglement enregistre</p>
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun règlement enregistré</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-stone-200 text-left dark:border-stone-700">
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date d'etablissement</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date d'établissement</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Notaire</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Destination</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
@@ -172,7 +172,7 @@ export default function ReglementsPage() {
                           <td className="px-4 py-3">
                             {reglement.date_derniere_modification ? (
                               <span className="inline-flex rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                                Modifie le {new Date(reglement.date_derniere_modification).toLocaleDateString('fr-FR')}
+                                Modifié le {new Date(reglement.date_derniere_modification).toLocaleDateString('fr-FR')}
                               </span>
                             ) : (
                               <span className="inline-flex rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
@@ -190,7 +190,7 @@ export default function ReglementsPage() {
                               </button>
                               <button
                                 onClick={() => {
-                                  if (window.confirm('Supprimer ce reglement ?')) deleteReglement.mutate(reglement.id)
+                                  if (window.confirm('Supprimer ce règlement ?')) deleteReglement.mutate(reglement.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                               >
@@ -210,7 +210,7 @@ export default function ReglementsPage() {
                 onOpenChange={(open) => { setShowReglementDialog(open); if (!open) setEditingReglement(null) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingReglement || undefined}
-                title={editingReglement ? 'Modifier le reglement' : 'Nouveau reglement'}
+                title={editingReglement ? 'Modifier le règlement' : 'Nouveau règlement'}
                 onSubmit={async (data) => {
                   if (editingReglement) {
                     await updateReglement.mutateAsync({ id: editingReglement.id, data })
@@ -239,7 +239,7 @@ export default function ReglementsPage() {
                     >
                       {reglements.map((r: ReglementCopropriete) => (
                         <option key={r.id} value={r.id}>
-                          Reglement du {new Date(r.date_etablissement).toLocaleDateString('fr-FR')}
+                          Règlement du {new Date(r.date_etablissement).toLocaleDateString('fr-FR')}
                         </option>
                       ))}
                     </select>
@@ -259,7 +259,7 @@ export default function ReglementsPage() {
               {!selectedReglementId ? (
                 <div className="flex flex-col items-center py-12">
                   <BookOpen className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Selectionnez un reglement pour voir ses articles</p>
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Sélectionnez un règlement pour voir ses articles</p>
                 </div>
               ) : loadingArticles ? (
                 <div className="flex justify-center py-8">
@@ -268,16 +268,16 @@ export default function ReglementsPage() {
               ) : !articles || articles.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <ListOrdered className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun article enregistre</p>
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun article enregistré</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-stone-200 text-left dark:border-stone-700">
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Numero</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Numéro</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Titre</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Categorie</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Catégorie</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Ordre</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                       </tr>

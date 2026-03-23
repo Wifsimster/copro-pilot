@@ -35,7 +35,7 @@ export default function ExtranetDocumentsPage() {
         </div>
       ) : !docs ? (
         <p className="text-sm text-muted-foreground">
-          Aucune donnee disponible.
+          Aucune donnée disponible.
         </p>
       ) : (
         <div className="space-y-6">

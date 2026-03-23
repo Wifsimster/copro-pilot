@@ -26,7 +26,7 @@ import type { Diagnostic } from '@/types'
 const diagnosticSchema = z.object({
   type: z.enum(['dpe', 'amiante', 'plomb', 'dtg', 'ppt', 'gaz', 'electricite', 'autre']),
   prestataire: z.string().optional(),
-  date_realisation: z.string().min(1, 'La date de realisation est obligatoire'),
+  date_realisation: z.string().min(1, 'La date de réalisation est obligatoire'),
   date_validite: z.string().optional(),
   statut: z.enum(['valide', 'expire', 'a_renouveler']),
   document_url: z.string().optional(),
@@ -52,14 +52,14 @@ const TYPE_LABELS: Record<string, string> = {
   dtg: 'DTG',
   ppt: 'PPT',
   gaz: 'Gaz',
-  electricite: 'Electricite',
+  electricite: 'Électricité',
   autre: 'Autre',
 }
 
 const STATUT_LABELS: Record<string, string> = {
   valide: 'Valide',
-  expire: 'Expire',
-  a_renouveler: 'A renouveler',
+  expire: 'Expiré',
+  a_renouveler: 'À renouveler',
 }
 
 export function DiagnosticFormDialog({
@@ -115,7 +115,7 @@ export function DiagnosticFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations du diagnostic technique. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations du diagnostic technique. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -190,7 +190,7 @@ export function DiagnosticFormDialog({
             name="date_realisation"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date de realisation *</FormLabel>
+                <FormLabel>Date de réalisation *</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>
@@ -203,7 +203,7 @@ export function DiagnosticFormDialog({
             name="date_validite"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date de validite</FormLabel>
+                <FormLabel>Date de validité</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>
@@ -214,7 +214,7 @@ export function DiagnosticFormDialog({
         </div>
       </FormSection>
 
-      <FormSection icon={FileText} label="Details">
+      <FormSection icon={FileText} label="Détails">
         <FormField
           control={form.control}
           name="document_url"

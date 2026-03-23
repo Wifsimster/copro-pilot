@@ -42,7 +42,7 @@ export default function ExportsPage() {
   ) => {
     if (id === '') return
     mutate.mutate(id)
-    toast.success(`Export "${label}" lance`)
+    toast.success(`Export "${label}" lancé`)
   }
 
   const handleExportCopro = (
@@ -51,7 +51,7 @@ export default function ExportsPage() {
   ) => {
     if (!selectedCoproId) return
     mutate.mutate(selectedCoproId)
-    toast.success(`Export "${label}" lance`)
+    toast.success(`Export "${label}" lancé`)
   }
 
   return (
@@ -59,7 +59,7 @@ export default function ExportsPage() {
       <div>
         <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Exports & Rapports</h1>
         <p className="text-stone-500 dark:text-stone-400">
-          Generez et telechargez vos documents PDF et tableaux Excel
+          Générez et téléchargez vos documents PDF et tableaux Excel
         </p>
       </div>
 
@@ -67,10 +67,10 @@ export default function ExportsPage() {
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
           <FileDown className="h-12 w-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">
-            Aucune copropriete selectionnee
+            Aucune copropriété sélectionnée
           </h3>
           <p className="mt-2 text-stone-500 dark:text-stone-400">
-            Selectionnez une copropriete dans le menu lateral pour acceder aux exports.
+            Sélectionnez une copropriété dans le menu latéral pour accéder aux exports.
           </p>
         </div>
       ) : (
@@ -89,9 +89,9 @@ export default function ExportsPage() {
                     <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-stone-900 dark:text-white">Budget previsionnel</h3>
+                    <h3 className="font-medium text-stone-900 dark:text-white">Budget prévisionnel</h3>
                     <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
-                      Exporte le budget previsionnel avec le detail des postes de depenses.
+                      Exporte le budget prévisionnel avec le détail des postes de dépenses.
                     </p>
                   </div>
                 </div>
@@ -101,7 +101,7 @@ export default function ExportsPage() {
                     onChange={(e) => setSelectedBudgetPdf(e.target.value ? Number(e.target.value) : '')}
                     className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 dark:border-stone-600 dark:bg-stone-700 dark:text-white"
                   >
-                    <option value="">Selectionner un budget</option>
+                    <option value="">Sélectionner un budget</option>
                     {budgets?.map((b: BudgetPrevisionnel) => (
                       <option key={b.id} value={b.id}>
                         Budget {b.annee} — {Number(b.montant_total).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
@@ -109,7 +109,7 @@ export default function ExportsPage() {
                     ))}
                   </select>
                   <button
-                    onClick={() => handleExport(exportBudgetPdf, selectedBudgetPdf, 'Budget previsionnel')}
+                    onClick={() => handleExport(exportBudgetPdf, selectedBudgetPdf, 'Budget prévisionnel')}
                     disabled={selectedBudgetPdf === '' || exportBudgetPdf.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
                   >
@@ -132,13 +132,13 @@ export default function ExportsPage() {
                   <div className="min-w-0 flex-1">
                     <h3 className="font-medium text-stone-900 dark:text-white">Appel de fonds</h3>
                     <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
-                      L'export PDF des appels de fonds est disponible depuis la page Charges & Comptabilite.
+                      L'export PDF des appels de fonds est disponible depuis la page Charges & Comptabilité.
                     </p>
                   </div>
                 </div>
                 <div className="mt-4">
                   <p className="rounded-lg bg-stone-50 px-3 py-2 text-xs text-stone-500 dark:bg-stone-700 dark:text-stone-400">
-                    Rendez-vous dans Charges &gt; Appels de fonds pour exporter un appel specifique.
+                    Rendez-vous dans Charges &gt; Appels de fonds pour exporter un appel spécifique.
                   </p>
                 </div>
               </div>
@@ -150,9 +150,9 @@ export default function ExportsPage() {
                     <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-stone-900 dark:text-white">Feuille de presence AG</h3>
+                    <h3 className="font-medium text-stone-900 dark:text-white">Feuille de présence AG</h3>
                     <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
-                      Exporte la feuille de presence d'une assemblee generale.
+                      Exporte la feuille de présence d'une assemblée générale.
                     </p>
                   </div>
                 </div>
@@ -162,7 +162,7 @@ export default function ExportsPage() {
                     onChange={(e) => setSelectedAgPdf(e.target.value ? Number(e.target.value) : '')}
                     className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 dark:border-stone-600 dark:bg-stone-700 dark:text-white"
                   >
-                    <option value="">Selectionner une AG</option>
+                    <option value="">Sélectionner une AG</option>
                     {assemblees?.map((ag: AssembleeGenerale) => (
                       <option key={ag.id} value={ag.id}>
                         AG du {new Date(ag.date).toLocaleDateString('fr-FR')} — {ag.type === 'ordinaire' ? 'Ordinaire' : 'Extraordinaire'}
@@ -170,7 +170,7 @@ export default function ExportsPage() {
                     ))}
                   </select>
                   <button
-                    onClick={() => handleExport(exportFeuillePresencePdf, selectedAgPdf, 'Feuille de presence')}
+                    onClick={() => handleExport(exportFeuillePresencePdf, selectedAgPdf, 'Feuille de présence')}
                     disabled={selectedAgPdf === '' || exportFeuillePresencePdf.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
                   >
@@ -193,7 +193,7 @@ export default function ExportsPage() {
                   <div className="min-w-0 flex-1">
                     <h3 className="font-medium text-stone-900 dark:text-white">Carnet d'entretien</h3>
                     <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
-                      Exporte le carnet d'entretien complet de la copropriete.
+                      Exporte le carnet d'entretien complet de la copropriété.
                     </p>
                   </div>
                 </div>
@@ -213,22 +213,22 @@ export default function ExportsPage() {
                 </div>
               </div>
 
-              {/* Etat des impayes PDF */}
+              {/* État des impayés PDF */}
               <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
                     <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-stone-900 dark:text-white">Etat des impayes</h3>
+                    <h3 className="font-medium text-stone-900 dark:text-white">État des impayés</h3>
                     <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
-                      Exporte l'etat des impayes de la copropriete au format PDF.
+                      Exporte l'état des impayés de la copropriété au format PDF.
                     </p>
                   </div>
                 </div>
                 <div className="mt-4">
                   <button
-                    onClick={() => handleExportCopro(exportEtatImpayesPdf, 'Etat des impayes PDF')}
+                    onClick={() => handleExportCopro(exportEtatImpayesPdf, 'État des impayés PDF')}
                     disabled={exportEtatImpayesPdf.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
                   >
@@ -251,16 +251,16 @@ export default function ExportsPage() {
               <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Tableaux Excel</h2>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {/* Liste des coproprietaires Excel */}
+              {/* Liste des copropriétaires Excel */}
               <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
                     <FileSpreadsheet className="h-5 w-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-stone-900 dark:text-white">Liste des coproprietaires</h3>
+                    <h3 className="font-medium text-stone-900 dark:text-white">Liste des copropriétaires</h3>
                     <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
-                      Exporte la liste complete des coproprietaires au format Excel.
+                      Exporte la liste complète des copropriétaires au format Excel.
                     </p>
                   </div>
                 </div>
@@ -268,7 +268,7 @@ export default function ExportsPage() {
                   <button
                     onClick={() => {
                       exportCoproprietairesExcel.mutate(selectedCoproId)
-                      toast.success('Export "Liste des coproprietaires" lance')
+                      toast.success('Export "Liste des copropriétaires" lancé')
                     }}
                     disabled={exportCoproprietairesExcel.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
@@ -292,7 +292,7 @@ export default function ExportsPage() {
                   <div className="min-w-0 flex-1">
                     <h3 className="font-medium text-stone-900 dark:text-white">Balance des comptes</h3>
                     <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
-                      Exporte la balance des comptes de la copropriete au format Excel.
+                      Exporte la balance des comptes de la copropriété au format Excel.
                     </p>
                   </div>
                 </div>
@@ -312,16 +312,16 @@ export default function ExportsPage() {
                 </div>
               </div>
 
-              {/* Etat des charges Excel */}
+              {/* État des charges Excel */}
               <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
                     <FileSpreadsheet className="h-5 w-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-stone-900 dark:text-white">Etat des charges</h3>
+                    <h3 className="font-medium text-stone-900 dark:text-white">État des charges</h3>
                     <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
-                      Exporte l'etat des charges par budget au format Excel.
+                      Exporte l'état des charges par budget au format Excel.
                     </p>
                   </div>
                 </div>
@@ -331,7 +331,7 @@ export default function ExportsPage() {
                     onChange={(e) => setSelectedBudgetExcel(e.target.value ? Number(e.target.value) : '')}
                     className="w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 dark:border-stone-600 dark:bg-stone-700 dark:text-white"
                   >
-                    <option value="">Selectionner un budget</option>
+                    <option value="">Sélectionner un budget</option>
                     {budgets?.map((b: BudgetPrevisionnel) => (
                       <option key={b.id} value={b.id}>
                         Budget {b.annee} — {Number(b.montant_total).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
@@ -339,7 +339,7 @@ export default function ExportsPage() {
                     ))}
                   </select>
                   <button
-                    onClick={() => handleExport(exportEtatChargesExcel, selectedBudgetExcel, 'Etat des charges')}
+                    onClick={() => handleExport(exportEtatChargesExcel, selectedBudgetExcel, 'État des charges')}
                     disabled={selectedBudgetExcel === '' || exportEtatChargesExcel.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
                   >
@@ -353,22 +353,22 @@ export default function ExportsPage() {
                 </div>
               </div>
 
-              {/* Etat des impayes Excel */}
+              {/* État des impayés Excel */}
               <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
                     <FileSpreadsheet className="h-5 w-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-stone-900 dark:text-white">Etat des impayes</h3>
+                    <h3 className="font-medium text-stone-900 dark:text-white">État des impayés</h3>
                     <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
-                      Exporte l'etat des impayes de la copropriete au format Excel.
+                      Exporte l'état des impayés de la copropriété au format Excel.
                     </p>
                   </div>
                 </div>
                 <div className="mt-4">
                   <button
-                    onClick={() => handleExportCopro(exportEtatImpayesExcel, 'Etat des impayes Excel')}
+                    onClick={() => handleExportCopro(exportEtatImpayesExcel, 'État des impayés Excel')}
                     disabled={exportEtatImpayesExcel.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
                   >

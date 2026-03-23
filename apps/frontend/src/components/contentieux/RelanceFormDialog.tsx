@@ -23,7 +23,7 @@ import { FormSection } from '@/components/ui/form-section'
 import type { Relance } from '@/types'
 
 const relanceSchema = z.object({
-  coproprietaire_id: z.coerce.number().min(1, 'Le coproprietaire est obligatoire'),
+  coproprietaire_id: z.coerce.number().min(1, 'Le copropriétaire est obligatoire'),
   type: z.enum(['amiable', 'mise_en_demeure', 'contentieux']),
   date_relance: z.string().min(1, 'La date est obligatoire'),
   montant_du: z.coerce.number().min(0.01, 'Le montant est obligatoire'),
@@ -81,7 +81,7 @@ export function RelanceFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Enregistrez une relance pour impayes. Les champs marques d'un * sont obligatoires."
+      description="Enregistrez une relance pour impayés. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -93,9 +93,9 @@ export function RelanceFormDialog({
           name="coproprietaire_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Coproprietaire ID *</FormLabel>
+              <FormLabel>Copropriétaire ID *</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="ID du coproprietaire" {...field} />
+                <Input type="number" placeholder="ID du copropriétaire" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

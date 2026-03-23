@@ -24,7 +24,7 @@ import type { PresenceAG } from '@/types'
 import { useEffect } from 'react'
 
 const schema = z.object({
-  coproprietaire_id: z.coerce.number().positive('Le coproprietaire est obligatoire'),
+  coproprietaire_id: z.coerce.number().positive('Le copropriétaire est obligatoire'),
   statut: z.enum(['present', 'absent', 'represente']),
   represente_par_id: z.coerce.number().optional().or(z.literal(0)),
   tantiemes: z.coerce.number().min(0),
@@ -42,7 +42,7 @@ interface Props {
   title?: string
 }
 
-export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoading, defaultValues, title = 'Ajouter une presence' }: Props) {
+export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoading, defaultValues, title = 'Ajouter une présence' }: Props) {
   const { data: coproprietaires } = useCoproprietaires()
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -85,27 +85,27 @@ export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoadi
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Enregistrez la presence d'un coproprietaire. Les champs marques d'un * sont obligatoires."
+      description="Enregistrez la présence d'un copropriétaire. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={onFormSubmit}
       isLoading={isLoading}
       size="md"
     >
-      <FormSection icon={Users} label="Presence">
+      <FormSection icon={Users} label="Présence">
         <FormField
           control={form.control}
           name="coproprietaire_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Coproprietaire *</FormLabel>
+              <FormLabel>Copropriétaire *</FormLabel>
               <Select value={String(field.value)} onValueChange={(val) => field.onChange(Number(val))}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="-- Selectionner --" />
+                    <SelectValue placeholder="-- Sélectionner --" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="0">-- Selectionner --</SelectItem>
+                  <SelectItem value="0">-- Sélectionner --</SelectItem>
                   {coproprietaires?.map((c) => (
                     <SelectItem key={c.id} value={String(c.id)}>{c.prenom} {c.nom}</SelectItem>
                   ))}
@@ -130,9 +130,9 @@ export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoadi
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="present">Present</SelectItem>
+                    <SelectItem value="present">Présent</SelectItem>
                     <SelectItem value="absent">Absent</SelectItem>
-                    <SelectItem value="represente">Represente</SelectItem>
+                    <SelectItem value="represente">Représenté</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -144,7 +144,7 @@ export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoadi
             name="tantiemes"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tantiemes *</FormLabel>
+                <FormLabel>Tantièmes *</FormLabel>
                 <FormControl>
                   <Input type="number" {...field} />
                 </FormControl>
@@ -160,7 +160,7 @@ export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoadi
             name="represente_par_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Represente par</FormLabel>
+                <FormLabel>Représenté par</FormLabel>
                 <Select value={String(field.value)} onValueChange={(val) => field.onChange(Number(val))}>
                   <FormControl>
                     <SelectTrigger>

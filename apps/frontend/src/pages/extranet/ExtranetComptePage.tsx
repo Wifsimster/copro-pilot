@@ -17,7 +17,7 @@ export default function ExtranetComptePage() {
         <div className="animate-pulse h-32 rounded bg-muted" />
       ) : !compte ? (
         <p className="text-sm text-muted-foreground">
-          Aucune donnee.
+          Aucune donnée.
         </p>
       ) : (
         <div className="space-y-4">

@@ -15,9 +15,9 @@ import {
 } from '@/components/extranet/shared'
 
 const ROLE_LABELS: Record<string, string> = {
-  president: 'President',
+  president: 'Président',
   membre: 'Membre',
-  suppleant: 'Suppleant',
+  suppleant: 'Suppléant',
 }
 
 const ROLE_COLORS: Record<string, string> = {
@@ -107,7 +107,7 @@ export default function ExtranetDashboardPage() {
   if (!dashboard) {
     return (
       <p className="text-sm text-muted-foreground">
-        Aucune donnee disponible.
+        Aucune donnée disponible.
       </p>
     )
   }
@@ -153,10 +153,10 @@ export default function ExtranetDashboardPage() {
           <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-400" />
           <div>
             <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
-              Solde debiteur : {formatEur(solde)}
+              Solde débiteur : {formatEur(solde)}
             </p>
             <p className="text-xs text-amber-700 dark:text-amber-400">
-              Merci de regulariser votre situation.
+              Merci de régulariser votre situation.
             </p>
           </div>
         </div>
@@ -169,7 +169,7 @@ export default function ExtranetDashboardPage() {
           icon={Wallet}
           label="Mon solde"
           value={formatEur(solde)}
-          sublabel={`${formatEur(dashboard.compte.total_paye)} paye sur ${formatEur(dashboard.compte.total_du)} appele`}
+          sublabel={`${formatEur(dashboard.compte.total_paye)} payé sur ${formatEur(dashboard.compte.total_du)} appelé`}
           color={
             solde > 0
               ? 'text-red-600'
@@ -184,9 +184,9 @@ export default function ExtranetDashboardPage() {
         {selectedCopro && (
           <DashboardCard
             icon={Building2}
-            label="Ma copropriete"
+            label="Ma copropriété"
             value={selectedCopro.nom}
-            sublabel={`${userLots.length} lot${userLots.length > 1 ? 's' : ''} — ${totalTantiemes} tantiemes`}
+            sublabel={`${userLots.length} lot${userLots.length > 1 ? 's' : ''} — ${totalTantiemes} tantièmes`}
             href="/extranet/profil"
           />
         )}
@@ -195,9 +195,9 @@ export default function ExtranetDashboardPage() {
         {nextAG && (
           <DashboardCard
             icon={Calendar}
-            label="Prochaine assemblee"
+            label="Prochaine assemblée"
             value={`AG ${nextAG.type}`}
-            sublabel={`${new Date(nextAG.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}${nextAG.heure ? ` a ${nextAG.heure}` : ''}${nextAG.lieu ? ` — ${nextAG.lieu}` : ''}`}
+            sublabel={`${new Date(nextAG.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}${nextAG.heure ? ` à ${nextAG.heure}` : ''}${nextAG.lieu ? ` — ${nextAG.lieu}` : ''}`}
             badge={{
               text: nextAG.statut,
               className:
@@ -222,7 +222,7 @@ export default function ExtranetDashboardPage() {
         <div className="flex items-center gap-3 rounded-xl border border-border bg-card px-5 py-3">
           <Users className="size-5 text-primary" />
           <p className="text-sm">
-            Vous etes{' '}
+            Vous êtes{' '}
             <span
               className={`rounded-full px-2 py-0.5 text-xs font-medium ${ROLE_COLORS[conseilRole] ?? ROLE_COLORS.membre}`}
             >

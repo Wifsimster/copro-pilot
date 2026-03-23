@@ -52,7 +52,7 @@ export function FondsTravauxFormDialog({ open, onOpenChange, coproprieteId, onSu
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Definissez le fonds travaux annuel. Les champs marques d'un * sont obligatoires."
+      description="Définissez le fonds travaux annuel. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={onFormSubmit}
       isLoading={isLoading}
@@ -65,7 +65,7 @@ export function FondsTravauxFormDialog({ open, onOpenChange, coproprieteId, onSu
             name="annee"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Annee *</FormLabel>
+                <FormLabel>Année *</FormLabel>
                 <FormControl>
                   <Input type="number" {...field} />
                 </FormControl>

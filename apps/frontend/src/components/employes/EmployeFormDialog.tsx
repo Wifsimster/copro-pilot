@@ -25,7 +25,7 @@ import type { EmployeSyndicat } from '@/types'
 
 const employeSchema = z.object({
   nom: z.string().min(1, 'Le nom est obligatoire'),
-  prenom: z.string().min(1, 'Le prenom est obligatoire'),
+  prenom: z.string().min(1, 'Le prénom est obligatoire'),
   poste: z.string().min(1, 'Le poste est obligatoire'),
   type_contrat: z.enum(['cdi', 'cdd', 'interim', 'saisonnier']),
   date_embauche: z.string().min(1, 'La date d\'embauche est obligatoire'),
@@ -55,7 +55,7 @@ export function EmployeFormDialog({
   onSubmit,
   isLoading,
   defaultValues,
-  title = 'Nouvel employe',
+  title = 'Nouvel employé',
 }: EmployeFormDialogProps) {
   const form = useForm<EmployeFormData>({
     resolver: zodResolver(employeSchema),
@@ -89,13 +89,13 @@ export function EmployeFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations de l'employe. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations de l'employé. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
       size="lg"
     >
-      <FormSection icon={User} label="Identite">
+      <FormSection icon={User} label="Identité">
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -115,7 +115,7 @@ export function EmployeFormDialog({
             name="prenom"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Prenom *</FormLabel>
+                <FormLabel>Prénom *</FormLabel>
                 <FormControl>
                   <Input placeholder="Jean" {...field} />
                 </FormControl>
@@ -154,7 +154,7 @@ export function EmployeFormDialog({
                   <SelectContent>
                     <SelectItem value="cdi">CDI</SelectItem>
                     <SelectItem value="cdd">CDD</SelectItem>
-                    <SelectItem value="interim">Interim</SelectItem>
+                    <SelectItem value="interim">Intérim</SelectItem>
                     <SelectItem value="saisonnier">Saisonnier</SelectItem>
                   </SelectContent>
                 </Select>
@@ -187,7 +187,7 @@ export function EmployeFormDialog({
         />
       </FormSection>
 
-      <FormSection icon={CalendarDays} label="Periode d'emploi">
+      <FormSection icon={CalendarDays} label="Période d'emploi">
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -218,7 +218,7 @@ export function EmployeFormDialog({
         </div>
       </FormSection>
 
-      <FormSection icon={Banknote} label="Remuneration & logement">
+      <FormSection icon={Banknote} label="Rémunération & logement">
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -258,7 +258,7 @@ export function EmployeFormDialog({
           <FormItem>
             <FormLabel>Notes</FormLabel>
             <FormControl>
-              <Textarea rows={3} placeholder="Informations complementaires..." {...field} />
+              <Textarea rows={3} placeholder="Informations complémentaires..." {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

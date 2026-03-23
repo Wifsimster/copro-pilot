@@ -12,11 +12,11 @@ const TYPE_LABELS: Record<string, string> = {
 }
 
 const STATUT_LABELS: Record<string, string> = {
-  planifiee: 'Planifiee',
-  convoquee: 'Convoquee',
+  planifiee: 'Planifiée',
+  convoquee: 'Convoquée',
   en_cours: 'En cours',
-  terminee: 'Terminee',
-  annulee: 'Annulee',
+  terminee: 'Terminée',
+  annulee: 'Annulée',
 }
 
 const STATUT_COLORS: Record<string, string> = {
@@ -40,16 +40,16 @@ export default function AssembleesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Assemblees Generales</h1>
-          <p className="text-stone-500 dark:text-stone-400">Gestion des AG, resolutions et votes</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Assemblées Générales</h1>
+          <p className="text-stone-500 dark:text-stone-400">Gestion des AG, résolutions et votes</p>
         </div>
       </div>
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
           <Calendar className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
+          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriété sélectionnée</h3>
+          <p className="mt-2 text-stone-500 dark:text-stone-400">Sélectionnez une copropriété dans le menu latéral.</p>
         </div>
       ) : (
         <div>
@@ -70,8 +70,8 @@ export default function AssembleesPage() {
           ) : !assemblees || assemblees.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
               <Calendar className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-              <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune assemblee generale</h3>
-              <p className="mt-2 text-stone-500 dark:text-stone-400">Planifiez votre premiere AG.</p>
+              <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune assemblée générale</h3>
+              <p className="mt-2 text-stone-500 dark:text-stone-400">Planifiez votre première AG.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -142,7 +142,7 @@ export default function AssembleesPage() {
             onOpenChange={(open) => { if (!open) { setShowDialog(false); setEditingAG(null) } }}
             coproprieteId={selectedCoproId}
             defaultValues={editingAG || undefined}
-            title={editingAG ? 'Modifier l\'assemblee generale' : 'Nouvelle assemblee generale'}
+            title={editingAG ? 'Modifier l\'assemblée générale' : 'Nouvelle assemblée générale'}
             onSubmit={async (data) => {
               if (editingAG) {
                 await updateAG.mutateAsync({ id: editingAG.id, data })

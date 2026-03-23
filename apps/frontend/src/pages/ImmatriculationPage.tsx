@@ -19,7 +19,7 @@ import {
 const STATUT_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
   soumis: 'Soumis',
-  valide: 'Valide',
+  valide: 'Validé',
 }
 
 const STATUT_COLORS: Record<string, string> = {
@@ -102,8 +102,8 @@ export default function ImmatriculationPage() {
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
           <ClipboardList className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
+          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriété sélectionnée</h3>
+          <p className="mt-2 text-stone-500 dark:text-stone-400">Sélectionnez une copropriété dans le menu latéral.</p>
         </div>
       ) : (
         <>
@@ -115,7 +115,7 @@ export default function ImmatriculationPage() {
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div>
-                <p className="text-sm text-stone-500 dark:text-stone-400">Numero d'immatriculation</p>
+                <p className="text-sm text-stone-500 dark:text-stone-400">Numéro d'immatriculation</p>
                 <p className="font-medium text-stone-900 dark:text-white">
                   {selectedCopropriete?.numero_immatriculation || '—'}
                 </p>
@@ -129,7 +129,7 @@ export default function ImmatriculationPage() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-stone-500 dark:text-stone-400">Derniere mise a jour registre</p>
+                <p className="text-sm text-stone-500 dark:text-stone-400">Dernière mise à jour registre</p>
                 <p className="font-medium text-stone-900 dark:text-white">
                   {selectedCopropriete?.date_derniere_maj_registre
                     ? new Date(selectedCopropriete.date_derniere_maj_registre).toLocaleDateString('fr-FR')
@@ -161,7 +161,7 @@ export default function ImmatriculationPage() {
               <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-center gap-2 mb-2">
                   <AlertTriangle className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
-                  <span className="text-xs font-medium text-stone-500 dark:text-stone-400">Impayes</span>
+                  <span className="text-xs font-medium text-stone-500 dark:text-stone-400">Impayés</span>
                 </div>
                 <p className={`text-sm font-medium ${
                   (complianceData.finances.total_impayes || 0) > 0
@@ -191,11 +191,11 @@ export default function ImmatriculationPage() {
                 )}
               </div>
 
-              {/* Derniere AG */}
+              {/* Dernière AG */}
               <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-center gap-2 mb-2">
                   <Users2 className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
-                  <span className="text-xs font-medium text-stone-500 dark:text-stone-400">Derniere AG</span>
+                  <span className="text-xs font-medium text-stone-500 dark:text-stone-400">Dernière AG</span>
                 </div>
                 {complianceData.assemblee_generale ? (
                   <p className="text-sm font-medium text-stone-900 dark:text-white">
@@ -210,7 +210,7 @@ export default function ImmatriculationPage() {
               <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-center gap-2 mb-2">
                   <Scale className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
-                  <span className="text-xs font-medium text-stone-500 dark:text-stone-400">Procedures</span>
+                  <span className="text-xs font-medium text-stone-500 dark:text-stone-400">Procédures</span>
                 </div>
                 {complianceData.procedures && complianceData.procedures.nombre_actives > 0 ? (
                   <p className="text-sm font-medium text-stone-900 dark:text-white">
@@ -226,7 +226,7 @@ export default function ImmatriculationPage() {
           {/* Declarations table */}
           <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
             <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
-              <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Declarations annuelles</h2>
+              <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Déclarations annuelles</h2>
               <div className="flex gap-2">
                 <button
                   onClick={handlePreparer}
@@ -234,14 +234,14 @@ export default function ImmatriculationPage() {
                   className="flex items-center gap-2 rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50 dark:border-stone-600 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-700"
                 >
                   <FileSearch className="h-4 w-4" />
-                  {isPreparating ? 'Preparation...' : 'Preparer declaration'}
+                  {isPreparating ? 'Préparation...' : 'Préparer déclaration'}
                 </button>
                 <button
                   onClick={() => { setDonneesPreparees(null); setEditingDeclaration(null); setShowDialog(true) }}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="h-4 w-4" />
-                  Nouvelle declaration
+                  Nouvelle déclaration
                 </button>
               </div>
             </div>
@@ -253,7 +253,7 @@ export default function ImmatriculationPage() {
             ) : !declarations || declarations.length === 0 ? (
               <div className="flex flex-col items-center py-12">
                 <CalendarDays className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-                <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune declaration enregistree</p>
+                <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune déclaration enregistrée</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -261,8 +261,8 @@ export default function ImmatriculationPage() {
                   <thead>
                     <tr className="border-b border-stone-200 text-left dark:border-stone-700">
                       <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400 w-8"></th>
-                      <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Annee</th>
-                      <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date de declaration</th>
+                      <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Année</th>
+                      <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date de déclaration</th>
                       <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
                       <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Notes</th>
                       <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
@@ -307,7 +307,7 @@ export default function ImmatriculationPage() {
                               </button>
                               <button
                                 onClick={() => {
-                                  if (window.confirm('Supprimer cette declaration ?')) deleteDeclaration.mutate(decl.id)
+                                  if (window.confirm('Supprimer cette déclaration ?')) deleteDeclaration.mutate(decl.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                               >
@@ -335,7 +335,7 @@ export default function ImmatriculationPage() {
               onOpenChange={(open) => { setShowDialog(open); if (!open) { setEditingDeclaration(null); setDonneesPreparees(null) } }}
               coproprieteId={selectedCoproId}
               defaultValues={editingDeclaration || undefined}
-              title={editingDeclaration ? 'Modifier la declaration' : 'Nouvelle declaration'}
+              title={editingDeclaration ? 'Modifier la déclaration' : 'Nouvelle déclaration'}
               donneesPreparees={donneesPreparees}
               onSubmit={async (data) => {
                 if (editingDeclaration) {
@@ -373,7 +373,7 @@ function ExpandedDonnees({ donnees }: { donnees: DonneesDeclarees }) {
           <p className="text-stone-600 dark:text-stone-400">Budget : {formatCurrency(donnees.finances.budget_montant)}</p>
         )}
         {donnees.finances.total_impayes != null && donnees.finances.total_impayes > 0 && (
-          <p className="text-red-600 dark:text-red-400 font-medium">Impayes : {formatCurrency(donnees.finances.total_impayes)}</p>
+          <p className="text-red-600 dark:text-red-400 font-medium">Impayés : {formatCurrency(donnees.finances.total_impayes)}</p>
         )}
         {donnees.finances.fonds_travaux_solde != null && (
           <p className="text-stone-500 dark:text-stone-500">Fonds travaux : {formatCurrency(donnees.finances.fonds_travaux_solde)}</p>
@@ -383,14 +383,14 @@ function ExpandedDonnees({ donnees }: { donnees: DonneesDeclarees }) {
         <h5 className="font-medium text-stone-900 dark:text-white mb-1">Diagnostics & AG</h5>
         {donnees.diagnostics && donnees.diagnostics.length > 0 ? (
           <p className="text-stone-600 dark:text-stone-400">
-            {donnees.diagnostics.filter(d => d.statut === 'valide').length} valide(s), {donnees.diagnostics.filter(d => d.statut !== 'valide').length} expire(s)
+            {donnees.diagnostics.filter(d => d.statut === 'valide').length} valide(s), {donnees.diagnostics.filter(d => d.statut !== 'valide').length} expiré(s)
           </p>
         ) : (
           <p className="text-stone-500 dark:text-stone-500">Aucun diagnostic</p>
         )}
         {donnees.assemblee_generale ? (
           <p className="text-stone-600 dark:text-stone-400 mt-1">
-            Derniere AG : {new Date(donnees.assemblee_generale.derniere_ag_date).toLocaleDateString('fr-FR')}
+            Dernière AG : {new Date(donnees.assemblee_generale.derniere_ag_date).toLocaleDateString('fr-FR')}
           </p>
         ) : (
           <p className="text-stone-500 dark:text-stone-500 mt-1">Aucune AG</p>
@@ -398,11 +398,11 @@ function ExpandedDonnees({ donnees }: { donnees: DonneesDeclarees }) {
       </div>
       <div className="rounded-lg bg-stone-50 p-3 dark:bg-stone-800/50">
         <h5 className="font-medium text-stone-900 dark:text-white mb-1">Organisation</h5>
-        <p className="text-stone-600 dark:text-stone-400">{donnees.personnel.nombre_employes} employe(s)</p>
+        <p className="text-stone-600 dark:text-stone-400">{donnees.personnel.nombre_employes} employé(s)</p>
         {donnees.procedures && donnees.procedures.nombre_actives > 0 ? (
-          <p className="text-stone-600 dark:text-stone-400">{donnees.procedures.nombre_actives} procedure(s)</p>
+          <p className="text-stone-600 dark:text-stone-400">{donnees.procedures.nombre_actives} procédure(s)</p>
         ) : (
-          <p className="text-stone-500 dark:text-stone-500">Aucune procedure</p>
+          <p className="text-stone-500 dark:text-stone-500">Aucune procédure</p>
         )}
       </div>
     </div>

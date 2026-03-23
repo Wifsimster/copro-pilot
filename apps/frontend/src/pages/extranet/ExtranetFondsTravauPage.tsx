@@ -17,7 +17,7 @@ export default function ExtranetFondsTravauPage() {
         <div className="animate-pulse h-32 rounded bg-muted" />
       ) : !fonds?.length ? (
         <p className="text-sm text-muted-foreground">
-          Aucune donnee fonds travaux disponible.
+          Aucune donnée fonds travaux disponible.
         </p>
       ) : (
         <div className="space-y-3">

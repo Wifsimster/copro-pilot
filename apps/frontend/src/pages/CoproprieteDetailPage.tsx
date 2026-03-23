@@ -32,8 +32,8 @@ const TYPE_LABELS: Record<string, string> = {
 }
 
 const CATEGORIE_LABELS: Record<string, string> = {
-  generales: 'Generales',
-  speciales: 'Speciales',
+  generales: 'Générales',
+  speciales: 'Spéciales',
 }
 
 const TYPE_MUTATION_LABELS: Record<string, string> = {
@@ -50,7 +50,7 @@ const TYPE_DIAGNOSTIC_LABELS: Record<string, string> = {
   dtg: 'DTG',
   ppt: 'PPT',
   gaz: 'Gaz',
-  electricite: 'Electricite',
+  electricite: 'Électricité',
   autre: 'Autre',
 }
 
@@ -62,8 +62,8 @@ const STATUT_DIAGNOSTIC_STYLES: Record<string, string> = {
 
 const STATUT_DIAGNOSTIC_LABELS: Record<string, string> = {
   valide: 'Valide',
-  expire: 'Expire',
-  a_renouveler: 'A renouveler',
+  expire: 'Expiré',
+  a_renouveler: 'À renouveler',
 }
 
 type Tab = 'lots' | 'parties-communes' | 'cles-repartition' | 'locataires' | 'mutations' | 'diagnostics' | 'cycle-annuel'
@@ -131,9 +131,9 @@ export default function CoproprieteDetailPage() {
   if (!copropriete) {
     return (
       <div className="text-center py-12">
-        <p className="text-stone-500 dark:text-stone-400">Copropriete non trouvee</p>
+        <p className="text-stone-500 dark:text-stone-400">Copropriété non trouvée</p>
         <Link to="/coproprietes" className="mt-4 inline-block text-emerald-700 hover:underline">
-          Retour aux coproprietes
+          Retour aux copropriétés
         </Link>
       </div>
     )
@@ -148,7 +148,7 @@ export default function CoproprieteDetailPage() {
   const tabs = [
     { id: 'lots' as Tab, label: 'Lots', icon: Home, count: lots?.length || 0 },
     { id: 'parties-communes' as Tab, label: 'Parties communes', icon: DoorOpen, count: partiesCommunes?.length || 0 },
-    { id: 'cles-repartition' as Tab, label: 'Cles de repartition', icon: Key, count: clesRepartition?.length || 0 },
+    { id: 'cles-repartition' as Tab, label: 'Clés de répartition', icon: Key, count: clesRepartition?.length || 0 },
     { id: 'locataires' as Tab, label: 'Locataires', icon: UserCheck },
     { id: 'mutations' as Tab, label: 'Mutations', icon: ArrowRightLeft },
     { id: 'diagnostics' as Tab, label: 'Diagnostics', icon: ClipboardCheck, count: diagnostics?.length || 0 },
@@ -198,11 +198,11 @@ export default function CoproprieteDetailPage() {
           <p className="text-2xl font-bold text-stone-900 dark:text-white">{copropriete.nombre_lots}</p>
         </div>
         <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
-          <p className="text-sm text-stone-500 dark:text-stone-400">Coproprietaires</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400">Copropriétaires</p>
           <p className="text-2xl font-bold text-stone-900 dark:text-white">{copropriete.nombre_coproprietaires}</p>
         </div>
         <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
-          <p className="text-sm text-stone-500 dark:text-stone-400">Total tantiemes</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400">Total tantièmes</p>
           <p className="text-2xl font-bold text-stone-900 dark:text-white">{copropriete.total_tantiemes}</p>
         </div>
       </div>
@@ -245,7 +245,7 @@ export default function CoproprieteDetailPage() {
           {(!lots || lots.length === 0) ? (
             <div className="flex flex-col items-center py-12">
               <Home className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun lot enregistre</p>
+              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun lot enregistré</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -255,9 +255,9 @@ export default function CoproprieteDetailPage() {
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">N</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Type</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Surface</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Etage</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Tantiemes</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Proprietaire</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Étage</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Tantièmes</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Propriétaire</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                   </tr>
                 </thead>
@@ -272,7 +272,7 @@ export default function CoproprieteDetailPage() {
                       <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                         {lot.proprietaire_nom
                           ? `${lot.proprietaire_prenom} ${lot.proprietaire_nom}`
-                          : <span className="text-stone-400 italic">Non attribue</span>
+                          : <span className="text-stone-400 italic">Non attribué</span>
                         }
                       </td>
                       <td className="px-4 py-3">
@@ -317,7 +317,7 @@ export default function CoproprieteDetailPage() {
           {(!partiesCommunes || partiesCommunes.length === 0) ? (
             <div className="flex flex-col items-center py-12">
               <DoorOpen className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune partie commune enregistree</p>
+              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune partie commune enregistrée</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -325,7 +325,7 @@ export default function CoproprieteDetailPage() {
                 <thead>
                   <tr className="border-b border-stone-200 text-left dark:border-stone-700">
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Nom</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Categorie</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Catégorie</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Description</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                   </tr>
@@ -373,7 +373,7 @@ export default function CoproprieteDetailPage() {
       {activeTab === 'cles-repartition' && (
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
-            <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Cles de repartition</h2>
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Clés de répartition</h2>
             <button
               onClick={() => setShowCreateCle(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
@@ -386,7 +386,7 @@ export default function CoproprieteDetailPage() {
           {(!clesRepartition || clesRepartition.length === 0) ? (
             <div className="flex flex-col items-center py-12">
               <Key className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune cle de repartition enregistree</p>
+              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune clé de répartition enregistrée</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -439,7 +439,7 @@ export default function CoproprieteDetailPage() {
                 onChange={(e) => setSelectedLotId(e.target.value ? parseInt(e.target.value) : undefined)}
                 className="flex-1 rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm dark:border-stone-600 dark:bg-stone-800 dark:text-white"
               >
-                <option value="">Selectionner un lot...</option>
+                <option value="">Sélectionner un lot...</option>
                 {lots?.map((l: LotWithProprietaire) => (
                   <option key={l.id} value={l.id}>Lot {l.numero} — {TYPE_LABELS[l.type] || l.type}</option>
                 ))}
@@ -459,7 +459,7 @@ export default function CoproprieteDetailPage() {
           {!selectedLotId ? (
             <div className="flex flex-col items-center py-12">
               <UserCheck className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-              <p className="mt-3 text-stone-500 dark:text-stone-400">Selectionnez un lot pour voir ses locataires</p>
+              <p className="mt-3 text-stone-500 dark:text-stone-400">Sélectionnez un lot pour voir ses locataires</p>
             </div>
           ) : (!locataires || locataires.length === 0) ? (
             <div className="flex flex-col items-center py-12">
@@ -473,8 +473,8 @@ export default function CoproprieteDetailPage() {
                   <tr className="border-b border-stone-200 text-left dark:border-stone-700">
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Nom</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Email</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Telephone</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Entree</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Téléphone</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Entrée</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Sortie</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                   </tr>
@@ -534,7 +534,7 @@ export default function CoproprieteDetailPage() {
                 onChange={(e) => setSelectedLotId(e.target.value ? parseInt(e.target.value) : undefined)}
                 className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm dark:border-stone-600 dark:bg-stone-800 dark:text-white"
               >
-                <option value="">Selectionner un lot...</option>
+                <option value="">Sélectionner un lot...</option>
                 {lots?.map((l: LotWithProprietaire) => (
                   <option key={l.id} value={l.id}>Lot {l.numero} — {TYPE_LABELS[l.type] || l.type}</option>
                 ))}
@@ -545,7 +545,7 @@ export default function CoproprieteDetailPage() {
           {!selectedLotId ? (
             <div className="flex flex-col items-center py-12">
               <ArrowRightLeft className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-              <p className="mt-3 text-stone-500 dark:text-stone-400">Selectionnez un lot pour voir ses mutations</p>
+              <p className="mt-3 text-stone-500 dark:text-stone-400">Sélectionnez un lot pour voir ses mutations</p>
             </div>
           ) : (!mutations || mutations.length === 0) ? (
             <div className="flex flex-col items-center py-12">
@@ -559,8 +559,8 @@ export default function CoproprieteDetailPage() {
                   <tr className="border-b border-stone-200 text-left dark:border-stone-700">
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Type</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Ancien proprietaire</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Nouveau proprietaire</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Ancien propriétaire</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Nouveau propriétaire</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                   </tr>
                 </thead>
@@ -621,7 +621,7 @@ export default function CoproprieteDetailPage() {
           {(!diagnostics || diagnostics.length === 0) ? (
             <div className="flex flex-col items-center py-12">
               <ClipboardCheck className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun diagnostic enregistre</p>
+              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun diagnostic enregistré</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -630,8 +630,8 @@ export default function CoproprieteDetailPage() {
                   <tr className="border-b border-stone-200 text-left dark:border-stone-700">
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Type</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Prestataire</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Realisation</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Validite</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Réalisation</th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Validité</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
                   </tr>
@@ -686,7 +686,7 @@ export default function CoproprieteDetailPage() {
             <div className="rounded-xl border border-stone-200 bg-white p-8 text-center dark:border-stone-700 dark:bg-stone-800">
               <ListChecks className="mx-auto h-10 w-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">
-                Aucun cycle annuel initialise pour {currentYear}
+                Aucun cycle annuel initialisé pour {currentYear}
               </p>
               <button
                 onClick={() => initCycle.mutate({ coproprieteId: coproprieteId!, annee: currentYear })}
@@ -728,7 +728,7 @@ export default function CoproprieteDetailPage() {
         open={showEditCopro}
         onOpenChange={setShowEditCopro}
         defaultValues={copropriete}
-        title="Modifier la copropriete"
+        title="Modifier la copropriété"
         onSubmit={async (data) => { await updateCopropriete.mutateAsync({ id: coproprieteId!, data }); setShowEditCopro(false) }}
         isLoading={updateCopropriete.isPending}
       />
@@ -754,7 +754,7 @@ export default function CoproprieteDetailPage() {
         onOpenChange={(open) => { if (!open) { setShowCreateCle(false); setEditingCle(null) } }}
         coproprieteId={coproprieteId!}
         defaultValues={editingCle || undefined}
-        title={editingCle ? 'Modifier la cle de repartition' : 'Nouvelle cle de repartition'}
+        title={editingCle ? 'Modifier la clé de répartition' : 'Nouvelle clé de répartition'}
         onSubmit={async (data) => {
           if (editingCle) {
             await updateCle.mutateAsync({ id: editingCle.id, data })
