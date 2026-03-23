@@ -89,7 +89,7 @@ export async function seed(knex) {
       const dateFin = new Date(dateDebut)
       dateFin.setFullYear(dateFin.getFullYear() + 1)
 
-      const primes = [1850.00, 2340.00, 950.00, 1200.00, 3100.00, 780.00, 1500.00, 2800.00]
+      const primes = [8500.00, 12400.00, 5200.00, 7800.00, 18500.00, 4900.00, 9600.00, 15200.00]
       const franchises = [150.00, 250.00, 300.00, 500.00, 0, 200.00, 350.00, 150.00]
 
       const assurance = {

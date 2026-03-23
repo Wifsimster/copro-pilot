@@ -28,7 +28,7 @@ export async function seed(knex) {
       { type: 'dpe', prestataire: 'Dekra', date_realisation: '2022-03-18', date_validite: '2032-03-18', statut: 'valide', observations: 'Classe B — 85 kWh/m²/an' },
       { type: 'amiante', prestataire: 'Dekra', date_realisation: '2022-03-18', date_validite: null, statut: 'valide', observations: 'Non concerné (construction post-1997)' },
       { type: 'plomb', prestataire: 'Dekra', date_realisation: '2022-03-18', date_validite: null, statut: 'valide', observations: 'Non concerné (construction post-1949)' },
-      { type: 'electricite', prestataire: 'Consuel', date_realisation: '2021-06-25', date_validite: '2027-06-25', statut: 'a_renouveler', observations: 'Quelques non-conformités mineures relevées, correction recommandée' },
+      { type: 'electricite', prestataire: 'Apave', date_realisation: '2021-06-25', date_validite: '2027-06-25', statut: 'a_renouveler', observations: 'Quelques non-conformités mineures relevées, correction recommandée' },
       { type: 'dtg', prestataire: 'Apave', date_realisation: '2020-11-30', date_validite: '2030-11-30', statut: 'valide', observations: 'Bon état général' },
     ],
     // Copro 3 — Marseille, 1995-1998, some expired
@@ -45,7 +45,7 @@ export async function seed(knex) {
       { type: 'dpe', prestataire: 'Apave', date_realisation: '2024-01-15', date_validite: '2034-01-15', statut: 'valide', observations: 'Classe A — 45 kWh/m²/an, bâtiment BBC' },
       { type: 'amiante', prestataire: 'Apave', date_realisation: '2024-01-15', date_validite: null, statut: 'valide', observations: 'Non concerné (construction post-1997)' },
       { type: 'plomb', prestataire: 'Apave', date_realisation: '2024-01-15', date_validite: null, statut: 'valide', observations: 'Non concerné (construction post-1949)' },
-      { type: 'electricite', prestataire: 'Consuel', date_realisation: '2024-06-20', date_validite: '2030-06-20', statut: 'valide', observations: 'Installation conforme' },
+      { type: 'electricite', prestataire: 'Apave', date_realisation: '2024-06-20', date_validite: '2030-06-20', statut: 'valide', observations: 'Installation conforme' },
     ],
     // Copro 5 — Lille, avant 1949, plomb + amiante concerns
     [
@@ -61,7 +61,7 @@ export async function seed(knex) {
       { type: 'dpe', prestataire: 'Dekra', date_realisation: '2024-02-20', date_validite: '2034-02-20', statut: 'valide', observations: 'Classe B — 78 kWh/m²/an, bonne performance énergétique' },
       { type: 'amiante', prestataire: 'Dekra', date_realisation: '2024-02-20', date_validite: null, statut: 'valide', observations: 'Non concerné (construction post-1997)' },
       { type: 'plomb', prestataire: 'Dekra', date_realisation: '2024-02-20', date_validite: null, statut: 'valide', observations: 'Non concerné (construction post-1949)' },
-      { type: 'electricite', prestataire: 'Consuel', date_realisation: '2024-05-15', date_validite: '2030-05-15', statut: 'valide', observations: 'Installation conforme aux normes NF C 15-100' },
+      { type: 'electricite', prestataire: 'Apave', date_realisation: '2024-05-15', date_validite: '2030-05-15', statut: 'valide', observations: 'Installation conforme aux normes NF C 15-100' },
       { type: 'dtg', prestataire: 'Socotec', date_realisation: '2023-11-10', date_validite: '2033-11-10', statut: 'valide', observations: 'Bon état général, entretien régulier des parties communes' },
     ],
     // Copro 7 — Toulouse, 1920-1925, historic with aging concerns
@@ -95,7 +95,7 @@ export async function seed(knex) {
       { type: 'dpe', prestataire: 'Apave', date_realisation: '2025-01-10', date_validite: '2035-01-10', statut: 'valide', observations: 'Classe A — 35 kWh/m²/an, bâtiment RE2020, performance exemplaire' },
       { type: 'amiante', prestataire: 'Apave', date_realisation: '2025-01-10', date_validite: null, statut: 'valide', observations: 'Non concerné (construction post-1997)' },
       { type: 'plomb', prestataire: 'Apave', date_realisation: '2025-01-10', date_validite: null, statut: 'valide', observations: 'Non concerné (construction post-1949)' },
-      { type: 'electricite', prestataire: 'Consuel', date_realisation: '2024-12-05', date_validite: '2030-12-05', statut: 'valide', observations: 'Installation neuve conforme, bornes de recharge véhicules électriques' },
+      { type: 'electricite', prestataire: 'Apave', date_realisation: '2024-12-05', date_validite: '2030-12-05', statut: 'valide', observations: 'Installation neuve conforme, bornes de recharge véhicules électriques' },
     ],
   ]
 

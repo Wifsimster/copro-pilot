@@ -20,8 +20,8 @@ export async function seed(knex) {
     'Sergic',
     'Immo de France',
     'Oralia Gestion',
-    'Lamy Assurances et Gestion',
-    'Bouygues Immobilier Syndic',
+    'Lamy Immobilier',
+    'Procivis Immobilier',
     'Square Habitat',
     'Cabinet Billon Immobilier',
   ]
