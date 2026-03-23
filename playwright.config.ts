@@ -4,14 +4,16 @@ export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI ? 'github' : 'html',
-  timeout: 60_000,
+  reporter: process.env.CI
+    ? [['github'], ['html', { open: 'never' }]]
+    : 'html',
+  timeout: 30_000,
   expect: { timeout: 10_000 },
 
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.E2E_BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -32,18 +34,20 @@ export default defineConfig({
     },
   ],
 
-  webServer: [
-    {
-      command: 'npm run dev:backend',
-      url: 'http://localhost:3001/api/health',
-      reuseExistingServer: !process.env.CI,
-      timeout: 30_000,
-    },
-    {
-      command: 'npm run dev:frontend',
-      url: 'http://localhost:3000',
-      reuseExistingServer: !process.env.CI,
-      timeout: 30_000,
-    },
-  ],
+  webServer: process.env.CI
+    ? undefined
+    : [
+        {
+          command: 'npm run dev:backend',
+          url: 'http://localhost:3001/api/health',
+          reuseExistingServer: true,
+          timeout: 30_000,
+        },
+        {
+          command: 'npm run dev:frontend',
+          url: 'http://localhost:3000',
+          reuseExistingServer: true,
+          timeout: 30_000,
+        },
+      ],
 })
