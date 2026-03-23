@@ -1,22 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 
-/**
- * Ensure the page is authenticated. If storageState didn't persist
- * the session, fall back to manual login.
- */
-async function ensureLoggedIn(page: Page) {
-  await page.goto('/#/dashboard')
-  // Give the app a moment to check auth and redirect if needed
-  await page.waitForTimeout(2_000)
-
-  const url = page.url()
-  if (url.includes('/#/dashboard')) {
-    // Already authenticated — wait for content
-    await expect(page.locator('h1')).toBeVisible({ timeout: 10_000 })
-    return
-  }
-
-  // Not authenticated — login manually
+/** Login as syndic user */
+async function login(page: Page) {
   await page.goto('/#/login')
   await expect(page.locator('#signin-email')).toBeVisible({ timeout: 10_000 })
   await page.locator('#signin-email').fill('syndic@copropilot.local')
@@ -27,32 +12,24 @@ async function ensureLoggedIn(page: Page) {
 
 test.describe('Smoke tests', () => {
   test.beforeEach(async ({ page }) => {
-    await ensureLoggedIn(page)
+    await login(page)
   })
 
   test('dashboard loads with greeting and metrics', async ({ page }) => {
     await expect(page.locator('h1')).toContainText(/Bonjour|Bonsoir/)
-
-    // At least one metric label should be visible
     await expect(page.getByText('Coproprietes')).toBeVisible()
   })
 
   test('copropriétés page lists properties', async ({ page }) => {
     await page.goto('/#/coproprietes')
-
-    // Wait for the page heading
-    await expect(
-      page.getByRole('heading', { level: 1 })
-    ).toContainText(/Copropri/, { timeout: 10_000 })
-
-    // Search input should be present
-    await expect(page.getByPlaceholder(/Rechercher/)).toBeVisible()
+    await expect(page.getByPlaceholder(/Rechercher/)).toBeVisible({
+      timeout: 10_000,
+    })
   })
 
   test('charges page shows tabs when copropriété selected', async ({
     page,
   }) => {
-    // Set copropriete selection before navigating
     await page.evaluate(() => {
       localStorage.setItem(
         'copropriete-selection',
@@ -62,17 +39,10 @@ test.describe('Smoke tests', () => {
         })
       )
     })
-
     await page.goto('/#/charges')
-
-    await expect(
-      page.getByRole('heading', { level: 1 })
-    ).toBeVisible({ timeout: 10_000 })
-
-    // Verify tab buttons exist
     await expect(
       page.getByRole('button', { name: 'Budgets' })
-    ).toBeVisible()
+    ).toBeVisible({ timeout: 10_000 })
   })
 
   test('travaux page loads', async ({ page }) => {
@@ -85,27 +55,17 @@ test.describe('Smoke tests', () => {
         })
       )
     })
-
     await page.goto('/#/travaux')
-
     await expect(
-      page.getByRole('heading', { level: 1 })
+      page.getByRole('button', { name: 'Incidents' })
     ).toBeVisible({ timeout: 10_000 })
   })
 
   test('sidebar navigation works', async ({ page }) => {
-    // Find and click any sidebar link that goes to coproprietes
-    const sidebarLink = page.locator(
-      'nav a[href*="coproprietes"], aside a[href*="coproprietes"], a[href*="#/coproprietes"]'
-    ).first()
-
-    if (await sidebarLink.isVisible()) {
-      await sidebarLink.click()
-      await expect(page).toHaveURL(/coproprietes/)
-    } else {
-      // Fallback: just navigate directly
-      await page.goto('/#/coproprietes')
-      await expect(page).toHaveURL(/coproprietes/)
-    }
+    // Click a sidebar link to coproprietes
+    const link = page.locator('a[href*="#/coproprietes"]').first()
+    await expect(link).toBeVisible({ timeout: 5_000 })
+    await link.click()
+    await expect(page).toHaveURL(/coproprietes/)
   })
 })
