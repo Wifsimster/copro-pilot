@@ -186,3 +186,11 @@ jobs:
             ghcr.io/${{ steps.repo.outputs.name }}:${{ needs.release.outputs.new-release-version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to Production
+    runs-on: self-hosted
+    needs: [docker]
+    steps:
+      - name: Deploy
+        run: /home/deploy/deploy-copro-pilot.sh
