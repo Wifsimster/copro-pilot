@@ -218,11 +218,11 @@ export default function LoginPage() {
       {/* Right Panel — Forms */}
       <div className="relative flex flex-1 items-center justify-center bg-[#FAF8F5] dark:bg-stone-950 p-6 sm:p-10">
         {/* Theme toggle — top right */}
-        <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10">
           <ThemeToggle />
         </div>
 
-        <div className="w-full max-w-[420px] space-y-8">
+        <div className="w-full max-w-[440px] space-y-6">
           {/* Mobile logo */}
           <div className="flex flex-col items-center gap-3 lg:hidden">
             <div className="flex size-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
@@ -234,270 +234,288 @@ export default function LoginPage() {
           {/* Plan banner from landing page CTAs */}
           {hasPaidPlan && <PlanBanner plan={selectedPlan} />}
 
-          {/* Tabs — signin / signup */}
-          <Tabs defaultValue={hasPaidPlan ? 'signup' : 'signin'} className="w-full space-y-6">
-            {/* Header — changes with active tab via CSS */}
-            <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-foreground">
-                Bienvenue
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                {hasPaidPlan
-                  ? 'Créez votre compte pour démarrer votre essai'
-                  : 'Connectez-vous ou créez un compte pour continuer'}
-              </p>
-            </div>
-
-            <TabsList className="w-full">
-              <TabsTrigger value="signin" className="flex-1">Connexion</TabsTrigger>
-              <TabsTrigger value="signup" className="flex-1">Inscription</TabsTrigger>
-            </TabsList>
-
-            {/* Sign In */}
-            <TabsContent value="signin">
-              <form onSubmit={handleSignIn} className="space-y-5">
-                <div className="space-y-2">
-                  <Label htmlFor="signin-email">Adresse email</Label>
-                  <Input
-                    id="signin-email"
-                    type="email"
-                    placeholder="vous@exemple.com"
-                    value={signInEmail}
-                    onChange={(e) => setSignInEmail(e.target.value)}
-                    required
-                    autoComplete="email"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="signin-password">Mot de passe</Label>
-                    <a
-                      href="/#/forgot-password"
-                      className="text-xs text-primary hover:underline"
-                    >
-                      Mot de passe oublié ?
-                    </a>
-                  </div>
-                  <PasswordInput
-                    id="signin-password"
-                    value={signInPassword}
-                    onChange={(e) => setSignInPassword(e.target.value)}
-                    autoComplete="current-password"
-                  />
-                </div>
-
-                {signInError && (
-                  <div className="flex items-start gap-2 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
-                    <AlertCircle className="size-4 mt-0.5 shrink-0" />
-                    <span>{signInError}</span>
-                  </div>
-                )}
-
-                <Button type="submit" className="w-full h-10" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin" />
-                      Connexion...
-                    </>
-                  ) : (
-                    'Se connecter'
-                  )}
-                </Button>
-
-                {/* Demo access */}
-                <div className="relative mt-2">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-border" />
-                  </div>
-                  <div className="relative flex justify-center text-xs">
-                    <span className="bg-background px-2 text-muted-foreground">
-                      Accès démo
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex-1 h-10"
-                    disabled={isLoading}
-                    onClick={() => {
-                      setSignInError('')
-                      signIn('syndic@copropilot.local', 'syndic').catch(err => {
-                        setSignInError(err instanceof Error ? err.message : 'Erreur de connexion')
-                      })
-                    }}
-                  >
-                    <Play className="size-3.5" />
-                    Syndic
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex-1 h-10"
-                    disabled={isLoading}
-                    onClick={() => {
-                      setSignInError('')
-                      signIn('copro@copropilot.local', 'copro').catch(err => {
-                        setSignInError(err instanceof Error ? err.message : 'Erreur de connexion')
-                      })
-                    }}
-                  >
-                    <Play className="size-3.5" />
-                    Copropriétaire
-                  </Button>
-                </div>
-
-                <p className="text-center text-xs text-muted-foreground mt-2">
-                  <a
-                    href="/#/first-login"
-                    className="text-primary hover:underline"
-                  >
-                    Première connexion (copropriétaire) ?
-                  </a>
+          {/* Card container */}
+          <div className="rounded-2xl border border-border/60 bg-white dark:bg-stone-900 shadow-sm shadow-black/5 px-7 py-8 sm:px-9 sm:py-10">
+            {/* Tabs — signin / signup */}
+            <Tabs defaultValue={hasPaidPlan ? 'signup' : 'signin'} className="w-full space-y-7">
+              {/* Header */}
+              <div className="space-y-1.5">
+                <h2 className="text-2xl font-bold text-foreground tracking-tight">
+                  Bienvenue
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {hasPaidPlan
+                    ? 'Créez votre compte pour démarrer votre essai'
+                    : 'Connectez-vous ou créez un compte pour continuer'}
                 </p>
-              </form>
-            </TabsContent>
+              </div>
 
-            {/* Sign Up */}
-            <TabsContent value="signup">
-              <form onSubmit={handleSignUp} className="space-y-5">
-                {signUpSuccess ? (
-                  <div className="flex flex-col items-center gap-4 py-8 text-center">
-                    <div className="flex size-14 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
-                      <Check className="size-7" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-foreground">Compte créé avec succès !</p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Un email de vérification a été envoyé à votre adresse. Veuillez cliquer sur le lien pour activer votre compte.
-                      </p>
-                      {hasPaidPlan && (
-                        <p className="text-sm text-primary mt-2">
-                          Après vérification, vous serez redirigé vers le paiement pour le plan {PAID_PLANS[selectedPlan]?.label}.
-                        </p>
-                      )}
-                    </div>
+              <TabsList className="w-full h-11">
+                <TabsTrigger value="signin" className="flex-1 text-sm">Connexion</TabsTrigger>
+                <TabsTrigger value="signup" className="flex-1 text-sm">Inscription</TabsTrigger>
+              </TabsList>
+
+              {/* Sign In */}
+              <TabsContent value="signin">
+                <form onSubmit={handleSignIn} className="space-y-5">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="signin-email">Adresse email</Label>
+                    <Input
+                      id="signin-email"
+                      type="email"
+                      placeholder="vous@exemple.com"
+                      value={signInEmail}
+                      onChange={(e) => setSignInEmail(e.target.value)}
+                      required
+                      autoComplete="email"
+                      className="h-11"
+                    />
                   </div>
-                ) : (
-                  <>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-name">Nom complet</Label>
-                      <Input
-                        id="signup-name"
-                        type="text"
-                        placeholder="Jean Dupont"
-                        value={signUpName}
-                        onChange={(e) => setSignUpName(e.target.value)}
-                        required
-                        autoComplete="name"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-email">Adresse email</Label>
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        placeholder="vous@exemple.com"
-                        value={signUpEmail}
-                        onChange={(e) => setSignUpEmail(e.target.value)}
-                        required
-                        autoComplete="email"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-password">Mot de passe</Label>
-                      <PasswordInput
-                        id="signup-password"
-                        value={signUpPassword}
-                        onChange={(e) => setSignUpPassword(e.target.value)}
-                        minLength={12}
-                        autoComplete="new-password"
-                      />
-                      <PasswordStrength
-                        password={signUpPassword}
-                        email={signUpEmail}
-                        showErrors
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-confirm">Confirmer le mot de passe</Label>
-                      <PasswordInput
-                        id="signup-confirm"
-                        value={signUpConfirm}
-                        onChange={(e) => setSignUpConfirm(e.target.value)}
-                        minLength={12}
-                        autoComplete="new-password"
-                      />
-                      {signUpConfirm && signUpPassword !== signUpConfirm && (
-                        <p className="text-xs text-destructive">
-                          Les mots de passe ne correspondent pas
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex items-start gap-3">
-                      <Checkbox
-                        id="consent"
-                        checked={consentAccepted}
-                        onCheckedChange={(checked) =>
-                          setConsentAccepted(checked === true)
-                        }
-                      />
-                      <Label
-                        htmlFor="consent"
-                        className="text-xs leading-relaxed text-muted-foreground font-normal cursor-pointer"
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="signin-password">Mot de passe</Label>
+                      <a
+                        href="/#/forgot-password"
+                        className="text-xs text-primary hover:underline"
                       >
-                        J&apos;accepte la{' '}
-                        <a
-                          href="/#/politique-confidentialite"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline text-primary hover:text-primary/80"
-                        >
-                          politique de confidentialite
-                        </a>{' '}
-                        et le traitement de mes donnees personnelles
-                        conformement au RGPD.
-                      </Label>
+                        Mot de passe oublié ?
+                      </a>
                     </div>
+                    <PasswordInput
+                      id="signin-password"
+                      value={signInPassword}
+                      onChange={(e) => setSignInPassword(e.target.value)}
+                      autoComplete="current-password"
+                    />
+                  </div>
 
-                    {signUpError && (
-                      <div className="flex items-start gap-2 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
-                        <AlertCircle className="size-4 mt-0.5 shrink-0" />
-                        <span>{signUpError}</span>
-                      </div>
-                    )}
+                  {signInError && (
+                    <div className="flex items-start gap-2.5 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
+                      <AlertCircle className="size-4 mt-0.5 shrink-0" />
+                      <span>{signInError}</span>
+                    </div>
+                  )}
 
-                    <Button type="submit" className="w-full h-10" disabled={isLoading}>
+                  <div className="pt-1">
+                    <Button type="submit" className="w-full h-11 text-sm font-medium" disabled={isLoading}>
                       {isLoading ? (
                         <>
                           <Loader2 className="size-4 animate-spin" />
-                          Inscription...
+                          Connexion...
                         </>
                       ) : (
-                        "S'inscrire"
+                        'Se connecter'
                       )}
                     </Button>
-                  </>
-                )}
-              </form>
-            </TabsContent>
-          </Tabs>
+                  </div>
 
-          {/* Footer note */}
-          <p className="text-center text-xs text-muted-foreground leading-relaxed">
+                  {/* Demo access */}
+                  <div className="relative pt-2">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-border" />
+                    </div>
+                    <div className="relative flex justify-center text-xs">
+                      <span className="bg-white dark:bg-stone-900 px-3 text-muted-foreground">
+                        Accès démo
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="flex-1 h-11"
+                      disabled={isLoading}
+                      onClick={() => {
+                        setSignInError('')
+                        signIn('syndic@copropilot.local', 'syndic').catch(err => {
+                          setSignInError(err instanceof Error ? err.message : 'Erreur de connexion')
+                        })
+                      }}
+                    >
+                      <Play className="size-3.5" />
+                      Syndic
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="flex-1 h-11"
+                      disabled={isLoading}
+                      onClick={() => {
+                        setSignInError('')
+                        signIn('copro@copropilot.local', 'copro').catch(err => {
+                          setSignInError(err instanceof Error ? err.message : 'Erreur de connexion')
+                        })
+                      }}
+                    >
+                      <Play className="size-3.5" />
+                      Copropriétaire
+                    </Button>
+                  </div>
+
+                  <p className="text-center text-xs text-muted-foreground pt-1">
+                    <a
+                      href="/#/first-login"
+                      className="text-primary hover:underline"
+                    >
+                      Première connexion (copropriétaire) ?
+                    </a>
+                  </p>
+                </form>
+              </TabsContent>
+
+              {/* Sign Up */}
+              <TabsContent value="signup">
+                <form onSubmit={handleSignUp} className="space-y-5">
+                  {signUpSuccess ? (
+                    <div className="flex flex-col items-center gap-4 py-8 text-center">
+                      <div className="flex size-14 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
+                        <Check className="size-7" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-foreground">Compte créé avec succès !</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Un email de vérification a été envoyé à votre adresse. Veuillez cliquer sur le lien pour activer votre compte.
+                        </p>
+                        {hasPaidPlan && (
+                          <p className="text-sm text-primary mt-2">
+                            Après vérification, vous serez redirigé vers le paiement pour le plan {PAID_PLANS[selectedPlan]?.label}.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="space-y-4">
+                        <div className="space-y-1.5">
+                          <Label htmlFor="signup-name">Nom complet</Label>
+                          <Input
+                            id="signup-name"
+                            type="text"
+                            placeholder="Jean Dupont"
+                            value={signUpName}
+                            onChange={(e) => setSignUpName(e.target.value)}
+                            required
+                            autoComplete="name"
+                            className="h-11"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label htmlFor="signup-email">Adresse email</Label>
+                          <Input
+                            id="signup-email"
+                            type="email"
+                            placeholder="vous@exemple.com"
+                            value={signUpEmail}
+                            onChange={(e) => setSignUpEmail(e.target.value)}
+                            required
+                            autoComplete="email"
+                            className="h-11"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="h-px bg-border/60" />
+
+                      <div className="space-y-4">
+                        <div className="space-y-1.5">
+                          <Label htmlFor="signup-password">Mot de passe</Label>
+                          <PasswordInput
+                            id="signup-password"
+                            value={signUpPassword}
+                            onChange={(e) => setSignUpPassword(e.target.value)}
+                            minLength={12}
+                            autoComplete="new-password"
+                          />
+                          <PasswordStrength
+                            password={signUpPassword}
+                            email={signUpEmail}
+                            showErrors
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label htmlFor="signup-confirm">Confirmer le mot de passe</Label>
+                          <PasswordInput
+                            id="signup-confirm"
+                            value={signUpConfirm}
+                            onChange={(e) => setSignUpConfirm(e.target.value)}
+                            minLength={12}
+                            autoComplete="new-password"
+                          />
+                          {signUpConfirm && signUpPassword !== signUpConfirm && (
+                            <p className="text-xs text-destructive">
+                              Les mots de passe ne correspondent pas
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 rounded-lg bg-muted/50 dark:bg-muted/20 p-3.5">
+                        <Checkbox
+                          id="consent"
+                          checked={consentAccepted}
+                          onCheckedChange={(checked) =>
+                            setConsentAccepted(checked === true)
+                          }
+                          className="mt-0.5"
+                        />
+                        <Label
+                          htmlFor="consent"
+                          className="text-xs leading-relaxed text-muted-foreground font-normal cursor-pointer"
+                        >
+                          J&apos;accepte la{' '}
+                          <a
+                            href="/#/politique-confidentialite"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline text-primary hover:text-primary/80"
+                          >
+                            politique de confidentialite
+                          </a>{' '}
+                          et le traitement de mes donnees personnelles
+                          conformement au RGPD.
+                        </Label>
+                      </div>
+
+                      {signUpError && (
+                        <div className="flex items-start gap-2.5 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
+                          <AlertCircle className="size-4 mt-0.5 shrink-0" />
+                          <span>{signUpError}</span>
+                        </div>
+                      )}
+
+                      <div className="pt-1">
+                        <Button type="submit" className="w-full h-11 text-sm font-medium" disabled={isLoading}>
+                          {isLoading ? (
+                            <>
+                              <Loader2 className="size-4 animate-spin" />
+                              Inscription...
+                            </>
+                          ) : (
+                            "S'inscrire"
+                          )}
+                        </Button>
+                      </div>
+                    </>
+                  )}
+                </form>
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          {/* Footer note — outside the card */}
+          <p className="text-center text-xs text-muted-foreground/70 leading-relaxed px-4">
             En continuant, vous acceptez les{' '}
             <a
               href="/#/politique-confidentialite"
-              className="underline hover:text-foreground"
+              className="underline hover:text-foreground transition-colors"
             >
               conditions d&apos;utilisation et la politique de confidentialite
             </a>
             .
           </p>
-          <p className="text-center text-xs text-muted-foreground/60 lg:hidden">
+          <p className="text-center text-xs text-muted-foreground/40 lg:hidden">
             v{__APP_VERSION__}
           </p>
         </div>

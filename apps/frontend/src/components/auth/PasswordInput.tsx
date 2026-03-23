@@ -32,7 +32,7 @@ export function PasswordInput({
         required
         minLength={minLength}
         autoComplete={autoComplete}
-        className="pr-10"
+        className="h-11 pr-10"
       />
       <button
         type="button"
