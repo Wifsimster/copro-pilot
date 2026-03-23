@@ -30,6 +30,7 @@ test.describe('Smoke tests', () => {
   test('charges page shows tabs when copropriété selected', async ({
     page,
   }) => {
+    // Set copropriete, then reload so Zustand persist reads it
     await page.evaluate(() => {
       localStorage.setItem(
         'copropriete-selection',
@@ -40,6 +41,7 @@ test.describe('Smoke tests', () => {
       )
     })
     await page.goto('/#/charges')
+    await page.reload()
     await expect(
       page.getByRole('button', { name: 'Budgets' })
     ).toBeVisible({ timeout: 10_000 })
@@ -56,6 +58,7 @@ test.describe('Smoke tests', () => {
       )
     })
     await page.goto('/#/travaux')
+    await page.reload()
     await expect(
       page.getByRole('button', { name: 'Incidents' })
     ).toBeVisible({ timeout: 10_000 })
