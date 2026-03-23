@@ -61,6 +61,11 @@ data/
 
 # Test outputs
 test-results/
+playwright-report/
+blob-report/
+
+# Playwright
+e2e/.auth/
 
 # Keep frontend src/lib/ from being ignored
 !apps/frontend/src/lib/
