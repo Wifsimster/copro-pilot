@@ -45,6 +45,9 @@ const PolitiqueConfidentialitePage = lazy(
 )
 const VsTraditionnelsPage = lazy(() => import('@/pages/VsTraditionnelsPage'))
 const SecuritePage = lazy(() => import('@/pages/SecuritePage'))
+const MentionsLegalesPage = lazy(
+  () => import('@/pages/MentionsLegalesPage')
+)
 const ForgotPasswordPage = lazy(() => import('@/pages/ForgotPasswordPage'))
 const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'))
 const VerifyEmailPage = lazy(() => import('@/pages/VerifyEmailPage'))
@@ -114,6 +117,14 @@ export const router = createBrowserRouter([
     element: (
       <Suspense fallback={<PageLoader />}>
         <SecuritePage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/mentions-legales',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <MentionsLegalesPage />
       </Suspense>
     ),
   },
