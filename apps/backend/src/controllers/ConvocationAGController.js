@@ -96,6 +96,7 @@ export class ConvocationAGController {
         try {
             const { destId } = req.params
             const result = await convocationAGService.updateDestinataire(destId, req.body)
+            if (!result) return res.status(404).json({ error: 'Destinataire non trouvé' })
             res.json({ data: result, message: 'Destinataire mis à jour' })
         } catch (error) {
             logger.error(`[ConvocationController] Error updating destinataire: ${error.message}`)

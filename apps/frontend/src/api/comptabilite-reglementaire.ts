@@ -43,7 +43,7 @@ export const comptabiliteApi = {
     api.post<ApiResponse<EcritureComptable>>('/comptabilite/ecriture', data),
 
   genererEcritures: (exerciceId: number) =>
-    api.post<{ count: number; message: string }>(`/comptabilite/generer-ecritures/${exerciceId}`),
+    api.post<{ data: EcritureComptable[]; message: string }>(`/comptabilite/generer-ecritures/${exerciceId}`),
 
   // Grand livre & Balance
   getGrandLivre: (exerciceId: number) =>

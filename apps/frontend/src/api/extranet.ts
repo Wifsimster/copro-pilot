@@ -32,4 +32,10 @@ export const extranetApi = {
 
   getDashboard: () =>
     api.get<{ data: ExtranetDashboard }>('/extranet/dashboard'),
+
+  updateMonProfil: (data: { telephone?: string; adresse_correspondance?: string }) =>
+    api.put<{ data: ExtranetProfil; message: string }>('/extranet/mon-profil', data),
+
+  updateMonCompte: (data: { name: string }) =>
+    api.put<{ data: ExtranetCompte; message: string }>('/extranet/mon-compte', data),
 }

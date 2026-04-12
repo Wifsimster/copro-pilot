@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -63,6 +64,19 @@ export function IncidentFormDialog({
       date_signalement: defaultValues?.date_signalement || new Date().toISOString().split('T')[0],
     },
   })
+
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        titre: defaultValues?.titre || '',
+        description: defaultValues?.description || '',
+        categorie: defaultValues?.categorie || '',
+        urgence: defaultValues?.urgence || 'moyenne',
+        statut: defaultValues?.statut || 'ouvert',
+        date_signalement: defaultValues?.date_signalement || new Date().toISOString().split('T')[0],
+      })
+    }
+  }, [open, defaultValues, form])
 
   const handleFormSubmit = async (data: IncidentFormData) => {
     await onSubmit({

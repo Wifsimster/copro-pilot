@@ -68,9 +68,13 @@ export class DocumentModel {
 
     static async update(id, data) {
         const db = getDb()
+        const allowedFields = ['nom', 'categorie', 'description', 'entite_type', 'entite_id']
+        const sanitized = Object.fromEntries(
+            Object.entries(data).filter(([key]) => allowedFields.includes(key))
+        )
         const [result] = await db('documents')
             .where('id', id)
-            .update({ ...data, updated_at: db.fn.now() })
+            .update({ ...sanitized, updated_at: db.fn.now() })
             .returning('*')
         return result
     }

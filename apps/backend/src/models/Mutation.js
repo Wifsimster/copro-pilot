@@ -37,54 +37,58 @@ export class MutationModel {
 
     static async create(data) {
         const db = getDb()
-        const [result] = await db('mutations')
-            .insert({
-                lot_id: data.lot_id,
-                ancien_proprietaire_id: data.ancien_proprietaire_id || null,
-                nouveau_proprietaire_id: data.nouveau_proprietaire_id || null,
-                date_mutation: data.date_mutation,
-                type: data.type || 'vente',
-                notes: data.notes || null,
-            })
-            .returning('*')
-
-        // Update lot owner
-        if (data.nouveau_proprietaire_id) {
-            await db('lots')
-                .where('id', data.lot_id)
-                .update({
-                    coproprietaire_id: data.nouveau_proprietaire_id,
-                    updated_at: db.fn.now(),
+        return db.transaction(async trx => {
+            const [result] = await trx('mutations')
+                .insert({
+                    lot_id: data.lot_id,
+                    ancien_proprietaire_id: data.ancien_proprietaire_id || null,
+                    nouveau_proprietaire_id: data.nouveau_proprietaire_id || null,
+                    date_mutation: data.date_mutation,
+                    type: data.type || 'vente',
+                    notes: data.notes || null,
                 })
-        }
+                .returning('*')
 
-        return result
+            // Update lot owner
+            if (data.nouveau_proprietaire_id) {
+                await trx('lots')
+                    .where('id', data.lot_id)
+                    .update({
+                        coproprietaire_id: data.nouveau_proprietaire_id,
+                        updated_at: trx.fn.now(),
+                    })
+            }
+
+            return result
+        })
     }
 
     static async update(id, data) {
         const db = getDb()
-        const [result] = await db('mutations')
-            .where('id', id)
-            .update({
-                ancien_proprietaire_id: data.ancien_proprietaire_id || null,
-                nouveau_proprietaire_id: data.nouveau_proprietaire_id || null,
-                date_mutation: data.date_mutation,
-                type: data.type,
-                notes: data.notes || null,
-                updated_at: db.fn.now(),
-            })
-            .returning('*')
-
-        if (data.nouveau_proprietaire_id && result.lot_id) {
-            await db('lots')
-                .where('id', result.lot_id)
+        return db.transaction(async trx => {
+            const [result] = await trx('mutations')
+                .where('id', id)
                 .update({
-                    coproprietaire_id: data.nouveau_proprietaire_id,
-                    updated_at: db.fn.now(),
+                    ancien_proprietaire_id: data.ancien_proprietaire_id || null,
+                    nouveau_proprietaire_id: data.nouveau_proprietaire_id || null,
+                    date_mutation: data.date_mutation,
+                    type: data.type,
+                    notes: data.notes || null,
+                    updated_at: trx.fn.now(),
                 })
-        }
+                .returning('*')
 
-        return result
+            if (data.nouveau_proprietaire_id && result?.lot_id) {
+                await trx('lots')
+                    .where('id', result.lot_id)
+                    .update({
+                        coproprietaire_id: data.nouveau_proprietaire_id,
+                        updated_at: trx.fn.now(),
+                    })
+            }
+
+            return result
+        })
     }
 
     static async delete(id) {

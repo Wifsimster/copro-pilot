@@ -264,12 +264,9 @@ class ComptabiliteReglementaireService {
 
       const { copropriete_id, annee } = exercice
 
-      // 2. Delete existing ecritures for exercice
-      await ComptabiliteReglementaireModel.deleteEcrituresByExercice(exerciceId)
-
       const ecritures = []
 
-      // 3. Generate ecritures from appels_fonds_lignes (debit 450, credit 701)
+      // 2. Generate ecritures from appels_fonds_lignes (debit 450, credit 701)
       const { default: knexDatabase } = await import('../config/knex-database.js')
       const db = knexDatabase.getKnex()
 
@@ -402,11 +399,14 @@ class ComptabiliteReglementaireService {
         }
       }
 
-      // Batch insert all ecritures
+      // Delete existing + batch insert in a transaction
       let inserted = []
-      if (ecritures.length > 0) {
-        inserted = await ComptabiliteReglementaireModel.createEcritures(ecritures)
-      }
+      await db.transaction(async trx => {
+        await trx('ecritures_comptables').where('exercice_id', exerciceId).del()
+        if (ecritures.length > 0) {
+          inserted = await trx('ecritures_comptables').insert(ecritures).returning('*')
+        }
+      })
 
       logger.info(`[ComptaReglService] ${inserted.length} écritures générées pour exercice ${exerciceId}`)
       return inserted

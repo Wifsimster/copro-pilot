@@ -128,30 +128,41 @@ class ConvocationAGService {
 
             const today = new Date().toISOString().split('T')[0]
 
-            // Update convocation status
-            const updated = await ConvocationAGModel.update(convocationId, {
-                statut: 'envoyee',
-                date_envoi: today,
-            })
+            const { default: knexDatabase } = await import('../config/knex-database.js')
+            const db = knexDatabase.getKnex()
 
-            // Update AG status to convoquee and set date_convocation
-            await AssembleeGeneraleModel.update(convocation.ag_id, {
-                statut: 'convoquee',
-                date_convocation: today,
-            })
+            const result = await db.transaction(async trx => {
+                // Update convocation status
+                const [updated] = await trx('convocations_ag')
+                    .where('id', convocationId)
+                    .update({ statut: 'envoyee', date_envoi: today, updated_at: trx.fn.now() })
+                    .returning('*')
 
-            // Mark all destinataires as envoyee
-            const destinataires = await ConvocationAGModel.getDestinataires(convocationId)
-            for (const dest of destinataires) {
-                await ConvocationAGModel.updateDestinataire(dest.id, {
-                    statut: 'envoyee',
-                    date_envoi: today,
-                    mode_envoi: convocation.mode_envoi === 'les_deux' ? 'email' : convocation.mode_envoi,
-                })
-            }
+                // Update AG status to convoquee and set date_convocation
+                await trx('assemblees_generales')
+                    .where('id', convocation.ag_id)
+                    .update({ statut: 'convoquee', date_convocation: today, updated_at: trx.fn.now() })
+
+                // Mark all destinataires as envoyee
+                const destinataires = await trx('destinataires_convocation')
+                    .where('convocation_id', convocationId)
+
+                for (const dest of destinataires) {
+                    await trx('destinataires_convocation')
+                        .where('id', dest.id)
+                        .update({
+                            statut: 'envoyee',
+                            date_envoi: today,
+                            mode_envoi: convocation.mode_envoi === 'les_deux' ? 'email' : convocation.mode_envoi,
+                            updated_at: trx.fn.now(),
+                        })
+                }
+
+                return { ...updated, delai_verification: delai, destinataires_mis_a_jour: destinataires.length }
+            })
 
             logger.info(`[ConvocationService] Convocation ${convocationId} envoyée (délai: ${delai.valide ? 'respecté' : 'NON respecté'})`)
-            return { ...updated, delai_verification: delai, destinataires_mis_a_jour: destinataires.length }
+            return result
         } catch (error) {
             logger.error(`[ConvocationService] Error sending convocation ${convocationId}: ${error.message}`)
             throw error

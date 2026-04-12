@@ -96,6 +96,7 @@ export class AssembleeGeneraleController {
         try {
             const { resolutionId } = req.params
             const result = await assembleeGeneraleService.updateResolution(resolutionId, req.body)
+            if (!result) return res.status(404).json({ error: 'Résolution non trouvée' })
             res.json({ data: result, message: 'Résolution mise à jour' })
         } catch (error) {
             logger.error(`[AGController] Error updating résolution: ${error.message}`)

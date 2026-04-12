@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -71,6 +72,23 @@ export function ContratSyndicFormDialog({
       notes: defaultValues?.notes || '',
     },
   })
+
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        syndic_nom: defaultValues?.syndic_nom || '',
+        date_debut: defaultValues?.date_debut || new Date().toISOString().slice(0, 10),
+        date_fin: defaultValues?.date_fin || '',
+        remuneration_forfait: defaultValues?.remuneration_forfait || 0,
+        prestations_incluses: defaultValues?.prestations_incluses || '',
+        prestations_particulieres: defaultValues?.prestations_particulieres || '',
+        conditions_execution: defaultValues?.conditions_execution || '',
+        statut: defaultValues?.statut || 'en_cours',
+        ag_designation_id: defaultValues?.ag_designation_id || 0,
+        notes: defaultValues?.notes || '',
+      })
+    }
+  }, [open, defaultValues, form])
 
   const handleFormSubmit = async (data: ContratSyndicFormData) => {
     await onSubmit({

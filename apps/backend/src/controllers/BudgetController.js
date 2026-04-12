@@ -96,6 +96,7 @@ export class BudgetController {
         try {
             const { posteId } = req.params
             const result = await budgetService.updatePoste(posteId, req.body)
+            if (!result) return res.status(404).json({ error: 'Poste de dépense non trouvé' })
             res.json({ data: result, message: 'Poste de dépense mis à jour' })
         } catch (error) {
             logger.error(`[BudgetController] Error updating poste: ${error.message}`)
@@ -106,7 +107,8 @@ export class BudgetController {
     static async deletePoste(req, res) {
         try {
             const { posteId } = req.params
-            await budgetService.deletePoste(posteId)
+            const deleted = await budgetService.deletePoste(posteId)
+            if (!deleted) return res.status(404).json({ error: 'Poste de dépense non trouvé' })
             res.json({ message: 'Poste de dépense supprimé' })
         } catch (error) {
             logger.error(`[BudgetController] Error deleting poste: ${error.message}`)

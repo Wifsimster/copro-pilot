@@ -3,7 +3,8 @@
  */
 export const validateJSON = (req, res, next) => {
     if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
-        if (req.headers['content-type'] && !req.headers['content-type'].includes('application/json')) {
+        const contentType = req.headers['content-type'] || ''
+        if (contentType && !contentType.includes('application/json') && !contentType.includes('multipart/form-data')) {
             return res.status(400).json({
                 error: 'Content-Type must be application/json'
             })

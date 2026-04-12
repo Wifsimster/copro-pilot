@@ -31,7 +31,7 @@ export function canAccessRoute(role?: string, route?: string): boolean {
   if (!role || !route) return false
   if (isAdmin(role)) return true
   if (isCoproprietaire(role)) {
-    return route.startsWith('/extranet') || ['/notifications', '/profil'].includes(route)
+    return route.startsWith('/extranet') || ['/notifications', '/profil', '/donnees-personnelles'].includes(route)
   }
   if (isSyndic(role) && route === '/gestion-utilisateurs') return true
   return !COPROPRIETAIRE_ROUTES.includes(route)

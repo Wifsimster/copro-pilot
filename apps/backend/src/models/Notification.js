@@ -40,10 +40,11 @@ export class NotificationModel {
         return result
     }
 
-    static async markAsRead(id) {
+    static async markAsRead(id, userId) {
         const db = getDb()
         const [result] = await db('notifications')
             .where('id', id)
+            .andWhere('user_id', userId)
             .update({ lu: true, updated_at: db.fn.now() })
             .returning('*')
         return result
@@ -56,8 +57,8 @@ export class NotificationModel {
             .update({ lu: true, updated_at: db.fn.now() })
     }
 
-    static async delete(id) {
+    static async delete(id, userId) {
         const db = getDb()
-        return db('notifications').where('id', id).del()
+        return db('notifications').where('id', id).andWhere('user_id', userId).del()
     }
 }

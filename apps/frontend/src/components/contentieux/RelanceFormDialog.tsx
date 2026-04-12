@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -65,6 +66,20 @@ export function RelanceFormDialog({
       notes: defaultValues?.notes || '',
     },
   })
+
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        coproprietaire_id: defaultValues?.coproprietaire_id ?? 0,
+        type: defaultValues?.type || 'amiable',
+        date_relance: defaultValues?.date_relance || new Date().toISOString().split('T')[0],
+        montant_du: defaultValues?.montant_du ?? 0,
+        mode_envoi: defaultValues?.mode_envoi || '',
+        statut: defaultValues?.statut || 'brouillon',
+        notes: defaultValues?.notes || '',
+      })
+    }
+  }, [open, defaultValues, form])
 
   const handleFormSubmit = async (data: RelanceFormData) => {
     await onSubmit({

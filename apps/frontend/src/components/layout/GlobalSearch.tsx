@@ -41,7 +41,7 @@ import {
 } from 'lucide-react'
 
 const navigationItems = [
-  { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
+  { name: 'Tableau de bord', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Copropriétés', href: '/coproprietes', icon: Building2 },
   { name: 'Copropriétaires', href: '/coproprietaires', icon: Users },
   { name: 'Charges', href: '/charges', icon: Receipt },
