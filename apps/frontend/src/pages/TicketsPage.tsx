@@ -32,12 +32,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import type { Ticket, TicketMessage } from '@/types'
 import {
@@ -367,7 +361,7 @@ export default function TicketsPage() {
           onSubmit={handleUpdate}
           isLoading={updateTicket.isPending}
         >
-          <FormSection title="Informations">
+          <FormSection icon={Info} label="Informations">
             <FormField
               control={editForm.control}
               name="sujet"
@@ -601,7 +595,7 @@ export default function TicketsPage() {
         onSubmit={handleCreate}
         isLoading={createTicket.isPending}
       >
-        <FormSection title="Informations">
+        <FormSection icon={Info} label="Informations">
           <FormField
             control={createForm.control}
             name="sujet"
@@ -676,7 +670,7 @@ export default function TicketsPage() {
         onSubmit={handleUpdate}
         isLoading={updateTicket.isPending}
       >
-        <FormSection title="Informations">
+        <FormSection icon={Info} label="Informations">
           <FormField
             control={editForm.control}
             name="sujet"

@@ -295,7 +295,7 @@ export default function CoproprieteDetailPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => handleDeleteLot(lot.id, lot.numero)}
+                            onClick={() => handleDeleteLot(lot.id)}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -366,7 +366,7 @@ export default function CoproprieteDetailPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => { if (window.confirm(`Supprimer "${pc.nom}" ?`)) deletePC.mutate(pc.id) }}
+                            onClick={() => setDeleteTarget({ type: 'pc', id: pc.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -427,7 +427,7 @@ export default function CoproprieteDetailPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => { if (window.confirm(`Supprimer "${cle.nom}" ?`)) deleteCle.mutate(cle.id) }}
+                            onClick={() => setDeleteTarget({ type: 'cle', id: cle.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -513,7 +513,7 @@ export default function CoproprieteDetailPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => { if (window.confirm('Supprimer ce locataire ?')) deleteLocataire.mutate(loc.id) }}
+                            onClick={() => setDeleteTarget({ type: 'locataire', id: loc.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -607,7 +607,7 @@ export default function CoproprieteDetailPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => { if (window.confirm('Supprimer cette mutation ?')) deleteMutation.mutate(m.id) }}
+                            onClick={() => setDeleteTarget({ type: 'mutation', id: m.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -684,7 +684,7 @@ export default function CoproprieteDetailPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => { if (window.confirm('Supprimer ce diagnostic ?')) deleteDiagnostic.mutate(diag.id) }}
+                            onClick={() => setDeleteTarget({ type: 'diagnostic', id: diag.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -850,6 +850,23 @@ export default function CoproprieteDetailPage() {
           onClose={() => setShowBulkCreate(false)}
         />
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'lot') deleteLot.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'pc') deletePC.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'cle') deleteCle.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'locataire') deleteLocataire.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'mutation') deleteMutation.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'diagnostic') deleteDiagnostic.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }

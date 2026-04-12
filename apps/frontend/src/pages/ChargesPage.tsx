@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useCoproprietaires } from '@/hooks/useCoproprietaires'
 import { useBudgetsByCopropriete, useCreateBudget, useUpdateBudget, useDeleteBudget } from '@/hooks/useBudgets'
@@ -59,6 +60,7 @@ export default function ChargesPage() {
   const [editingFonds, setEditingFonds] = useState<FondsTravaux | null>(null)
   const [showPaiementDialog, setShowPaiementDialog] = useState(false)
   const [editingPaiement, setEditingPaiement] = useState<Paiement | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'budget' | 'appel' | 'paiement' | 'fonds', id: number } | null>(null)
 
   const { data: coproprietaires } = useCoproprietaires()
   const { data: budgets, isLoading: loadingBudgets, isError: isErrorBudgets, error: errorBudgets } = useBudgetsByCopropriete(selectedCoproId)
@@ -168,9 +170,7 @@ export default function ChargesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce budget ?')) deleteBudget.mutate(budget.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'budget', id: budget.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -269,9 +269,7 @@ export default function ChargesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cet appel de fonds ?')) deleteAppel.mutate(appel.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'appel', id: appel.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -370,9 +368,7 @@ export default function ChargesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce paiement ?')) deletePaiement.mutate(paiement.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'paiement', id: paiement.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >

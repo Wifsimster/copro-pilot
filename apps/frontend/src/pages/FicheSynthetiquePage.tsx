@@ -9,7 +9,6 @@ import {
   ClipboardCheck,
   AlertTriangle,
   Thermometer,
-  FileText,
 } from 'lucide-react'
 
 const TYPE_LOT_LABELS: Record<string, string> = {
