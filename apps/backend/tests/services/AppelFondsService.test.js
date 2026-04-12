@@ -3,7 +3,6 @@ import {
   buildBudget,
   buildLot,
   buildAppelFonds,
-  buildCoproprietaire,
   resetSequence,
 } from '../helpers/factories.js'
 
@@ -34,16 +33,24 @@ vi.mock('../../src/models/AppelFonds.js', () => ({
 
 // ─── Knex mock setup for generateFromBudget ──────────────────────────
 //
-// generateFromBudget calls knexDatabase.getKnex() directly to run
-// queries against budgets_previsionnels, lots, appels_fonds, and
-// appels_fonds_lignes — all inside a transaction.
+// generateFromBudget calls knexDatabase.getKnex() directly.
+// Flow:
+//   1. db('budgets_previsionnels').where('id', budgetId).first()
+//   2. db('lots').where(...).whereNotNull(...)  (returns array via thenable)
+//   3. db.transaction(async trx => {
+//        for each trimester:
+//          trx('appels_fonds').where({...}).first()      // check existing
+//          trx('appels_fonds').insert({...}).returning()  // create appel
+//          for each lot:
+//            trx('appels_fonds_lignes').insert({...})     // create ligne
+//      })
 
 let dbCallIndex = 0
 let dbCallResults = []
 
 function makeChain(resolvedValue) {
   const isArray = Array.isArray(resolvedValue)
-  const chain = {
+  return {
     select: vi.fn().mockReturnThis(),
     where: vi.fn().mockReturnThis(),
     andWhere: vi.fn().mockReturnThis(),
@@ -70,11 +77,11 @@ function makeChain(resolvedValue) {
       )
     },
   }
-  return chain
 }
 
 const mockKnex = vi.fn(() => {
-  const result = dbCallResults[dbCallIndex] ?? dbCallResults[dbCallResults.length - 1]
+  const result = dbCallResults[dbCallIndex]
+    ?? dbCallResults[dbCallResults.length - 1]
   dbCallIndex++
   return makeChain(result)
 })
@@ -82,32 +89,19 @@ const mockKnex = vi.fn(() => {
 mockKnex.fn = { now: vi.fn().mockReturnValue('NOW()') }
 mockKnex.raw = vi.fn().mockResolvedValue({ rows: [] })
 
-// trx mock — we track insert calls to verify appels_fonds and lignes
-let trxInsertCalls = []
+// Transaction mock — each trx() call returns a fresh chain
+// with the next value from trxCallResults.
 let trxCallIndex = 0
 let trxCallResults = []
 
 mockKnex.transaction = vi.fn(async callback => {
-  trxInsertCalls = []
   trxCallIndex = 0
 
   const trx = vi.fn(() => {
-    const result = trxCallResults[trxCallIndex] ?? trxCallResults[trxCallResults.length - 1]
+    const result = trxCallResults[trxCallIndex]
+      ?? trxCallResults[trxCallResults.length - 1]
     trxCallIndex++
-    const chain = makeChain(result)
-
-    // Track insert calls
-    const originalInsert = chain.insert
-    chain.insert = vi.fn(data => {
-      trxInsertCalls.push(data)
-      return {
-        returning: vi.fn().mockResolvedValue(
-          Array.isArray(result) ? result : [result]
-        ),
-      }
-    })
-
-    return chain
+    return makeChain(result)
   })
   trx.fn = mockKnex.fn
   trx.raw = mockKnex.raw
@@ -130,7 +124,6 @@ beforeEach(() => {
   dbCallResults = []
   trxCallIndex = 0
   trxCallResults = []
-  trxInsertCalls = []
   resetSequence()
 })
 
@@ -157,17 +150,15 @@ describe('AppelFondsService.generateFromBudget', () => {
       tantiemes: 400,
     })
 
-    // db('budgets_previsionnels').where('id', budgetId).first() => budget
-    // db('lots').where(...).whereNotNull(...) => [lot1, lot2]
+    // db('budgets_previsionnels').where(...).first() => budget
+    // db('lots').where(...).whereNotNull(...) => [lot1, lot2]  (thenable)
     dbCallResults = [budget, [lot1, lot2]]
 
-    // Inside transaction: for each trimester
-    //   trx('appels_fonds').where({...}).first() => undefined (no existing)
-    //   trx('appels_fonds').insert(...).returning('*') => [appel]
-    //   trx('appels_fonds_lignes').insert(...) for each lot
-    //
-    // 4 trimesters x (1 check + 1 insert + 2 ligne inserts) = 16 trx calls
-    const appels = []
+    // Inside the transaction, for each of 4 trimesters:
+    //   call 1: trx('appels_fonds').where({...}).first() => undefined
+    //   call 2: trx('appels_fonds').insert({...}).returning('*') => [appel]
+    //   call 3: trx('appels_fonds_lignes').insert({...})  (lot1 ligne)
+    //   call 4: trx('appels_fonds_lignes').insert({...})  (lot2 ligne)
     const trxResults = []
     for (let t = 1; t <= 4; t++) {
       const appel = buildAppelFonds({
@@ -178,16 +169,10 @@ describe('AppelFondsService.generateFromBudget', () => {
         annee: 2025,
         montant_total: 10000,
       })
-      appels.push(appel)
-
-      // first() for existing check => undefined
-      trxResults.push(undefined)
-      // insert appel => [appel]
-      trxResults.push(appel)
-      // insert ligne for lot1
-      trxResults.push({ id: t * 10 })
-      // insert ligne for lot2
-      trxResults.push({ id: t * 10 + 1 })
+      trxResults.push(undefined)  // existing check => not found
+      trxResults.push([appel])    // insert => returning [appel]
+      trxResults.push([{}])       // ligne insert lot1
+      trxResults.push([{}])       // ligne insert lot2
     }
     trxCallResults = trxResults
 
@@ -201,13 +186,13 @@ describe('AppelFondsService.generateFromBudget', () => {
     })
   })
 
-  it('tantieme-based rounding is correct (sum of lignes ≈ quarterAmount)', async () => {
-    // With montant_total = 30000, quarterAmount = 7500
-    // 3 lots with tantiemes 333, 333, 334 => total 1000
-    // lot1: 7500 * 333 / 1000 = 2497.50
-    // lot2: 7500 * 333 / 1000 = 2497.50
-    // lot3: 7500 * 334 / 1000 = 2505.00
-    // sum = 7500.00 exactly
+  it('tantieme-based rounding is correct (sum of lignes approximately equals quarterAmount)', async () => {
+    // montant_total = 30000 => quarterAmount = 7500
+    // 3 lots: tantiemes 333, 333, 334 => total 1000
+    //   lot1: round(7500 * 333 / 1000 * 100) / 100 = 2497.50
+    //   lot2: round(7500 * 333 / 1000 * 100) / 100 = 2497.50
+    //   lot3: round(7500 * 334 / 1000 * 100) / 100 = 2505.00
+    //   sum = 7500.00
     const budget = buildBudget({
       id: 1,
       copropriete_id: 10,
@@ -225,17 +210,17 @@ describe('AppelFondsService.generateFromBudget', () => {
     const trxResults = []
     for (let t = 1; t <= 4; t++) {
       const appel = buildAppelFonds({ id: t, copropriete_id: 10, trimestre: t })
-      trxResults.push(undefined) // no existing
-      trxResults.push(appel)    // insert appel
-      trxResults.push({})       // ligne 1
-      trxResults.push({})       // ligne 2
-      trxResults.push({})       // ligne 3
+      trxResults.push(undefined)  // no existing
+      trxResults.push([appel])    // insert appel
+      trxResults.push([{}])       // ligne 1
+      trxResults.push([{}])       // ligne 2
+      trxResults.push([{}])       // ligne 3
     }
     trxCallResults = trxResults
 
     await appelFondsService.generateFromBudget(1)
 
-    // Verify rounding logic: collect montant from insert calls
+    // Verify rounding logic directly
     const quarterAmount = 30000 / 4 // 7500
     const totalTantiemes = 333 + 333 + 334
 
@@ -245,7 +230,7 @@ describe('AppelFondsService.generateFromBudget', () => {
     })
 
     const sum = montants.reduce((a, b) => a + b, 0)
-    // Sum should be very close to quarterAmount (within rounding tolerance)
+    // Sum should be very close to quarterAmount (within rounding)
     expect(Math.abs(sum - quarterAmount)).toBeLessThan(0.02)
 
     // Verify individual amounts
@@ -270,21 +255,24 @@ describe('AppelFondsService.generateFromBudget', () => {
 
     dbCallResults = [budget, [lot]]
 
-    // Trimesters 1 and 3 already exist, 2 and 4 do not
+    // T1: existing check => found (has data)
+    // T2: existing check => not found, insert appel, insert ligne
+    // T3: existing check => found (has data)
+    // T4: existing check => not found, insert appel, insert ligne
     const existingT1 = buildAppelFonds({ id: 99, trimestre: 1 })
     const existingT3 = buildAppelFonds({ id: 98, trimestre: 3 })
     const newAppelT2 = buildAppelFonds({ id: 50, trimestre: 2, copropriete_id: 10 })
     const newAppelT4 = buildAppelFonds({ id: 51, trimestre: 4, copropriete_id: 10 })
 
     trxCallResults = [
-      existingT1,    // T1 check => found
-      undefined,     // T2 check => not found
-      newAppelT2,    // T2 insert
-      {},            // T2 ligne
-      existingT3,    // T3 check => found
-      undefined,     // T4 check => not found
-      newAppelT4,    // T4 insert
-      {},            // T4 ligne
+      existingT1,      // T1 check => found (first() returns the object)
+      undefined,        // T2 check => not found
+      [newAppelT2],     // T2 insert returning
+      [{}],             // T2 ligne
+      existingT3,       // T3 check => found
+      undefined,        // T4 check => not found
+      [newAppelT4],     // T4 insert returning
+      [{}],             // T4 ligne
     ]
 
     const result = await appelFondsService.generateFromBudget(1)
@@ -310,7 +298,7 @@ describe('AppelFondsService.generateFromBudget', () => {
       copropriete_id: 10,
       montant_total: 40000,
     })
-    // Lots with 0 tantiemes (or no tantiemes)
+    // Lots with tantiemes = 0
     const lot = buildLot({
       id: 1,
       copropriete_id: 10,
