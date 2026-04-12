@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useRelancesByCopropriete, useCreateRelance, useUpdateRelance, useDeleteRelance } from '@/hooks/useRelances'
 import { useProceduresByCopropriete, useCreateProcedure, useUpdateProcedure, useDeleteProcedure } from '@/hooks/useProcedures'
@@ -69,6 +70,7 @@ export default function ContentieuxPage() {
   const [showProcedureDialog, setShowProcedureDialog] = useState(false)
   const [editingRelance, setEditingRelance] = useState<Relance | null>(null)
   const [editingProcedure, setEditingProcedure] = useState<Procedure | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'relance' | 'procedure', id: number } | null>(null)
 
   const { data: relances, isLoading: loadingRelances, isError: isErrorRelances, error: errorRelances } = useRelancesByCopropriete(selectedCoproId)
   const { data: procedures, isLoading: loadingProcedures, isError: isErrorProcedures, error: errorProcedures } = useProceduresByCopropriete(selectedCoproId)
@@ -183,9 +185,7 @@ export default function ContentieuxPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cette relance ?')) deleteRelance.mutate(relance.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'relance', id: relance.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
