@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import {
   useReglementsByCopropriete,
@@ -14,6 +15,7 @@ import {
 import { ReglementFormDialog } from '@/components/reglements/ReglementFormDialog'
 import { ArticleReglementFormDialog } from '@/components/reglements/ArticleReglementFormDialog'
 import type { ReglementCopropriete, ArticleReglement } from '@/types'
+import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected'
 import { BookOpen, Plus, Pencil, Trash2, FileText, ListOrdered } from 'lucide-react'
 
 const DESTINATION_LABELS: Record<string, string> = {
@@ -67,6 +69,7 @@ export default function ReglementsPage() {
   const [editingReglement, setEditingReglement] = useState<ReglementCopropriete | null>(null)
   const [editingArticle, setEditingArticle] = useState<ArticleReglement | null>(null)
   const [selectedReglementId, setSelectedReglementId] = useState<number | undefined>(undefined)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'reglement' | 'article', id: number } | null>(null)
 
   const { data: reglements, isLoading: loadingReglements } = useReglementsByCopropriete(selectedCoproId)
   const { data: articles, isLoading: loadingArticles } = useArticlesByReglement(selectedReglementId)
@@ -94,11 +97,7 @@ export default function ReglementsPage() {
       </div>
 
       {!selectedCoproId ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <BookOpen className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
-        </div>
+        <NoCoproprieteSelected />
       ) : (
         <>
           {/* Tabs */}
@@ -190,9 +189,7 @@ export default function ReglementsPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce reglement ?')) deleteReglement.mutate(reglement.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'reglement', id: reglement.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -305,9 +302,7 @@ export default function ReglementsPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cet article ?')) deleteArticle.mutate(article.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'article', id: article.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -345,6 +340,19 @@ export default function ReglementsPage() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'reglement') deleteReglement.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'article') deleteArticle.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }

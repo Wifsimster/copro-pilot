@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { useAuthStore } from '@/store/authStore'
 import { useCopropriete, useUpdateCopropriete } from '@/hooks/useCoproprietes'
 import { useLotsByCopropriete, useCreateLot, useUpdateLot, useDeleteLot } from '@/hooks/useLots'
@@ -21,6 +23,7 @@ import { LocataireFormDialog } from '@/components/coproprietes/LocataireFormDial
 import { MutationFormDialog } from '@/components/coproprietes/MutationFormDialog'
 import { DiagnosticFormDialog } from '@/components/coproprietes/DiagnosticFormDialog'
 import { BulkCreateAccountsDialog } from '@/components/coproprietes/BulkCreateAccountsDialog'
+import { ComplianceCard } from '@/components/coproprietes/ComplianceCard'
 
 const TYPE_LABELS: Record<string, string> = {
   appartement: 'Appartement',
@@ -115,6 +118,7 @@ export default function CoproprieteDetailPage() {
   const [activeTab, setActiveTab] = useState<Tab>('lots')
   const [selectedLotId, setSelectedLotId] = useState<number | undefined>()
   const [showBulkCreate, setShowBulkCreate] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'lot' | 'pc' | 'cle' | 'locataire' | 'mutation' | 'diagnostic', id: number } | null>(null)
   const userRole = useAuthStore(state => state.user?.role)
 
   const { data: locataires } = useLocatairesByLot(selectedLotId)
@@ -139,10 +143,8 @@ export default function CoproprieteDetailPage() {
     )
   }
 
-  const handleDeleteLot = (lotId: number, numero: string) => {
-    if (window.confirm(`Supprimer le lot ${numero} ?`)) {
-      deleteLot.mutate(lotId)
-    }
+  const handleDeleteLot = (lotId: number) => {
+    setDeleteTarget({ type: 'lot', id: lotId })
   }
 
   const tabs = [
@@ -157,6 +159,11 @@ export default function CoproprieteDetailPage() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumbs items={[
+        { label: 'Copropriétés', href: '/coproprietes' },
+        { label: copropriete.nom },
+      ]} />
+
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link
@@ -206,6 +213,9 @@ export default function CoproprieteDetailPage() {
           <p className="text-2xl font-bold text-stone-900 dark:text-white">{copropriete.total_tantiemes}</p>
         </div>
       </div>
+
+      {/* Compliance Card */}
+      {coproprieteId && <ComplianceCard coproprieteId={coproprieteId} />}
 
       {/* Tabs */}
       <div className="flex flex-wrap gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
@@ -285,7 +295,7 @@ export default function CoproprieteDetailPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => handleDeleteLot(lot.id, lot.numero)}
+                            onClick={() => handleDeleteLot(lot.id)}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -356,7 +366,7 @@ export default function CoproprieteDetailPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => { if (window.confirm(`Supprimer "${pc.nom}" ?`)) deletePC.mutate(pc.id) }}
+                            onClick={() => setDeleteTarget({ type: 'pc', id: pc.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -417,7 +427,7 @@ export default function CoproprieteDetailPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => { if (window.confirm(`Supprimer "${cle.nom}" ?`)) deleteCle.mutate(cle.id) }}
+                            onClick={() => setDeleteTarget({ type: 'cle', id: cle.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -503,7 +513,7 @@ export default function CoproprieteDetailPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => { if (window.confirm('Supprimer ce locataire ?')) deleteLocataire.mutate(loc.id) }}
+                            onClick={() => setDeleteTarget({ type: 'locataire', id: loc.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -597,7 +607,7 @@ export default function CoproprieteDetailPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => { if (window.confirm('Supprimer cette mutation ?')) deleteMutation.mutate(m.id) }}
+                            onClick={() => setDeleteTarget({ type: 'mutation', id: m.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -674,7 +684,7 @@ export default function CoproprieteDetailPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => { if (window.confirm('Supprimer ce diagnostic ?')) deleteDiagnostic.mutate(diag.id) }}
+                            onClick={() => setDeleteTarget({ type: 'diagnostic', id: diag.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -840,6 +850,23 @@ export default function CoproprieteDetailPage() {
           onClose={() => setShowBulkCreate(false)}
         />
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'lot') deleteLot.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'pc') deletePC.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'cle') deleteCle.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'locataire') deleteLocataire.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'mutation') deleteMutation.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'diagnostic') deleteDiagnostic.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }

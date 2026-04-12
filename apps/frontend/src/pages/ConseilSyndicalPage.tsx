@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useCoproprietaires } from '@/hooks/useCoproprietaires'
 import { useAssembleesByCopropriete } from '@/hooks/useAssemblees'
 import { useConseilSyndicalByCopropriete, useCreateMembreConseil, useUpdateMembreConseil, useDeleteMembreConseil } from '@/hooks/useConseilSyndical'
 import { ConseilSyndicalFormDialog } from '@/components/conseil-syndical/ConseilSyndicalFormDialog'
 import type { MembreConseilSyndical } from '@/types'
+import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected'
 import { UsersRound, Plus, Trash2, Pencil, Crown } from 'lucide-react'
 
 const ROLE_LABELS: Record<string, string> = {
@@ -24,6 +26,7 @@ export default function ConseilSyndicalPage() {
 
   const [showDialog, setShowDialog] = useState(false)
   const [editingMembre, setEditingMembre] = useState<MembreConseilSyndical | null>(null)
+  const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const { data: coproprietaires } = useCoproprietaires()
   const { data: assemblees } = useAssembleesByCopropriete(selectedCoproId)
@@ -48,11 +51,7 @@ export default function ConseilSyndicalPage() {
       </div>
 
       {!selectedCoproId ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <UsersRound className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
-        </div>
+        <NoCoproprieteSelected />
       ) : (
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
@@ -136,9 +135,7 @@ export default function ConseilSyndicalPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => {
-                              if (window.confirm('Supprimer ce membre du conseil syndical ?')) deleteMembre.mutate(membre.id)
-                            }}
+                            onClick={() => setDeleteId(membre.id)}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -174,6 +171,15 @@ export default function ConseilSyndicalPage() {
           />
         </div>
       )}
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(o) => !o && setDeleteId(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => { deleteMembre.mutate(deleteId!); setDeleteId(null) }}
+      />
     </div>
   )
 }

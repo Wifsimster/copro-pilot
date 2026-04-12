@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import {
   useContratsSyndicByCopropriete,
@@ -15,6 +16,7 @@ import {
 import { ContratSyndicFormDialog } from '@/components/contrats-syndic/ContratSyndicFormDialog'
 import { PropositionSyndicFormDialog } from '@/components/contrats-syndic/PropositionSyndicFormDialog'
 import type { ContratSyndic, PropositionSyndic } from '@/types'
+import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected'
 import { FileSignature, Plus, Trash2, Pencil, Users, AlertTriangle, CheckCircle2 } from 'lucide-react'
 
 const STATUT_LABELS: Record<string, string> = {
@@ -41,6 +43,7 @@ export default function ContratsSyndicPage() {
   const [editingContrat, setEditingContrat] = useState<ContratSyndic | null>(null)
   const [showPropositionDialog, setShowPropositionDialog] = useState(false)
   const [editingProposition, setEditingProposition] = useState<PropositionSyndic | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'contrat' | 'proposition', id: number } | null>(null)
 
   const { data: contrats, isLoading: loadingContrats } = useContratsSyndicByCopropriete(selectedCoproId)
   const { data: propositions, isLoading: loadingPropositions } = usePropositionsSyndicByCopropriete(selectedCoproId)
@@ -68,11 +71,7 @@ export default function ContratsSyndicPage() {
       </div>
 
       {!selectedCoproId ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <FileSignature className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
-        </div>
+        <NoCoproprieteSelected />
       ) : (
         <>
           {/* Tabs */}
@@ -169,9 +168,7 @@ export default function ContratsSyndicPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce contrat de syndic ?')) deleteContrat.mutate(contrat.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'contrat', id: contrat.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -277,9 +274,7 @@ export default function ContratsSyndicPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cette proposition ?')) deleteProposition.mutate(proposition.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'proposition', id: proposition.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -315,6 +310,19 @@ export default function ContratsSyndicPage() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'contrat') deleteContrat.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'proposition') deleteProposition.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }

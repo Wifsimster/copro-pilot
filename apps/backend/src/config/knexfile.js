@@ -1,5 +1,6 @@
 import path from 'path'
 import { fileURLToPath } from 'url'
+import logger from '../logger.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -22,6 +23,11 @@ const getPostgresConnection = () => {
     }
 }
 
+const afterCreate = (conn, done) => {
+    logger.debug('[Pool] New database connection created')
+    done(null, conn)
+}
+
 const config = {
     development: {
         client: 'pg',
@@ -39,7 +45,8 @@ const config = {
             max: 20,
             acquireTimeoutMillis: 60000,
             idleTimeoutMillis: 30000,
-            reapIntervalMillis: 1000
+            reapIntervalMillis: 1000,
+            afterCreate,
         }
     },
 
@@ -55,7 +62,8 @@ const config = {
         },
         pool: {
             min: 1,
-            max: 5
+            max: 5,
+            afterCreate,
         }
     },
 
@@ -74,7 +82,8 @@ const config = {
             max: 20,
             acquireTimeoutMillis: 60000,
             idleTimeoutMillis: 30000,
-            reapIntervalMillis: 1000
+            reapIntervalMillis: 1000,
+            afterCreate,
         }
     }
 }

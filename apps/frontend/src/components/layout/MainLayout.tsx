@@ -42,6 +42,7 @@ import {
   CircleHelp,
   CreditCard,
   PiggyBank,
+  MessageSquare,
   type LucideIcon,
 } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -88,6 +89,7 @@ const navigationSections: NavSection[] = [
       { name: 'Charges', href: '/charges', icon: Receipt },
       { name: 'Assemblées', href: '/assemblees', icon: Calendar },
       { name: 'Conseil syndical', href: '/conseil-syndical', icon: UsersRound },
+      { name: 'Messagerie', href: '/tickets', icon: MessageSquare },
       { name: 'Fiche synthétique', href: '/fiche-synthetique', icon: FileText },
     ],
   },

@@ -1,5 +1,6 @@
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useFicheSynthetique } from '@/hooks/useCoproprietes'
+import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected'
 import {
   Building2,
   Home,
@@ -8,7 +9,6 @@ import {
   ClipboardCheck,
   AlertTriangle,
   Thermometer,
-  FileText,
 } from 'lucide-react'
 
 const TYPE_LOT_LABELS: Record<string, string> = {
@@ -101,12 +101,7 @@ export default function FicheSynthetiquePage() {
       </div>
 
       {!selectedId ? (
-        <div className="flex flex-col items-center py-16">
-          <FileText className="h-12 w-12 text-stone-300 dark:text-stone-600" />
-          <p className="mt-4 text-stone-500 dark:text-stone-400">
-            Selectionnez une copropriete dans le menu lateral
-          </p>
-        </div>
+        <NoCoproprieteSelected />
       ) : loadingFiche ? (
         <div className="flex items-center justify-center h-64">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />

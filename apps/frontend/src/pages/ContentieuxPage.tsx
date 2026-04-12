@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useRelancesByCopropriete, useCreateRelance, useUpdateRelance, useDeleteRelance } from '@/hooks/useRelances'
 import { useProceduresByCopropriete, useCreateProcedure, useUpdateProcedure, useDeleteProcedure } from '@/hooks/useProcedures'
@@ -8,6 +9,7 @@ import { ProcedureFormDialog } from '@/components/contentieux/ProcedureFormDialo
 import type { Relance, Procedure } from '@/types'
 import { Scale, Plus, Trash2, Pencil, Mail } from 'lucide-react'
 import { ErrorAlert } from '@/components/layout/ErrorAlert'
+import { TabBar } from '@/components/layout/TabBar'
 
 const TYPE_RELANCE_LABELS: Record<string, string> = {
   amiable: 'Amiable',
@@ -68,6 +70,7 @@ export default function ContentieuxPage() {
   const [showProcedureDialog, setShowProcedureDialog] = useState(false)
   const [editingRelance, setEditingRelance] = useState<Relance | null>(null)
   const [editingProcedure, setEditingProcedure] = useState<Procedure | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'relance' | 'procedure', id: number } | null>(null)
 
   const { data: relances, isLoading: loadingRelances, isError: isErrorRelances, error: errorRelances } = useRelancesByCopropriete(selectedCoproId)
   const { data: procedures, isLoading: loadingProcedures, isError: isErrorProcedures, error: errorProcedures } = useProceduresByCopropriete(selectedCoproId)
@@ -101,25 +104,14 @@ export default function ContentieuxPage() {
       ) : (
         <>
           {/* Tabs */}
-          <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
-            {([
-              { key: 'relances' as Tab, label: 'Relances', icon: Mail },
-              { key: 'procedures' as Tab, label: 'Procedures', icon: Scale },
-            ]).map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                  activeTab === tab.key
-                    ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
-                    : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
-                }`}
-              >
-                <tab.icon className="h-4 w-4" />
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          <TabBar
+            tabs={[
+              { key: 'relances', label: 'Relances', icon: Mail },
+              { key: 'procedures', label: 'Procedures', icon: Scale },
+            ]}
+            activeTab={activeTab}
+            onTabChange={(key) => setActiveTab(key as Tab)}
+          />
 
           {/* Relances tab */}
           {activeTab === 'relances' && (
@@ -193,9 +185,7 @@ export default function ContentieuxPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cette relance ?')) deleteRelance.mutate(relance.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'relance', id: relance.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -296,9 +286,7 @@ export default function ContentieuxPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cette procedure ?')) deleteProcedure.mutate(procedure.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'procedure', id: procedure.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -334,6 +322,19 @@ export default function ContentieuxPage() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'relance') deleteRelance.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'procedure') deleteProcedure.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }

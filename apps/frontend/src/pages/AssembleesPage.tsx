@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useAssembleesByCopropriete, useCreateAssemblee, useUpdateAssemblee, useDeleteAssemblee } from '@/hooks/useAssemblees'
 import { AssembleeFormDialog } from '@/components/assemblees/AssembleeFormDialog'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import type { AssembleeGenerale } from '@/types'
 import { Calendar, Plus, Trash2, Pencil, Eye, MapPin, Clock } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -36,6 +37,7 @@ export default function AssembleesPage() {
   const updateAG = useUpdateAssemblee()
   const deleteAG = useDeleteAssemblee()
   const [editingAG, setEditingAG] = useState<AssembleeGenerale | null>(null)
+  const [deleteId, setDeleteId] = useState<number | null>(null)
 
   return (
     <div className="space-y-6">
@@ -113,9 +115,7 @@ export default function AssembleesPage() {
                         <Pencil className="h-4 w-4" />
                       </button>
                       <button
-                        onClick={() => {
-                          if (window.confirm('Supprimer cette AG ?')) deleteAG.mutate(ag.id)
-                        }}
+                        onClick={() => setDeleteId(ag.id)}
                         className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-red-600 dark:hover:bg-stone-800"
                         aria-label="Supprimer"
                       >
@@ -162,6 +162,15 @@ export default function AssembleesPage() {
           />
         </div>
       )}
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(o) => !o && setDeleteId(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => { deleteAG.mutate(deleteId!); setDeleteId(null) }}
+      />
     </div>
   )
 }

@@ -144,22 +144,17 @@ class ConvocationAGService {
                     .where('id', convocation.ag_id)
                     .update({ statut: 'convoquee', date_convocation: today, updated_at: trx.fn.now() })
 
-                // Mark all destinataires as envoyee
-                const destinataires = await trx('destinataires_convocation')
+                // Mark all destinataires as envoyee in a single batch UPDATE
+                const updatedCount = await trx('destinataires_convocation')
                     .where('convocation_id', convocationId)
+                    .update({
+                        statut: 'envoyee',
+                        date_envoi: today,
+                        mode_envoi: convocation.mode_envoi === 'les_deux' ? 'email' : convocation.mode_envoi,
+                        updated_at: trx.fn.now(),
+                    })
 
-                for (const dest of destinataires) {
-                    await trx('destinataires_convocation')
-                        .where('id', dest.id)
-                        .update({
-                            statut: 'envoyee',
-                            date_envoi: today,
-                            mode_envoi: convocation.mode_envoi === 'les_deux' ? 'email' : convocation.mode_envoi,
-                            updated_at: trx.fn.now(),
-                        })
-                }
-
-                return { ...updated, delai_verification: delai, destinataires_mis_a_jour: destinataires.length }
+                return { ...updated, delai_verification: delai, destinataires_mis_a_jour: updatedCount }
             })
 
             logger.info(`[ConvocationService] Convocation ${convocationId} envoyée (délai: ${delai.valide ? 'respecté' : 'NON respecté'})`)

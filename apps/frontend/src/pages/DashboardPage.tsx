@@ -36,6 +36,10 @@ import {
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ErrorAlert } from '@/components/layout/ErrorAlert'
+import ImpayesChart from '@/components/dashboard/ImpayesChart'
+import IncidentsChart from '@/components/dashboard/IncidentsChart'
+import RecouvrementGauge from '@/components/dashboard/RecouvrementGauge'
+import EcheancesCard from '@/components/dashboard/EcheancesCard'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -640,6 +644,61 @@ export default function DashboardPage() {
           }
           delay={0.1}
         />
+      )}
+
+      {/* KPI Charts */}
+      {dashboard && (
+        <div className="space-y-5">
+          {/* Row 1: Impayes chart (2/3) + Recouvrement gauge (1/3) */}
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+            <motion.div
+              className="lg:col-span-2"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.2 }}
+            >
+              <ImpayesChart
+                data={dashboard.impayes_evolution ?? []}
+              />
+            </motion.div>
+            <motion.div
+              className="lg:col-span-1"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.25 }}
+            >
+              <RecouvrementGauge
+                value={dashboard.taux_recouvrement ?? 0}
+              />
+            </motion.div>
+          </div>
+
+          {/* Row 2: Incidents chart (1/3) + Echeances card (2/3) */}
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+            <motion.div
+              className="lg:col-span-1"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.25 }}
+            >
+              <IncidentsChart
+                data={dashboard.incidents_par_statut ?? {}}
+              />
+            </motion.div>
+            <motion.div
+              className="lg:col-span-2"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.3 }}
+            >
+              <EcheancesCard
+                echeances={
+                  dashboard.prochaines_echeances ?? []
+                }
+              />
+            </motion.div>
+          </div>
+        </div>
       )}
 
       {/* Tasks + Activity side by side */}

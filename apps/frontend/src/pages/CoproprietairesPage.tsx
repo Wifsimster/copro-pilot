@@ -3,6 +3,7 @@ import { useCoproprietaires, useCreateCoproprietaire, useUpdateCoproprietaire, u
 import type { Coproprietaire } from '@/types'
 import { Users, Plus, Trash2, Pencil, Mail, Phone } from 'lucide-react'
 import { CoproprietaireFormDialog } from '@/components/coproprietaires/CoproprietaireFormDialog'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 
 export default function CoproprietairesPage() {
   const { data: coproprietaires, isLoading } = useCoproprietaires()
@@ -12,6 +13,7 @@ export default function CoproprietairesPage() {
   const [showCreate, setShowCreate] = useState(false)
   const [editingCopro, setEditingCopro] = useState<Coproprietaire | null>(null)
   const [search, setSearch] = useState('')
+  const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const filtered = coproprietaires?.filter((c: Coproprietaire) => {
     if (!search) return true
@@ -23,10 +25,8 @@ export default function CoproprietairesPage() {
     )
   })
 
-  const handleDelete = (id: number, nom: string, prenom: string) => {
-    if (window.confirm(`Supprimer ${prenom} ${nom} ?`)) {
-      deleteCoproprietaire.mutate(id)
-    }
+  const handleDelete = (id: number) => {
+    setDeleteId(id)
   }
 
   if (isLoading) {
@@ -114,7 +114,7 @@ export default function CoproprietairesPage() {
                     <Pencil className="h-4 w-4" />
                   </button>
                   <button
-                    onClick={() => handleDelete(copro.id, copro.nom, copro.prenom)}
+                    onClick={() => handleDelete(copro.id)}
                     className="rounded p-1 text-stone-400 hover:text-red-600"
                     title="Supprimer"
                     aria-label="Supprimer"
@@ -161,6 +161,15 @@ export default function CoproprietairesPage() {
           }
         }}
         isLoading={editingCopro ? updateCoproprietaire.isPending : createCoproprietaire.isPending}
+      />
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(o) => !o && setDeleteId(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => { deleteCoproprietaire.mutate(deleteId!); setDeleteId(null) }}
       />
     </div>
   )

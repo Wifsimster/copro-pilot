@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import {
@@ -11,8 +12,9 @@ import {
 import { declarationsRegistreApi } from '@/api/declarations-registre'
 import { DeclarationFormDialog } from '@/components/immatriculation/DeclarationFormDialog'
 import type { DeclarationRegistre, DonneesDeclarees } from '@/types'
+import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected'
 import {
-  ClipboardList, Plus, Trash2, Pencil, FileSearch, Building2, CalendarDays,
+  Plus, Trash2, Pencil, FileSearch, Building2, CalendarDays,
   ChevronDown, ChevronRight, Shield, AlertTriangle, Scale, Stethoscope, Users2,
 } from 'lucide-react'
 
@@ -46,6 +48,7 @@ export default function ImmatriculationPage() {
   const [isPreparating, setIsPreparating] = useState(false)
   const [complianceData, setComplianceData] = useState<DonneesDeclarees | null>(null)
   const [expandedRow, setExpandedRow] = useState<number | null>(null)
+  const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const { data: coproprietes } = useCoproprietes()
   const { data: declarations, isLoading } = useDeclarationsRegistreByCopropriete(selectedCoproId)
@@ -100,11 +103,7 @@ export default function ImmatriculationPage() {
       </div>
 
       {!selectedCoproId ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <ClipboardList className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
-        </div>
+        <NoCoproprieteSelected />
       ) : (
         <>
           {/* Info card */}
@@ -307,9 +306,7 @@ export default function ImmatriculationPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cette declaration ?')) deleteDeclaration.mutate(decl.id)
-                                }}
+                                onClick={() => setDeleteId(decl.id)}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -354,6 +351,15 @@ export default function ImmatriculationPage() {
           </div>
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(o) => !o && setDeleteId(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => { deleteDeclaration.mutate(deleteId!); setDeleteId(null) }}
+      />
     </div>
   )
 }

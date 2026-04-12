@@ -16,8 +16,15 @@ const STATUT_LABELS = {
   represente: 'Represente',
 }
 
+const ROW_LIMIT_WARNING = 5000
+
 class ExportPdfService {
   generateBudgetPdf(budget, postes, copropriete) {
+    if (postes.length > ROW_LIMIT_WARNING) {
+      logger.warn(
+        `[ExportPdfService] Budget PDF for ${budget.id} has ${postes.length} rows — large PDF generation may use significant memory`
+      )
+    }
     logger.info(`[ExportPdfService] Generating budget PDF for budget ${budget.id}`)
 
     const doc = new PDFDocument({
@@ -147,6 +154,11 @@ class ExportPdfService {
   }
 
   generateAppelFondsPdf(appel, lignes, copropriete) {
+    if (lignes.length > ROW_LIMIT_WARNING) {
+      logger.warn(
+        `[ExportPdfService] Appel de fonds PDF for ${appel.id} has ${lignes.length} rows — large PDF generation may use significant memory`
+      )
+    }
     logger.info(`[ExportPdfService] Generating appel de fonds PDF for appel ${appel.id}`)
 
     const doc = new PDFDocument({
@@ -270,6 +282,11 @@ class ExportPdfService {
   }
 
   generateFeuillePresencePdf(ag, presences, copropriete) {
+    if (presences.length > ROW_LIMIT_WARNING) {
+      logger.warn(
+        `[ExportPdfService] Feuille de presence PDF for AG ${ag.id} has ${presences.length} rows — large PDF generation may use significant memory`
+      )
+    }
     logger.info(`[ExportPdfService] Generating feuille de presence PDF for AG ${ag.id}`)
 
     const dateStr = ag.date
@@ -408,6 +425,11 @@ class ExportPdfService {
   }
 
   generateCarnetEntretienPdf(entries, copropriete) {
+    if (entries.length > ROW_LIMIT_WARNING) {
+      logger.warn(
+        `[ExportPdfService] Carnet d'entretien PDF for copropriete ${copropriete?.id} has ${entries.length} rows — large PDF generation may use significant memory`
+      )
+    }
     logger.info(`[ExportPdfService] Generating carnet d'entretien PDF for copropriete ${copropriete?.id}`)
 
     const doc = new PDFDocument({
@@ -511,6 +533,11 @@ class ExportPdfService {
   }
 
   generateEtatImpayesPdf(impayes, copropriete) {
+    if (impayes.length > ROW_LIMIT_WARNING) {
+      logger.warn(
+        `[ExportPdfService] Etat des impayes PDF for copropriete ${copropriete?.id} has ${impayes.length} rows — large PDF generation may use significant memory`
+      )
+    }
     logger.info(`[ExportPdfService] Generating etat des impayes PDF for copropriete ${copropriete?.id}`)
 
     const doc = new PDFDocument({

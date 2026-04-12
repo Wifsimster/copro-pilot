@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useAssurancesByCopropriete, useCreateAssurance, useUpdateAssurance, useDeleteAssurance } from '@/hooks/useAssurances'
 import { useSinistresByCopropriete, useCreateSinistre, useUpdateSinistre, useDeleteSinistre } from '@/hooks/useSinistres'
@@ -60,6 +61,7 @@ export default function AssurancesPage() {
   const [showSinistreDialog, setShowSinistreDialog] = useState(false)
   const [editingAssurance, setEditingAssurance] = useState<Assurance | null>(null)
   const [editingSinistre, setEditingSinistre] = useState<Sinistre | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'assurance' | 'sinistre', id: number } | null>(null)
 
   const { data: assurances, isLoading: loadingAssurances } = useAssurancesByCopropriete(selectedCoproId)
   const { data: sinistres, isLoading: loadingSinistres } = useSinistresByCopropriete(selectedCoproId)
@@ -177,9 +179,7 @@ export default function AssurancesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cette assurance ?')) deleteAssurance.mutate(assurance.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'assurance', id: assurance.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -286,9 +286,7 @@ export default function AssurancesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce sinistre ?')) deleteSinistre.mutate(sinistre.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'sinistre', id: sinistre.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -326,6 +324,19 @@ export default function AssurancesPage() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'assurance') deleteAssurance.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'sinistre') deleteSinistre.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }

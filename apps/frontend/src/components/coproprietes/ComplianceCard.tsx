@@ -1,0 +1,100 @@
+import { useCompliance } from '@/hooks/useCompliance'
+import { CheckCircle, AlertTriangle, XCircle, ShieldCheck } from 'lucide-react'
+
+interface ComplianceCardProps {
+  coproprieteId: number
+}
+
+const STATUS_CONFIG = {
+  ok: {
+    icon: CheckCircle,
+    color: 'text-green-600 dark:text-green-400',
+    bg: 'bg-green-50 dark:bg-green-900/20',
+  },
+  warning: {
+    icon: AlertTriangle,
+    color: 'text-amber-600 dark:text-amber-400',
+    bg: 'bg-amber-50 dark:bg-amber-900/20',
+  },
+  error: {
+    icon: XCircle,
+    color: 'text-red-600 dark:text-red-400',
+    bg: 'bg-red-50 dark:bg-red-900/20',
+  },
+} as const
+
+export function ComplianceCard({ coproprieteId }: ComplianceCardProps) {
+  const { data: report, isLoading } = useCompliance(coproprieteId)
+
+  if (isLoading) {
+    return (
+      <div className="rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-700 dark:bg-stone-800">
+        <div className="flex items-center gap-2 mb-4">
+          <ShieldCheck className="h-5 w-5 text-stone-400" />
+          <h3 className="text-base font-semibold text-stone-900 dark:text-white">
+            Conformite Loi ALUR
+          </h3>
+        </div>
+        <div className="flex justify-center py-4">
+          <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+        </div>
+      </div>
+    )
+  }
+
+  if (!report) return null
+
+  return (
+    <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
+      <div className="flex items-center justify-between border-b border-stone-200 px-5 py-4 dark:border-stone-700">
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
+          <h3 className="text-base font-semibold text-stone-900 dark:text-white">
+            Conformite Loi ALUR
+          </h3>
+        </div>
+        <span
+          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
+            report.compliant
+              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+              : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+          }`}
+        >
+          {report.compliant ? (
+            <>
+              <CheckCircle className="h-3.5 w-3.5" />
+              Conforme
+            </>
+          ) : (
+            <>
+              <XCircle className="h-3.5 w-3.5" />
+              Non conforme
+            </>
+          )}
+        </span>
+      </div>
+      <div className="divide-y divide-stone-100 dark:divide-stone-700/50">
+        {report.checks.map((check, index) => {
+          const config = STATUS_CONFIG[check.status]
+          const Icon = config.icon
+          return (
+            <div
+              key={index}
+              className={`flex items-start gap-3 px-5 py-3 ${config.bg}`}
+            >
+              <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${config.color}`} />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-stone-900 dark:text-white">
+                  {check.name}
+                </p>
+                <p className="text-xs text-stone-500 dark:text-stone-400">
+                  {check.details}
+                </p>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}

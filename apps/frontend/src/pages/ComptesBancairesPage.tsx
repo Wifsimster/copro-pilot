@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import {
   useComptesBancairesByCopropriete,
@@ -17,6 +18,7 @@ import { MouvementBancaireFormDialog } from '@/components/comptes-bancaires/Mouv
 import type { CompteBancaire, MouvementBancaire } from '@/types'
 import { Landmark, Plus, Trash2, Pencil, ChevronDown, CreditCard, ArrowDownUp, CheckCircle, XCircle } from 'lucide-react'
 import { ErrorAlert } from '@/components/layout/ErrorAlert'
+import { TabBar } from '@/components/layout/TabBar'
 
 const TYPE_COMPTE_LABELS: Record<string, string> = {
   courant: 'Courant',
@@ -50,6 +52,7 @@ export default function ComptesBancairesPage() {
   const [editingCompte, setEditingCompte] = useState<CompteBancaire | null>(null)
   const [showMouvementDialog, setShowMouvementDialog] = useState(false)
   const [editingMouvement, setEditingMouvement] = useState<MouvementBancaire | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'compte' | 'mouvement', id: number } | null>(null)
 
   const { data: comptes, isLoading: loadingComptes, isError: isErrorComptes, error: errorComptes } = useComptesBancairesByCopropriete(selectedCoproId)
   const { data: mouvements, isLoading: loadingMouvements, isError: isErrorMouvements, error: errorMouvements } = useMouvementsBancairesByCompte(selectedCompteId)
@@ -84,25 +87,14 @@ export default function ComptesBancairesPage() {
       ) : (
         <>
           {/* Tabs */}
-          <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
-            {([
-              { key: 'comptes' as Tab, label: 'Comptes', icon: CreditCard },
-              { key: 'mouvements' as Tab, label: 'Mouvements', icon: ArrowDownUp },
-            ]).map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                  activeTab === tab.key
-                    ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
-                    : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
-                }`}
-              >
-                <tab.icon className="h-4 w-4" />
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          <TabBar
+            tabs={[
+              { key: 'comptes', label: 'Comptes', icon: CreditCard },
+              { key: 'mouvements', label: 'Mouvements', icon: ArrowDownUp },
+            ]}
+            activeTab={activeTab}
+            onTabChange={(key) => setActiveTab(key as Tab)}
+          />
 
           {/* Comptes tab */}
           {activeTab === 'comptes' && (
@@ -182,9 +174,7 @@ export default function ComptesBancairesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce compte bancaire ?')) deleteCompte.mutate(compte.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'compte', id: compte.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -309,9 +299,7 @@ export default function ComptesBancairesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce mouvement ?')) deleteMouvement.mutate(mouvement.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'mouvement', id: mouvement.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -349,6 +337,19 @@ export default function ComptesBancairesPage() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'compte') deleteCompte.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'mouvement') deleteMouvement.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }

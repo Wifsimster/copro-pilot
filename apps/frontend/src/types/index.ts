@@ -1195,6 +1195,44 @@ export interface SyndicDashboard {
   tasks: DashboardTask[]
   metrics: SyndicDashboardMetrics
   activity: DashboardActivity[]
+  taux_recouvrement?: number
+  impayes_evolution?: Array<{ mois: string; impayes: number }>
+  incidents_par_statut?: Record<string, number>
+  prochaines_echeances?: Array<{
+    id: number
+    date_echeance: string
+    trimestre: number
+    annee: number
+    montant_total: number
+    copropriete_nom?: string
+  }>
+}
+
+// ============================================
+// Ticket / Messagerie Types
+// ============================================
+
+export interface Ticket {
+  id: number
+  copropriete_id: number
+  auteur_id: string
+  auteur_nom?: string
+  sujet: string
+  categorie: string
+  statut: string
+  priorite: string
+  created_at: string
+  updated_at: string
+  messages_count?: number
+}
+
+export interface TicketMessage {
+  id: number
+  ticket_id: number
+  auteur_id: string
+  auteur_nom?: string
+  contenu: string
+  created_at: string
 }
 
 // ============================================
@@ -1212,4 +1250,88 @@ export interface DomainEvent {
   metadata: Record<string, unknown>
   created_at: string
   processed_at: string | null
+}
+
+// ============================================
+// Compliance Types
+// ============================================
+
+export interface ComplianceCheck {
+  name: string
+  status: 'ok' | 'warning' | 'error'
+  details: string
+}
+
+export interface ComplianceReport {
+  compliant: boolean
+  checks: ComplianceCheck[]
+}
+
+// ============================================
+// AG Report Types (Annexes financières — décret 2005-240)
+// ============================================
+
+export interface AgAnnexe1 {
+  postes: Array<{
+    nom: string
+    budget_prevu: number
+    realise: number
+    ecart: number
+    ecart_pct: number
+  }>
+  total_prevu: number
+  total_realise: number
+}
+
+export interface AgAnnexe2 {
+  comptes: Array<{
+    nom: string
+    iban: string
+    solde: number
+  }>
+  total_tresorerie: number
+  appels_emis: number
+  appels_recus: number
+}
+
+export interface AgAnnexe3 {
+  coproprietaires: Array<{
+    nom: string
+    prenom: string
+    lots: string
+    total_appele: number
+    total_paye: number
+    solde: number
+  }>
+  total_impayes: number
+}
+
+export interface AgAnnexe4 {
+  fournisseurs: Array<{
+    nom: string
+    contrat: string
+    montant_du: number
+    date_echeance: string | null
+  }>
+  total_dettes: number
+}
+
+export interface AgAnnexe5 {
+  solde_debut: number
+  cotisations: number
+  depenses: number
+  solde_fin: number
+  mouvements: Array<{
+    libelle: string
+    montant: number
+    type: 'credit' | 'debit'
+  }>
+}
+
+export interface AgReportPack {
+  annexe1: AgAnnexe1
+  annexe2: AgAnnexe2
+  annexe3: AgAnnexe3
+  annexe4: AgAnnexe4
+  annexe5: AgAnnexe5
 }

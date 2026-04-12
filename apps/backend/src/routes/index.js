@@ -70,6 +70,10 @@ import timelineRoutes from './timeline.js'
 import sseRoutes from './sse.js'
 // Stripe (subscriptions & billing)
 import stripeRoutes from './stripe.js'
+// Tickets (messagerie)
+import ticketsRoutes from './tickets.js'
+// AG Reports (annexes financières)
+import agReportsRoutes from './ag-reports.js'
 
 const router = Router()
 
@@ -171,6 +175,12 @@ router.use('/sse', sseRoutes)
 
 // Stripe (subscriptions & billing)
 router.use('/stripe', stripeRoutes)
+
+// Tickets (messagerie)
+router.use('/tickets', ticketsRoutes)
+
+// AG Reports (annexes financières décret 2005-240)
+router.use('/ag-reports', agReportsRoutes)
 
 // Root health check
 router.get('/', (req, res) => {

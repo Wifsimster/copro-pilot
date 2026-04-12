@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useCoproprietaires } from '@/hooks/useCoproprietaires'
 import { useBudgetsByCopropriete, useCreateBudget, useUpdateBudget, useDeleteBudget } from '@/hooks/useBudgets'
@@ -12,6 +13,7 @@ import { PaiementFormDialog } from '@/components/charges/PaiementFormDialog'
 import type { BudgetPrevisionnel, AppelFonds, FondsTravaux, Paiement } from '@/types'
 import { Receipt, Plus, Trash2, Pencil, FileText, Banknote, PiggyBank, CreditCard } from 'lucide-react'
 import { ErrorAlert } from '@/components/layout/ErrorAlert'
+import { TabBar } from '@/components/layout/TabBar'
 
 const STATUT_BUDGET_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
@@ -58,6 +60,7 @@ export default function ChargesPage() {
   const [editingFonds, setEditingFonds] = useState<FondsTravaux | null>(null)
   const [showPaiementDialog, setShowPaiementDialog] = useState(false)
   const [editingPaiement, setEditingPaiement] = useState<Paiement | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'budget' | 'appel' | 'paiement' | 'fonds', id: number } | null>(null)
 
   const { data: coproprietaires } = useCoproprietaires()
   const { data: budgets, isLoading: loadingBudgets, isError: isErrorBudgets, error: errorBudgets } = useBudgetsByCopropriete(selectedCoproId)
@@ -100,27 +103,16 @@ export default function ChargesPage() {
       ) : (
         <>
           {/* Tabs */}
-          <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
-            {([
-              { key: 'budgets' as Tab, label: 'Budgets', icon: FileText },
-              { key: 'appels' as Tab, label: 'Appels de fonds', icon: Banknote },
-              { key: 'paiements' as Tab, label: 'Paiements', icon: CreditCard },
-              { key: 'fonds-travaux' as Tab, label: 'Fonds travaux', icon: PiggyBank },
-            ]).map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                  activeTab === tab.key
-                    ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
-                    : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
-                }`}
-              >
-                <tab.icon className="h-4 w-4" />
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          <TabBar
+            tabs={[
+              { key: 'budgets', label: 'Budgets', icon: FileText },
+              { key: 'appels', label: 'Appels de fonds', icon: Banknote },
+              { key: 'paiements', label: 'Paiements', icon: CreditCard },
+              { key: 'fonds-travaux', label: 'Fonds travaux', icon: PiggyBank },
+            ]}
+            activeTab={activeTab}
+            onTabChange={(key) => setActiveTab(key as Tab)}
+          />
 
           {/* Budgets tab */}
           {activeTab === 'budgets' && (
@@ -178,9 +170,7 @@ export default function ChargesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce budget ?')) deleteBudget.mutate(budget.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'budget', id: budget.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -279,9 +269,7 @@ export default function ChargesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cet appel de fonds ?')) deleteAppel.mutate(appel.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'appel', id: appel.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -380,9 +368,7 @@ export default function ChargesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce paiement ?')) deletePaiement.mutate(paiement.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'paiement', id: paiement.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -476,9 +462,7 @@ export default function ChargesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce fonds travaux ?')) deleteFonds.mutate(fonds.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'fonds', id: fonds.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -514,6 +498,21 @@ export default function ChargesPage() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'budget') deleteBudget.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'appel') deleteAppel.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'paiement') deletePaiement.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'fonds') deleteFonds.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }

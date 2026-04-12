@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { useAssemblee, useCreateResolution, useUpdateResolution, useDeleteResolution, useSetPresence, useDeletePresence, useGenererPv } from '@/hooks/useAssemblees'
 import { useConvocationsByAg, useDelaiVerification, useCreateConvocation, useUpdateConvocation, useDeleteConvocation, useGenererDestinataires, useEnvoyerConvocation } from '@/hooks/useConvocations'
 import { convocationsApi } from '@/api/convocations'
@@ -110,6 +112,8 @@ export default function AssembleeDetailPage() {
   const [editingPresence, setEditingPresence] = useState<PresenceAG | null>(null)
   const [editingConvocation, setEditingConvocation] = useState<ConvocationAG | null>(null)
   const [expandedConvocation, setExpandedConvocation] = useState<number | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'resolution' | 'presence' | 'convocation', id: number } | null>(null)
+  const [showSendConfirm, setShowSendConfirm] = useState<number | null>(null)
 
   // Fetch destinataires when expanding a convocation
   const { data: expandedDestinataires } = useQuery({
@@ -155,13 +159,21 @@ export default function AssembleeDetailPage() {
 
   const handleEnvoyer = async (convocId: number) => {
     if (!delai?.valide) {
-      if (!window.confirm('Le delai legal de 21 jours n\'est pas respecte. Envoyer quand meme ?')) return
+      setShowSendConfirm(convocId)
+      return
     }
     await envoyerConvocation.mutateAsync(convocId)
   }
 
+  const agLabel = `AG du ${new Date(ag.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`
+
   return (
     <div className="space-y-6">
+      <Breadcrumbs items={[
+        { label: 'Assemblées', href: '/assemblees' },
+        { label: agLabel },
+      ]} />
+
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link
@@ -173,7 +185,7 @@ export default function AssembleeDetailPage() {
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold text-stone-900 dark:text-white">
-              AG du {new Date(ag.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+              {agLabel}
             </h1>
             <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUT_COLORS[ag.statut]}`}>
               {STATUT_LABELS[ag.statut]}
@@ -368,9 +380,7 @@ export default function AssembleeDetailPage() {
                         <Pencil className="h-4 w-4" />
                       </button>
                       <button
-                        onClick={() => {
-                          if (window.confirm('Supprimer cette resolution ?')) deleteResolution.mutate(res.id)
-                        }}
+                        onClick={() => setDeleteTarget({ type: 'resolution', id: res.id })}
                         className="rounded p-1 text-stone-400 hover:text-red-600"
                         aria-label="Supprimer"
                       >
@@ -468,9 +478,7 @@ export default function AssembleeDetailPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => {
-                              if (window.confirm('Retirer cette presence ?')) deletePresence.mutate(p.id)
-                            }}
+                            onClick={() => setDeleteTarget({ type: 'presence', id: p.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -594,9 +602,7 @@ export default function AssembleeDetailPage() {
                           )}
                           {convoc.statut === 'brouillon' && (
                             <button
-                              onClick={() => {
-                                if (window.confirm('Supprimer cette convocation ?')) deleteConvocation.mutate(convoc.id)
-                              }}
+                              onClick={() => setDeleteTarget({ type: 'convocation', id: convoc.id })}
                               className="rounded p-1 text-stone-400 hover:text-red-600"
                               aria-label="Supprimer"
                             >
@@ -696,6 +702,31 @@ export default function AssembleeDetailPage() {
           )}
         </div>
       )}
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'resolution') deleteResolution.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'presence') deletePresence.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'convocation') deleteConvocation.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
+
+      <ConfirmDialog
+        open={showSendConfirm !== null}
+        onOpenChange={(o) => !o && setShowSendConfirm(null)}
+        title="Delai legal non respecte"
+        description="Le delai legal de 21 jours n'est pas respecte. Envoyer quand meme ?"
+        variant="default"
+        onConfirm={() => {
+          envoyerConvocation.mutateAsync(showSendConfirm!)
+          setShowSendConfirm(null)
+        }}
+      />
     </div>
   )
 }
