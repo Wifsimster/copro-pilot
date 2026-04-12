@@ -15,6 +15,7 @@ import {
 import { ContratSyndicFormDialog } from '@/components/contrats-syndic/ContratSyndicFormDialog'
 import { PropositionSyndicFormDialog } from '@/components/contrats-syndic/PropositionSyndicFormDialog'
 import type { ContratSyndic, PropositionSyndic } from '@/types'
+import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected'
 import { FileSignature, Plus, Trash2, Pencil, Users, AlertTriangle, CheckCircle2 } from 'lucide-react'
 
 const STATUT_LABELS: Record<string, string> = {
@@ -68,11 +69,7 @@ export default function ContratsSyndicPage() {
       </div>
 
       {!selectedCoproId ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <FileSignature className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
-        </div>
+        <NoCoproprieteSelected />
       ) : (
         <>
           {/* Tabs */}

@@ -702,6 +702,31 @@ export default function AssembleeDetailPage() {
           )}
         </div>
       )}
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'resolution') deleteResolution.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'presence') deletePresence.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'convocation') deleteConvocation.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
+
+      <ConfirmDialog
+        open={showSendConfirm !== null}
+        onOpenChange={(o) => !o && setShowSendConfirm(null)}
+        title="Delai legal non respecte"
+        description="Le delai legal de 21 jours n'est pas respecte. Envoyer quand meme ?"
+        variant="default"
+        onConfirm={() => {
+          envoyerConvocation.mutateAsync(showSendConfirm!)
+          setShowSendConfirm(null)
+        }}
+      />
     </div>
   )
 }

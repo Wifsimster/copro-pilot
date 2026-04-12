@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { useAuthStore } from '@/store/authStore'
 import { useCopropriete, useUpdateCopropriete } from '@/hooks/useCoproprietes'
 import { useLotsByCopropriete, useCreateLot, useUpdateLot, useDeleteLot } from '@/hooks/useLots'
@@ -116,6 +118,7 @@ export default function CoproprieteDetailPage() {
   const [activeTab, setActiveTab] = useState<Tab>('lots')
   const [selectedLotId, setSelectedLotId] = useState<number | undefined>()
   const [showBulkCreate, setShowBulkCreate] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'lot' | 'pc' | 'cle' | 'locataire' | 'mutation' | 'diagnostic', id: number } | null>(null)
   const userRole = useAuthStore(state => state.user?.role)
 
   const { data: locataires } = useLocatairesByLot(selectedLotId)
@@ -140,10 +143,8 @@ export default function CoproprieteDetailPage() {
     )
   }
 
-  const handleDeleteLot = (lotId: number, numero: string) => {
-    if (window.confirm(`Supprimer le lot ${numero} ?`)) {
-      deleteLot.mutate(lotId)
-    }
+  const handleDeleteLot = (lotId: number) => {
+    setDeleteTarget({ type: 'lot', id: lotId })
   }
 
   const tabs = [
@@ -158,6 +159,11 @@ export default function CoproprieteDetailPage() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumbs items={[
+        { label: 'Copropriétés', href: '/coproprietes' },
+        { label: copropriete.nom },
+      ]} />
+
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link

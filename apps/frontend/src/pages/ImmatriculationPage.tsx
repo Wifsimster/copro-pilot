@@ -13,7 +13,7 @@ import { DeclarationFormDialog } from '@/components/immatriculation/DeclarationF
 import type { DeclarationRegistre, DonneesDeclarees } from '@/types'
 import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected'
 import {
-  ClipboardList, Plus, Trash2, Pencil, FileSearch, Building2, CalendarDays,
+  Plus, Trash2, Pencil, FileSearch, Building2, CalendarDays,
   ChevronDown, ChevronRight, Shield, AlertTriangle, Scale, Stethoscope, Users2,
 } from 'lucide-react'
 

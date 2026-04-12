@@ -9,7 +9,7 @@ import { InterventionFormDialog } from '@/components/incidents/InterventionFormD
 import { CarnetEntretienFormDialog } from '@/components/incidents/CarnetEntretienFormDialog'
 import type { Incident, Intervention, CarnetEntretien } from '@/types'
 import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected'
-import { Wrench, Plus, Trash2, Pencil, AlertTriangle, Hammer, BookOpen } from 'lucide-react'
+import { Plus, Trash2, Pencil, AlertTriangle, Hammer, BookOpen } from 'lucide-react'
 
 const URGENCE_LABELS: Record<string, string> = {
   faible: 'Faible',
