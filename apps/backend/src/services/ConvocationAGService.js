@@ -163,6 +163,13 @@ class ConvocationAGService {
             })
 
             logger.info(`[ConvocationService] Convocation ${convocationId} envoyée (délai: ${delai.valide ? 'respecté' : 'NON respecté'})`)
+
+            // Dispatch AG convocation notifications
+            const destinataires = await ConvocationAGModel.getDestinataires(convocationId)
+            eventDispatchService.notifyAGConvocation(convocation, destinataires).catch(err =>
+                logger.error(`[ConvocationService] EventDispatch error: ${err.message}`)
+            )
+
             return result
         } catch (error) {
             logger.error(`[ConvocationService] Error sending convocation ${convocationId}: ${error.message}`)

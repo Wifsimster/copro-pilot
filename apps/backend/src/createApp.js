@@ -10,6 +10,7 @@ import { correlationId } from './middleware/correlationId.js'
 import { requestLogger } from './middleware/requestLogger.js'
 import { validateJSON } from './middleware/validation.js'
 import { apiLimiter, authLimiter } from './middleware/rateLimiter.js'
+import { csrf } from './middleware/csrf.js'
 import { auditLogger } from './middleware/auditLogger.js'
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js'
 
@@ -90,6 +91,9 @@ export function createApp({ getDb, auth } = {}) {
   app.set('query parser', 'extended')
 
   app.use(cookieParser())
+
+  // CSRF protection (double-submit cookie)
+  app.use(csrf)
 
   // Custom middleware
   app.use(correlationId)

@@ -128,6 +128,7 @@ export default function EmployesPage() {
                           <button
                             onClick={() => { setEditingEmploye(employe); setShowDialog(true) }}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                            aria-label="Modifier"
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
@@ -136,6 +137,7 @@ export default function EmployesPage() {
                               if (window.confirm('Supprimer cet employe ?')) deleteEmploye.mutate(employe.id)
                             }}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
+                            aria-label="Supprimer"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>

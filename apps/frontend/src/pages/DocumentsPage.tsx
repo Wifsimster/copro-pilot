@@ -5,6 +5,7 @@ import { documentsApi } from '@/api/documents'
 import { DocumentFormDialog } from '@/components/documents/DocumentFormDialog'
 import type { Document } from '@/types'
 import { FolderOpen, Plus, Trash2, Pencil, ChevronDown, FileText, Download, Search, Eye, X, Image, FileSpreadsheet, File } from 'lucide-react'
+import { ErrorAlert } from '@/components/layout/ErrorAlert'
 
 const CATEGORIE_LABELS: Record<string, string> = {
   pv_ag: 'PV d\'AG',
@@ -66,7 +67,7 @@ export default function DocumentsPage() {
   const [search, setSearch] = useState('')
   const [filterCategorie, setFilterCategorie] = useState<string>('all')
 
-  const { data: documents, isLoading: loadingDocs } = useDocumentsByCopropriete(selectedCoproId)
+  const { data: documents, isLoading: loadingDocs, isError, error } = useDocumentsByCopropriete(selectedCoproId)
   const uploadDocument = useUploadDocument()
   const updateDocument = useUpdateDocument()
   const deleteDocument = useDeleteDocument()
@@ -97,6 +98,8 @@ export default function DocumentsPage() {
         <h1 className="text-2xl font-bold text-foreground">Documents</h1>
         <p className="text-muted-foreground">Gestion electronique des documents de copropriete</p>
       </div>
+
+      {isError && <ErrorAlert error={error} message="Impossible de charger les documents" />}
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-16">

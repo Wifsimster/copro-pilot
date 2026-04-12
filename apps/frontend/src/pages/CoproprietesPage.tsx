@@ -116,18 +116,21 @@ export default function CoproprietesPage() {
                   <Link
                     to={`/coproprietes/${copro.id}`}
                     className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-emerald-700 dark:hover:bg-stone-800"
+                    aria-label="Voir"
                   >
                     <Eye className="h-4 w-4" />
                   </Link>
                   <button
                     onClick={() => setEditingCopro(copro)}
                     className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-emerald-700 dark:hover:bg-stone-800"
+                    aria-label="Modifier"
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(copro.id, copro.nom)}
                     className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-red-600 dark:hover:bg-stone-800"
+                    aria-label="Supprimer"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

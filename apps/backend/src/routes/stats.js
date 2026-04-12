@@ -115,6 +115,11 @@ router.get('/syndic-dashboard', requireAuth(), async (req, res) => {
       recentPaiements,
       recentInterventions,
       recentDocuments,
+      // Enhanced stats
+      tauxRecouvrementData,
+      impayesEvolution,
+      incidentsParStatut,
+      prochainEcheances,
     ] = await Promise.all([
       // --- ALERTS ---
 
@@ -553,6 +558,88 @@ router.get('/syndic-dashboard', requireAuth(), async (req, res) => {
           .limit(5),
         'documents.copropriete_id'
       ),
+
+      // --- ENHANCED STATS ---
+
+      // Taux de recouvrement: total_paye / total_appele
+      (async () => {
+        const appelQuery = scoped(
+          db('appels_fonds')
+            .whereIn('statut', ['emis', 'cloture'])
+            .sum('montant_total as total_appele')
+            .first()
+        )
+        const payeQuery = scoped(
+          db('paiements')
+            .sum('montant as total_paye')
+            .first(),
+          'coproprietaire_id'
+        )
+        const [appele, paye] = await Promise.all([
+          appelQuery,
+          payeQuery,
+        ])
+        return {
+          total_appele: parseFloat(appele?.total_appele || 0),
+          total_paye: parseFloat(paye?.total_paye || 0),
+        }
+      })(),
+
+      // Impayes evolution: last 6 months total impayes per month
+      (async () => {
+        const rows = await db.raw(`
+          SELECT
+            to_char(date_trunc('month', af.date_echeance), 'YYYY-MM') AS mois,
+            COALESCE(SUM(af.montant_total), 0)
+              - COALESCE(SUM(p.total_paye), 0) AS impayes
+          FROM appels_fonds af
+          LEFT JOIN (
+            SELECT appel_fonds_id, SUM(montant) AS total_paye
+            FROM paiements
+            GROUP BY appel_fonds_id
+          ) p ON p.appel_fonds_id = af.id
+          WHERE af.statut = 'emis'
+            AND af.date_echeance >= date_trunc('month', NOW()) - INTERVAL '5 months'
+            AND af.date_echeance < date_trunc('month', NOW()) + INTERVAL '1 month'
+            ${coproprieteId ? 'AND af.copropriete_id = ?' : ''}
+          GROUP BY date_trunc('month', af.date_echeance)
+          ORDER BY mois ASC
+        `, coproprieteId ? [coproprieteId] : [])
+        return rows.rows || []
+      })(),
+
+      // Incidents par statut
+      (async () => {
+        const qb = db('incidents')
+          .select('statut')
+          .count('id as count')
+          .groupBy('statut')
+        if (coproprieteId) qb.where('copropriete_id', coproprieteId)
+        return qb
+      })(),
+
+      // Prochaines echeances: next 5 upcoming appel_fonds echeances
+      scoped(
+        db('appels_fonds')
+          .select(
+            'appels_fonds.id',
+            'appels_fonds.trimestre',
+            'appels_fonds.annee',
+            'appels_fonds.montant_total',
+            'appels_fonds.date_echeance',
+            'appels_fonds.copropriete_id',
+            'coproprietes.nom as copropriete_nom'
+          )
+          .leftJoin(
+            'coproprietes',
+            'appels_fonds.copropriete_id',
+            'coproprietes.id'
+          )
+          .where('appels_fonds.statut', 'emis')
+          .where('appels_fonds.date_echeance', '>=', db.fn.now())
+          .orderBy('appels_fonds.date_echeance', 'asc')
+          .limit(5)
+      ),
     ])
 
     // --- Build alerts array ---
@@ -813,6 +900,17 @@ router.get('/syndic-dashboard', requireAuth(), async (req, res) => {
     const activity = activityItems.slice(0, 10)
 
     // --- Build metrics ---
+    const totalAppele = tauxRecouvrementData.total_appele
+    const totalPaye = tauxRecouvrementData.total_paye
+    const tauxRecouvrement = totalAppele > 0
+      ? Math.round((totalPaye / totalAppele) * 10000) / 100
+      : 0
+
+    const incidentsParStatutMap = {}
+    for (const row of incidentsParStatut) {
+      incidentsParStatutMap[row.statut] = Number(row.count)
+    }
+
     const metrics = {
       coproprietes: Number(countCoproprietes?.count || 0),
       incidents_ouverts: Number(
@@ -832,6 +930,13 @@ router.get('/syndic-dashboard', requireAuth(), async (req, res) => {
       sinistres_ouverts: Number(
         countSinistresOuverts?.count || 0
       ),
+      taux_recouvrement: tauxRecouvrement,
+      impayes_evolution: impayesEvolution.map(row => ({
+        mois: row.mois,
+        impayes: parseFloat(row.impayes || 0),
+      })),
+      incidents_par_statut: incidentsParStatutMap,
+      prochaines_echeances: prochainEcheances,
     }
 
     res.json({
