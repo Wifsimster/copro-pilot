@@ -1266,3 +1266,72 @@ export interface ComplianceReport {
   compliant: boolean
   checks: ComplianceCheck[]
 }
+
+// ============================================
+// AG Report Types (Annexes financières — décret 2005-240)
+// ============================================
+
+export interface AgAnnexe1 {
+  postes: Array<{
+    nom: string
+    budget_prevu: number
+    realise: number
+    ecart: number
+    ecart_pct: number
+  }>
+  total_prevu: number
+  total_realise: number
+}
+
+export interface AgAnnexe2 {
+  comptes: Array<{
+    nom: string
+    iban: string
+    solde: number
+  }>
+  total_tresorerie: number
+  appels_emis: number
+  appels_recus: number
+}
+
+export interface AgAnnexe3 {
+  coproprietaires: Array<{
+    nom: string
+    prenom: string
+    lots: string
+    total_appele: number
+    total_paye: number
+    solde: number
+  }>
+  total_impayes: number
+}
+
+export interface AgAnnexe4 {
+  fournisseurs: Array<{
+    nom: string
+    contrat: string
+    montant_du: number
+    date_echeance: string | null
+  }>
+  total_dettes: number
+}
+
+export interface AgAnnexe5 {
+  solde_debut: number
+  cotisations: number
+  depenses: number
+  solde_fin: number
+  mouvements: Array<{
+    libelle: string
+    montant: number
+    type: 'credit' | 'debit'
+  }>
+}
+
+export interface AgReportPack {
+  annexe1: AgAnnexe1
+  annexe2: AgAnnexe2
+  annexe3: AgAnnexe3
+  annexe4: AgAnnexe4
+  annexe5: AgAnnexe5
+}

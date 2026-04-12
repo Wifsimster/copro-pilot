@@ -8,6 +8,7 @@ import { IncidentFormDialog } from '@/components/incidents/IncidentFormDialog'
 import { InterventionFormDialog } from '@/components/incidents/InterventionFormDialog'
 import { CarnetEntretienFormDialog } from '@/components/incidents/CarnetEntretienFormDialog'
 import type { Incident, Intervention, CarnetEntretien } from '@/types'
+import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected'
 import { Wrench, Plus, Trash2, Pencil, AlertTriangle, Hammer, BookOpen } from 'lucide-react'
 
 const URGENCE_LABELS: Record<string, string> = {
@@ -95,11 +96,7 @@ export default function TravauxPage() {
       </div>
 
       {!selectedCoproId ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <Wrench className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
-        </div>
+        <NoCoproprieteSelected />
       ) : (
         <>
           {/* Tabs */}

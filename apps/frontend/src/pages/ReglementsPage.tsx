@@ -14,6 +14,7 @@ import {
 import { ReglementFormDialog } from '@/components/reglements/ReglementFormDialog'
 import { ArticleReglementFormDialog } from '@/components/reglements/ArticleReglementFormDialog'
 import type { ReglementCopropriete, ArticleReglement } from '@/types'
+import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected'
 import { BookOpen, Plus, Pencil, Trash2, FileText, ListOrdered } from 'lucide-react'
 
 const DESTINATION_LABELS: Record<string, string> = {
@@ -94,11 +95,7 @@ export default function ReglementsPage() {
       </div>
 
       {!selectedCoproId ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <BookOpen className="h-12 w-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
-        </div>
+        <NoCoproprieteSelected />
       ) : (
         <>
           {/* Tabs */}

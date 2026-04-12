@@ -49,6 +49,7 @@ const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'))
 const VerifyEmailPage = lazy(() => import('@/pages/VerifyEmailPage'))
 const FirstLoginPage = lazy(() => import('@/pages/FirstLoginPage'))
 const UserManagementPage = lazy(() => import('@/pages/UserManagementPage'))
+const TicketsPage = lazy(() => import('@/pages/TicketsPage'))
 const SubscriptionPage = lazy(() => import('@/pages/SubscriptionPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
@@ -336,6 +337,14 @@ export const router = createHashRouter([
         element: (
           <RoleGuard allowedRoles={['syndic']}>
             <UserManagementPage />
+          </RoleGuard>
+        ),
+      },
+      {
+        path: '/tickets',
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <TicketsPage />
           </RoleGuard>
         ),
       },

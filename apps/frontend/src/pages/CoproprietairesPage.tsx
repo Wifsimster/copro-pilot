@@ -162,6 +162,15 @@ export default function CoproprietairesPage() {
         }}
         isLoading={editingCopro ? updateCoproprietaire.isPending : createCoproprietaire.isPending}
       />
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(o) => !o && setDeleteId(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => { deleteCoproprietaire.mutate(deleteId!); setDeleteId(null) }}
+      />
     </div>
   )
 }

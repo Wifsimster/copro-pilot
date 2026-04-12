@@ -21,6 +21,7 @@ import { LocataireFormDialog } from '@/components/coproprietes/LocataireFormDial
 import { MutationFormDialog } from '@/components/coproprietes/MutationFormDialog'
 import { DiagnosticFormDialog } from '@/components/coproprietes/DiagnosticFormDialog'
 import { BulkCreateAccountsDialog } from '@/components/coproprietes/BulkCreateAccountsDialog'
+import { ComplianceCard } from '@/components/coproprietes/ComplianceCard'
 
 const TYPE_LABELS: Record<string, string> = {
   appartement: 'Appartement',
@@ -206,6 +207,9 @@ export default function CoproprieteDetailPage() {
           <p className="text-2xl font-bold text-stone-900 dark:text-white">{copropriete.total_tantiemes}</p>
         </div>
       </div>
+
+      {/* Compliance Card */}
+      {coproprieteId && <ComplianceCard coproprieteId={coproprieteId} />}
 
       {/* Tabs */}
       <div className="flex flex-wrap gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">

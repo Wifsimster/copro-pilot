@@ -13,6 +13,7 @@ import { apiLimiter, authLimiter } from './middleware/rateLimiter.js'
 import { csrf } from './middleware/csrf.js'
 import { auditLogger } from './middleware/auditLogger.js'
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js'
+import { accountLockout } from './middleware/accountLockout.js'
 
 export { errorHandler, notFoundHandler }
 
@@ -71,6 +72,9 @@ export function createApp({ getDb, auth } = {}) {
       : ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000'],
     credentials: true
   }))
+
+  // Account lockout before Better Auth (reads raw body itself)
+  app.use(accountLockout)
 
   // Better Auth handler before express.json()
   if (auth) {
