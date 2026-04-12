@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -77,6 +78,26 @@ export function ProcedureFormDialog({
       notes: defaultValues?.notes || '',
     },
   })
+
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        coproprietaire_id: defaultValues?.coproprietaire_id ?? 0,
+        avocat: defaultValues?.avocat || '',
+        tribunal: defaultValues?.tribunal || '',
+        reference_dossier: defaultValues?.reference_dossier || '',
+        date_assignation: defaultValues?.date_assignation || '',
+        date_audience: defaultValues?.date_audience || '',
+        date_jugement: defaultValues?.date_jugement || '',
+        montant_reclame: defaultValues?.montant_reclame ?? 0,
+        montant_obtenu: defaultValues?.montant_obtenu ?? 0,
+        frais_procedure: defaultValues?.frais_procedure ?? 0,
+        statut: defaultValues?.statut || 'en_preparation',
+        decision: defaultValues?.decision || '',
+        notes: defaultValues?.notes || '',
+      })
+    }
+  }, [open, defaultValues, form])
 
   const handleFormSubmit = async (data: ProcedureFormData) => {
     await onSubmit({

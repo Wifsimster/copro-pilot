@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { StripeController } from '../controllers/StripeController.js'
-import { requireAuth } from '../middleware/auth.js'
+import { requireAuth, requireAdmin } from '../middleware/auth.js'
 
 const router = Router()
 
@@ -30,6 +30,7 @@ router.get(
 router.post(
   '/report-usage',
   requireAuth(),
+  requireAdmin,
   StripeController.reportUsage
 )
 

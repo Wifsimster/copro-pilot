@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -77,6 +78,17 @@ export function DeclarationFormDialog({
       notes: defaultValues?.notes || '',
     },
   })
+
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        annee: defaultValues?.annee || new Date().getFullYear(),
+        date_declaration: defaultValues?.date_declaration || '',
+        statut: defaultValues?.statut || 'brouillon',
+        notes: defaultValues?.notes || '',
+      })
+    }
+  }, [open, defaultValues, form])
 
   const handleFormSubmit = async (data: DeclarationFormData) => {
     await onSubmit({

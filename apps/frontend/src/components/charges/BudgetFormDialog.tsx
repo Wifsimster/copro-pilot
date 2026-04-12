@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -59,6 +60,17 @@ export function BudgetFormDialog({
       notes: defaultValues?.notes || '',
     },
   })
+
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        annee: defaultValues?.annee || new Date().getFullYear(),
+        montant_total: defaultValues?.montant_total || 0,
+        statut: defaultValues?.statut || 'brouillon',
+        notes: defaultValues?.notes || '',
+      })
+    }
+  }, [open, defaultValues, form])
 
   const handleFormSubmit = async (data: BudgetFormData) => {
     await onSubmit({

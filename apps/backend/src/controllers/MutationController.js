@@ -43,6 +43,7 @@ export class MutationController {
         try {
             const { id } = req.params
             const result = await mutationService.update(id, req.body)
+            if (!result) return res.status(404).json({ error: 'Mutation non trouvée' })
             res.json({ data: result, message: 'Mutation mise à jour avec succès' })
         } catch (error) {
             logger.error(`[MutationController] Error updating: ${error.message}`)
@@ -53,7 +54,8 @@ export class MutationController {
     static async delete(req, res) {
         try {
             const { id } = req.params
-            await mutationService.delete(id)
+            const deleted = await mutationService.delete(id)
+            if (!deleted) return res.status(404).json({ error: 'Mutation non trouvée' })
             res.json({ message: 'Mutation supprimée avec succès' })
         } catch (error) {
             logger.error(`[MutationController] Error deleting: ${error.message}`)

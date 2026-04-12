@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -65,6 +66,21 @@ export function PrestataireFormDialog({
       notes: defaultValues?.notes || '',
     },
   })
+
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        nom: defaultValues?.nom || '',
+        siret: defaultValues?.siret || '',
+        specialite: defaultValues?.specialite || '',
+        contact_nom: defaultValues?.contact_nom || '',
+        contact_email: defaultValues?.contact_email || '',
+        contact_telephone: defaultValues?.contact_telephone || '',
+        adresse: defaultValues?.adresse || '',
+        notes: defaultValues?.notes || '',
+      })
+    }
+  }, [open, defaultValues, form])
 
   const handleFormSubmit = async (data: PrestataireFormData) => {
     await onSubmit({

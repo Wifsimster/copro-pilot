@@ -180,8 +180,8 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   logout: async () => {
     try {
       set({ isLoading: true })
-      get().clearAuth()
       await authClient.signOut()
+      get().clearAuth()
     } catch (error) {
       logger.error('Backend logout failed:', error)
     } finally {

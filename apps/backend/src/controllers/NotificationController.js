@@ -27,7 +27,8 @@ export class NotificationController {
     static async markAsRead(req, res) {
         try {
             const { id } = req.params
-            const result = await notificationService.markAsRead(id)
+            const userId = req.user.id
+            const result = await notificationService.markAsRead(id, userId)
             if (!result) return res.status(404).json({ error: 'Notification non trouvee' })
             res.json({ data: result, message: 'Notification marquee comme lue' })
         } catch (error) {
@@ -50,7 +51,8 @@ export class NotificationController {
     static async delete(req, res) {
         try {
             const { id } = req.params
-            const deleted = await notificationService.delete(id)
+            const userId = req.user.id
+            const deleted = await notificationService.delete(id, userId)
             if (!deleted) return res.status(404).json({ error: 'Notification non trouvee' })
             res.json({ message: 'Notification supprimee' })
         } catch (error) {

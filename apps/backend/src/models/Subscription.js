@@ -37,8 +37,8 @@ export class SubscriptionModel {
     return result
   }
 
-  static async update(userId, data) {
-    const db = getDb()
+  static async update(userId, data, trx = null) {
+    const db = trx || getDb()
     const [result] = await db('subscriptions')
       .where('user_id', userId)
       .update({
@@ -49,8 +49,8 @@ export class SubscriptionModel {
     return result
   }
 
-  static async upsertByStripeCustomerId(stripeCustomerId, data) {
-    const db = getDb()
+  static async upsertByStripeCustomerId(stripeCustomerId, data, trx = null) {
+    const db = trx || getDb()
     const existing = await db('subscriptions')
       .where('stripe_customer_id', stripeCustomerId)
       .first()
@@ -72,8 +72,8 @@ export class SubscriptionModel {
     return result
   }
 
-  static async updateUserPlan(userId, plan) {
-    const db = getDb()
+  static async updateUserPlan(userId, plan, trx = null) {
+    const db = trx || getDb()
     await db('user').where('id', userId).update({ plan })
   }
 

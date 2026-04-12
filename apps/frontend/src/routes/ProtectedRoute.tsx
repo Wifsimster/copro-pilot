@@ -56,7 +56,7 @@ export function ProtectedRoute({
 }
 
 export function PublicRoute({ children }: { children: ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuthStore()
+  const { isAuthenticated, isLoading, user } = useAuthStore()
 
   if (isLoading) {
     return (
@@ -67,7 +67,8 @@ export function PublicRoute({ children }: { children: ReactNode }) {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />
+    const redirectTo = isCoproprietaire(user?.role) ? '/extranet' : '/dashboard'
+    return <Navigate to={redirectTo} replace />
   }
 
   return <>{children}</>

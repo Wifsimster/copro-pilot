@@ -39,7 +39,7 @@ export class RelanceModel {
                 date_relance: data.date_relance,
                 montant_du: data.montant_du,
                 mode_envoi: data.mode_envoi || null,
-                statut: data.statut || 'en_attente',
+                statut: data.statut || 'brouillon',
                 notes: data.notes || null,
             })
             .returning('*')

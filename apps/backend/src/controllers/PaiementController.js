@@ -65,6 +65,7 @@ export class PaiementController {
         try {
             const { id } = req.params
             const result = await paiementService.update(id, req.body)
+            if (!result) return res.status(404).json({ error: 'Paiement non trouvé' })
             res.json({ data: result, message: 'Paiement mis à jour avec succès' })
         } catch (error) {
             logger.error(`[PaiementController] Error updating: ${error.message}`)

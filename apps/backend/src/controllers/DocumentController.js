@@ -1,4 +1,5 @@
 import fs from 'fs'
+import path from 'path'
 import { documentService } from '../services/DocumentService.js'
 import logger from '../logger.js'
 
@@ -88,6 +89,13 @@ export class DocumentController {
 
             const { document, filePath } = result
 
+            // Prevent path traversal: ensure file is within uploads directory
+            const uploadsDir = path.resolve('uploads')
+            const resolvedPath = path.resolve(filePath)
+            if (!resolvedPath.startsWith(uploadsDir)) {
+                return res.status(403).json({ error: 'Accès au fichier non autorisé' })
+            }
+
             // Check if physical file exists
             if (!fs.existsSync(filePath)) {
                 return res.status(404).json({ error: 'Fichier introuvable sur le serveur' })
@@ -106,10 +114,18 @@ export class DocumentController {
 
     static async create(req, res) {
         try {
-            const { copropriete_id, nom, fichier_nom, fichier_path } = req.body
-            if (!copropriete_id || !nom || !fichier_nom || !fichier_path) {
+            const { copropriete_id, nom, fichier_nom, fichier_path: rawPath } = req.body
+            if (!copropriete_id || !nom || !fichier_nom || !rawPath) {
                 return res.status(400).json({ error: 'Les champs copropriete_id, nom, fichier_nom et fichier_path sont obligatoires' })
             }
+
+            // Prevent path traversal: ensure file is within uploads directory
+            const uploadsDir = path.resolve('uploads')
+            const resolvedPath = path.resolve(rawPath)
+            if (!resolvedPath.startsWith(uploadsDir)) {
+                return res.status(403).json({ error: 'Le chemin du fichier doit être dans le répertoire uploads' })
+            }
+
             const result = await documentService.create(req.body)
             res.status(201).json({ data: result, message: 'Document créé avec succès' })
         } catch (error) {

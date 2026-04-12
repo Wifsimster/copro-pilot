@@ -104,8 +104,8 @@ function PlanBanner({ plan }: { plan: string }) {
 export default function LoginPage() {
   const { signIn, signUp, isLoading } = useAuthStore()
 
-  const [signInEmail, setSignInEmail] = useState('admin@copropilot.local')
-  const [signInPassword, setSignInPassword] = useState('admin')
+  const [signInEmail, setSignInEmail] = useState('')
+  const [signInPassword, setSignInPassword] = useState('')
   const [signInError, setSignInError] = useState('')
 
   const [signUpName, setSignUpName] = useState('')

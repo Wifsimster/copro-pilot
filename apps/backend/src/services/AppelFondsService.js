@@ -130,47 +130,53 @@ class AppelFondsService {
             const quarterAmount =
                 parseFloat(budget.montant_total) / 4
 
-            const appels = []
-            for (let trimestre = 1; trimestre <= 4; trimestre++) {
-                const existing = await db('appels_fonds')
-                    .where({
-                        copropriete_id: budget.copropriete_id,
-                        annee: budget.annee,
-                        trimestre,
-                    })
-                    .first()
-                if (existing) continue
+            const appels = await db.transaction(async trx => {
+                const created = []
+                for (let trimestre = 1; trimestre <= 4; trimestre++) {
+                    const existing = await trx('appels_fonds')
+                        .where({
+                            copropriete_id: budget.copropriete_id,
+                            annee: budget.annee,
+                            trimestre,
+                        })
+                        .first()
+                    if (existing) continue
 
-                const month = (trimestre - 1) * 3 + 1
-                const dateEmission = `${budget.annee}-${String(month).padStart(2, '0')}-01`
-                const echeanceMonth = month + 2
-                const dateEcheance = `${budget.annee}-${String(echeanceMonth).padStart(2, '0')}-${echeanceMonth === 2 ? '28' : '30'}`
+                    const month = (trimestre - 1) * 3 + 1
+                    const dateEmission = `${budget.annee}-${String(month).padStart(2, '0')}-01`
+                    const echeanceMonth = month + 2
+                    const dateEcheance = `${budget.annee}-${String(echeanceMonth).padStart(2, '0')}-30`
 
-                const appel = await AppelFondsModel.create({
-                    copropriete_id: budget.copropriete_id,
-                    budget_id: budget.id,
-                    trimestre,
-                    annee: budget.annee,
-                    montant_total: quarterAmount,
-                    date_emission: dateEmission,
-                    date_echeance: dateEcheance,
-                    statut: 'brouillon',
-                })
+                    const [appel] = await trx('appels_fonds')
+                        .insert({
+                            copropriete_id: budget.copropriete_id,
+                            budget_id: budget.id,
+                            trimestre,
+                            annee: budget.annee,
+                            montant_total: quarterAmount,
+                            date_emission: dateEmission,
+                            date_echeance: dateEcheance,
+                            statut: 'brouillon',
+                        })
+                        .returning('*')
 
-                for (const lot of lots) {
-                    const montantLot =
-                        (quarterAmount * parseInt(lot.tantiemes, 10)) /
-                        totalTantiemes
-                    await AppelFondsModel.createLigne({
-                        appel_fonds_id: appel.id,
-                        lot_id: lot.id,
-                        coproprietaire_id: lot.coproprietaire_id,
-                        montant: Math.round(montantLot * 100) / 100,
-                    })
+                    for (const lot of lots) {
+                        const montantLot =
+                            (quarterAmount * parseInt(lot.tantiemes, 10)) /
+                            totalTantiemes
+                        await trx('appels_fonds_lignes')
+                            .insert({
+                                appel_fonds_id: appel.id,
+                                lot_id: lot.id,
+                                coproprietaire_id: lot.coproprietaire_id,
+                                montant: Math.round(montantLot * 100) / 100,
+                            })
+                    }
+
+                    created.push(appel)
                 }
-
-                appels.push(appel)
-            }
+                return created
+            })
 
             logger.info(
                 `[AppelFondsService] Generated ${appels.length} appels from budget ${budgetId}`

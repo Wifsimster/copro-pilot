@@ -6,6 +6,7 @@ import {
 } from '../config/stripe.js'
 import { SubscriptionModel } from '../models/Subscription.js'
 import { getUserUsage } from '../middleware/requireQuota.js'
+import knexDatabase from '../config/knex-database.js'
 import logger from '../logger.js'
 
 class StripeService {
@@ -133,21 +134,31 @@ class StripeService {
       // Resolve plan quotas
       const quota = PLAN_QUOTAS[plan] || PLAN_QUOTAS.gratuit
 
-      // Upsert subscription record with quota limits
-      const subscription = await SubscriptionModel.upsertByStripeCustomerId(
-        stripeCustomerId,
-        {
-          user_id: userId,
-          stripe_subscription_id: stripeSubscriptionId,
-          plan,
-          status: 'active',
-          copropriete_limit: quota.coproprietes ?? null,
-          user_limit: quota.users ?? null,
-        }
-      )
+      // Wrap both operations in a transaction to keep
+      // subscription record and user plan in sync
+      const subscription = await knexDatabase
+        .getKnex()
+        .transaction(async trx => {
+          // Upsert subscription record with quota limits
+          const sub =
+            await SubscriptionModel.upsertByStripeCustomerId(
+              stripeCustomerId,
+              {
+                user_id: userId,
+                stripe_subscription_id: stripeSubscriptionId,
+                plan,
+                status: 'active',
+                copropriete_limit: quota.coproprietes ?? null,
+                user_limit: quota.users ?? null,
+              },
+              trx
+            )
 
-      // Denormalize plan to user table for fast middleware checks
-      await SubscriptionModel.updateUserPlan(userId, plan)
+          // Denormalize plan to user table for fast middleware checks
+          await SubscriptionModel.updateUserPlan(userId, plan, trx)
+
+          return sub
+        })
 
       logger.info(
         `[StripeService] Checkout completed: user ${userId} → plan ${plan}`
@@ -194,17 +205,29 @@ class StripeService {
         ? new Date(stripeSubscription.current_period_end * 1000)
         : null
 
-      await SubscriptionModel.update(subscription.user_id, {
-        status: newStatus,
-        current_period_end: periodEnd,
+      // Wrap both operations in a transaction to keep
+      // subscription record and user plan in sync
+      await knexDatabase.getKnex().transaction(async trx => {
+        await SubscriptionModel.update(
+          subscription.user_id,
+          {
+            status: newStatus,
+            current_period_end: periodEnd,
+          },
+          trx
+        )
+
+        // If canceled, revert user plan to gratuit
+        if (newStatus === 'canceled') {
+          await SubscriptionModel.updateUserPlan(
+            subscription.user_id,
+            'gratuit',
+            trx
+          )
+        }
       })
 
-      // If canceled, revert user plan to gratuit
       if (newStatus === 'canceled') {
-        await SubscriptionModel.updateUserPlan(
-          subscription.user_id,
-          'gratuit'
-        )
         logger.info(
           `[StripeService] Subscription canceled for user ${subscription.user_id}`
         )
@@ -228,13 +251,20 @@ class StripeService {
         )
       if (!subscription) return
 
-      await SubscriptionModel.update(subscription.user_id, {
-        status: 'canceled',
+      // Wrap both operations in a transaction to keep
+      // subscription record and user plan in sync
+      await knexDatabase.getKnex().transaction(async trx => {
+        await SubscriptionModel.update(
+          subscription.user_id,
+          { status: 'canceled' },
+          trx
+        )
+        await SubscriptionModel.updateUserPlan(
+          subscription.user_id,
+          'gratuit',
+          trx
+        )
       })
-      await SubscriptionModel.updateUserPlan(
-        subscription.user_id,
-        'gratuit'
-      )
 
       logger.info(
         `[StripeService] Subscription deleted for user ${subscription.user_id}`

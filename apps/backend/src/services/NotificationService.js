@@ -31,11 +31,11 @@ class NotificationService {
         }
     }
 
-    async markAsRead(id) {
+    async markAsRead(id, userId) {
         try {
             const existing = await NotificationModel.getById(id)
             if (!existing) return null
-            const result = await NotificationModel.markAsRead(id)
+            const result = await NotificationModel.markAsRead(id, userId)
             logger.info(`[NotificationService] Notification marked as read (ID: ${id})`)
             return result
         } catch (error) {
@@ -55,11 +55,11 @@ class NotificationService {
         }
     }
 
-    async delete(id) {
+    async delete(id, userId) {
         try {
             const existing = await NotificationModel.getById(id)
             if (!existing) return false
-            await NotificationModel.delete(id)
+            await NotificationModel.delete(id, userId)
             logger.info(`[NotificationService] Notification deleted (ID: ${id})`)
             return true
         } catch (error) {

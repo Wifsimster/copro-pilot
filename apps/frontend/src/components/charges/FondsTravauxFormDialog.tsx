@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -41,6 +42,16 @@ export function FondsTravauxFormDialog({ open, onOpenChange, coproprieteId, onSu
       solde: defaultValues?.solde || 0,
     },
   })
+
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        annee: defaultValues?.annee || new Date().getFullYear(),
+        cotisation_annuelle: defaultValues?.cotisation_annuelle || 0,
+        solde: defaultValues?.solde || 0,
+      })
+    }
+  }, [open, defaultValues, form])
 
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({ ...data, copropriete_id: coproprieteId })

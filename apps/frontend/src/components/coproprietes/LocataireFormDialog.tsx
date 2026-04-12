@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -47,6 +48,19 @@ export function LocataireFormDialog({ open, onOpenChange, lotId, onSubmit, isLoa
       date_sortie: defaultValues?.date_sortie || '',
     },
   })
+
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        nom: defaultValues?.nom || '',
+        prenom: defaultValues?.prenom || '',
+        email: defaultValues?.email || '',
+        telephone: defaultValues?.telephone || '',
+        date_entree: defaultValues?.date_entree || '',
+        date_sortie: defaultValues?.date_sortie || '',
+      })
+    }
+  }, [open, defaultValues, form])
 
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({

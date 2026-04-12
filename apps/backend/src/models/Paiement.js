@@ -8,8 +8,13 @@ export class PaiementModel {
         return db('paiements')
             .select('paiements.*', 'coproprietaires.nom', 'coproprietaires.prenom')
             .join('coproprietaires', 'paiements.coproprietaire_id', 'coproprietaires.id')
-            .join('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
-            .where('appels_fonds.copropriete_id', coproprieteId)
+            .leftJoin('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
+            .leftJoin('lots', 'coproprietaires.id', 'lots.coproprietaire_id')
+            .where(function () {
+                this.where('appels_fonds.copropriete_id', coproprieteId)
+                    .orWhere('lots.copropriete_id', coproprieteId)
+            })
+            .groupBy('paiements.id', 'coproprietaires.nom', 'coproprietaires.prenom')
             .orderBy('paiements.date_paiement', 'desc')
     }
 

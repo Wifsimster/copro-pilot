@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -77,6 +78,25 @@ export function ContratFormDialog({
       notes: defaultValues?.notes || '',
     },
   })
+
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        prestataire_id: defaultValues?.prestataire_id || 0,
+        objet: defaultValues?.objet || '',
+        type: defaultValues?.type || '',
+        date_debut: defaultValues?.date_debut || new Date().toISOString().slice(0, 10),
+        date_fin: defaultValues?.date_fin || '',
+        montant_annuel: defaultValues?.montant_annuel || 0,
+        frequence_paiement: defaultValues?.frequence_paiement || 'annuel',
+        preavis_mois: defaultValues?.preavis_mois || 0,
+        reconduction_tacite: defaultValues?.reconduction_tacite ?? true,
+        conditions_resiliation: defaultValues?.conditions_resiliation || '',
+        statut: defaultValues?.statut || 'actif',
+        notes: defaultValues?.notes || '',
+      })
+    }
+  }, [open, defaultValues, form])
 
   const handleFormSubmit = async (data: ContratFormData) => {
     await onSubmit({
