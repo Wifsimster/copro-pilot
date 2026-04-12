@@ -335,6 +335,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <button
             onClick={() => setSidebarOpen(false)}
             className="ml-auto lg:hidden"
+            aria-label="Fermer le menu"
           >
             <X className="h-5 w-5 text-stone-500" />
           </button>
@@ -450,6 +451,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <button
             onClick={() => setSidebarOpen(true)}
             className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800 lg:hidden"
+            aria-label="Ouvrir le menu"
           >
             <Menu className="h-5 w-5" />
           </button>
