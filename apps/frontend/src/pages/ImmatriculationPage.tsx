@@ -302,6 +302,7 @@ export default function ImmatriculationPage() {
                               <button
                                 onClick={() => { setDonneesPreparees(null); setEditingDeclaration(decl); setShowDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -310,6 +311,7 @@ export default function ImmatriculationPage() {
                                   if (window.confirm('Supprimer cette declaration ?')) deleteDeclaration.mutate(decl.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
