@@ -50,6 +50,19 @@ export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, o
     },
   })
 
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        titre: defaultValues?.titre || '',
+        description: defaultValues?.description || '',
+        prestataire: defaultValues?.prestataire || '',
+        montant: defaultValues?.montant ?? '',
+        date_realisation: defaultValues?.date_realisation || new Date().toISOString().split('T')[0],
+        categorie: defaultValues?.categorie || '',
+      })
+    }
+  }, [open, defaultValues, form])
+
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({
       ...data,
