@@ -18,6 +18,27 @@ export class IncidentModel {
             .orderBy('incidents.date_signalement', 'desc')
     }
 
+    static async getAllByCoproprietePaginated(coproprieteId, { limit, offset, sortBy, sortOrder }) {
+        const db = getDb()
+        const [{ count }] = await db('incidents')
+            .where('copropriete_id', coproprieteId)
+            .count('id as count')
+        const data = await db('incidents')
+            .select(
+                'incidents.*',
+                'lots.numero as lot_numero',
+                'coproprietaires.nom as signale_par_nom',
+                'coproprietaires.prenom as signale_par_prenom'
+            )
+            .leftJoin('lots', 'incidents.lot_id', 'lots.id')
+            .leftJoin('coproprietaires', 'incidents.signale_par_id', 'coproprietaires.id')
+            .where('incidents.copropriete_id', coproprieteId)
+            .orderBy(sortBy, sortOrder)
+            .limit(limit)
+            .offset(offset)
+        return { data, total: parseInt(count) }
+    }
+
     static async getById(id) {
         const db = getDb()
         return db('incidents')

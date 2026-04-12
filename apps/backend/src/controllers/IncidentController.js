@@ -1,10 +1,18 @@
 import { incidentService } from '../services/IncidentService.js'
+import { IncidentModel } from '../models/Incident.js'
+import { parsePaginationParams, paginatedResponse } from '../utils/pagination.js'
 import logger from '../logger.js'
 
 export class IncidentController {
     static async getAllByCopropriete(req, res) {
         try {
             const { coproprieteId } = req.params
+            const { page, limit, sortBy, sortOrder } = req.query
+            if (page || limit || sortBy || sortOrder) {
+                const params = parsePaginationParams(req.query)
+                const { data, total } = await IncidentModel.getAllByCoproprietePaginated(coproprieteId, params)
+                return res.json(paginatedResponse(data, total, params))
+            }
             const incidents = await incidentService.getAllByCopropriete(coproprieteId)
             res.json({ data: incidents })
         } catch (error) {

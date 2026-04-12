@@ -1,13 +1,15 @@
 import fs from 'fs'
 import path from 'path'
 import { documentService } from '../services/DocumentService.js'
+import { DocumentModel } from '../models/Document.js'
+import { parsePaginationParams, paginatedResponse } from '../utils/pagination.js'
 import logger from '../logger.js'
 
 export class DocumentController {
     static async getAllByCopropriete(req, res) {
         try {
             const { coproprieteId } = req.params
-            const { categorie, entite_type, search } = req.query
+            const { categorie, entite_type, search, page, limit, sortBy, sortOrder } = req.query
 
             if (categorie || entite_type || search) {
                 const documents = await documentService.getByFilters(coproprieteId, {
@@ -16,6 +18,12 @@ export class DocumentController {
                     search,
                 })
                 return res.json({ data: documents })
+            }
+
+            if (page || limit || sortBy || sortOrder) {
+                const params = parsePaginationParams(req.query)
+                const { data, total } = await DocumentModel.getAllByCoproprietePaginated(coproprieteId, params)
+                return res.json(paginatedResponse(data, total, params))
             }
 
             const documents = await documentService.getAllByCopropriete(coproprieteId)

@@ -6,6 +6,7 @@ import helmet from 'helmet'
 import { toNodeHandler } from 'better-auth/node'
 
 import routes from './routes/index.js'
+import { correlationId } from './middleware/correlationId.js'
 import { requestLogger } from './middleware/requestLogger.js'
 import { validateJSON } from './middleware/validation.js'
 import { apiLimiter, authLimiter } from './middleware/rateLimiter.js'
@@ -91,6 +92,7 @@ export function createApp({ getDb, auth } = {}) {
   app.use(cookieParser())
 
   // Custom middleware
+  app.use(correlationId)
   app.use(requestLogger)
   app.use(validateJSON)
 

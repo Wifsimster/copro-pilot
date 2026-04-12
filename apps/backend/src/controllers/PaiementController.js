@@ -1,10 +1,18 @@
 import { paiementService } from '../services/PaiementService.js'
+import { PaiementModel } from '../models/Paiement.js'
+import { parsePaginationParams, paginatedResponse } from '../utils/pagination.js'
 import logger from '../logger.js'
 
 export class PaiementController {
     static async getAllByCopropriete(req, res) {
         try {
             const { coproprieteId } = req.params
+            const { page, limit, sortBy, sortOrder } = req.query
+            if (page || limit || sortBy || sortOrder) {
+                const params = parsePaginationParams(req.query)
+                const { data, total } = await PaiementModel.getAllByCoproprietePaginated(coproprieteId, params)
+                return res.json(paginatedResponse(data, total, params))
+            }
             const paiements = await paiementService.getAllByCopropriete(coproprieteId)
             res.json({ data: paiements })
         } catch (error) {

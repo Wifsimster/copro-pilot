@@ -1,5 +1,6 @@
 import { ConvocationAGModel } from '../models/ConvocationAG.js'
 import { AssembleeGeneraleModel } from '../models/AssembleeGenerale.js'
+import { eventDispatchService } from './EventDispatchService.js'
 import logger from '../logger.js'
 
 class ConvocationAGService {

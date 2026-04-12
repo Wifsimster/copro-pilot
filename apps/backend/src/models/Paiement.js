@@ -18,6 +18,34 @@ export class PaiementModel {
             .orderBy('paiements.date_paiement', 'desc')
     }
 
+    static async getAllByCoproprietePaginated(coproprieteId, { limit, offset, sortBy, sortOrder }) {
+        const db = getDb()
+        const countQuery = db('paiements')
+            .join('coproprietaires', 'paiements.coproprietaire_id', 'coproprietaires.id')
+            .leftJoin('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
+            .leftJoin('lots', 'coproprietaires.id', 'lots.coproprietaire_id')
+            .where(function () {
+                this.where('appels_fonds.copropriete_id', coproprieteId)
+                    .orWhere('lots.copropriete_id', coproprieteId)
+            })
+            .countDistinct('paiements.id as count')
+        const [{ count }] = await countQuery
+        const data = await db('paiements')
+            .select('paiements.*', 'coproprietaires.nom', 'coproprietaires.prenom')
+            .join('coproprietaires', 'paiements.coproprietaire_id', 'coproprietaires.id')
+            .leftJoin('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
+            .leftJoin('lots', 'coproprietaires.id', 'lots.coproprietaire_id')
+            .where(function () {
+                this.where('appels_fonds.copropriete_id', coproprieteId)
+                    .orWhere('lots.copropriete_id', coproprieteId)
+            })
+            .groupBy('paiements.id', 'coproprietaires.nom', 'coproprietaires.prenom')
+            .orderBy(sortBy, sortOrder)
+            .limit(limit)
+            .offset(offset)
+        return { data, total: parseInt(count) }
+    }
+
     static async getAllByCoproprietaire(coproprietaireId) {
         const db = getDb()
         return db('paiements')

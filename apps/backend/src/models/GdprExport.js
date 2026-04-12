@@ -18,6 +18,9 @@ export class GdprExportModel {
     let lots = []
     let paiements = []
     let charges = []
+    let documents = []
+    let incidents = []
+    let presencesAg = []
 
     if (coproprietaire) {
       lots = await db('lots')
@@ -44,6 +47,42 @@ export class GdprExportModel {
           'appels_fonds.id'
         )
         .where('appels_fonds_lignes.coproprietaire_id', coproprietaire.id)
+
+      // Documents associated with the coproprietaire
+      documents = await db('documents')
+        .where('entite_type', 'coproprietaire')
+        .where('entite_id', coproprietaire.id)
+        .orderBy('created_at', 'desc')
+
+      // Incidents reported by the coproprietaire
+      incidents = await db('incidents')
+        .select(
+          'incidents.*',
+          'coproprietes.nom as copropriete_nom'
+        )
+        .join(
+          'coproprietes',
+          'incidents.copropriete_id',
+          'coproprietes.id'
+        )
+        .where('incidents.signale_par_id', coproprietaire.id)
+        .orderBy('incidents.date_signalement', 'desc')
+
+      // Assembly presences for the coproprietaire
+      presencesAg = await db('presences_ag')
+        .select(
+          'presences_ag.*',
+          'assemblees_generales.date as ag_date',
+          'assemblees_generales.type as ag_type',
+          'assemblees_generales.lieu as ag_lieu'
+        )
+        .join(
+          'assemblees_generales',
+          'presences_ag.ag_id',
+          'assemblees_generales.id'
+        )
+        .where('presences_ag.coproprietaire_id', coproprietaire.id)
+        .orderBy('assemblees_generales.date', 'desc')
     }
 
     const consents = await db('gdpr_consents')
@@ -54,12 +93,21 @@ export class GdprExportModel {
       .where('user_id', userId)
       .orderBy('created_at', 'desc')
 
+    // Audit log entries for actions performed by the user
+    const auditLog = await db('audit_log')
+      .where('user_id', userId)
+      .orderBy('created_at', 'desc')
+
     return {
       user,
       coproprietaire: coproprietaire || null,
       lots,
       paiements,
       charges,
+      documents,
+      incidents,
+      presences_ag: presencesAg,
+      audit_log: auditLog,
       consents,
       notifications,
       exported_at: new Date().toISOString(),

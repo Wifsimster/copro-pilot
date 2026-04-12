@@ -1,9 +1,17 @@
 import { coproprieteService } from '../services/CoproprieteService.js'
+import { CoproprieteModel } from '../models/Copropriete.js'
+import { parsePaginationParams, paginatedResponse } from '../utils/pagination.js'
 import logger from '../logger.js'
 
 export class CoproprieteController {
     static async getAll(req, res) {
         try {
+            const { page, limit, sortBy, sortOrder } = req.query
+            if (page || limit || sortBy || sortOrder) {
+                const params = parsePaginationParams(req.query)
+                const { data, total } = await CoproprieteModel.getAllPaginated(params)
+                return res.json(paginatedResponse(data, total, params))
+            }
             const coproprietes = await coproprieteService.getAll()
             res.json({ data: coproprietes })
         } catch (error) {

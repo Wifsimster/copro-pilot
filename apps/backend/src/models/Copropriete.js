@@ -1,18 +1,56 @@
 import knexDatabase from '../config/knex-database.js'
+import cache from '../utils/cache.js'
 
 const getDb = () => knexDatabase.getKnex()
 
+const CACHE_KEY_ALL = 'coproprietes:all'
+const CACHE_KEY_PREFIX = 'coproprietes:id:'
+const CACHE_TTL = 300 // 5 minutes
+
 export class CoproprieteModel {
+    static invalidateCache(id) {
+        cache.del(CACHE_KEY_ALL)
+        if (id) {
+            cache.del(`${CACHE_KEY_PREFIX}${id}`)
+        }
+    }
+
     static async getAll() {
+        const cached = cache.get(CACHE_KEY_ALL)
+        if (cached) return cached
+
         const db = getDb()
-        return db('coproprietes')
+        const result = await db('coproprietes')
             .select('*')
             .orderBy('nom', 'asc')
+
+        cache.set(CACHE_KEY_ALL, result, CACHE_TTL)
+        return result
+    }
+
+    static async getAllPaginated({ limit, offset, sortBy, sortOrder }) {
+        const db = getDb()
+        const [{ count }] = await db('coproprietes').count('id as count')
+        const data = await db('coproprietes')
+            .select('*')
+            .orderBy(sortBy, sortOrder)
+            .limit(limit)
+            .offset(offset)
+        return { data, total: parseInt(count) }
     }
 
     static async getById(id) {
+        const cacheKey = `${CACHE_KEY_PREFIX}${id}`
+        const cached = cache.get(cacheKey)
+        if (cached) return cached
+
         const db = getDb()
-        return db('coproprietes').where('id', id).first()
+        const result = await db('coproprietes').where('id', id).first()
+
+        if (result) {
+            cache.set(cacheKey, result, CACHE_TTL)
+        }
+        return result
     }
 
     static async create(data) {
@@ -37,6 +75,7 @@ export class CoproprieteModel {
                 energie_chauffage: data.energie_chauffage || null,
             })
             .returning('*')
+        CoproprieteModel.invalidateCache()
         return result
     }
 
@@ -49,12 +88,15 @@ export class CoproprieteModel {
                 updated_at: db.fn.now(),
             })
             .returning('*')
+        CoproprieteModel.invalidateCache(id)
         return result
     }
 
     static async delete(id) {
         const db = getDb()
-        return db('coproprietes').where('id', id).del()
+        const result = await db('coproprietes').where('id', id).del()
+        CoproprieteModel.invalidateCache(id)
+        return result
     }
 
     static async getStats(id) {

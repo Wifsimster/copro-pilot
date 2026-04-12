@@ -34,9 +34,64 @@ class GdprErasureService {
         await trx('destinataires_convocation')
           .where('coproprietaire_id', coproprietaire.id)
           .update({ email_envoye_a: null })
+
+        // 4. Anonymize incidents reported by the coproprietaire
+        await trx('incidents')
+          .where('signale_par_id', coproprietaire.id)
+          .update({
+            signale_par_id: null,
+            notes: null,
+            updated_at: db.fn.now(),
+          })
+
+        // 5. Anonymize/remove personal documents
+        await trx('documents')
+          .where('entite_type', 'coproprietaire')
+          .where('entite_id', coproprietaire.id)
+          .update({
+            nom: 'Document supprime (RGPD)',
+            description: null,
+            entite_type: null,
+            entite_id: null,
+            updated_at: db.fn.now(),
+          })
+
+        // 6. Anonymize assembly presences
+        await trx('presences_ag')
+          .where('coproprietaire_id', coproprietaire.id)
+          .update({
+            statut: 'absent',
+            represente_par_id: null,
+            updated_at: db.fn.now(),
+          })
+
+        // Also clear presences where this person was a representative
+        await trx('presences_ag')
+          .where('represente_par_id', coproprietaire.id)
+          .update({
+            represente_par_id: null,
+            updated_at: db.fn.now(),
+          })
+
+        // 7. Anonymize locataires linked to the user's lots
+        const lotIds = await trx('lots')
+          .where('coproprietaire_id', coproprietaire.id)
+          .pluck('id')
+
+        if (lotIds.length > 0) {
+          await trx('locataires')
+            .whereIn('lot_id', lotIds)
+            .update({
+              nom: 'ANONYMISE',
+              prenom: 'ANONYMISE',
+              email: null,
+              telephone: null,
+              updated_at: db.fn.now(),
+            })
+        }
       }
 
-      // 4. Delete non-financial personal data
+      // 8. Delete non-financial personal data
       await trx('notifications').where('user_id', userId).del()
       await trx('gdpr_consents').where('user_id', userId).del()
 

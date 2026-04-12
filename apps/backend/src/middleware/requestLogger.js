@@ -15,7 +15,9 @@ export const requestLogger = (req, res, next) => {
 
     const start = Date.now()
 
-    logger.info(`[${req.method}] ${req.path}`)
+    const rid = req.id ? `[${req.id}] ` : ''
+
+    logger.info(`${rid}[${req.method}] ${req.path}`)
 
     if (['POST', 'PUT', 'PATCH'].includes(req.method) && req.body) {
         const logBody = (req.body && typeof req.body === 'object' && !Array.isArray(req.body))
@@ -35,20 +37,20 @@ export const requestLogger = (req, res, next) => {
             })
         }
 
-        logger.debug(`[${req.method}] ${req.path} - Body:`, logBody)
+        logger.debug(`${rid}[${req.method}] ${req.path} - Body:`, logBody)
     }
 
     const originalJson = res.json
     res.json = function (body) {
         const duration = Date.now() - start
-        logger.info(`[${req.method}] ${req.path} - ${res.statusCode} (${duration}ms)`)
+        logger.info(`${rid}[${req.method}] ${req.path} - ${res.statusCode} (${duration}ms)`)
 
         if (res.statusCode >= 400) {
             try {
                 const errorBody = (body && typeof body === 'object') ? body : { message: String(body) }
-                logger.error(`[${req.method}] ${req.path} - Error Response:`, errorBody)
+                logger.error(`${rid}[${req.method}] ${req.path} - Error Response:`, errorBody)
             } catch (logError) {
-                logger.error(`[${req.method}] ${req.path} - Error Response: (unable to serialize)`)
+                logger.error(`${rid}[${req.method}] ${req.path} - Error Response: (unable to serialize)`)
             }
         }
 

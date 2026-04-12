@@ -11,6 +11,7 @@ import { FondsTravauxFormDialog } from '@/components/charges/FondsTravauxFormDia
 import { PaiementFormDialog } from '@/components/charges/PaiementFormDialog'
 import type { BudgetPrevisionnel, AppelFonds, FondsTravaux, Paiement } from '@/types'
 import { Receipt, Plus, Trash2, Pencil, FileText, Banknote, PiggyBank, CreditCard } from 'lucide-react'
+import { ErrorAlert } from '@/components/layout/ErrorAlert'
 
 const STATUT_BUDGET_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',

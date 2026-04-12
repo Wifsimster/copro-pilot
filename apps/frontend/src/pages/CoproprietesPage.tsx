@@ -4,9 +4,10 @@ import type { CoproprieteWithStats } from '@/api/coproprietes'
 import { Building2, Plus, Trash2, Pencil, Eye, MapPin } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { CoproprieteFormDialog } from '@/components/coproprietes/CoproprieteFormDialog'
+import { ErrorAlert } from '@/components/layout/ErrorAlert'
 
 export default function CoproprietesPage() {
-  const { data: coproprietes, isLoading } = useCoproprietes()
+  const { data: coproprietes, isLoading, isError, error } = useCoproprietes()
   const createMutation = useCreateCopropriete()
   const updateMutation = useUpdateCopropriete()
   const deleteMutation = useDeleteCopropriete()
@@ -41,6 +42,8 @@ export default function CoproprietesPage() {
 
   return (
     <div className="space-y-6">
+      {isError && <ErrorAlert error={error} message="Impossible de charger les coproprietes" />}
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Copropriétés</h1>
