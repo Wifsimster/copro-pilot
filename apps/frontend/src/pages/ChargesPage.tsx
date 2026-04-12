@@ -462,9 +462,7 @@ export default function ChargesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce fonds travaux ?')) deleteFonds.mutate(fonds.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'fonds', id: fonds.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -500,6 +498,21 @@ export default function ChargesPage() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'budget') deleteBudget.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'appel') deleteAppel.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'paiement') deletePaiement.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'fonds') deleteFonds.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }
