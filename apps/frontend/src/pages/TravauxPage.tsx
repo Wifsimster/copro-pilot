@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useIncidentsByCopropriete, useCreateIncident, useUpdateIncident, useDeleteIncident } from '@/hooks/useIncidents'
 import { useInterventionsByCopropriete, useCreateIntervention, useUpdateIntervention, useDeleteIntervention } from '@/hooks/useInterventions'
@@ -85,6 +86,7 @@ export default function TravauxPage() {
   const updateCarnet = useUpdateCarnetEntretien()
   const deleteCarnet = useDeleteCarnetEntretien()
   const [editingCarnet, setEditingCarnet] = useState<CarnetEntretien | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'incident' | 'intervention' | 'carnet', id: number } | null>(null)
 
   return (
     <div className="space-y-6">
@@ -185,9 +187,7 @@ export default function TravauxPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cet incident ?')) deleteIncident.mutate(incident.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'incident', id: incident.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -290,9 +290,7 @@ export default function TravauxPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cette intervention ?')) deleteIntervention.mutate(inter.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'intervention', id: inter.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -387,9 +385,7 @@ export default function TravauxPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cette entree ?')) deleteCarnet.mutate(entree.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'carnet', id: entree.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -425,6 +421,20 @@ export default function TravauxPage() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'incident') deleteIncident.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'intervention') deleteIntervention.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'carnet') deleteCarnet.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }

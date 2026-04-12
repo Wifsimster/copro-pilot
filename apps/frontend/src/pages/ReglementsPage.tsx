@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import {
   useReglementsByCopropriete,
@@ -68,6 +69,7 @@ export default function ReglementsPage() {
   const [editingReglement, setEditingReglement] = useState<ReglementCopropriete | null>(null)
   const [editingArticle, setEditingArticle] = useState<ArticleReglement | null>(null)
   const [selectedReglementId, setSelectedReglementId] = useState<number | undefined>(undefined)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'reglement' | 'article', id: number } | null>(null)
 
   const { data: reglements, isLoading: loadingReglements } = useReglementsByCopropriete(selectedCoproId)
   const { data: articles, isLoading: loadingArticles } = useArticlesByReglement(selectedReglementId)
@@ -187,9 +189,7 @@ export default function ReglementsPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce reglement ?')) deleteReglement.mutate(reglement.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'reglement', id: reglement.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -302,9 +302,7 @@ export default function ReglementsPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cet article ?')) deleteArticle.mutate(article.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'article', id: article.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -342,6 +340,19 @@ export default function ReglementsPage() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'reglement') deleteReglement.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'article') deleteArticle.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }

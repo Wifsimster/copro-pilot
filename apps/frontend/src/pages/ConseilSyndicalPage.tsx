@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useCoproprietaires } from '@/hooks/useCoproprietaires'
 import { useAssembleesByCopropriete } from '@/hooks/useAssemblees'
@@ -25,6 +26,7 @@ export default function ConseilSyndicalPage() {
 
   const [showDialog, setShowDialog] = useState(false)
   const [editingMembre, setEditingMembre] = useState<MembreConseilSyndical | null>(null)
+  const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const { data: coproprietaires } = useCoproprietaires()
   const { data: assemblees } = useAssembleesByCopropriete(selectedCoproId)
@@ -133,9 +135,7 @@ export default function ConseilSyndicalPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => {
-                              if (window.confirm('Supprimer ce membre du conseil syndical ?')) deleteMembre.mutate(membre.id)
-                            }}
+                            onClick={() => setDeleteId(membre.id)}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -171,6 +171,15 @@ export default function ConseilSyndicalPage() {
           />
         </div>
       )}
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(o) => !o && setDeleteId(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => { deleteMembre.mutate(deleteId!); setDeleteId(null) }}
+      />
     </div>
   )
 }

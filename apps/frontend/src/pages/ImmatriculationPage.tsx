@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
 import {
@@ -47,6 +48,7 @@ export default function ImmatriculationPage() {
   const [isPreparating, setIsPreparating] = useState(false)
   const [complianceData, setComplianceData] = useState<DonneesDeclarees | null>(null)
   const [expandedRow, setExpandedRow] = useState<number | null>(null)
+  const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const { data: coproprietes } = useCoproprietes()
   const { data: declarations, isLoading } = useDeclarationsRegistreByCopropriete(selectedCoproId)
@@ -304,9 +306,7 @@ export default function ImmatriculationPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cette declaration ?')) deleteDeclaration.mutate(decl.id)
-                                }}
+                                onClick={() => setDeleteId(decl.id)}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -351,6 +351,15 @@ export default function ImmatriculationPage() {
           </div>
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(o) => !o && setDeleteId(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => { deleteDeclaration.mutate(deleteId!); setDeleteId(null) }}
+      />
     </div>
   )
 }

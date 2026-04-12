@@ -286,9 +286,7 @@ export default function ContentieuxPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer cette procedure ?')) deleteProcedure.mutate(procedure.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'procedure', id: procedure.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -324,6 +322,19 @@ export default function ContentieuxPage() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'relance') deleteRelance.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'procedure') deleteProcedure.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }

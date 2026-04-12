@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -121,6 +122,7 @@ export default function TicketsPage() {
   const [editingTicket, setEditingTicket] = useState<Ticket | null>(null)
   const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null)
   const [newMessage, setNewMessage] = useState('')
+  const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -257,13 +259,7 @@ export default function TicketsPage() {
                 Modifier
               </button>
               <button
-                onClick={() => {
-                  if (window.confirm('Supprimer ce ticket ?')) {
-                    deleteTicket.mutate(selectedTicket.id, {
-                      onSuccess: () => setSelectedTicketId(null),
-                    })
-                  }
-                }}
+                onClick={() => setDeleteId(selectedTicket.id)}
                 className="flex items-center gap-2 rounded-lg border border-red-200 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
               >
                 <Trash2 className="h-4 w-4" />
@@ -565,10 +561,7 @@ export default function TicketsPage() {
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => {
-                              if (window.confirm('Supprimer ce ticket ?'))
-                                deleteTicket.mutate(ticket.id)
-                            }}
+                            onClick={() => setDeleteId(ticket.id)}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -754,6 +747,20 @@ export default function TicketsPage() {
           </div>
         </FormSection>
       </FormDialog>
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(o) => !o && setDeleteId(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          deleteTicket.mutate(deleteId!, {
+            onSuccess: () => setSelectedTicketId(null),
+          })
+          setDeleteId(null)
+        }}
+      />
     </div>
   )
 }

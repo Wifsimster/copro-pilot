@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { usePrestataires, useCreatePrestataire, useUpdatePrestataire, useDeletePrestataire } from '@/hooks/usePrestataires'
 import { useContratsByCopropriete, useCreateContrat, useUpdateContrat, useDeleteContrat } from '@/hooks/useContrats'
@@ -40,6 +41,7 @@ export default function ContratsPage() {
   const [editingContrat, setEditingContrat] = useState<Contrat | null>(null)
   const [showPrestataireDialog, setShowPrestataireDialog] = useState(false)
   const [editingPrestataire, setEditingPrestataire] = useState<Prestataire | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'contrat' | 'prestataire', id: number } | null>(null)
 
   const { data: prestataires, isLoading: loadingPrestataires, isError: isErrorPrestataires, error: errorPrestataires } = usePrestataires()
   const { data: contrats, isLoading: loadingContrats, isError: isErrorContrats, error: errorContrats } = useContratsByCopropriete(selectedCoproId)
@@ -175,9 +177,7 @@ export default function ContratsPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce contrat ?')) deleteContrat.mutate(contrat.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'contrat', id: contrat.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -272,9 +272,7 @@ export default function ContratsPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce prestataire ?')) deletePrestataire.mutate(presta.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'prestataire', id: presta.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -309,6 +307,19 @@ export default function ContratsPage() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'contrat') deleteContrat.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'prestataire') deletePrestataire.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }
