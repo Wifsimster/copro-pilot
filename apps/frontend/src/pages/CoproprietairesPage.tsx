@@ -109,6 +109,7 @@ export default function CoproprietairesPage() {
                     onClick={() => setEditingCopro(copro)}
                     className="rounded p-1 text-stone-400 hover:text-emerald-700"
                     title="Modifier"
+                    aria-label="Modifier"
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
@@ -116,6 +117,7 @@ export default function CoproprietairesPage() {
                     onClick={() => handleDelete(copro.id, copro.nom, copro.prenom)}
                     className="rounded p-1 text-stone-400 hover:text-red-600"
                     title="Supprimer"
+                    aria-label="Supprimer"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

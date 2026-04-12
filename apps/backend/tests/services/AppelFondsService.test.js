@@ -80,8 +80,9 @@ function makeChain(resolvedValue) {
 }
 
 const mockKnex = vi.fn(() => {
-  const result = dbCallResults[dbCallIndex]
-    ?? dbCallResults[dbCallResults.length - 1]
+  const result = dbCallIndex < dbCallResults.length
+    ? dbCallResults[dbCallIndex]
+    : dbCallResults[dbCallResults.length - 1]
   dbCallIndex++
   return makeChain(result)
 })
@@ -98,8 +99,10 @@ mockKnex.transaction = vi.fn(async callback => {
   trxCallIndex = 0
 
   const trx = vi.fn(() => {
-    const result = trxCallResults[trxCallIndex]
-      ?? trxCallResults[trxCallResults.length - 1]
+    const idx = trxCallIndex
+    const result = idx < trxCallResults.length
+      ? trxCallResults[idx]
+      : trxCallResults[trxCallResults.length - 1]
     trxCallIndex++
     return makeChain(result)
   })

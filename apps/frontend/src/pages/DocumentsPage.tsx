@@ -235,6 +235,7 @@ export default function DocumentsPage() {
                           onClick={() => setPreviewDoc(doc)}
                           className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                           title="Previsualiser"
+                          aria-label="Previsualiser"
                         >
                           <Eye className="size-4" />
                         </button>
@@ -243,6 +244,7 @@ export default function DocumentsPage() {
                         href={documentsApi.getDownloadUrl(doc.id)}
                         className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                         title="Telecharger"
+                        aria-label="Telecharger"
                       >
                         <Download className="size-4" />
                       </a>
@@ -250,6 +252,7 @@ export default function DocumentsPage() {
                         onClick={() => setEditingDoc(doc)}
                         className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                         title="Modifier"
+                        aria-label="Modifier"
                       >
                         <Pencil className="size-4" />
                       </button>
@@ -257,6 +260,7 @@ export default function DocumentsPage() {
                         onClick={() => { if (confirm('Supprimer ce document ?')) deleteDocument.mutate(doc.id) }}
                         className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
                         title="Supprimer"
+                        aria-label="Supprimer"
                       >
                         <Trash2 className="size-4" />
                       </button>
@@ -283,12 +287,14 @@ export default function DocumentsPage() {
                   href={documentsApi.getDownloadUrl(previewDoc.id)}
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
                   title="Telecharger"
+                  aria-label="Telecharger"
                 >
                   <Download className="size-4" />
                 </a>
                 <button
                   onClick={() => setPreviewDoc(null)}
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
+                  aria-label="Fermer"
                 >
                   <X className="size-5" />
                 </button>

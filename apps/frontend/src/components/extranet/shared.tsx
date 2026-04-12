@@ -67,6 +67,7 @@ export function DocRow({
         href={documentsApi.getDownloadUrl(docId)}
         className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
         title="Telecharger"
+        aria-label="Telecharger"
       >
         <Download className="size-4" />
       </a>
