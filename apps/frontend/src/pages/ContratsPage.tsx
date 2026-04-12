@@ -6,6 +6,7 @@ import { PrestataireFormDialog } from '@/components/contrats/PrestataireFormDial
 import { ContratFormDialog } from '@/components/contrats/ContratFormDialog'
 import type { Contrat, Prestataire } from '@/types'
 import { Handshake, Plus, Trash2, Pencil, FileSignature, Building2, AlertTriangle } from 'lucide-react'
+import { ErrorAlert } from '@/components/layout/ErrorAlert'
 
 const STATUT_CONTRAT_LABELS: Record<string, string> = {
   actif: 'Actif',
@@ -39,8 +40,8 @@ export default function ContratsPage() {
   const [showPrestataireDialog, setShowPrestataireDialog] = useState(false)
   const [editingPrestataire, setEditingPrestataire] = useState<Prestataire | null>(null)
 
-  const { data: prestataires, isLoading: loadingPrestataires } = usePrestataires()
-  const { data: contrats, isLoading: loadingContrats } = useContratsByCopropriete(selectedCoproId)
+  const { data: prestataires, isLoading: loadingPrestataires, isError: isErrorPrestataires, error: errorPrestataires } = usePrestataires()
+  const { data: contrats, isLoading: loadingContrats, isError: isErrorContrats, error: errorContrats } = useContratsByCopropriete(selectedCoproId)
 
   const createContrat = useCreateContrat()
   const updateContrat = useUpdateContrat()
@@ -55,6 +56,9 @@ export default function ContratsPage() {
     return diff > 0 && diff < 90 * 24 * 60 * 60 * 1000
   }
 
+  const contratsError = errorContrats || errorPrestataires
+  const hasContratsError = isErrorContrats || isErrorPrestataires
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -63,6 +67,8 @@ export default function ContratsPage() {
           <p className="text-stone-500 dark:text-stone-400">Gestion des contrats prestataires et suivi des echeances</p>
         </div>
       </div>
+
+      {hasContratsError && <ErrorAlert error={contratsError as Error} message="Impossible de charger les contrats" />}
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
@@ -174,6 +180,7 @@ export default function ContratsPage() {
                               <button
                                 onClick={() => { setEditingContrat(contrat); setShowContratDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -182,6 +189,7 @@ export default function ContratsPage() {
                                   if (window.confirm('Supprimer ce contrat ?')) deleteContrat.mutate(contrat.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -269,6 +277,7 @@ export default function ContratsPage() {
                               <button
                                 onClick={() => { setEditingPrestataire(presta); setShowPrestataireDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -277,6 +286,7 @@ export default function ContratsPage() {
                                   if (window.confirm('Supprimer ce prestataire ?')) deletePrestataire.mutate(presta.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>

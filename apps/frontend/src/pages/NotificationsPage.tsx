@@ -165,6 +165,7 @@ export default function NotificationsPage() {
                       onClick={() => navigate(notification.lien!)}
                       className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-stone-600 dark:hover:bg-stone-800 dark:hover:text-stone-300"
                       title="Voir"
+                      aria-label="Voir"
                     >
                       <ExternalLink className="h-4 w-4" />
                     </button>
@@ -174,6 +175,7 @@ export default function NotificationsPage() {
                       onClick={() => markAsRead.mutate(notification.id)}
                       className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-green-600 dark:hover:bg-stone-800 dark:hover:text-green-400"
                       title="Marquer comme lue"
+                      aria-label="Marquer comme lue"
                     >
                       <Check className="h-4 w-4" />
                     </button>
@@ -182,6 +184,7 @@ export default function NotificationsPage() {
                     onClick={() => deleteNotification.mutate(notification.id)}
                     className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-red-600 dark:hover:bg-stone-800 dark:hover:text-red-400"
                     title="Supprimer"
+                    aria-label="Supprimer"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

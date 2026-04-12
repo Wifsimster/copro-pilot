@@ -5,6 +5,7 @@ import { AssembleeFormDialog } from '@/components/assemblees/AssembleeFormDialog
 import type { AssembleeGenerale } from '@/types'
 import { Calendar, Plus, Trash2, Pencil, Eye, MapPin, Clock } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { ErrorAlert } from '@/components/layout/ErrorAlert'
 
 const TYPE_LABELS: Record<string, string> = {
   ordinaire: 'Ordinaire',
@@ -30,7 +31,7 @@ const STATUT_COLORS: Record<string, string> = {
 export default function AssembleesPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
   const [showDialog, setShowDialog] = useState(false)
-  const { data: assemblees, isLoading: loadingAGs } = useAssembleesByCopropriete(selectedCoproId)
+  const { data: assemblees, isLoading: loadingAGs, isError, error } = useAssembleesByCopropriete(selectedCoproId)
   const createAG = useCreateAssemblee()
   const updateAG = useUpdateAssemblee()
   const deleteAG = useDeleteAssemblee()
@@ -44,6 +45,8 @@ export default function AssembleesPage() {
           <p className="text-stone-500 dark:text-stone-400">Gestion des AG, resolutions et votes</p>
         </div>
       </div>
+
+      {isError && <ErrorAlert error={error} message="Impossible de charger les assemblees generales" />}
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
@@ -98,12 +101,14 @@ export default function AssembleesPage() {
                       <Link
                         to={`/assemblees/${ag.id}`}
                         className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-emerald-700 dark:hover:bg-stone-800"
+                        aria-label="Voir"
                       >
                         <Eye className="h-4 w-4" />
                       </Link>
                       <button
                         onClick={() => setEditingAG(ag)}
                         className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-emerald-700 dark:hover:bg-stone-800"
+                        aria-label="Modifier"
                       >
                         <Pencil className="h-4 w-4" />
                       </button>
@@ -112,6 +117,7 @@ export default function AssembleesPage() {
                           if (window.confirm('Supprimer cette AG ?')) deleteAG.mutate(ag.id)
                         }}
                         className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-red-600 dark:hover:bg-stone-800"
+                        aria-label="Supprimer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>

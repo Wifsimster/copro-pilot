@@ -164,6 +164,7 @@ export default function ContratsSyndicPage() {
                               <button
                                 onClick={() => { setEditingContrat(contrat); setShowContratDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -172,6 +173,7 @@ export default function ContratsSyndicPage() {
                                   if (window.confirm('Supprimer ce contrat de syndic ?')) deleteContrat.mutate(contrat.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -270,6 +272,7 @@ export default function ContratsSyndicPage() {
                               <button
                                 onClick={() => { setEditingProposition(proposition); setShowPropositionDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -278,6 +281,7 @@ export default function ContratsSyndicPage() {
                                   if (window.confirm('Supprimer cette proposition ?')) deleteProposition.mutate(proposition.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>

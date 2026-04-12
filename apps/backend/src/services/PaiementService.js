@@ -1,5 +1,6 @@
 import { PaiementModel } from '../models/Paiement.js'
 import { workflowEventService } from './WorkflowEventService.js'
+import { eventDispatchService } from './EventDispatchService.js'
 import logger from '../logger.js'
 
 class PaiementService {
@@ -45,6 +46,9 @@ class PaiementService {
             logger.info(`[PaiementService] Paiement créé: ${result.montant}€ (ID: ${result.id})`)
             workflowEventService.onPaiementCreated(result).catch(err =>
                 logger.error(`[PaiementService] Workflow event error: ${err.message}`)
+            )
+            eventDispatchService.notifyPaymentReceived(result).catch(err =>
+                logger.error(`[PaiementService] EventDispatch error: ${err.message}`)
             )
             return result
         } catch (error) {

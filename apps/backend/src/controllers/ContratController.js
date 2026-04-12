@@ -1,10 +1,18 @@
 import { contratService } from '../services/ContratService.js'
+import { ContratModel } from '../models/Contrat.js'
+import { parsePaginationParams, paginatedResponse } from '../utils/pagination.js'
 import logger from '../logger.js'
 
 export class ContratController {
   static async getAllByCopropriete(req, res) {
     try {
       const { coproprieteId } = req.params
+      const { page, limit, sortBy, sortOrder } = req.query
+      if (page || limit || sortBy || sortOrder) {
+        const params = parsePaginationParams(req.query)
+        const { data, total } = await ContratModel.getAllByCoproprietePaginated(coproprieteId, params)
+        return res.json(paginatedResponse(data, total, params))
+      }
       const contrats = await contratService.getAllByCopropriete(coproprieteId)
       res.json({ data: contrats })
     } catch (error) {

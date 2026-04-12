@@ -1,5 +1,6 @@
 import { IncidentModel } from '../models/Incident.js'
 import { workflowEventService } from './WorkflowEventService.js'
+import { eventDispatchService } from './EventDispatchService.js'
 import logger from '../logger.js'
 
 const INCIDENT_TRANSITIONS = {
@@ -34,6 +35,9 @@ class IncidentService {
             logger.info(`[IncidentService] Incident créé: ${result.titre} (ID: ${result.id})`)
             workflowEventService.onIncidentCreated(result).catch(err =>
                 logger.error(`[IncidentService] Workflow event error: ${err.message}`)
+            )
+            eventDispatchService.notifyIncidentCreated(result).catch(err =>
+                logger.error(`[IncidentService] EventDispatch error: ${err.message}`)
             )
             return result
         } catch (error) {

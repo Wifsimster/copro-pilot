@@ -7,6 +7,7 @@ import { RelanceFormDialog } from '@/components/contentieux/RelanceFormDialog'
 import { ProcedureFormDialog } from '@/components/contentieux/ProcedureFormDialog'
 import type { Relance, Procedure } from '@/types'
 import { Scale, Plus, Trash2, Pencil, Mail } from 'lucide-react'
+import { ErrorAlert } from '@/components/layout/ErrorAlert'
 
 const TYPE_RELANCE_LABELS: Record<string, string> = {
   amiable: 'Amiable',
@@ -68,14 +69,17 @@ export default function ContentieuxPage() {
   const [editingRelance, setEditingRelance] = useState<Relance | null>(null)
   const [editingProcedure, setEditingProcedure] = useState<Procedure | null>(null)
 
-  const { data: relances, isLoading: loadingRelances } = useRelancesByCopropriete(selectedCoproId)
-  const { data: procedures, isLoading: loadingProcedures } = useProceduresByCopropriete(selectedCoproId)
+  const { data: relances, isLoading: loadingRelances, isError: isErrorRelances, error: errorRelances } = useRelancesByCopropriete(selectedCoproId)
+  const { data: procedures, isLoading: loadingProcedures, isError: isErrorProcedures, error: errorProcedures } = useProceduresByCopropriete(selectedCoproId)
   const createRelance = useCreateRelance()
   const updateRelance = useUpdateRelance()
   const deleteRelance = useDeleteRelance()
   const createProcedure = useCreateProcedure()
   const updateProcedure = useUpdateProcedure()
   const deleteProcedure = useDeleteProcedure()
+
+  const contentieuxError = errorRelances || errorProcedures
+  const hasContentieuxError = isErrorRelances || isErrorProcedures
 
   return (
     <div className="space-y-6">
@@ -85,6 +89,8 @@ export default function ContentieuxPage() {
           <p className="text-stone-500 dark:text-stone-400">Suivi des relances et procedures de recouvrement des impayes</p>
         </div>
       </div>
+
+      {hasContentieuxError && <ErrorAlert error={contentieuxError as Error} message="Impossible de charger les donnees contentieux" />}
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
@@ -182,6 +188,7 @@ export default function ContentieuxPage() {
                               <button
                                 onClick={() => { setEditingRelance(relance); setShowRelanceDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -190,6 +197,7 @@ export default function ContentieuxPage() {
                                   if (window.confirm('Supprimer cette relance ?')) deleteRelance.mutate(relance.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -283,6 +291,7 @@ export default function ContentieuxPage() {
                               <button
                                 onClick={() => { setEditingProcedure(procedure); setShowProcedureDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -291,6 +300,7 @@ export default function ContentieuxPage() {
                                   if (window.confirm('Supprimer cette procedure ?')) deleteProcedure.mutate(procedure.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>

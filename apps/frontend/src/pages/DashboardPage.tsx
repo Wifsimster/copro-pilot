@@ -35,6 +35,7 @@ import {
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { ErrorAlert } from '@/components/layout/ErrorAlert'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -547,7 +548,7 @@ export default function DashboardPage() {
   const selectedCoproprieteId = useCoproprieteStore(
     s => s.selectedCoproprieteId
   )
-  const { data: dashboard, isLoading } =
+  const { data: dashboard, isLoading, isError, error } =
     useSyndicDashboard(selectedCoproprieteId)
   const user = useAuthStore(s => s.user)
   const navigate = useNavigate()
@@ -606,6 +607,8 @@ export default function DashboardPage() {
   // ---- Loaded state ----
   return (
     <div className="space-y-5">
+      {isError && <ErrorAlert error={error} message="Impossible de charger le tableau de bord" />}
+
       {/* Welcome header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}

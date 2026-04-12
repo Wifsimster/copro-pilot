@@ -16,6 +16,7 @@ import { CompteBancaireFormDialog } from '@/components/comptes-bancaires/CompteB
 import { MouvementBancaireFormDialog } from '@/components/comptes-bancaires/MouvementBancaireFormDialog'
 import type { CompteBancaire, MouvementBancaire } from '@/types'
 import { Landmark, Plus, Trash2, Pencil, ChevronDown, CreditCard, ArrowDownUp, CheckCircle, XCircle } from 'lucide-react'
+import { ErrorAlert } from '@/components/layout/ErrorAlert'
 
 const TYPE_COMPTE_LABELS: Record<string, string> = {
   courant: 'Courant',
@@ -50,8 +51,8 @@ export default function ComptesBancairesPage() {
   const [showMouvementDialog, setShowMouvementDialog] = useState(false)
   const [editingMouvement, setEditingMouvement] = useState<MouvementBancaire | null>(null)
 
-  const { data: comptes, isLoading: loadingComptes } = useComptesBancairesByCopropriete(selectedCoproId)
-  const { data: mouvements, isLoading: loadingMouvements } = useMouvementsBancairesByCompte(selectedCompteId)
+  const { data: comptes, isLoading: loadingComptes, isError: isErrorComptes, error: errorComptes } = useComptesBancairesByCopropriete(selectedCoproId)
+  const { data: mouvements, isLoading: loadingMouvements, isError: isErrorMouvements, error: errorMouvements } = useMouvementsBancairesByCompte(selectedCompteId)
 
   const createCompte = useCreateCompteBancaire()
   const updateCompte = useUpdateCompteBancaire()
@@ -59,6 +60,9 @@ export default function ComptesBancairesPage() {
   const createMouvement = useCreateMouvementBancaire()
   const updateMouvement = useUpdateMouvementBancaire()
   const deleteMouvement = useDeleteMouvementBancaire()
+
+  const comptesError = errorComptes || errorMouvements
+  const hasComptesError = isErrorComptes || isErrorMouvements
 
   return (
     <div className="space-y-6">
@@ -68,6 +72,8 @@ export default function ComptesBancairesPage() {
           <p className="text-stone-500 dark:text-stone-400">Gestion des comptes bancaires et mouvements</p>
         </div>
       </div>
+
+      {hasComptesError && <ErrorAlert error={comptesError as Error} message="Impossible de charger les comptes bancaires" />}
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
@@ -171,6 +177,7 @@ export default function ComptesBancairesPage() {
                               <button
                                 onClick={() => { setEditingCompte(compte); setShowCompteDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -179,6 +186,7 @@ export default function ComptesBancairesPage() {
                                   if (window.confirm('Supprimer ce compte bancaire ?')) deleteCompte.mutate(compte.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -296,6 +304,7 @@ export default function ComptesBancairesPage() {
                               <button
                                 onClick={() => { setEditingMouvement(mouvement); setShowMouvementDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -304,6 +313,7 @@ export default function ComptesBancairesPage() {
                                   if (window.confirm('Supprimer ce mouvement ?')) deleteMouvement.mutate(mouvement.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>

@@ -12,6 +12,21 @@ export class ContratModel {
       .orderBy('contrats.date_debut', 'desc')
   }
 
+  static async getAllByCoproprietePaginated(coproprieteId, { limit, offset, sortBy, sortOrder }) {
+    const db = getDb()
+    const [{ count }] = await db('contrats')
+      .where('copropriete_id', coproprieteId)
+      .count('id as count')
+    const data = await db('contrats')
+      .select('contrats.*', 'prestataires.nom as prestataire_nom', 'prestataires.specialite as prestataire_specialite')
+      .join('prestataires', 'contrats.prestataire_id', 'prestataires.id')
+      .where('contrats.copropriete_id', coproprieteId)
+      .orderBy(sortBy, sortOrder)
+      .limit(limit)
+      .offset(offset)
+    return { data, total: parseInt(count) }
+  }
+
   static async getById(id) {
     const db = getDb()
     return db('contrats')

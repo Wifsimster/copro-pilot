@@ -363,6 +363,7 @@ export default function AssembleeDetailPage() {
                       <button
                         onClick={() => setEditingResolution(res)}
                         className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                        aria-label="Modifier"
                       >
                         <Pencil className="h-4 w-4" />
                       </button>
@@ -371,6 +372,7 @@ export default function AssembleeDetailPage() {
                           if (window.confirm('Supprimer cette resolution ?')) deleteResolution.mutate(res.id)
                         }}
                         className="rounded p-1 text-stone-400 hover:text-red-600"
+                        aria-label="Supprimer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -461,6 +463,7 @@ export default function AssembleeDetailPage() {
                           <button
                             onClick={() => setEditingPresence(p)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                            aria-label="Modifier"
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
@@ -469,6 +472,7 @@ export default function AssembleeDetailPage() {
                               if (window.confirm('Retirer cette presence ?')) deletePresence.mutate(p.id)
                             }}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
+                            aria-label="Supprimer"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -575,6 +579,7 @@ export default function AssembleeDetailPage() {
                             onClick={() => setExpandedConvocation(expandedConvocation === convoc.id ? null : convoc.id)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             title="Voir les destinataires"
+                            aria-label="Voir les destinataires"
                           >
                             <Eye className="h-4 w-4" />
                           </button>
@@ -582,6 +587,7 @@ export default function AssembleeDetailPage() {
                             <button
                               onClick={() => setEditingConvocation(convoc)}
                               className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                              aria-label="Modifier"
                             >
                               <Pencil className="h-4 w-4" />
                             </button>
@@ -592,6 +598,7 @@ export default function AssembleeDetailPage() {
                                 if (window.confirm('Supprimer cette convocation ?')) deleteConvocation.mutate(convoc.id)
                               }}
                               className="rounded p-1 text-stone-400 hover:text-red-600"
+                              aria-label="Supprimer"
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>

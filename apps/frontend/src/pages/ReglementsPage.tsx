@@ -185,6 +185,7 @@ export default function ReglementsPage() {
                               <button
                                 onClick={() => { setEditingReglement(reglement); setShowReglementDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -193,6 +194,7 @@ export default function ReglementsPage() {
                                   if (window.confirm('Supprimer ce reglement ?')) deleteReglement.mutate(reglement.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -298,6 +300,7 @@ export default function ReglementsPage() {
                               <button
                                 onClick={() => { setEditingArticle(article); setShowArticleDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -306,6 +309,7 @@ export default function ReglementsPage() {
                                   if (window.confirm('Supprimer cet article ?')) deleteArticle.mutate(article.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>

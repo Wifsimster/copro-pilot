@@ -42,12 +42,32 @@ function getServerUrl() {
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// Determine whether auto-migrations should run.
+// In production, migrations only run when RUN_MIGRATIONS=true so they can
+// be triggered explicitly (e.g. via a dedicated migration command or init
+// container).  In development / test, they run automatically for convenience.
+function shouldRunMigrations() {
+  if (process.env.RUN_MIGRATIONS === 'true') return true
+  if (process.env.RUN_MIGRATIONS === 'false') return false
+  const env = process.env.NODE_ENV || 'development'
+  return env === 'development' || env === 'test' || env === 'local'
+}
+
 // Database initialization with migrations
 async function initializeDatabase() {
   try {
     logger.info('Initialisation du module de base de données...')
     await knexDatabase.init()
     logger.info('Module de base de données initialisé')
+
+    if (!shouldRunMigrations()) {
+      logger.info(
+        'Automatic migrations disabled (NODE_ENV=%s). ' +
+        'Set RUN_MIGRATIONS=true or run migrations explicitly.',
+        process.env.NODE_ENV
+      )
+      return
+    }
 
     logger.info('Exécution des migrations de base de données...')
     const migrationsSuccess = await migrate()
@@ -75,8 +95,34 @@ async function initializeDatabase() {
 function validateEnvironment() {
   const missing = []
 
+  // Database: need POSTGRES_URI or individual connection vars
+  const hasUri = !!process.env.POSTGRES_URI
+  const individualDbVars = ['POSTGRES_HOST', 'POSTGRES_DB', 'POSTGRES_USER', 'POSTGRES_PASSWORD']
+  const hasIndividual = individualDbVars.every(v => !!process.env[v])
+
+  if (!hasUri && !hasIndividual) {
+    const presentIndividual = individualDbVars.filter(v => !!process.env[v])
+    if (presentIndividual.length > 0) {
+      // Some individual vars are set but not all — report which are missing
+      const missingDb = individualDbVars.filter(v => !process.env[v])
+      missingDb.forEach(v => missing.push(v))
+    } else {
+      missing.push('POSTGRES_URI (or POSTGRES_HOST + POSTGRES_DB + POSTGRES_USER + POSTGRES_PASSWORD)')
+    }
+  }
+
+  // Auth secret
   if (!process.env.BETTER_AUTH_SECRET && !process.env.AUTH_SECRET) {
     missing.push('BETTER_AUTH_SECRET')
+  }
+
+  // Frontend URL (required in production, recommended everywhere)
+  if (!process.env.BASE_URL && !process.env.FRONTEND_URL) {
+    if (process.env.NODE_ENV === 'production') {
+      missing.push('BASE_URL or FRONTEND_URL')
+    } else {
+      logger.warn('Neither BASE_URL nor FRONTEND_URL is set — CORS will use development defaults')
+    }
   }
 
   if (missing.length > 0) {
@@ -84,7 +130,7 @@ function validateEnvironment() {
     missing.forEach(varName => {
       logger.error(`   - ${varName}`)
     })
-    logger.error('These secrets should be defined in your .env file.')
+    logger.error('These variables should be defined in your .env file.')
     process.exit(1)
   }
 

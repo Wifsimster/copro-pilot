@@ -280,12 +280,14 @@ export default function CoproprieteDetailPage() {
                           <button
                             onClick={() => setEditingLot(lot)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                            aria-label="Modifier"
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteLot(lot.id, lot.numero)}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
+                            aria-label="Supprimer"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -349,12 +351,14 @@ export default function CoproprieteDetailPage() {
                           <button
                             onClick={() => setEditingPC(pc)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                            aria-label="Modifier"
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => { if (window.confirm(`Supprimer "${pc.nom}" ?`)) deletePC.mutate(pc.id) }}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
+                            aria-label="Supprimer"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -408,12 +412,14 @@ export default function CoproprieteDetailPage() {
                           <button
                             onClick={() => setEditingCle(cle)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                            aria-label="Modifier"
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => { if (window.confirm(`Supprimer "${cle.nom}" ?`)) deleteCle.mutate(cle.id) }}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
+                            aria-label="Supprimer"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -492,12 +498,14 @@ export default function CoproprieteDetailPage() {
                           <button
                             onClick={() => setEditingLocataire(loc)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                            aria-label="Modifier"
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => { if (window.confirm('Supprimer ce locataire ?')) deleteLocataire.mutate(loc.id) }}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
+                            aria-label="Supprimer"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -584,12 +592,14 @@ export default function CoproprieteDetailPage() {
                           <button
                             onClick={() => setEditingMutation(m)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                            aria-label="Modifier"
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => { if (window.confirm('Supprimer cette mutation ?')) deleteMutation.mutate(m.id) }}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
+                            aria-label="Supprimer"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -659,12 +669,14 @@ export default function CoproprieteDetailPage() {
                           <button
                             onClick={() => setEditingDiagnostic(diag)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                            aria-label="Modifier"
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => { if (window.confirm('Supprimer ce diagnostic ?')) deleteDiagnostic.mutate(diag.id) }}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
+                            aria-label="Supprimer"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>

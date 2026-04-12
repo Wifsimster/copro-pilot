@@ -29,9 +29,31 @@ const storage = multer.diskStorage({
   },
 })
 
+// Allowed file extensions and their MIME types
+const ALLOWED_EXTENSIONS = new Set([
+  '.pdf', '.jpg', '.jpeg', '.png', '.gif',
+  '.doc', '.docx', '.xls', '.xlsx',
+  '.csv', '.txt', '.zip',
+])
+
+const fileFilter = (req, file, cb) => {
+  const ext = path.extname(file.originalname).toLowerCase()
+  if (ALLOWED_EXTENSIONS.has(ext)) {
+    cb(null, true)
+  } else {
+    cb(
+      new Error(
+        `File type not allowed: ${ext}. Allowed types: ${[...ALLOWED_EXTENSIONS].join(', ')}`
+      ),
+      false
+    )
+  }
+}
+
 const upload = multer({
   storage,
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+  fileFilter,
 })
 
 // Upload a document with file

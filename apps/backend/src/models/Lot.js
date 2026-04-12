@@ -16,6 +16,25 @@ export class LotModel {
             .orderBy('lots.numero', 'asc')
     }
 
+    static async getAllByCoproprietePaginated(coproprieteId, { limit, offset, sortBy, sortOrder }) {
+        const db = getDb()
+        const [{ count }] = await db('lots')
+            .where('copropriete_id', coproprieteId)
+            .count('id as count')
+        const data = await db('lots')
+            .select(
+                'lots.*',
+                'coproprietaires.nom as proprietaire_nom',
+                'coproprietaires.prenom as proprietaire_prenom'
+            )
+            .leftJoin('coproprietaires', 'lots.coproprietaire_id', 'coproprietaires.id')
+            .where('lots.copropriete_id', coproprieteId)
+            .orderBy(sortBy, sortOrder)
+            .limit(limit)
+            .offset(offset)
+        return { data, total: parseInt(count) }
+    }
+
     static async getById(id) {
         const db = getDb()
         return db('lots')

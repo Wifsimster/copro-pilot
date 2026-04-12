@@ -11,6 +11,7 @@ import { FondsTravauxFormDialog } from '@/components/charges/FondsTravauxFormDia
 import { PaiementFormDialog } from '@/components/charges/PaiementFormDialog'
 import type { BudgetPrevisionnel, AppelFonds, FondsTravaux, Paiement } from '@/types'
 import { Receipt, Plus, Trash2, Pencil, FileText, Banknote, PiggyBank, CreditCard } from 'lucide-react'
+import { ErrorAlert } from '@/components/layout/ErrorAlert'
 
 const STATUT_BUDGET_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
@@ -59,10 +60,10 @@ export default function ChargesPage() {
   const [editingPaiement, setEditingPaiement] = useState<Paiement | null>(null)
 
   const { data: coproprietaires } = useCoproprietaires()
-  const { data: budgets, isLoading: loadingBudgets } = useBudgetsByCopropriete(selectedCoproId)
-  const { data: appels, isLoading: loadingAppels } = useAppelsFondsByCopropriete(selectedCoproId)
-  const { data: fondsTravaux, isLoading: loadingFonds } = useFondsTravauxByCopropriete(selectedCoproId)
-  const { data: paiements, isLoading: loadingPaiements } = usePaiementsByCopropriete(selectedCoproId)
+  const { data: budgets, isLoading: loadingBudgets, isError: isErrorBudgets, error: errorBudgets } = useBudgetsByCopropriete(selectedCoproId)
+  const { data: appels, isLoading: loadingAppels, isError: isErrorAppels, error: errorAppels } = useAppelsFondsByCopropriete(selectedCoproId)
+  const { data: fondsTravaux, isLoading: loadingFonds, isError: isErrorFonds, error: errorFonds } = useFondsTravauxByCopropriete(selectedCoproId)
+  const { data: paiements, isLoading: loadingPaiements, isError: isErrorPaiements, error: errorPaiements } = usePaiementsByCopropriete(selectedCoproId)
   const createBudget = useCreateBudget()
   const updateBudget = useUpdateBudget()
   const deleteBudget = useDeleteBudget()
@@ -76,6 +77,9 @@ export default function ChargesPage() {
   const updatePaiement = useUpdatePaiement()
   const deletePaiement = useDeletePaiement()
 
+  const chargesError = errorBudgets || errorAppels || errorFonds || errorPaiements
+  const hasChargesError = isErrorBudgets || isErrorAppels || isErrorFonds || isErrorPaiements
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -84,6 +88,8 @@ export default function ChargesPage() {
           <p className="text-stone-500 dark:text-stone-400">Budgets previsionnels, appels de fonds et fonds travaux</p>
         </div>
       </div>
+
+      {hasChargesError && <ErrorAlert error={chargesError as Error} message="Impossible de charger les donnees comptables" />}
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
@@ -167,6 +173,7 @@ export default function ChargesPage() {
                               <button
                                 onClick={() => { setEditingBudget(budget); setShowBudgetDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -175,6 +182,7 @@ export default function ChargesPage() {
                                   if (window.confirm('Supprimer ce budget ?')) deleteBudget.mutate(budget.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -266,6 +274,7 @@ export default function ChargesPage() {
                               <button
                                 onClick={() => { setEditingAppel(appel); setShowAppelDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -274,6 +283,7 @@ export default function ChargesPage() {
                                   if (window.confirm('Supprimer cet appel de fonds ?')) deleteAppel.mutate(appel.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -365,6 +375,7 @@ export default function ChargesPage() {
                               <button
                                 onClick={() => { setEditingPaiement(paiement); setShowPaiementDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -373,6 +384,7 @@ export default function ChargesPage() {
                                   if (window.confirm('Supprimer ce paiement ?')) deletePaiement.mutate(paiement.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -459,6 +471,7 @@ export default function ChargesPage() {
                               <button
                                 onClick={() => { setEditingFonds(fonds); setShowFondsDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -467,6 +480,7 @@ export default function ChargesPage() {
                                   if (window.confirm('Supprimer ce fonds travaux ?')) deleteFonds.mutate(fonds.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>

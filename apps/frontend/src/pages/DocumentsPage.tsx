@@ -5,6 +5,7 @@ import { documentsApi } from '@/api/documents'
 import { DocumentFormDialog } from '@/components/documents/DocumentFormDialog'
 import type { Document } from '@/types'
 import { FolderOpen, Plus, Trash2, Pencil, ChevronDown, FileText, Download, Search, Eye, X, Image, FileSpreadsheet, File } from 'lucide-react'
+import { ErrorAlert } from '@/components/layout/ErrorAlert'
 
 const CATEGORIE_LABELS: Record<string, string> = {
   pv_ag: 'PV d\'AG',
@@ -66,7 +67,7 @@ export default function DocumentsPage() {
   const [search, setSearch] = useState('')
   const [filterCategorie, setFilterCategorie] = useState<string>('all')
 
-  const { data: documents, isLoading: loadingDocs } = useDocumentsByCopropriete(selectedCoproId)
+  const { data: documents, isLoading: loadingDocs, isError, error } = useDocumentsByCopropriete(selectedCoproId)
   const uploadDocument = useUploadDocument()
   const updateDocument = useUpdateDocument()
   const deleteDocument = useDeleteDocument()
@@ -97,6 +98,8 @@ export default function DocumentsPage() {
         <h1 className="text-2xl font-bold text-foreground">Documents</h1>
         <p className="text-muted-foreground">Gestion electronique des documents de copropriete</p>
       </div>
+
+      {isError && <ErrorAlert error={error} message="Impossible de charger les documents" />}
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-16">
@@ -232,6 +235,7 @@ export default function DocumentsPage() {
                           onClick={() => setPreviewDoc(doc)}
                           className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                           title="Previsualiser"
+                          aria-label="Previsualiser"
                         >
                           <Eye className="size-4" />
                         </button>
@@ -240,6 +244,7 @@ export default function DocumentsPage() {
                         href={documentsApi.getDownloadUrl(doc.id)}
                         className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                         title="Telecharger"
+                        aria-label="Telecharger"
                       >
                         <Download className="size-4" />
                       </a>
@@ -247,6 +252,7 @@ export default function DocumentsPage() {
                         onClick={() => setEditingDoc(doc)}
                         className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                         title="Modifier"
+                        aria-label="Modifier"
                       >
                         <Pencil className="size-4" />
                       </button>
@@ -254,6 +260,7 @@ export default function DocumentsPage() {
                         onClick={() => { if (confirm('Supprimer ce document ?')) deleteDocument.mutate(doc.id) }}
                         className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
                         title="Supprimer"
+                        aria-label="Supprimer"
                       >
                         <Trash2 className="size-4" />
                       </button>
@@ -280,12 +287,14 @@ export default function DocumentsPage() {
                   href={documentsApi.getDownloadUrl(previewDoc.id)}
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
                   title="Telecharger"
+                  aria-label="Telecharger"
                 >
                   <Download className="size-4" />
                 </a>
                 <button
                   onClick={() => setPreviewDoc(null)}
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
+                  aria-label="Fermer"
                 >
                   <X className="size-5" />
                 </button>

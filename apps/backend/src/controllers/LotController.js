@@ -1,10 +1,18 @@
 import { lotService } from '../services/LotService.js'
+import { LotModel } from '../models/Lot.js'
+import { parsePaginationParams, paginatedResponse } from '../utils/pagination.js'
 import logger from '../logger.js'
 
 export class LotController {
     static async getAllByCopropriete(req, res) {
         try {
             const { coproprieteId } = req.params
+            const { page, limit, sortBy, sortOrder } = req.query
+            if (page || limit || sortBy || sortOrder) {
+                const params = parsePaginationParams(req.query)
+                const { data, total } = await LotModel.getAllByCoproprietePaginated(coproprieteId, params)
+                return res.json(paginatedResponse(data, total, params))
+            }
             const lots = await lotService.getAllByCopropriete(coproprieteId)
             res.json({ data: lots })
         } catch (error) {

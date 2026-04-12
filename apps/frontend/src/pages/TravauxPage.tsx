@@ -183,6 +183,7 @@ export default function TravauxPage() {
                               <button
                                 onClick={() => { setEditingIncident(incident); setShowIncidentDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -191,6 +192,7 @@ export default function TravauxPage() {
                                   if (window.confirm('Supprimer cet incident ?')) deleteIncident.mutate(incident.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -286,6 +288,7 @@ export default function TravauxPage() {
                               <button
                                 onClick={() => { setEditingIntervention(inter); setShowInterventionDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -294,6 +297,7 @@ export default function TravauxPage() {
                                   if (window.confirm('Supprimer cette intervention ?')) deleteIntervention.mutate(inter.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -381,6 +385,7 @@ export default function TravauxPage() {
                               <button
                                 onClick={() => { setEditingCarnet(entree); setShowCarnetDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -389,6 +394,7 @@ export default function TravauxPage() {
                                   if (window.confirm('Supprimer cette entree ?')) deleteCarnet.mutate(entree.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
