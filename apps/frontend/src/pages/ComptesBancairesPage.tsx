@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import {
   useComptesBancairesByCopropriete,
@@ -51,6 +52,7 @@ export default function ComptesBancairesPage() {
   const [editingCompte, setEditingCompte] = useState<CompteBancaire | null>(null)
   const [showMouvementDialog, setShowMouvementDialog] = useState(false)
   const [editingMouvement, setEditingMouvement] = useState<MouvementBancaire | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'compte' | 'mouvement', id: number } | null>(null)
 
   const { data: comptes, isLoading: loadingComptes, isError: isErrorComptes, error: errorComptes } = useComptesBancairesByCopropriete(selectedCoproId)
   const { data: mouvements, isLoading: loadingMouvements, isError: isErrorMouvements, error: errorMouvements } = useMouvementsBancairesByCompte(selectedCompteId)
@@ -172,9 +174,7 @@ export default function ComptesBancairesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce compte bancaire ?')) deleteCompte.mutate(compte.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'compte', id: compte.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -299,9 +299,7 @@ export default function ComptesBancairesPage() {
                                 <Pencil className="h-4 w-4" />
                               </button>
                               <button
-                                onClick={() => {
-                                  if (window.confirm('Supprimer ce mouvement ?')) deleteMouvement.mutate(mouvement.id)
-                                }}
+                                onClick={() => setDeleteTarget({ type: 'mouvement', id: mouvement.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -339,6 +337,19 @@ export default function ComptesBancairesPage() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteTarget?.type === 'compte') deleteCompte.mutate(deleteTarget.id)
+          else if (deleteTarget?.type === 'mouvement') deleteMouvement.mutate(deleteTarget.id)
+          setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }
