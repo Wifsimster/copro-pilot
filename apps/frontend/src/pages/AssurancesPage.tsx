@@ -281,6 +281,7 @@ export default function AssurancesPage() {
                               <button
                                 onClick={() => { setEditingSinistre(sinistre); setShowSinistreDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                                aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
@@ -289,6 +290,7 @@ export default function AssurancesPage() {
                                   if (window.confirm('Supprimer ce sinistre ?')) deleteSinistre.mutate(sinistre.id)
                                 }}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
+                                aria-label="Supprimer"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
