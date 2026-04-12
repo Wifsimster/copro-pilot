@@ -8,6 +8,7 @@ import { ProcedureFormDialog } from '@/components/contentieux/ProcedureFormDialo
 import type { Relance, Procedure } from '@/types'
 import { Scale, Plus, Trash2, Pencil, Mail } from 'lucide-react'
 import { ErrorAlert } from '@/components/layout/ErrorAlert'
+import { TabBar } from '@/components/layout/TabBar'
 
 const TYPE_RELANCE_LABELS: Record<string, string> = {
   amiable: 'Amiable',
@@ -101,25 +102,14 @@ export default function ContentieuxPage() {
       ) : (
         <>
           {/* Tabs */}
-          <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
-            {([
-              { key: 'relances' as Tab, label: 'Relances', icon: Mail },
-              { key: 'procedures' as Tab, label: 'Procedures', icon: Scale },
-            ]).map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                  activeTab === tab.key
-                    ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
-                    : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
-                }`}
-              >
-                <tab.icon className="h-4 w-4" />
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          <TabBar
+            tabs={[
+              { key: 'relances', label: 'Relances', icon: Mail },
+              { key: 'procedures', label: 'Procedures', icon: Scale },
+            ]}
+            activeTab={activeTab}
+            onTabChange={(key) => setActiveTab(key as Tab)}
+          />
 
           {/* Relances tab */}
           {activeTab === 'relances' && (

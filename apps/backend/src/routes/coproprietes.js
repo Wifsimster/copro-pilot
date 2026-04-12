@@ -6,6 +6,8 @@ import { AutoRelanceController } from '../controllers/AutoRelanceController.js'
 import { requireAuth } from '../middleware/auth.js'
 import { requireAdminForDelete } from '../middleware/authorization.js'
 import { requireCoproprieteQuota } from '../middleware/requireQuota.js'
+import { validate } from '../middleware/validate.js'
+import { coproprieteSchema } from '../schemas/index.js'
 
 const router = Router()
 
@@ -25,9 +27,10 @@ router.post(
   '/',
   requireAuth(),
   requireCoproprieteQuota(),
+  validate(coproprieteSchema),
   CoproprieteController.create
 )
-router.put('/:id', requireAuth(), CoproprieteController.update)
+router.put('/:id', requireAuth(), validate(coproprieteSchema), CoproprieteController.update)
 router.delete('/:id', requireAuth(), requireAdminForDelete, CoproprieteController.delete)
 
 // Auto-relances

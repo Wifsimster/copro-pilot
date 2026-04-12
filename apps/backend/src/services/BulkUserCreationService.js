@@ -56,6 +56,15 @@ export class BulkUserCreationService {
     const toLink = []
     const noEmail = []
 
+    // Batch query: fetch all existing users by email in one query
+    const emails = coproprietaires
+      .map(c => c.email?.toLowerCase())
+      .filter(Boolean)
+    const existingUsers = emails.length
+      ? await db('user').whereIn('email', emails)
+      : []
+    const emailMap = new Map(existingUsers.map(u => [u.email, u]))
+
     for (const copro of coproprietaires) {
       if (!copro.email) {
         noEmail.push({
@@ -66,10 +75,8 @@ export class BulkUserCreationService {
         continue
       }
 
-      // Check if user already exists with this email
-      const existingUser = await db('user')
-        .where('email', copro.email.toLowerCase())
-        .first()
+      // Look up from the pre-fetched map instead of querying
+      const existingUser = emailMap.get(copro.email.toLowerCase())
 
       if (existingUser) {
         toLink.push({
@@ -136,14 +143,23 @@ export class BulkUserCreationService {
       errors: [],
     }
 
+    // Batch query: fetch all existing users by email in one query
+    const allEmails = coproprietaires
+      .map(c => c.email?.toLowerCase())
+      .filter(Boolean)
+    const existingUsers = allEmails.length
+      ? await db('user').whereIn('email', allEmails)
+      : []
+    const emailMap = new Map(
+      existingUsers.map(u => [u.email, u])
+    )
+
     for (const copro of coproprietaires) {
       try {
         const email = copro.email.toLowerCase()
 
-        // Check if user already exists with this email (auto-linking)
-        const existingUser = await db('user')
-          .where('email', email)
-          .first()
+        // Look up from the pre-fetched map instead of querying
+        const existingUser = emailMap.get(email)
 
         if (existingUser) {
           // Auto-link: only link if existing user is a coproprietaire

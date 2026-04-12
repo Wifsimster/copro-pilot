@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import {
@@ -8,6 +8,8 @@ import {
   useDeleteEmployeSyndicat,
 } from '@/hooks/useEmployesSyndicat'
 import { EmployeFormDialog } from '@/components/employes/EmployeFormDialog'
+import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
+import { DataTable, type Column } from '@/components/ui/data-table'
 import type { EmployeSyndicat } from '@/types'
 import { HardHat, Plus, Trash2, Pencil, Home } from 'lucide-react'
 
@@ -39,11 +41,66 @@ export default function EmployesPage() {
 
   const [showDialog, setShowDialog] = useState(false)
   const [editingEmploye, setEditingEmploye] = useState<EmployeSyndicat | null>(null)
+  const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const { data: employes, isLoading } = useEmployesSyndicatByCopropriete(selectedCoproId)
   const createEmploye = useCreateEmployeSyndicat()
   const updateEmploye = useUpdateEmployeSyndicat()
   const deleteEmploye = useDeleteEmployeSyndicat()
+
+  const columns: Column<EmployeSyndicat>[] = useMemo(() => [
+    {
+      key: 'nom',
+      header: 'Nom',
+      sortable: true,
+      render: (e) => (
+        <span className="font-medium text-stone-900 dark:text-white">{e.nom}</span>
+      ),
+    },
+    {
+      key: 'prenom',
+      header: 'Prenom',
+      sortable: true,
+    },
+    {
+      key: 'poste',
+      header: 'Poste',
+      sortable: true,
+    },
+    {
+      key: 'type_contrat',
+      header: 'Contrat',
+      render: (e) => TYPE_CONTRAT_LABELS[e.type_contrat] || e.type_contrat,
+    },
+    {
+      key: 'salaire_brut',
+      header: 'Salaire brut',
+      sortable: true,
+      render: (e) =>
+        e.salaire_brut
+          ? Number(e.salaire_brut).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
+          : '\u2014',
+    },
+    {
+      key: 'logement_fonction',
+      header: 'Logement',
+      render: (e) =>
+        e.logement_fonction ? (
+          <Home className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
+        ) : (
+          '\u2014'
+        ),
+    },
+    {
+      key: 'statut',
+      header: 'Statut',
+      render: (e) => (
+        <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUT_COLORS[e.statut]}`}>
+          {STATUT_LABELS[e.statut]}
+        </span>
+      ),
+    },
+  ], [])
 
   return (
     <div className="space-y-6">
@@ -73,82 +130,34 @@ export default function EmployesPage() {
             </button>
           </div>
 
-          {isLoading ? (
-            <div className="flex justify-center py-8">
-              <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
-            </div>
-          ) : !employes || employes.length === 0 ? (
-            <div className="flex flex-col items-center py-12">
-              <HardHat className="h-10 w-10 text-stone-300 dark:text-stone-600" />
-              <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun employe enregistre</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-stone-200 text-left dark:border-stone-700">
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Nom</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Prenom</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Poste</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Contrat</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Salaire brut</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Logement</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {employes.map((employe: EmployeSyndicat) => (
-                    <tr key={employe.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
-                      <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">{employe.nom}</td>
-                      <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{employe.prenom}</td>
-                      <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{employe.poste}</td>
-                      <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
-                        {TYPE_CONTRAT_LABELS[employe.type_contrat] || employe.type_contrat}
-                      </td>
-                      <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
-                        {employe.salaire_brut
-                          ? Number(employe.salaire_brut).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
-                          : '—'}
-                      </td>
-                      <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
-                        {employe.logement_fonction ? (
-                          <Home className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
-                        ) : (
-                          '—'
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUT_COLORS[employe.statut]}`}>
-                          {STATUT_LABELS[employe.statut]}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex gap-1">
-                          <button
-                            onClick={() => { setEditingEmploye(employe); setShowDialog(true) }}
-                            className="rounded p-1 text-stone-400 hover:text-emerald-700"
-                            aria-label="Modifier"
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </button>
-                          <button
-                            onClick={() => {
-                              if (window.confirm('Supprimer cet employe ?')) deleteEmploye.mutate(employe.id)
-                            }}
-                            className="rounded p-1 text-stone-400 hover:text-red-600"
-                            aria-label="Supprimer"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <div className="p-4">
+            <DataTable
+              columns={columns}
+              data={employes || []}
+              isLoading={isLoading}
+              searchable
+              searchPlaceholder="Rechercher un employe..."
+              emptyMessage="Aucun employe enregistre"
+              actions={(employe) => (
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => { setEditingEmploye(employe); setShowDialog(true) }}
+                    className="rounded p-1 text-stone-400 hover:text-emerald-700"
+                    aria-label="Modifier"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => setDeleteId(employe.id)}
+                    className="rounded p-1 text-stone-400 hover:text-red-600"
+                    aria-label="Supprimer"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+            />
+          </div>
 
           <EmployeFormDialog
             open={showDialog}
@@ -169,6 +178,15 @@ export default function EmployesPage() {
           />
         </div>
       )}
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(o) => !o && setDeleteId(null)}
+        title="Confirmer la suppression"
+        description="Cette action est irréversible."
+        variant="destructive"
+        onConfirm={() => { deleteEmploye.mutate(deleteId!); setDeleteId(null) }}
+      />
     </div>
   )
 }

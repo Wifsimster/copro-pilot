@@ -1195,6 +1195,44 @@ export interface SyndicDashboard {
   tasks: DashboardTask[]
   metrics: SyndicDashboardMetrics
   activity: DashboardActivity[]
+  taux_recouvrement?: number
+  impayes_evolution?: Array<{ mois: string; impayes: number }>
+  incidents_par_statut?: Record<string, number>
+  prochaines_echeances?: Array<{
+    id: number
+    date_echeance: string
+    trimestre: number
+    annee: number
+    montant_total: number
+    copropriete_nom?: string
+  }>
+}
+
+// ============================================
+// Ticket / Messagerie Types
+// ============================================
+
+export interface Ticket {
+  id: number
+  copropriete_id: number
+  auteur_id: string
+  auteur_nom?: string
+  sujet: string
+  categorie: string
+  statut: string
+  priorite: string
+  created_at: string
+  updated_at: string
+  messages_count?: number
+}
+
+export interface TicketMessage {
+  id: number
+  ticket_id: number
+  auteur_id: string
+  auteur_nom?: string
+  contenu: string
+  created_at: string
 }
 
 // ============================================
@@ -1212,4 +1250,19 @@ export interface DomainEvent {
   metadata: Record<string, unknown>
   created_at: string
   processed_at: string | null
+}
+
+// ============================================
+// Compliance Types
+// ============================================
+
+export interface ComplianceCheck {
+  name: string
+  status: 'ok' | 'warning' | 'error'
+  details: string
+}
+
+export interface ComplianceReport {
+  compliant: boolean
+  checks: ComplianceCheck[]
 }

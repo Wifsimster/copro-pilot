@@ -6,6 +6,8 @@ import { fileURLToPath } from 'url'
 import { DocumentController } from '../controllers/DocumentController.js'
 import { requireAuth } from '../middleware/auth.js'
 import { requireAdminForDelete } from '../middleware/authorization.js'
+import { validate } from '../middleware/validate.js'
+import { documentCreateSchema } from '../schemas/index.js'
 
 const router = Router()
 
@@ -68,7 +70,7 @@ router.get('/entity/:entiteType/:entiteId', requireAuth(), DocumentController.ge
 // Existing routes
 router.get('/copropriete/:coproprieteId', requireAuth(), DocumentController.getAllByCopropriete)
 router.get('/:id', requireAuth(), DocumentController.getById)
-router.post('/', requireAuth(), DocumentController.create)
+router.post('/', requireAuth(), validate(documentCreateSchema), DocumentController.create)
 router.put('/:id', requireAuth(), DocumentController.update)
 router.delete('/:id', requireAuth(), requireAdminForDelete, DocumentController.delete)
 

@@ -70,6 +70,8 @@ import timelineRoutes from './timeline.js'
 import sseRoutes from './sse.js'
 // Stripe (subscriptions & billing)
 import stripeRoutes from './stripe.js'
+// Tickets (messagerie)
+import ticketsRoutes from './tickets.js'
 
 const router = Router()
 
@@ -171,6 +173,9 @@ router.use('/sse', sseRoutes)
 
 // Stripe (subscriptions & billing)
 router.use('/stripe', stripeRoutes)
+
+// Tickets (messagerie)
+router.use('/tickets', ticketsRoutes)
 
 // Root health check
 router.get('/', (req, res) => {

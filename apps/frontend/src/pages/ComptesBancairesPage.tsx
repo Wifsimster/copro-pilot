@@ -17,6 +17,7 @@ import { MouvementBancaireFormDialog } from '@/components/comptes-bancaires/Mouv
 import type { CompteBancaire, MouvementBancaire } from '@/types'
 import { Landmark, Plus, Trash2, Pencil, ChevronDown, CreditCard, ArrowDownUp, CheckCircle, XCircle } from 'lucide-react'
 import { ErrorAlert } from '@/components/layout/ErrorAlert'
+import { TabBar } from '@/components/layout/TabBar'
 
 const TYPE_COMPTE_LABELS: Record<string, string> = {
   courant: 'Courant',
@@ -84,25 +85,14 @@ export default function ComptesBancairesPage() {
       ) : (
         <>
           {/* Tabs */}
-          <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
-            {([
-              { key: 'comptes' as Tab, label: 'Comptes', icon: CreditCard },
-              { key: 'mouvements' as Tab, label: 'Mouvements', icon: ArrowDownUp },
-            ]).map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                  activeTab === tab.key
-                    ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
-                    : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
-                }`}
-              >
-                <tab.icon className="h-4 w-4" />
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          <TabBar
+            tabs={[
+              { key: 'comptes', label: 'Comptes', icon: CreditCard },
+              { key: 'mouvements', label: 'Mouvements', icon: ArrowDownUp },
+            ]}
+            activeTab={activeTab}
+            onTabChange={(key) => setActiveTab(key as Tab)}
+          />
 
           {/* Comptes tab */}
           {activeTab === 'comptes' && (

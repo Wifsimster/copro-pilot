@@ -114,15 +114,26 @@ export function createApp({ getDb, auth } = {}) {
   // Rate limiting for API routes
   app.use('/api', apiLimiter)
 
-  // Mount Express routes under /api prefix
+  // Mount Express routes under /api prefix (backwards compatible)
   app.use('/api', routes)
+  // Mount Express routes under /api/v1 prefix (versioned)
+  app.use('/api/v1', routes)
 
-  // Handler 404 pour les routes API
+  // Handler 404 pour les routes API versionnees
+  app.use('/api/v1', (req, res) => {
+    res.status(404).json({
+      error: 'Route API non trouvée',
+      path: req.originalUrl,
+      method: req.method,
+    })
+  })
+
+  // Handler 404 pour les routes API (legacy)
   app.use('/api', (req, res) => {
     res.status(404).json({
       error: 'Route API non trouvée',
       path: req.originalUrl,
-      method: req.method
+      method: req.method,
     })
   })
 

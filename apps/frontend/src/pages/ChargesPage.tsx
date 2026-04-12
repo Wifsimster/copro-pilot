@@ -12,6 +12,7 @@ import { PaiementFormDialog } from '@/components/charges/PaiementFormDialog'
 import type { BudgetPrevisionnel, AppelFonds, FondsTravaux, Paiement } from '@/types'
 import { Receipt, Plus, Trash2, Pencil, FileText, Banknote, PiggyBank, CreditCard } from 'lucide-react'
 import { ErrorAlert } from '@/components/layout/ErrorAlert'
+import { TabBar } from '@/components/layout/TabBar'
 
 const STATUT_BUDGET_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
@@ -100,27 +101,16 @@ export default function ChargesPage() {
       ) : (
         <>
           {/* Tabs */}
-          <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
-            {([
-              { key: 'budgets' as Tab, label: 'Budgets', icon: FileText },
-              { key: 'appels' as Tab, label: 'Appels de fonds', icon: Banknote },
-              { key: 'paiements' as Tab, label: 'Paiements', icon: CreditCard },
-              { key: 'fonds-travaux' as Tab, label: 'Fonds travaux', icon: PiggyBank },
-            ]).map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                  activeTab === tab.key
-                    ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
-                    : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
-                }`}
-              >
-                <tab.icon className="h-4 w-4" />
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          <TabBar
+            tabs={[
+              { key: 'budgets', label: 'Budgets', icon: FileText },
+              { key: 'appels', label: 'Appels de fonds', icon: Banknote },
+              { key: 'paiements', label: 'Paiements', icon: CreditCard },
+              { key: 'fonds-travaux', label: 'Fonds travaux', icon: PiggyBank },
+            ]}
+            activeTab={activeTab}
+            onTabChange={(key) => setActiveTab(key as Tab)}
+          />
 
           {/* Budgets tab */}
           {activeTab === 'budgets' && (
