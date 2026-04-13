@@ -6,6 +6,7 @@ import helmet from 'helmet'
 import { toNodeHandler } from 'better-auth/node'
 
 import routes from './routes/index.js'
+import metricsRoutes from './routes/metrics.js'
 import { correlationId } from './middleware/correlationId.js'
 import { requestLogger } from './middleware/requestLogger.js'
 import { validateJSON } from './middleware/validation.js'
@@ -14,6 +15,7 @@ import { csrf } from './middleware/csrf.js'
 import { auditLogger } from './middleware/auditLogger.js'
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js'
 import { accountLockout } from './middleware/accountLockout.js'
+import { metricsMiddleware } from './middleware/metrics.js'
 
 export { errorHandler, notFoundHandler }
 
@@ -103,6 +105,14 @@ export function createApp({ getDb, auth } = {}) {
   app.use(correlationId)
   app.use(requestLogger)
   app.use(validateJSON)
+
+  // Prometheus metrics middleware (records every HTTP request)
+  app.use(metricsMiddleware)
+
+  // Prometheus scrape endpoint — mounted at root (NOT under /api) so that
+  // standard Prometheus scrapers can find it at /metrics. Exposed before
+  // the /api rate limiter so scrape traffic is not throttled.
+  app.use('/metrics', metricsRoutes)
 
   // Inject database connection
   if (getDb) {

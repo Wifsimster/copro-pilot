@@ -74,6 +74,8 @@ import stripeRoutes from './stripe.js'
 import ticketsRoutes from './tickets.js'
 // AG Reports (annexes financières)
 import agReportsRoutes from './ag-reports.js'
+// Audit log (tamper-proof hash chain verification)
+import auditRoutes from './audit.js'
 
 const router = Router()
 
@@ -181,6 +183,9 @@ router.use('/tickets', ticketsRoutes)
 
 // AG Reports (annexes financières décret 2005-240)
 router.use('/ag-reports', agReportsRoutes)
+
+// Audit log (tamper-proof hash chain verification)
+router.use('/audit', auditRoutes)
 
 // Root health check
 router.get('/', (req, res) => {

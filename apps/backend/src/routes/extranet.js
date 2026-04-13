@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { ExtranetController } from '../controllers/ExtranetController.js'
+import { ExtranetPaymentController } from '../controllers/ExtranetPaymentController.js'
 import { requireAuth } from '../middleware/auth.js'
 
 const router = Router()
@@ -16,5 +17,18 @@ router.get('/conseil-syndical/:coproprieteId', requireAuth(), ExtranetController
 // Right to rectification (GDPR Art. 16)
 router.put('/mon-profil', requireAuth(), ExtranetController.updateMonProfil)
 router.put('/mon-compte', requireAuth(), ExtranetController.updateMonCompte)
+
+// Online payments (Stripe Checkout) — protected by requireAuth.
+// The controller verifies the user is linked to a coproprietaire.
+router.post(
+  '/payments/checkout',
+  requireAuth(),
+  ExtranetPaymentController.createCheckoutSession
+)
+router.post(
+  '/payments/confirm',
+  requireAuth(),
+  ExtranetPaymentController.confirmPayment
+)
 
 export default router

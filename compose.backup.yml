@@ -1,0 +1,57 @@
+# Docker Compose override for automated PostgreSQL backups.
+#
+# Usage:
+#   docker compose -f compose.yml -f compose.backup.yml up -d
+#
+# The backup sidecar runs a simple bash loop that executes
+# /scripts/backup.sh once every 24 hours. On first start, it waits
+# until 3 AM local time before running the first backup, then runs
+# every 24 hours after that.
+#
+# Backups are stored in the named volume `copro_backups` and pruned
+# according to RETENTION_DAYS (default 30).
+
+services:
+  postgres-backup:
+    image: postgres:17-alpine
+    container_name: copro-pilot-backup
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: '5432'
+      POSTGRES_DB: ${POSTGRES_DB:-copro_pilot}
+      POSTGRES_USER: ${POSTGRES_USER:-copro_pilot}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      BACKUP_DIR: /var/backups/copro-pilot
+      RETENTION_DAYS: ${RETENTION_DAYS:-30}
+    volumes:
+      - ./scripts/backup.sh:/scripts/backup.sh:ro
+      - copro_backups:/var/backups/copro-pilot
+    networks:
+      - default
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -eu
+        apk add --no-cache bash findutils coreutils >/dev/null 2>&1 || true
+        chmod +x /scripts/backup.sh
+        # Sleep until next 3 AM on first start
+        now=$$(date +%s)
+        target=$$(date -d 'today 03:00' +%s 2>/dev/null || date +%s)
+        if [ "$$target" -le "$$now" ]; then
+          target=$$((target + 86400))
+        fi
+        initial_wait=$$((target - now))
+        echo "[backup-sidecar] waiting $$initial_wait seconds until first run"
+        sleep "$$initial_wait"
+        while true; do
+          bash /scripts/backup.sh || echo "[backup-sidecar] backup failed"
+          sleep 86400
+        done
+
+volumes:
+  copro_backups:
+    driver: local
