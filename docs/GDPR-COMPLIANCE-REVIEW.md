@@ -51,15 +51,15 @@ graph LR
 | **Art. 5(1)(b)** | Limitation des finalités | Non conforme | Finalités non documentées |
 | **Art. 5(1)(e)** | Limitation de conservation | Non conforme | Pas de politique de rétention |
 | **Art. 5(1)(f)** | Intégrité et confidentialité | Non conforme | Pas de chiffrement, headers manquants |
-| **Art. 5(2)** | Responsabilité | Non conforme | Pas d'audit trail, pas de DPIA |
+| **Art. 5(2)** | Responsabilité | **Conforme** | Journal d'audit inviolable (hash chaining + endpoint `verify-chain`) |
 | **Art. 6** | Base légale | Non conforme | Pas de consentement documenté |
 | **Art. 7** | Conditions du consentement | Non conforme | Pas de mécanisme de consentement |
 | **Art. 15** | Droit d'accès | Partiel | Extranet montre certaines données |
-| **Art. 16** | Droit de rectification | Non conforme | Profils en lecture seule |
-| **Art. 17** | Droit à l'effacement | Non conforme | Pas de suppression self-service |
-| **Art. 20** | Droit à la portabilité | Non conforme | Pas d'export de données personnelles |
+| **Art. 16** | Droit de rectification | **Conforme** | `PUT /api/extranet/mon-profil` et `/api/extranet/mon-compte` en self-service |
+| **Art. 17** | Droit à l'effacement | **Conforme** | Workflow complet — inclut désormais documents, incidents, presences_ag, locataires |
+| **Art. 20** | Droit à la portabilité | **Conforme** | Export JSON incluant documents, incidents, audit_log, presences_ag |
 | **Art. 25** | Protection dès la conception | Non conforme | Pas de privacy-by-design |
-| **Art. 32** | Sécurité du traitement | Partiel | Auth présente, chiffrement/headers absents |
+| **Art. 32** | Sécurité du traitement | **Amélioré** | CSRF, account lockout, validation upload, chiffrement PII (optionnel), rate limiting |
 | **Art. 33** | Notification de violation | Non conforme | Pas de détection de violation |
 | **Art. 35** | Analyse d'impact (DPIA) | Non conforme | Pas de DPIA réalisée |
 
