@@ -79,7 +79,7 @@ Toutes les routes sauf le webhook nécessitent une authentification.
 
 | Événement Stripe | Action |
 |-----------------|--------|
-| `checkout.session.completed` | Créer/mettre à jour l'abonnement, appliquer les quotas |
+| `checkout.session.completed` | Aiguillage via `metadata.type` : abonnement SaaS **ou** paiement copropriétaire (voir section dédiée) |
 | `customer.subscription.updated` | Synchroniser le statut et la période |
 | `customer.subscription.deleted` | Rétrograder vers le plan gratuit |
 | `invoice.upcoming` | Reporter l'usage mesuré avant facturation |
@@ -111,3 +111,62 @@ En mode **self-hosted** (`LICENSING_MODE=self-hosted`), ces middlewares sont dé
 | `STRIPE_PRICE_ENTREPRISE_EXTRA_COPRO` | ID du prix dépassement copropriétés (Entreprise) |
 | `STRIPE_PRICE_ENTREPRISE_EXTRA_USER` | ID du prix dépassement utilisateurs (Entreprise) |
 | `LICENSING_MODE` | `cloud` (quotas actifs) ou `self-hosted` (quotas désactivés) |
+
+---
+
+## Paiements copropriétaires (Coproprietaire Payments)
+
+En plus des abonnements SaaS du syndic, Stripe est également utilisé pour que les **copropriétaires** règlent leurs appels de fonds depuis l'extranet. Cette fonctionnalité réutilise la même intégration Stripe mais via un flux séparé (mode `payment` au lieu de `subscription`).
+
+### Création de la session Checkout
+
+La création passe par `ExtranetPaymentService.createCheckoutSession()` :
+
+- **Mode Stripe** — `payment` (paiement unique, pas d'abonnement).
+- **Moyens acceptés** — `card` et `sepa_debit` (prélèvement SEPA européen).
+- **Metadata** — `{ coproprietaireId, type: 'coproprietaire_payment' }`. Le champ `type` est indispensable pour que le webhook différencie les flux (voir ci-dessous).
+- **URLs de redirection** — `success_url` vers `/#/extranet/compte?payment=success&session_id={CHECKOUT_SESSION_ID}`, `cancel_url` vers `/#/extranet/compte?payment=cancel`.
+
+```mermaid
+sequenceDiagram
+    participant C as Copropriétaire
+    participant F as Frontend extranet
+    participant B as Backend
+    participant S as Stripe
+
+    C->>F: Clic "Payer en ligne"
+    F->>B: POST /api/extranet/payments/checkout
+    B->>S: Créer Checkout Session (mode=payment, metadata.type=coproprietaire_payment)
+    S-->>B: URL Checkout
+    B-->>F: Redirection
+    F->>S: Page de paiement (carte ou SEPA)
+    C->>S: Paiement
+    S-->>F: Redirection success_url
+    F->>B: POST /api/extranet/payments/confirm (session_id)
+    S->>B: Webhook checkout.session.completed
+    B->>B: PaiementService.create (mode=autre)
+```
+
+### Webhook — aiguillage par `metadata.type`
+
+Le handler `StripeService.handleCheckoutCompleted` est désormais un **point d'entrée unique** pour les deux flux. Il inspecte `session.metadata.type` :
+
+| `metadata.type` | Branche empruntée | Action |
+|-----------------|-------------------|--------|
+| `saas_subscription` (ou absent) | **SaaS** | Création/mise à jour de l'abonnement syndic, application des quotas |
+| `coproprietaire_payment` | **Paiement copropriétaire** | Appel `PaiementService.create` avec `mode: 'autre'` |
+
+Le branchement garantit qu'aucun paiement copropriétaire ne déclenche par erreur une modification d'abonnement (et inversement). Les sessions sans `type` sont considérées comme des abonnements SaaS pour compatibilité ascendante.
+
+### Enregistrement du paiement
+
+À la réception du webhook `checkout.session.completed` avec `type: coproprietaire_payment`, le service crée un enregistrement dans la table `paiements` :
+
+- **Copropriétaire** — via `metadata.coproprietaireId`.
+- **Montant** — via `session.amount_total` (converti de centimes en euros).
+- **Mode** — `autre` (les modes historiques `virement`, `cheque`, `prelevement` étant réservés aux saisies manuelles).
+- **Référence** — `session.id` Stripe, permettant de retrouver la transaction.
+
+Le webhook et l'endpoint `/api/extranet/payments/confirm` sont **idempotents** : un même `session.id` ne peut créer qu'un seul paiement (contrainte unique sur la référence). Cela permet au frontend et au webhook Stripe de concourir sans créer de doublon.
+
+Voir [`extranet.md`](./extranet.md) pour le parcours utilisateur complet et le traitement côté copropriétaire.

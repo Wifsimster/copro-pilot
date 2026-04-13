@@ -7,10 +7,11 @@ Ce document évalue la conformité de CoproPilot au RGPD (Règlement Général s
 
 ## Résumé
 
-- **Note de conformité : ~25% — NON CONFORME**
-- **Risque : ÉLEVÉ** — L'application traite des données personnelles sensibles sans les contrôles RGPD fondamentaux
+- **Note de conformité initiale : ~25% — NON CONFORME** (audit du 2026-02-19)
+- **Note de conformité mise à jour : ~55% — PARTIELLEMENT CONFORME** (voir section "Mise à jour — Progrès de remédiation" en bas)
+- **Risque résiduel : MOYEN** — Les droits des personnes (Art. 15/16/17/20) et l'audit trail (Art. 5(2)) sont en place ; restent le consentement et la DPIA.
 - CoproPilot stocke noms, emails, téléphones, IBAN, salaires, dossiers juridiques et historiques financiers
-- Il manque le consentement, le chiffrement au repos, les droits des personnes et les journaux d'audit
+- Écarts résiduels : consentement, politique de rétention documentée, notification de violation, DPIA
 
 ```mermaid
 graph LR
@@ -51,15 +52,15 @@ graph LR
 | **Art. 5(1)(b)** | Limitation des finalités | Non conforme | Finalités non documentées |
 | **Art. 5(1)(e)** | Limitation de conservation | Non conforme | Pas de politique de rétention |
 | **Art. 5(1)(f)** | Intégrité et confidentialité | Non conforme | Pas de chiffrement, headers manquants |
-| **Art. 5(2)** | Responsabilité | Non conforme | Pas d'audit trail, pas de DPIA |
+| **Art. 5(2)** | Responsabilité | **Conforme** | Journal d'audit inviolable (hash chaining + endpoint `verify-chain`) |
 | **Art. 6** | Base légale | Non conforme | Pas de consentement documenté |
 | **Art. 7** | Conditions du consentement | Non conforme | Pas de mécanisme de consentement |
 | **Art. 15** | Droit d'accès | Partiel | Extranet montre certaines données |
-| **Art. 16** | Droit de rectification | Non conforme | Profils en lecture seule |
-| **Art. 17** | Droit à l'effacement | Non conforme | Pas de suppression self-service |
-| **Art. 20** | Droit à la portabilité | Non conforme | Pas d'export de données personnelles |
+| **Art. 16** | Droit de rectification | **Conforme** | `PUT /api/extranet/mon-profil` et `/api/extranet/mon-compte` en self-service |
+| **Art. 17** | Droit à l'effacement | **Conforme** | Workflow complet — inclut désormais documents, incidents, presences_ag, locataires |
+| **Art. 20** | Droit à la portabilité | **Conforme** | Export JSON incluant documents, incidents, audit_log, presences_ag |
 | **Art. 25** | Protection dès la conception | Non conforme | Pas de privacy-by-design |
-| **Art. 32** | Sécurité du traitement | Partiel | Auth présente, chiffrement/headers absents |
+| **Art. 32** | Sécurité du traitement | **Amélioré** | CSRF, account lockout, validation upload, chiffrement PII (optionnel), rate limiting |
 | **Art. 33** | Notification de violation | Non conforme | Pas de détection de violation |
 | **Art. 35** | Analyse d'impact (DPIA) | Non conforme | Pas de DPIA réalisée |
 
@@ -179,6 +180,71 @@ CoproPilot opère dans le domaine de la gestion de copropriété en France :
 - **Effacement vs rétention :** Les données financières ne peuvent pas être supprimées mais doivent être anonymisées après la période de conservation
 
 Ces obligations légales constituent une base licite (Art. 6(1)(c)) pour conserver certaines données. Cela doit être documenté et communiqué aux personnes concernées.
+
+---
+
+## Mise à jour — Progrès de remédiation
+
+Les travaux des phases 2 et 3 du plan de remédiation ont partiellement abouti. Les écarts suivants ont été fermés :
+
+### Art. 5(2) — Responsabilité (conforme)
+
+Un **journal d'audit inviolable** a été mis en place. Chaque entrée est chaînée cryptographiquement (hash de l'entrée précédente inclus dans l'entrée courante), ce qui permet de détecter toute altération rétroactive. L'endpoint `GET /api/audit-log/verify-chain` recalcule la chaîne et retourne le premier écart détecté, si existant.
+
+### Art. 16 — Rectification (conforme)
+
+Les copropriétaires peuvent exercer leur droit de rectification en self-service via deux endpoints :
+
+| Méthode | Route | Portée |
+|---------|-------|--------|
+| PUT | `/api/extranet/mon-profil` | Téléphone, adresse de correspondance |
+| PUT | `/api/extranet/mon-compte` | Préférences de communication, email de contact |
+
+Toutes les modifications sont tracées dans le journal d'audit inviolable. Voir [`extranet.md`](./extranet.md).
+
+### Art. 17 — Effacement (conforme)
+
+Le workflow d'effacement couvre désormais l'ensemble des données personnelles :
+
+- `coproprietaires`, `locataires`, `user`, `session`, `account`
+- `documents` (dont pièces jointes liées)
+- `incidents` (et commentaires associés)
+- `presences_ag`
+- Traces dans `audit_log` pseudonymisées (non supprimées pour respecter la base licite Art. 6(1)(c))
+
+### Art. 20 — Portabilité (conforme)
+
+L'export de données personnelles retourne un JSON structuré contenant :
+
+- Profil utilisateur et coordonnées
+- Lots, charges, appels de fonds, paiements, fonds de travaux
+- **Documents** liés au copropriétaire
+- **Incidents** signalés
+- **Audit log** des actions effectuées par l'utilisateur
+- **Presences_ag** (historique de participation aux AG)
+
+### Art. 32 — Sécurité du traitement (amélioré)
+
+Plusieurs contrôles ont été ajoutés :
+
+| Contrôle | Mécanisme |
+|----------|-----------|
+| **CSRF** | Double-submit cookie, exempt pour `/api/auth/*`, webhooks Stripe et signatures (voir [`authentification.md`](./authentification.md)) |
+| **Account lockout** | 5 tentatives en 15 minutes → 429 avec `Retry-After` (node-cache) |
+| **Validation des uploads** | Vérification du type MIME, taille maximale, extensions autorisées |
+| **Chiffrement PII** | Optionnel sur les champs sensibles (IBAN, salaire) via clé symétrique |
+| **Rate limiting** | `express-rate-limit` sur les routes d'authentification et mutations |
+
+### Écarts restants
+
+Les articles suivants **restent non conformes** et nécessitent encore des travaux :
+
+- **Art. 5(1)(a)(b)(e)(f)** — Politique de confidentialité, finalités, rétention.
+- **Art. 6 / Art. 7** — Mécanisme de consentement et registre.
+- **Art. 25** — Privacy-by-design systématique.
+- **Art. 33 / Art. 35** — Notification de violation, DPIA.
+
+Se reporter au plan de remédiation ci-dessus pour l'effort résiduel.
 
 ---
 

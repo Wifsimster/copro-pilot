@@ -107,7 +107,75 @@ Accessible uniquement aux **membres élus** du conseil syndical. Affiche :
 | Aspect | Extranet (copropriétaire) | Interface syndic |
 |--------|--------------------------|------------------|
 | **Données** | Personnelles uniquement | Toutes les copropriétés |
-| **Écriture** | Lecture seule (sauf profil) | Création, modification, suppression |
+| **Écriture** | Lecture seule (sauf profil, paiement, vote) | Création, modification, suppression |
 | **Pages** | 9 pages légères | 30+ pages de gestion |
 | **Finances** | Propre solde et charges | Vue complète de tous les comptes |
 | **Documents** | Consultation par catégorie | Gestion complète (téléversement, classement) |
+
+---
+
+## Paiement en ligne
+
+Les copropriétaires peuvent régler leurs appels de fonds directement depuis l'extranet via **Stripe Checkout**.
+
+```mermaid
+sequenceDiagram
+    participant C as Copropriétaire
+    participant F as Frontend extranet
+    participant B as Backend
+    participant S as Stripe
+
+    C->>F: Clic "Payer en ligne"
+    F->>B: POST /api/extranet/payments/checkout
+    B->>S: Créer Checkout Session (mode=payment)
+    S-->>B: URL Checkout
+    B-->>F: Redirection
+    F->>S: Page de paiement (carte ou SEPA)
+    C->>S: Paiement
+    S-->>F: Redirection /#/extranet/compte?payment=success&session_id=...
+    F->>B: POST /api/extranet/payments/confirm
+    B->>B: Créer le paiement en base
+    B-->>F: Paiement confirmé
+```
+
+- **Création de la session** — `POST /api/extranet/payments/checkout` crée une session Stripe Checkout en mode `payment` acceptant les moyens `card` et `sepa_debit`.
+- **Succès** — Stripe redirige vers `/#/extranet/compte?payment=success&session_id=...`, et le frontend appelle automatiquement `POST /api/extranet/payments/confirm` pour enregistrer le paiement correspondant dans la table `paiements` (mode `autre`).
+- **Webhook Stripe** — Le webhook `StripeService.handleCheckoutCompleted` reconnaît les sessions de type `coproprietaire_payment` via leurs metadata et crée également le paiement côté serveur pour éviter toute perte de transaction (voir [`stripe-integration.md`](./stripe-integration.md)).
+
+---
+
+## Mise à jour du profil (rectification RGPD Art. 16)
+
+Le copropriétaire dispose de deux endpoints self-service pour exercer son **droit de rectification** (RGPD Art. 16) :
+
+| Méthode | Route | Champs modifiables |
+|---------|-------|-------------------|
+| PUT | `/api/extranet/mon-profil` | téléphone, adresse de correspondance |
+| PUT | `/api/extranet/mon-compte` | préférences de communication, email de contact |
+
+Les modifications sont tracées dans le journal d'audit inviolable (voir [`GDPR-COMPLIANCE-REVIEW.md`](./GDPR-COMPLIANCE-REVIEW.md)).
+
+---
+
+## Vote électronique
+
+Les copropriétaires ayant un compte lié (table `coproprietaires.user_id` renseignée) peuvent voter à distance aux assemblées générales depuis l'extranet.
+
+- **Endpoint** — `POST /api/votes` (auth requise, rôle `coproprietaire`).
+- **Pré-requis** — L'AG doit être au statut `convoquee` ou `en_cours` et autoriser le vote par correspondance.
+- **Un vote par résolution** — Le vote est unique et ne peut pas être modifié après validation.
+- **Traçabilité** — Chaque vote est horodaté et enregistré dans le journal d'audit.
+
+---
+
+## Conformité Loi ALUR
+
+Un indicateur de conformité **Loi ALUR** est affiché sur la `CoproprieteDetailPage` via le composant `ComplianceCard`. Il récapitule :
+
+- Immatriculation au registre national des copropriétés (numéro + date).
+- Carnet d'entretien à jour.
+- DTG (Diagnostic Technique Global) — présence et date.
+- Fonds de travaux — provisionnement conforme.
+- Fiche synthétique disponible pour les copropriétaires.
+
+Chaque ligne affiche un statut (conforme, à vérifier, manquant) et un lien vers la ressource correspondante dans l'extranet.

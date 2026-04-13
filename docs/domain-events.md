@@ -97,3 +97,57 @@ L'endpoint `GET /api/timeline/:entityType/:entityId` retourne l'historique des �
 | `metadata` | JSONB | Métadonnées additionnelles |
 | `created_at` | timestamp | Date de création |
 | `processed_at` | timestamp | Date de traitement (nullable) |
+
+---
+
+## EventDispatchService — dispatch notifications + emails
+
+Le `EventDispatchService` est une couche de plus haut niveau qui centralise la diffusion des événements métier vers :
+
+1. **Les notifications internes** (table `notifications`, cloche + SSE)
+2. **Les emails transactionnels** (voir [`emails.md`](./emails.md))
+
+Cette couche permet aux services métier de déclencher un événement unique sans connaître les canaux de diffusion. Le dispatch est appelé **après la validation des règles métier et après la persistance** dans la transaction principale.
+
+### API
+
+```js
+// apps/backend/src/services/EventDispatchService.js
+EventDispatchService.notifyPaymentReceived(paiement, coproprietaire)
+EventDispatchService.notifyIncidentCreated(incident, copropriete)
+EventDispatchService.notifyRelanceSent(relance, coproprietaire)
+EventDispatchService.notifyAGConvocation(convocation, destinataires)
+EventDispatchService.notifyDocumentAdded(document, copropriete)
+```
+
+### Flux
+
+```mermaid
+sequenceDiagram
+    participant S as Service métier
+    participant ED as EventDispatchService
+    participant NS as NotificationService
+    participant M as Email (Nodemailer)
+
+    S->>ED: notifyPaymentReceived(paiement, coproprietaire)
+    ED->>NS: createNotification(user_id, type, link)
+    ED->>M: sendMail(coproprietaire.email, template)
+    ED-->>S: void (fire-and-forget loggé)
+```
+
+### Déclencheurs
+
+| Méthode | Appelée depuis | Canaux |
+|---------|----------------|--------|
+| `notifyPaymentReceived` | `PaiementService.create` | notification + email au copropriétaire |
+| `notifyIncidentCreated` | `IncidentService.create` | notification aux syndics (pas d'email) |
+| `notifyRelanceSent` | `PaiementService` / `RelanceService` | notification + email au copropriétaire |
+| `notifyAGConvocation` | `ConvocationAGService.envoyerConvocation` | notification + email à chaque destinataire |
+| `notifyDocumentAdded` | `DocumentService` | notification aux utilisateurs de la copropriété |
+
+### Points clés
+
+- Le dispatch est **non bloquant** pour la requête HTTP : les erreurs d'envoi sont loggées mais n'annulent pas l'opération métier.
+- Le dispatch est **toujours appelé après commit** de la transaction pour éviter les notifications fantômes en cas de rollback.
+- Les envois d'emails sont individuels — pour une AG, un email est envoyé à chaque destinataire séparément (voir [`convocations.md`](./convocations.md)).
+- Pour les incidents, seule une notification in-app est créée (pas d'email), afin d'éviter la pollution des boîtes des syndics.

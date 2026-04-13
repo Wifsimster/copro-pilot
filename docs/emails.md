@@ -77,3 +77,38 @@ Tous les emails partagent un gabarit commun :
 - **Pied de page :** mention "Ne pas répondre" + copyright
 - **Largeur :** 560 px maximum, responsive
 - **Police :** système (-apple-system, Segoe UI, Roboto)
+
+---
+
+## Envoi événementiel via EventDispatchService
+
+Les emails transactionnels métier ne sont plus envoyés en dur depuis chaque service : ils passent par le `EventDispatchService` (voir [`domain-events.md`](./domain-events.md)).
+
+Quand un service métier déclenche un événement, le dispatcher se charge :
+
+1. De créer la notification in-app (voir [`notifications.md`](./notifications.md)).
+2. De construire l'email à partir du gabarit correspondant.
+3. D'envoyer l'email via Nodemailer (ou de le logger en développement).
+
+Ce découplage permet d'ajouter un nouveau canal (SMS, webhook tiers...) sans modifier les services métier.
+
+### Matrice des événements et des emails
+
+| Événement | Email envoyé ? | Destinataire | Template |
+|-----------|----------------|--------------|----------|
+| `payment.received` | Oui | Copropriétaire qui a payé | Confirmation de paiement |
+| `relance.sent` | Oui | Copropriétaire en retard | Rappel d'impayé |
+| `ag.convocation` | Oui | Chaque destinataire de la convocation | Convocation AG + ordre du jour |
+| `incident.created` | **Non** | — | Notification in-app aux syndics uniquement |
+| `document.added` | Non (par défaut) | — | Notification in-app |
+
+### Détails par événement
+
+- **Paiement reçu** — Déclenché depuis `PaiementService.create`. L'email récapitule le montant, le mode et l'appel de fonds apuré.
+- **Relance envoyée** — Déclenché depuis le workflow de relance. L'email contient le solde dû et le lien vers l'extranet pour payer en ligne.
+- **Convocation AG** — Déclenché depuis `ConvocationAGService.envoyerConvocation` **après commit de la transaction**. Un email est envoyé **individuellement** à chaque destinataire (voir [`convocations.md`](./convocations.md)).
+- **Incidents** — Créent uniquement une notification in-app visible par les syndics dans la cloche. Aucun email par défaut pour éviter la sur-notification ; un envoi peut être activé manuellement depuis le module incidents si besoin.
+
+### Tolérance aux erreurs
+
+Les envois d'email sont **non bloquants** : une erreur SMTP n'annule pas l'opération métier (paiement enregistré, convocation envoyée, etc.). Les échecs sont loggés avec le `requestId` et le type d'événement pour traitement manuel.

@@ -20,8 +20,8 @@ CoproPilot est une plateforme monorepo de gestion de copropriété pour syndics 
 copro-pilot/
 ├── apps/
 │   ├── backend/                    # API Express (JavaScript ESM)
-│   │   ├── migrations/             # 19 migrations Knex (schema complet)
-│   │   ├── seeds/                  # 21 fichiers de seed (données de test)
+│   │   ├── migrations/             # 33 migrations Knex (schema complet)
+│   │   ├── seeds/                  # 23 fichiers de seed (données de test)
 │   │   ├── src/
 │   │   │   ├── config/
 │   │   │   │   ├── auth.js         # Better Auth setup
@@ -30,31 +30,59 @@ copro-pilot/
 │   │   │   │   └── migrate.js      # Migration runner
 │   │   │   ├── controllers/        # ~40 contrôleurs Express (PascalCase)
 │   │   │   ├── middleware/
+│   │   │   │   ├── accountLockout.js # Verrouillage après 5 échecs (15 min)
+│   │   │   │   ├── auditLogger.js  # Journal d'audit infalsifiable (hash chain)
 │   │   │   │   ├── auth.js         # Authentification Better Auth
+│   │   │   │   ├── authorization.js # Contrôle d'accès par rôle
+│   │   │   │   ├── correlationId.js # X-Request-Id pour tracer les requêtes
+│   │   │   │   ├── csrf.js         # Protection CSRF (double-submit cookie)
 │   │   │   │   ├── errorHandler.js # Gestion globale des erreurs
+│   │   │   │   ├── metrics.js      # Collecte métriques Prometheus
+│   │   │   │   ├── rateLimiter.js  # Rate limiting
 │   │   │   │   ├── requestLogger.js # Logging requêtes (Winston)
+│   │   │   │   ├── requirePlan.js  # Vérification plan Stripe
+│   │   │   │   ├── requireQuota.js # Vérification quotas d'usage
+│   │   │   │   ├── validate.js     # Validation Zod des payloads
 │   │   │   │   └── validation.js   # Validation JSON
 │   │   │   ├── models/             # ~40 modèles (requêtes Knex, pas d'ORM)
-│   │   │   ├── routes/             # ~39 fichiers de routes (kebab-case)
-│   │   │   │   └── index.js        # Registre central des routes
-│   │   │   ├── services/           # ~45 services (logique métier)
+│   │   │   ├── routes/             # ~45 fichiers de routes (kebab-case)
+│   │   │   │   └── index.js        # Registre central (monté sur /api et /api/v1)
+│   │   │   ├── schemas/
+│   │   │   │   └── index.js        # Schémas Zod pour la validation des payloads
+│   │   │   ├── services/           # ~50 services (logique métier)
 │   │   │   ├── utils/
-│   │   │   │   └── cache.js        # Node-cache
+│   │   │   │   ├── cache.js        # Node-cache
+│   │   │   │   ├── crypto.js       # Helpers cryptographiques
+│   │   │   │   ├── email-templates.js
+│   │   │   │   ├── email.js
+│   │   │   │   ├── encryption.js   # AES-256-GCM pour PII (IBAN)
+│   │   │   │   ├── logSampling.js  # sample(rate, key) pour réduire le bruit
+│   │   │   │   ├── metrics.js      # Registre Prometheus
+│   │   │   │   ├── pagination.js   # Helper pagination standardisée
+│   │   │   │   └── password-validator.js
 │   │   │   ├── createApp.js        # Factory Express (middleware setup)
 │   │   │   ├── index.js            # Point d'entrée serveur
-│   │   │   └── logger.js           # Winston logger
+│   │   │   └── logger.js           # Winston logger (JSON stdout en prod)
 │   │   ├── tests/
+│   │   │   ├── helpers/            # Factories de test + mocks Knex
+│   │   │   ├── middleware/         # Tests des middleware (csrf, auth, etc.)
+│   │   │   ├── models/             # Tests Paiement/Mutation/Relance…
+│   │   │   ├── services/           # Tests financiers (AppelFonds, ComptaRegl…)
+│   │   │   ├── utils/              # Tests crypto/encryption (19 cas)
 │   │   │   └── smoke.test.js       # Smoke tests backend
 │   │   ├── vitest.config.js
 │   │   └── package.json
 │   └── frontend/                   # SPA React (TypeScript)
 │       ├── src/
-│       │   ├── api/                # ~44 modules fetch typés (+ api.ts base wrapper)
+│       │   ├── api/                # ~50 modules fetch typés (+ api.ts base wrapper)
 │       │   ├── components/
-│       │   │   ├── ui/             # 23 composants shadcn/ui (NE PAS MODIFIER)
-│       │   │   ├── layout/         # MainLayout, NotificationBell
+│       │   │   ├── ui/             # Composants shadcn/ui + DataTable, ConfirmDialog,
+│       │   │   │                   # ErrorAlert, ErrorBoundary, Breadcrumbs, TabBar,
+│       │   │   │                   # NoCoproprieteSelected (NE PAS MODIFIER les ui/)
+│       │   │   ├── layout/         # MainLayout, NotificationBell, OfflineIndicator
 │       │   │   ├── assemblees/     # Composants feature AG
 │       │   │   ├── assurances/     # Composants feature assurances
+│       │   │   ├── auth/           # Composants auth (login, lockout, MFA)
 │       │   │   ├── charges/        # Composants feature comptabilité
 │       │   │   ├── comptes-bancaires/
 │       │   │   ├── conseil-syndical/
@@ -63,11 +91,16 @@ copro-pilot/
 │       │   │   ├── contrats-syndic/
 │       │   │   ├── coproprietaires/
 │       │   │   ├── coproprietes/
+│       │   │   ├── dashboard/      # KPIs + graphiques Recharts
 │       │   │   ├── documents/
 │       │   │   ├── employes/
+│       │   │   ├── extranet/       # Espace copropriétaire (paiements, documents)
+│       │   │   ├── gdpr/           # Export RGPD (Art. 20) + effacement (Art. 17)
 │       │   │   ├── immatriculation/
 │       │   │   ├── incidents/
-│       │   │   └── reglements/
+│       │   │   ├── landing/        # Page d'accueil publique
+│       │   │   ├── reglements/
+│       │   │   └── user-management/
 │       │   ├── hooks/              # ~44 custom hooks (React Query wrappers)
 │       │   ├── lib/
 │       │   │   ├── auth-client.ts  # Better Auth client
@@ -96,14 +129,17 @@ copro-pilot/
 │       ├── vite.config.js          # Vite + TailwindCSS + proxy /api → :3001
 │       ├── vitest.config.ts
 │       └── package.json
-├── docs/                           # Documentation (api, architecture, modules, données)
+├── docs/                           # Documentation (api, architecture, modules, données, operations)
 ├── scripts/
 │   ├── dev.js                      # Lance backend + frontend en parallèle
-│   └── build.js                    # Build tous les workspaces
+│   ├── build.js                    # Build tous les workspaces
+│   ├── backup.sh                   # pg_dump compressé + rotation (RETENTION_DAYS)
+│   └── generate-encryption-key.js  # Génère une clé AES-256-GCM pour PII_ENCRYPTION_KEY
 ├── .github/workflows/ci.yml       # CI/CD (lint, typecheck, build, release, Docker)
 ├── Dockerfile                      # Multi-stage (frontend build → production image)
 ├── compose.local.yml               # Dev local (PostgreSQL + app)
 ├── compose.yml                     # Production (PostgreSQL + app)
+├── compose.backup.yml              # Override : sidecar postgres-backup (3 h du matin)
 ├── release.config.js               # Semantic Release config
 ├── eslint.config.js                # ESLint racine
 ├── .prettierrc                     # Prettier config
@@ -200,6 +236,15 @@ docker compose -f compose.yml logs -f app | jq .
 
 # Scraper Prometheus : endpoint /metrics exposé par le backend (hors préfixe /api)
 curl http://localhost:3001/metrics
+
+# Générer une clé AES-256-GCM pour PII_ENCRYPTION_KEY (chiffrement opt-in des IBAN)
+node scripts/generate-encryption-key.js
+
+# Vérifier l'intégrité de la chaîne d'audit (admin)
+curl -H "Cookie: <session>" http://localhost:3001/api/audit/verify-chain
+
+# Health check enrichi (latence DB + connectivité)
+curl http://localhost:3001/api/health
 ```
 
 Fichiers clés :
@@ -359,6 +404,15 @@ Voir `apps/backend/.env.example`. Variables requises :
 | `BETTER_AUTH_SECRET` | Secret pour Better Auth | — |
 | `BASE_URL` | URL du frontend (CORS + auth) | `http://localhost:3000` |
 
+Variables optionnelles (fonctionnalités avancées) :
+
+| Variable | Description | Défaut |
+|---|---|---|
+| `PII_ENCRYPTION_KEY` | Clé AES-256-GCM pour chiffrer les champs IBAN (générer via `node scripts/generate-encryption-key.js`) | — (chiffrement désactivé) |
+| `METRICS_AUTH_TOKEN` | Bearer token requis pour accéder à l'endpoint `/metrics` | — (endpoint public) |
+| `YOUSIGN_API_KEY` | Clé API Yousign pour la signature électronique des documents | — |
+| `YOUSIGN_WEBHOOK_SECRET` | Secret de validation des webhooks Yousign | — |
+
 ## Ajout d'un nouveau module (checklist)
 
 Pour ajouter une nouvelle entité/fonctionnalité :
@@ -387,23 +441,37 @@ Pour ajouter une nouvelle entité/fonctionnalité :
 - Le backend utilise `--env-file=.env` (fonctionnalité native Node.js 24, pas dotenv)
 - Les migrations s'exécutent automatiquement au démarrage du serveur
 - En production, le backend sert les fichiers statiques du frontend depuis `/frontend-dist`
-- L'authentification utilise Better Auth (email/mot de passe)
+- L'authentification utilise Better Auth (email/mot de passe) avec verrouillage après 5 échecs
 - Le frontend utilise un `HashRouter` (URLs avec `#`)
+- API versionnée : toutes les routes sont exposées à la fois sous `/api` et `/api/v1` (alias)
+- L'endpoint `/metrics` (Prometheus) est exposé **hors** du préfixe `/api`, authentification optionnelle via `METRICS_AUTH_TOKEN`
+- Toutes les routes POST/PUT doivent valider leur payload via un schéma Zod déclaré dans `src/schemas/index.js`
+- Les endpoints de liste doivent accepter la pagination standard (`?page=&limit=&sortBy=&sortOrder=`) via `utils/pagination.js`
 - Ne pas créer de fichiers CommonJS — tout est en ESM (`import/export`)
-- Ne pas modifier les fichiers `components/ui/` (générés par shadcn/ui)
+- Ne pas modifier les fichiers `components/ui/` (générés par shadcn/ui) — mais `DataTable`, `ConfirmDialog`, `ErrorAlert`, `ErrorBoundary`, `Breadcrumbs`, `TabBar`, `NoCoproprieteSelected` sont des composants partagés à réutiliser
 - Ne pas stocker de secrets dans le code source
 - Toujours passer par une migration Knex pour tout changement de schéma
 - Le frontend dev server (Vite) tourne sur le port 3000 et proxy `/api` vers le backend (port 3001)
 - Build variables disponibles : `__APP_VERSION__` et `__BUILD_DATE__` (injectées par Vite)
+- Les nouvelles pages doivent être chargées via `React.lazy` et wrappées par `ErrorBoundary`
 
 ## Fichiers critiques
 
 - `apps/backend/src/index.js` — Point d'entrée serveur, middleware, initialisation
 - `apps/backend/src/createApp.js` — Factory Express, montage des middleware
-- `apps/backend/src/routes/index.js` — Registre central de toutes les routes API
+- `apps/backend/src/routes/index.js` — Registre central des routes (monté sur `/api` et `/api/v1`)
 - `apps/backend/src/config/auth.js` — Configuration Better Auth
 - `apps/backend/src/config/knexfile.js` — Configuration connexion PostgreSQL
-- `apps/frontend/src/routes/index.tsx` — Définition de toutes les routes frontend
+- `apps/backend/src/middleware/csrf.js` — Protection CSRF (double-submit cookie)
+- `apps/backend/src/middleware/accountLockout.js` — Verrouillage après 5 échecs de connexion (15 min)
+- `apps/backend/src/middleware/correlationId.js` — Injection de l'en-tête `X-Request-Id`
+- `apps/backend/src/middleware/auditLogger.js` — Journal d'audit infalsifiable (hash chain SHA-256)
+- `apps/backend/src/middleware/validate.js` — Validation Zod des payloads POST/PUT
+- `apps/backend/src/schemas/index.js` — Schémas Zod partagés par module
+- `apps/backend/src/utils/pagination.js` — Helper pagination (`?page=&limit=&sortBy=&sortOrder=`)
+- `apps/backend/src/utils/encryption.js` — AES-256-GCM pour PII (IBAN)
+- `apps/backend/src/utils/metrics.js` — Registre Prometheus exposé sur `/metrics`
+- `apps/frontend/src/routes/index.tsx` — Définition de toutes les routes frontend (avec `React.lazy`)
 - `apps/frontend/src/types/index.ts` — Types TypeScript partagés
 - `apps/frontend/src/api/api.ts` — Base fetch wrapper pour toutes les API calls
 - `apps/frontend/src/lib/auth-client.ts` — Client d'authentification Better Auth

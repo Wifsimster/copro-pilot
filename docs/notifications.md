@@ -107,3 +107,30 @@ Liste complète de toutes les notifications avec possibilité de :
 | Tout marquer comme lu | PUT | `/api/notifications/read-all` |
 | Supprimer | DELETE | `/api/notifications/:id` |
 | Flux temps réel | GET | `/api/sse/stream` |
+
+---
+
+## Sécurité — cloisonnement par utilisateur
+
+Un correctif **IDOR** (Insecure Direct Object Reference) a été appliqué : toutes les opérations de lecture/écriture sont désormais scopées à l'utilisateur authentifié.
+
+- `NotificationModel.markAsRead(id, userId)` — vérifie que la notification appartient bien à `userId` avant la mise à jour.
+- `NotificationModel.delete(id, userId)` — vérifie que la notification appartient bien à `userId` avant la suppression.
+- Les endpoints `PUT /api/notifications/:id/read` et `DELETE /api/notifications/:id` extraient le `userId` de la session et le passent au modèle.
+- Un utilisateur qui tente d'accéder à une notification d'un autre compte reçoit une erreur **404** (et non 403, pour ne pas divulguer l'existence de la ressource).
+
+Ce correctif empêche un utilisateur A de marquer comme lue ou de supprimer une notification appartenant à un utilisateur B, même en devinant son identifiant.
+
+---
+
+## Intégration avec les événements de domaine
+
+Les notifications sont désormais **câblées aux événements métier** via le `EventDispatchService` (voir [`domain-events.md`](./domain-events.md)).
+
+Quand un événement est déclenché (paiement reçu, incident créé, relance envoyée, convocation AG, document ajouté), le dispatcher :
+
+1. Crée une entrée dans la table `notifications` avec le bon `user_id`.
+2. Émet un signal SSE pour rafraîchir l'interface en temps réel.
+3. Déclenche (selon l'événement) un email transactionnel via Nodemailer.
+
+Cela remplace l'ancien système où chaque service créait manuellement ses notifications, et garantit que la logique de diffusion reste centralisée.
