@@ -2,6 +2,11 @@
 
 Ce document décrit les modules de CoproPilot et leurs fonctionnalités. Chaque module correspond à un domaine métier du syndic de copropriété.
 
+La plateforme compte environ **50 modules backend** (contrôleurs, services et
+modèles) regroupés en grands domaines fonctionnels. Les modules *cœur de
+métier* sont décrits en détail ci-dessous ; les modules *transverses et
+plateforme* sont documentés plus bas.
+
 ## Carte des modules
 
 ```mermaid
@@ -11,9 +16,24 @@ graph TD
     A --> D[Assemblées Générales]
     A --> E[Travaux & Incidents]
     A --> F[Tableau de bord]
+    A --> G[Communication & Extranet]
+    A --> H[Conformité & Reporting]
+    A --> I[Plateforme]
+    G --> G1[Tickets]
+    G --> G2[Paiements extranet]
+    D --> D1[Vote électronique]
+    D --> D2[Signatures]
+    H --> H1[Loi ALUR]
+    H --> H2[Rapports AG]
+    I --> I1[Audit inviolable]
+    I --> I2[Métriques]
+    C --> C1[Auto-relance]
 ```
 
-La plateforme se compose de cinq modules principaux. Chaque module est accessible depuis le menu latéral de l'application.
+La plateforme se compose de cinq modules métier principaux, complétés par
+quatre familles de modules transverses (communication, conformité, plateforme,
+automatisation). Chaque module métier est accessible depuis le menu latéral
+de l'application.
 
 ---
 
