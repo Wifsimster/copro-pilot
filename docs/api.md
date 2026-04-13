@@ -433,3 +433,405 @@ Analyse les soldes des copropriétaires de la copropriété et génère automati
 | Créer une entrée | POST | `/api/carnet-entretien` |
 | Modifier une entrée | PUT | `/api/carnet-entretien/:id` |
 | Supprimer une entrée | DELETE | `/api/carnet-entretien/:id` |
+
+---
+
+## Messagerie — Tickets
+
+Module de messagerie permettant aux copropriétaires, au conseil syndical et au syndic d'échanger sur des sujets liés à une copropriété (questions, demandes, signalements). Chaque ticket contient un fil de messages.
+
+| Action | Méthode | Chemin |
+|---|---|---|
+| Lister les tickets (filtré par `copropriete_id` ou `user_id`) | GET | `/api/tickets` |
+| Consulter un ticket | GET | `/api/tickets/:id` |
+| Créer un ticket | POST | `/api/tickets` |
+| Modifier un ticket | PUT | `/api/tickets/:id` |
+| Supprimer un ticket | DELETE | `/api/tickets/:id` |
+| Ajouter un message à un ticket | POST | `/api/tickets/:id/messages` |
+
+### `GET /api/tickets`
+
+Liste les tickets. **Au moins un des deux paramètres de requête suivants est obligatoire** :
+
+| Paramètre | Type | Description |
+|---|---|---|
+| `copropriete_id` | entier | Lister tous les tickets d'une copropriété. |
+| `user_id` | identifiant | Lister tous les tickets créés par un utilisateur. |
+
+**Réponse `200 OK` :**
+
+```json
+{
+  "data": [
+    {
+      "id": 12,
+      "copropriete_id": 3,
+      "sujet": "Fuite dans la cave du bâtiment B",
+      "statut": "ouvert",
+      "auteur_id": "usr_abc",
+      "created_at": "2026-04-10T09:23:00.000Z"
+    }
+  ]
+}
+```
+
+Retourne `400 Bad Request` si ni `copropriete_id` ni `user_id` n'est fourni.
+
+### `POST /api/tickets`
+
+Crée un ticket. Si `auteur_id` n'est pas fourni, l'utilisateur authentifié est utilisé par défaut.
+
+**Corps attendu :**
+
+```json
+{
+  "copropriete_id": 3,
+  "sujet": "Demande d'information AG",
+  "description": "Pouvez-vous confirmer l'ordre du jour ?",
+  "priorite": "normale"
+}
+```
+
+Retourne `201 Created` avec `{ data, message }`. Les champs `copropriete_id` et `sujet` sont obligatoires (`400` sinon).
+
+### `POST /api/tickets/:id/messages`
+
+Ajoute un message à un ticket existant. L'`auteur_id` est déduit de l'utilisateur authentifié si absent.
+
+**Corps attendu :**
+
+```json
+{
+  "contenu": "Bonjour, la fuite a été confirmée par le plombier."
+}
+```
+
+Retourne `201 Created` avec le message créé, `404 Not Found` si le ticket n'existe pas, `400 Bad Request` si `contenu` est absent.
+
+---
+
+## Assemblées générales — Rapports & annexes (AG Reports)
+
+Génère les annexes financières réglementaires du décret 2005-240 ainsi qu'un pack complet regroupant toutes les pièces de l'AG.
+
+| Action | Méthode | Chemin |
+|---|---|---|
+| Récupérer une annexe (1 à 5) | GET | `/api/ag-reports/:coproprieteId/annexe/:numero?annee=YYYY` |
+| Récupérer le pack complet | GET | `/api/ag-reports/:coproprieteId/pack-complet?annee=YYYY` |
+
+### `GET /api/ag-reports/:coproprieteId/annexe/:numero`
+
+| Paramètre | Emplacement | Description |
+|---|---|---|
+| `coproprieteId` | path | Identifiant de la copropriété. |
+| `numero` | path | Numéro de l'annexe (entier entre **1** et **5**). |
+| `annee` | query | Année d'exercice (ex: `2025`) — **obligatoire**. |
+
+**Réponse `200 OK` :** `{ "data": { /* contenu de l'annexe */ } }`.
+
+Erreurs :
+
+- `400 Bad Request` si `annee` est manquante ou non numérique, ou si `numero` est hors de [1, 5].
+- `500 Internal Server Error` en cas d'échec de génération.
+
+### `GET /api/ag-reports/:coproprieteId/pack-complet`
+
+Retourne le pack complet (annexes 1 à 5 + documents annexes) pour une année donnée.
+
+| Paramètre | Emplacement | Description |
+|---|---|---|
+| `coproprieteId` | path | Identifiant de la copropriété. |
+| `annee` | query | Année d'exercice — **obligatoire**. |
+
+**Réponse `200 OK` :** `{ "data": { /* pack */ } }`.
+
+---
+
+## Assemblées générales — Vote électronique
+
+Permet à un copropriétaire de voter en ligne sur une résolution. Les syndics/admins peuvent saisir un vote pour le compte d'un copropriétaire (vote papier, procuration, etc.).
+
+| Action | Méthode | Chemin |
+|---|---|---|
+| Enregistrer un vote | POST | `/api/votes` |
+| Lister mes votes sur une AG | GET | `/api/votes/my?agId=...` |
+| Consulter les votes d'une résolution | GET | `/api/votes/resolution/:id` |
+| Obtenir le dépouillement d'une résolution | GET | `/api/votes/resolution/:id/tally` |
+
+### `POST /api/votes`
+
+**Corps attendu :**
+
+```json
+{
+  "resolution_id": 18,
+  "coproprietaire_id": 42,
+  "vote": "pour",
+  "mode": "electronique"
+}
+```
+
+- Les champs `resolution_id`, `vote` et `mode` sont obligatoires (`400` sinon).
+- Si l'appelant est un copropriétaire (non syndic/admin), `coproprietaire_id` est déduit de l'utilisateur connecté ; toute tentative de voter pour un autre copropriétaire renvoie `403 Forbidden`.
+- Si l'appelant est un syndic/admin, `coproprietaire_id` est obligatoire.
+- L'adresse IP est automatiquement enregistrée (anti-fraude).
+
+**Réponse `201 Created` :**
+
+```json
+{
+  "data": {
+    "id": 87,
+    "resolution_id": 18,
+    "coproprietaire_id": 42,
+    "vote": "pour",
+    "mode": "electronique"
+  },
+  "message": "Vote enregistré avec succès"
+}
+```
+
+### `GET /api/votes/my`
+
+Retourne la liste des votes de l'utilisateur courant pour une AG donnée. Le paramètre `agId` est **obligatoire** (`400` sinon). Retourne `403 Forbidden` si l'utilisateur n'est pas un copropriétaire.
+
+### `GET /api/votes/resolution/:id/tally`
+
+Retourne le dépouillement agrégé d'une résolution (nombre de pour / contre / abstention, tantièmes, quorum, etc.).
+
+**Réponse `200 OK` :**
+
+```json
+{
+  "data": {
+    "resolution_id": 18,
+    "pour": { "votes": 14, "tantiemes": 582 },
+    "contre": { "votes": 3, "tantiemes": 110 },
+    "abstention": { "votes": 1, "tantiemes": 35 },
+    "adoptee": true
+  }
+}
+```
+
+---
+
+## Assemblées générales — Procurations
+
+Gère les procurations données entre copropriétaires pour une AG (mandant → mandataire).
+
+| Action | Méthode | Chemin |
+|---|---|---|
+| Créer une procuration | POST | `/api/procurations` |
+| Révoquer une procuration | DELETE | `/api/procurations/:id` |
+| Lister les procurations d'une AG | GET | `/api/procurations/ag/:agId` |
+| Lister les procurations reçues pour une AG | GET | `/api/procurations/my/:agId` |
+
+### `POST /api/procurations`
+
+**Corps attendu :**
+
+```json
+{
+  "ag_id": 7,
+  "mandant_id": 42,
+  "mandataire_id": 18,
+  "signature_data": "data:image/png;base64,...",
+  "date_signature": "2026-04-12T10:00:00.000Z"
+}
+```
+
+- `ag_id` et `mandataire_id` sont obligatoires (`400` sinon).
+- Comme pour les votes : un copropriétaire ne peut donner procuration que pour lui-même ; un syndic/admin doit fournir `mandant_id`.
+
+**Réponse `201 Created` :** `{ "data": { /* procuration */ }, "message": "Procuration créée avec succès" }`.
+
+### `DELETE /api/procurations/:id`
+
+Révoque une procuration. Seul le mandant peut révoquer sa propre procuration ; un syndic/admin peut révoquer pour le compte du mandant. Retourne `404 Not Found` si la procuration n'existe pas.
+
+### `GET /api/procurations/my/:agId`
+
+Retourne les procurations **reçues** (en tant que mandataire) par l'utilisateur courant pour l'AG indiquée. Retourne `403 Forbidden` si l'utilisateur n'est pas copropriétaire.
+
+---
+
+## Signature électronique
+
+Intégration avec **Yousign** pour faire signer des documents (PV d'AG, contrats, etc.) par plusieurs signataires.
+
+| Action | Méthode | Chemin |
+|---|---|---|
+| Créer une demande de signature | POST | `/api/signatures` |
+| Consulter une demande de signature | GET | `/api/signatures/:id` |
+| Lister les demandes liées à un document | GET | `/api/signatures/document/:documentId` |
+| Annuler une demande de signature | POST | `/api/signatures/:id/cancel` |
+| Webhook Yousign (public, HMAC) | POST | `/api/signatures/webhook` |
+
+### `POST /api/signatures`
+
+Crée une demande de signature et l'envoie à Yousign.
+
+**Corps attendu :**
+
+```json
+{
+  "documentId": 124,
+  "agId": 7,
+  "signatories": [
+    {
+      "nom": "Dupont",
+      "prenom": "Marie",
+      "email": "marie@example.com",
+      "telephone": "+33612345678"
+    }
+  ]
+}
+```
+
+- `documentId` est obligatoire (`400` sinon).
+- `signatories` doit être un tableau non vide (`400` sinon).
+- `agId` est optionnel (lié à une AG).
+
+**Réponse `201 Created` :**
+
+```json
+{
+  "data": {
+    "id": 33,
+    "yousign_request_id": "...",
+    "status": "pending",
+    "document_id": 124
+  },
+  "message": "Demande de signature créée avec succès"
+}
+```
+
+Retourne `404 Not Found` si le document n'existe pas (code interne `DOCUMENT_NOT_FOUND`).
+
+### `GET /api/signatures/:id`
+
+Consulte le statut d'une demande de signature. Accepte le paramètre de requête optionnel `sync=true` pour forcer un rafraîchissement auprès de Yousign avant de répondre.
+
+**Réponse `200 OK` :** `{ "data": { /* demande + signataires */ } }`. Retourne `404 Not Found` si introuvable.
+
+### `POST /api/signatures/:id/cancel`
+
+Annule une demande de signature (appel à Yousign). Retourne `200 OK` avec `{ data, message }` ou `404 Not Found`.
+
+### `POST /api/signatures/webhook`
+
+**Endpoint public** appelé par Yousign. **Non authentifié** mais protégé par vérification HMAC de la signature passée dans l'en-tête `x-yousign-signature-256`. Si la signature ne correspond pas, renvoie `401 Unauthorized` avec `{ "error": "Signature invalide" }`.
+
+Ce webhook est **exempté de la protection CSRF** (voir section [Sécurité](#protection-csrf-double-submit-cookie)).
+
+---
+
+## Extranet copropriétaires
+
+Espace personnel destiné aux copropriétaires pour consulter leur compte, leurs charges, leurs appels de fonds et effectuer des paiements en ligne.
+
+| Action | Méthode | Chemin |
+|---|---|---|
+| Tableau de bord personnel | GET | `/api/extranet/dashboard` |
+| Consulter mon profil | GET | `/api/extranet/mon-profil` |
+| Mettre à jour mon profil (RGPD art. 16) | PUT | `/api/extranet/mon-profil` |
+| Consulter mon compte | GET | `/api/extranet/mon-compte` |
+| Mettre à jour mon compte (nom) | PUT | `/api/extranet/mon-compte` |
+| Consulter mes charges | GET | `/api/extranet/mes-charges` |
+| Consulter mes appels de fonds | GET | `/api/extranet/mes-appels-fonds` |
+| Consulter mon fonds de travaux | GET | `/api/extranet/mon-fonds-travaux` |
+| Consulter les documents d'une copropriété | GET | `/api/extranet/documents/:coproprieteId` |
+| Consulter les données du conseil syndical | GET | `/api/extranet/conseil-syndical/:coproprieteId` |
+| Créer une session Stripe Checkout | POST | `/api/extranet/payments/checkout` |
+| Confirmer un paiement Stripe Checkout | POST | `/api/extranet/payments/confirm` |
+
+### `PUT /api/extranet/mon-profil`
+
+Permet à un copropriétaire de modifier les informations personnelles modifiables dans le cadre du **droit de rectification RGPD (article 16)**.
+
+**Corps attendu :**
+
+```json
+{
+  "telephone": "+33612345678",
+  "adresse_correspondance": "12 rue de Paris, 75001 Paris"
+}
+```
+
+**Réponse `200 OK` :** `{ "data": { /* profil à jour */ }, "message": "Profil mis a jour avec succes" }`. Retourne `403 Forbidden` si l'utilisateur n'est pas un copropriétaire.
+
+### `PUT /api/extranet/mon-compte`
+
+Met à jour les informations du compte utilisateur (nom). Le champ `name` doit contenir au moins 2 caractères (`400` sinon).
+
+**Corps attendu :**
+
+```json
+{
+  "name": "Marie Dupont"
+}
+```
+
+**Réponse `200 OK` :**
+
+```json
+{
+  "data": { "id": "usr_abc", "name": "Marie Dupont", "email": "...", "role": "coproprietaire" },
+  "message": "Compte mis a jour avec succes"
+}
+```
+
+### `POST /api/extranet/payments/checkout`
+
+Crée une session **Stripe Checkout** pour permettre au copropriétaire authentifié de régler son solde en ligne.
+
+**Corps attendu :**
+
+```json
+{
+  "amount": 354.20,
+  "description": "Appel de fonds T2 2026"
+}
+```
+
+Contraintes sur `amount` :
+
+- Doit être un nombre strictement supérieur à 0 (`400` sinon).
+- Doit être strictement inférieur à `10000 €` (`400` sinon, avec le message `"Le montant doit être inférieur à 10000 €"`).
+
+**Réponse `200 OK` :**
+
+```json
+{
+  "url": "https://checkout.stripe.com/c/pay/cs_test_...",
+  "sessionId": "cs_test_..."
+}
+```
+
+Le frontend doit rediriger l'utilisateur vers l'`url` retournée. Retourne `403 Forbidden` si l'utilisateur n'est pas rattaché à un copropriétaire.
+
+### `POST /api/extranet/payments/confirm`
+
+Endpoint de secours appelé côté client au retour de Stripe pour confirmer un paiement immédiatement, sans attendre le webhook Stripe (qui reste la source de vérité).
+
+**Corps attendu :**
+
+```json
+{
+  "session_id": "cs_test_..."
+}
+```
+
+**Réponse `200 OK` :**
+
+```json
+{
+  "data": {
+    "id": 245,
+    "montant": 354.20
+  }
+}
+```
+
+Retourne `400 Bad Request` si `session_id` est manquant ou invalide.
+

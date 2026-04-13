@@ -67,6 +67,40 @@ L'envoi met à jour les statuts :
 - L'AG passe au statut **convoquée**.
 - Chaque destinataire est marqué comme **envoyé**.
 
+#### Transactionnalité
+
+`ConvocationAGService.envoyerConvocation()` est désormais **atomique**. Les trois mises à jour (convocation, AG, destinataires) sont exécutées dans une **transaction Knex unique** :
+
+```mermaid
+sequenceDiagram
+    participant S as Syndic
+    participant Svc as ConvocationAGService
+    participant DB as PostgreSQL
+    participant ED as EventDispatchService
+
+    S->>Svc: POST /api/convocations/:id/envoyer
+    Svc->>DB: BEGIN
+    Svc->>DB: UPDATE convocations SET statut='envoyee', date_envoi=now()
+    Svc->>DB: UPDATE assemblees_generales SET statut='convoquee'
+    Svc->>DB: UPDATE convocations_destinataires SET statut='envoyee' WHERE convocation_id=:id
+    Svc->>DB: COMMIT
+    Svc->>ED: notifyAGConvocation(convocation, destinataires)
+    ED->>ED: Envoi des emails individuels
+```
+
+- **Un seul batch UPDATE** est désormais utilisé pour les destinataires, au lieu de N mises à jour individuelles (une par destinataire). Cela réduit le nombre d'aller-retours SQL et évite les incohérences en cas d'interruption.
+- Si l'une des trois requêtes échoue, **l'intégralité est annulée** (rollback) : la convocation ne passe jamais dans un état partiel.
+- Les anciennes colonnes (`date_envoi_destinataire`, `statut_destinataire`) sont mises à jour dans le même batch.
+
+#### Notifications par email
+
+Une fois la transaction **commitée**, le service appelle `EventDispatchService.notifyAGConvocation(convocation, destinataires)` (voir [`domain-events.md`](./domain-events.md) et [`emails.md`](./emails.md)). Le dispatcher :
+
+1. Crée une notification in-app pour chaque destinataire lié à un compte utilisateur.
+2. Envoie un **email individuel** à chaque destinataire via Nodemailer, avec le gabarit "Convocation AG + ordre du jour".
+
+Le dispatch est **non bloquant** pour la requête HTTP : si un email ne peut pas être envoyé (erreur SMTP), la convocation reste envoyée en base et l'erreur est loggée avec le `requestId` pour retraitement.
+
 ---
 
 ## Suivi des destinataires
