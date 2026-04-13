@@ -184,6 +184,32 @@ docker compose -f compose.local.yml up -d   # Démarrer l'environnement local
 docker compose -f compose.local.yml down     # Arrêter
 ```
 
+### Backup & Operations
+
+Les opérations courantes (sauvegarde, logs, métriques, incident response) sont documentées en détail dans [`docs/operations.md`](docs/operations.md).
+
+```bash
+# Sauvegarde manuelle de la base (gzip dans $BACKUP_DIR, défaut /var/backups/copro-pilot)
+POSTGRES_PASSWORD=... ./scripts/backup.sh
+
+# Démarrer la stack de production avec le sidecar de backup automatique (3 h du matin, tous les jours)
+docker compose -f compose.yml -f compose.backup.yml up -d
+
+# Consulter les logs JSON du backend (production)
+docker compose -f compose.yml logs -f app | jq .
+
+# Scraper Prometheus : endpoint /metrics exposé par le backend (hors préfixe /api)
+curl http://localhost:3001/metrics
+```
+
+Fichiers clés :
+
+- `scripts/backup.sh` — dump `pg_dump` compressé + rotation `RETENTION_DAYS`
+- `compose.backup.yml` — override Docker Compose avec sidecar `postgres-backup`
+- `apps/backend/src/logger.js` — Winston structuré (stdout JSON en prod, fichiers en dev)
+- `apps/backend/src/utils/logSampling.js` — helper `sample(rate, key)` pour réduire le bruit des logs debug
+- `docs/operations.md` — runbook backup/restore, logs, metrics, incident response
+
 ## Conventions de code
 
 ### Formatage (Prettier)

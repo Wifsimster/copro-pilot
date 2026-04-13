@@ -1335,3 +1335,28 @@ export interface AgReportPack {
   annexe4: AgAnnexe4
   annexe5: AgAnnexe5
 }
+
+// ============================================
+// Signature électronique (Yousign)
+// ============================================
+
+export interface SignatureRequest {
+  id: number
+  document_id: number
+  ag_id?: number
+  provider: string
+  statut: string
+  created_at: string
+  expires_at?: string
+  signatories?: SignatureSignatory[]
+}
+
+export interface SignatureSignatory {
+  id: number
+  email: string
+  nom: string
+  prenom: string
+  statut: string
+  signed_at?: string
+  signature_url?: string
+}

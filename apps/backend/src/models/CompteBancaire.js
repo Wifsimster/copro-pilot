@@ -1,18 +1,34 @@
 import knexDatabase from '../config/knex-database.js'
+import { maybeEncrypt, maybeDecrypt } from '../utils/encryption.js'
 
 const getDb = () => knexDatabase.getKnex()
+
+function decryptRow(row) {
+  if (!row) return row
+  if (row.iban !== undefined && row.iban !== null) {
+    return { ...row, iban: maybeDecrypt(row.iban) }
+  }
+  return row
+}
+
+function decryptRows(rows) {
+  if (!Array.isArray(rows)) return rows
+  return rows.map(decryptRow)
+}
 
 export class CompteBancaireModel {
   static async getAllByCopropriete(coproprieteId) {
     const db = getDb()
-    return db('comptes_bancaires')
+    const rows = await db('comptes_bancaires')
       .where('copropriete_id', coproprieteId)
       .orderBy('type', 'asc')
+    return decryptRows(rows)
   }
 
   static async getById(id) {
     const db = getDb()
-    return db('comptes_bancaires').where('id', id).first()
+    const row = await db('comptes_bancaires').where('id', id).first()
+    return decryptRow(row)
   }
 
   static async create(data) {
@@ -21,7 +37,7 @@ export class CompteBancaireModel {
       .insert({
         copropriete_id: data.copropriete_id,
         banque: data.banque,
-        iban: data.iban,
+        iban: maybeEncrypt(data.iban),
         bic: data.bic || null,
         type: data.type || 'courant',
         libelle: data.libelle || null,
@@ -31,16 +47,20 @@ export class CompteBancaireModel {
         notes: data.notes || null,
       })
       .returning('*')
-    return result
+    return decryptRow(result)
   }
 
   static async update(id, data) {
     const db = getDb()
+    const payload = { ...data, updated_at: db.fn.now() }
+    if (Object.prototype.hasOwnProperty.call(payload, 'iban')) {
+      payload.iban = maybeEncrypt(payload.iban)
+    }
     const [result] = await db('comptes_bancaires')
       .where('id', id)
-      .update({ ...data, updated_at: db.fn.now() })
+      .update(payload)
       .returning('*')
-    return result
+    return decryptRow(result)
   }
 
   static async delete(id) {

@@ -74,6 +74,13 @@ import stripeRoutes from './stripe.js'
 import ticketsRoutes from './tickets.js'
 // AG Reports (annexes financières)
 import agReportsRoutes from './ag-reports.js'
+// Audit log (tamper-proof hash chain verification)
+import auditRoutes from './audit.js'
+// Vote électronique & procurations (AG)
+import votesRoutes from './votes.js'
+import procurationsRoutes from './procurations.js'
+// Signatures électroniques (Yousign)
+import signaturesRoutes from './signatures.js'
 
 const router = Router()
 
@@ -181,6 +188,16 @@ router.use('/tickets', ticketsRoutes)
 
 // AG Reports (annexes financières décret 2005-240)
 router.use('/ag-reports', agReportsRoutes)
+
+// Audit log (tamper-proof hash chain verification)
+router.use('/audit', auditRoutes)
+
+// Vote électronique & procurations (AG)
+router.use('/votes', votesRoutes)
+router.use('/procurations', procurationsRoutes)
+
+// Signatures électroniques (Yousign)
+router.use('/signatures', signaturesRoutes)
 
 // Root health check
 router.get('/', (req, res) => {
