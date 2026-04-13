@@ -6,6 +6,7 @@ import {
 } from '../config/stripe.js'
 import { SubscriptionModel } from '../models/Subscription.js'
 import { getUserUsage } from '../middleware/requireQuota.js'
+import { extranetPaymentService } from './ExtranetPaymentService.js'
 import knexDatabase from '../config/knex-database.js'
 import logger from '../logger.js'
 
@@ -123,9 +124,23 @@ class StripeService {
 
   /**
    * Handle checkout.session.completed webhook event.
+   * Dispatches to the correct service depending on the session type:
+   *  - `coproprietaire_payment` → ExtranetPaymentService (extranet balance)
+   *  - otherwise                → SaaS subscription handling
    */
   async handleCheckoutCompleted(session) {
     try {
+      // Extranet copropriétaire payment (one-off, mode: payment)
+      if (session.metadata?.type === 'coproprietaire_payment') {
+        const paiement = await extranetPaymentService.handlePaymentSuccess(
+          session.id
+        )
+        logger.info(
+          `[StripeService] Extranet payment recorded via webhook for session ${session.id}`
+        )
+        return paiement
+      }
+
       const userId = session.client_reference_id
       const plan = session.metadata?.plan || 'essentiel'
       const stripeCustomerId = session.customer
