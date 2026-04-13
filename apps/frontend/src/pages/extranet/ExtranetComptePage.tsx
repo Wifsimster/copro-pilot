@@ -29,7 +29,11 @@ export default function ExtranetComptePage() {
   const [error, setError] = useState('')
 
   const createCheckout = useCreateCheckoutSession()
-  const confirmPayment = useConfirmPayment()
+  const confirmPaymentMutation = useConfirmPayment()
+  const confirmPaymentRef = useRef(confirmPaymentMutation)
+  confirmPaymentRef.current = confirmPaymentMutation
+  const queryClientRef = useRef(queryClient)
+  queryClientRef.current = queryClient
 
   // Prevent running the post-return confirmation twice (React strict mode)
   const confirmedRef = useRef(false)
@@ -59,11 +63,13 @@ export default function ExtranetComptePage() {
 
     if (status === 'success' && sessionId) {
       confirmedRef.current = true
-      confirmPayment
+      confirmPaymentRef.current
         .mutateAsync(sessionId)
         .then(() => {
           toast.success('Paiement enregistre avec succes')
-          queryClient.invalidateQueries({ queryKey: EXTRANET_KEY })
+          queryClientRef.current.invalidateQueries({
+            queryKey: EXTRANET_KEY,
+          })
         })
         .catch((err: Error) => {
           toast.error(
@@ -76,7 +82,6 @@ export default function ExtranetComptePage() {
           window.history.replaceState(null, '', cleanHash || '#/')
         })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleOpen = () => {
