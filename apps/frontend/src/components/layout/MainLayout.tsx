@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { NotificationBell } from './NotificationBell'
 import { GlobalSearch } from './GlobalSearch'
 import { NavigationTour } from './NavigationTour'
+import { KoeSupportWidget } from './KoeSupportWidget'
 import { canAccessRoute, isCoproprietaire } from '@/utils/roleAccess'
 import { useEventStream } from '@/hooks/useEventStream'
 import {
@@ -43,6 +44,7 @@ import {
   CreditCard,
   PiggyBank,
   MessageSquare,
+  LifeBuoy,
   type LucideIcon,
 } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -177,6 +179,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [tourRunning, setTourRunning] = useState(false)
+  const [koeOpenSignal, setKoeOpenSignal] = useState(0)
   const [isDark, setIsDark] = useState(
     document.documentElement.classList.contains('dark')
   )
@@ -428,6 +431,15 @@ export function MainLayout({ children }: MainLayoutProps) {
                   <CircleHelp />
                   Aide
                 </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setKoeOpenSignal(s => s + 1)
+                    setSidebarOpen(false)
+                  }}
+                >
+                  <LifeBuoy />
+                  Support & retours
+                </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -500,6 +512,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       </div>
 
       <NavigationTour run={tourRunning} onFinish={onTourFinish} role={user?.role} />
+      <KoeSupportWidget openSignal={koeOpenSignal} />
     </div>
   )
 }
