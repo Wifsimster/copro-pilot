@@ -412,6 +412,8 @@ Variables optionnelles (fonctionnalités avancées) :
 | `METRICS_AUTH_TOKEN` | Bearer token requis pour accéder à l'endpoint `/metrics` | — (endpoint public) |
 | `YOUSIGN_API_KEY` | Clé API Yousign pour la signature électronique des documents | — |
 | `YOUSIGN_WEBHOOK_SECRET` | Secret de validation des webhooks Yousign | — |
+| `VITE_KOE_PROJECT_KEY` | Clé de projet Koe (widget support — bug reports, feature requests) — vide pour désactiver | — |
+| `VITE_KOE_API_URL` | URL de l'API Koe self-hosted | `https://api.koe.dev` |
 
 ## Ajout d'un nouveau module (checklist)
 
