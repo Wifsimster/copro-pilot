@@ -1,4 +1,8 @@
 import { z } from 'zod'
+import {
+  URGENCE_INCIDENT,
+  STATUT_INCIDENT,
+} from '@copro-pilot/shared-enums'
 
 export const coproprieteSchema = z.object({
   nom: z.string().min(1).max(255),
@@ -46,8 +50,8 @@ export const incidentSchema = z.object({
   copropriete_id: z.number().int().positive(),
   titre: z.string().min(1).max(255),
   description: z.string().min(1).optional(),
-  urgence: z.enum(['basse', 'moyenne', 'haute', 'critique']),
-  statut: z.enum(['ouvert', 'en_cours', 'resolu', 'ferme']).optional(),
+  urgence: z.enum(URGENCE_INCIDENT),
+  statut: z.enum(STATUT_INCIDENT).optional(),
 })
 
 export const documentCreateSchema = z.object({
