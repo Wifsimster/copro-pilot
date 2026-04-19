@@ -2,6 +2,10 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import {
+  URGENCE_INCIDENT,
+  STATUT_INCIDENT,
+} from '@copro-pilot/shared-enums'
 import { AlertTriangle, Tag } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -27,8 +31,8 @@ const incidentSchema = z.object({
   titre: z.string().min(1, 'Le titre est obligatoire'),
   description: z.string().optional(),
   categorie: z.string().optional(),
-  urgence: z.enum(['faible', 'moyenne', 'haute', 'critique']),
-  statut: z.enum(['ouvert', 'en_cours', 'resolu', 'ferme']),
+  urgence: z.enum(URGENCE_INCIDENT),
+  statut: z.enum(STATUT_INCIDENT),
   date_signalement: z.string().min(1, 'La date est obligatoire'),
 })
 

@@ -23,6 +23,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@copro-pilot/shared-enums": "*",
     "better-auth": "^1.4.17",
     "connect-history-api-fallback": "^2.0.0",
     "cookie-parser": "^1.4.7",
