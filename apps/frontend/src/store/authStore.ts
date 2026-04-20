@@ -181,10 +181,10 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     try {
       set({ isLoading: true })
       await authClient.signOut()
-      get().clearAuth()
     } catch (error) {
       logger.error('Backend logout failed:', error)
     } finally {
+      get().clearAuth()
       set({ isLoading: false })
     }
     window.location.hash = '#/'
