@@ -80,6 +80,8 @@ describe('Backend smoke tests', () => {
         .post('/api/nonexistent')
         .send({})
         .set('Content-Type', 'application/json')
+        .set('Cookie', 'csrf-token=test')
+        .set('X-CSRF-Token', 'test')
 
       expect(res.status).toBe(404)
       expect(res.body).toHaveProperty('error')
@@ -123,6 +125,8 @@ describe('Backend smoke tests', () => {
         .post('/api/coproprietes')
         .send({ nom: 'Test' })
         .set('Content-Type', 'application/json')
+        .set('Cookie', 'csrf-token=test')
+        .set('X-CSRF-Token', 'test')
 
       // Should not be a 400 "Content-Type" error
       expect(res.status).not.toBe(400)
@@ -133,6 +137,8 @@ describe('Backend smoke tests', () => {
         .post('/api/coproprietes')
         .send('not json')
         .set('Content-Type', 'text/plain')
+        .set('Cookie', 'csrf-token=test')
+        .set('X-CSRF-Token', 'test')
 
       expect(res.status).toBe(400)
       expect(res.body.error).toMatch(/Content-Type/i)

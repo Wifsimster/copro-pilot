@@ -16,6 +16,7 @@ export default [
         URL: 'readonly',
         URLSearchParams: 'readonly',
         Buffer: 'readonly',
+        fetch: 'readonly',
       }
     },
     rules: {
