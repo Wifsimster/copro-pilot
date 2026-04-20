@@ -79,24 +79,27 @@ export function createApp({ getDb, auth } = {}) {
     credentials: true
   }))
 
-  // Account lockout before Better Auth (reads raw body itself)
-  app.use(accountLockout)
-
-  // Better Auth handler before express.json()
-  if (auth) {
-    app.all('/api/auth/*splat', authLimiter, toNodeHandler(auth))
-  }
-
   // Stripe webhook needs raw body for signature verification (before express.json)
   app.post(
     '/api/stripe/webhook',
     express.raw({ type: 'application/json' })
   )
 
-  // Body parsing middleware
+  // Body parsing middleware — parsed before accountLockout + Better Auth so
+  // both can read req.body without consuming the underlying stream. Better
+  // Auth's adapter (better-call) detects a pre-parsed req.body and re-stringifies
+  // it, avoiding the "body locked" error otherwise thrown by Undici.
   app.use(express.json({ limit: '10mb' }))
   app.use(express.urlencoded({ extended: true, limit: '10mb' }))
   app.use(methodOverride())
+
+  // Account lockout — reads req.body.email from the parsed JSON body
+  app.use(accountLockout)
+
+  // Better Auth handler
+  if (auth) {
+    app.all('/api/auth/*splat', authLimiter, toNodeHandler(auth))
+  }
 
   app.set('query parser', 'extended')
 
