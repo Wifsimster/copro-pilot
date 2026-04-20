@@ -421,7 +421,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                   }}
                 >
                   <Shield className="h-4 w-4" />
-                  Mes donnees personnelles
+                  Mes données personnelles
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={toggleTheme}>
                   {isDark ? <Sun /> : <Moon />}
