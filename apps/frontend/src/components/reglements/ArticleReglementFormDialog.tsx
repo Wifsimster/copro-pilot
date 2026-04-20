@@ -23,7 +23,7 @@ import { FormSection } from '@/components/ui/form-section'
 import type { ArticleReglement } from '@/types'
 
 const articleSchema = z.object({
-  numero: z.string().min(1, 'Le numero est obligatoire'),
+  numero: z.string().min(1, 'Le numéro est obligatoire'),
   titre: z.string().min(1, 'Le titre est obligatoire'),
   contenu: z.string().optional(),
   categorie: z.enum(['parties_privatives', 'parties_communes', 'charges', 'usage', 'travaux', 'conseil_syndical', 'ag', 'autre']),

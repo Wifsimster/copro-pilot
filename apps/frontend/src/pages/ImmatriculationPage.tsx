@@ -128,7 +128,7 @@ export default function ImmatriculationPage() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-stone-500 dark:text-stone-400">Derniere mise a jour registre</p>
+                <p className="text-sm text-stone-500 dark:text-stone-400">Dernière mise à jour registre</p>
                 <p className="font-medium text-stone-900 dark:text-white">
                   {selectedCopropriete?.date_derniere_maj_registre
                     ? new Date(selectedCopropriete.date_derniere_maj_registre).toLocaleDateString('fr-FR')

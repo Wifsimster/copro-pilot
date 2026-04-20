@@ -293,7 +293,7 @@ class PvGenerationService {
       .font('Helvetica')
       .fillColor('#999999')
       .text(
-        `Document genere par CoproPilot le ${format(new Date(), 'dd/MM/yyyy a HH:mm')}`,
+        `Document généré par CoproPilot le ${format(new Date(), 'dd/MM/yyyy à HH:mm')}`,
         { align: 'center' }
       )
   }

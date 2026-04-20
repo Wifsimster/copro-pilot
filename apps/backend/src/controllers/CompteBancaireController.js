@@ -32,10 +32,10 @@ export class CompteBancaireController {
         return res.status(400).json({ error: 'Les champs copropriete_id, banque et iban sont obligatoires' })
       }
       const result = await compteBancaireService.create(req.body)
-      res.status(201).json({ data: result, message: 'Compte bancaire cree avec succes' })
+      res.status(201).json({ data: result, message: 'Compte bancaire créé avec succès' })
     } catch (error) {
       logger.error(`[CompteBancaireController] Error creating: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de creer le compte bancaire' })
+      res.status(500).json({ error: 'Impossible de créer le compte bancaire' })
     }
   }
 
@@ -43,10 +43,10 @@ export class CompteBancaireController {
     try {
       const { id } = req.params
       const result = await compteBancaireService.update(id, req.body)
-      res.json({ data: result, message: 'Compte bancaire mis a jour avec succes' })
+      res.json({ data: result, message: 'Compte bancaire mis à jour avec succès' })
     } catch (error) {
       logger.error(`[CompteBancaireController] Error updating: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de mettre a jour le compte bancaire' })
+      res.status(500).json({ error: 'Impossible de mettre à jour le compte bancaire' })
     }
   }
 
@@ -54,8 +54,8 @@ export class CompteBancaireController {
     try {
       const { id } = req.params
       const deleted = await compteBancaireService.delete(id)
-      if (!deleted) return res.status(404).json({ error: 'Compte bancaire non trouve' })
-      res.json({ message: 'Compte bancaire supprime avec succes' })
+      if (!deleted) return res.status(404).json({ error: 'Compte bancaire non trouvé' })
+      res.json({ message: 'Compte bancaire supprimé avec succès' })
     } catch (error) {
       logger.error(`[CompteBancaireController] Error deleting: ${error.message}`)
       res.status(500).json({ error: 'Impossible de supprimer le compte bancaire' })

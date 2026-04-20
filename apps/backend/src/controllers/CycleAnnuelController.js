@@ -55,11 +55,11 @@ export class CycleAnnuelController {
       if (!result) {
         return res
           .status(404)
-          .json({ error: 'Tache non trouvee' })
+          .json({ error: 'Tâche non trouvée' })
       }
       res.json({
         data: result,
-        message: 'Tache mise a jour avec succes',
+        message: 'Tâche mise à jour avec succès',
       })
     } catch (error) {
       logger.error(

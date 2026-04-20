@@ -24,7 +24,7 @@ import type { AppelFonds } from '@/types'
 const appelSchema = z.object({
   trimestre: z.coerce.number().min(1).max(4),
   annee: z.coerce.number().min(2000).max(2100),
-  montant_total: z.coerce.number().min(0, 'Le montant doit etre positif'),
+  montant_total: z.coerce.number().min(0, 'Le montant doit être positif'),
   date_emission: z.string().min(1, 'La date est obligatoire'),
   date_echeance: z.string().min(1, 'La date est obligatoire'),
 })

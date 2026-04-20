@@ -17,7 +17,7 @@ export class GdprErasureController {
 
       res.clearCookie('better-auth.session_token')
       res.json({
-        message: 'Votre compte a ete supprime avec succes',
+        message: 'Votre compte a été supprimé avec succès',
       })
     } catch (error) {
       logger.error(

@@ -32,10 +32,10 @@ export class DiagnosticController {
                 return res.status(400).json({ error: 'Les champs copropriete_id, type et date_realisation sont obligatoires' })
             }
             const result = await diagnosticService.create(req.body)
-            res.status(201).json({ data: result, message: 'Diagnostic cree avec succes' })
+            res.status(201).json({ data: result, message: 'Diagnostic créé avec succès' })
         } catch (error) {
             logger.error(`[DiagnosticController] Error creating: ${error.message}`)
-            res.status(500).json({ error: 'Impossible de creer le diagnostic' })
+            res.status(500).json({ error: 'Impossible de créer le diagnostic' })
         }
     }
 
@@ -43,11 +43,11 @@ export class DiagnosticController {
         try {
             const { id } = req.params
             const result = await diagnosticService.update(id, req.body)
-            if (!result) return res.status(404).json({ error: 'Diagnostic non trouve' })
-            res.json({ data: result, message: 'Diagnostic mis a jour avec succes' })
+            if (!result) return res.status(404).json({ error: 'Diagnostic non trouvé' })
+            res.json({ data: result, message: 'Diagnostic mis à jour avec succès' })
         } catch (error) {
             logger.error(`[DiagnosticController] Error updating: ${error.message}`)
-            res.status(500).json({ error: 'Impossible de mettre a jour le diagnostic' })
+            res.status(500).json({ error: 'Impossible de mettre à jour le diagnostic' })
         }
     }
 
@@ -55,8 +55,8 @@ export class DiagnosticController {
         try {
             const { id } = req.params
             const deleted = await diagnosticService.delete(id)
-            if (!deleted) return res.status(404).json({ error: 'Diagnostic non trouve' })
-            res.json({ message: 'Diagnostic supprime avec succes' })
+            if (!deleted) return res.status(404).json({ error: 'Diagnostic non trouvé' })
+            res.json({ message: 'Diagnostic supprimé avec succès' })
         } catch (error) {
             logger.error(`[DiagnosticController] Error deleting: ${error.message}`)
             res.status(500).json({ error: 'Impossible de supprimer le diagnostic' })
