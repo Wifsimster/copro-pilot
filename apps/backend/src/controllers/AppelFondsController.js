@@ -116,16 +116,16 @@ export class AppelFondsController {
         try {
             const { budgetId } = req.params
             if (!budgetId) {
-                return res.status(400).json({ error: 'Le parametre budgetId est obligatoire' })
+                return res.status(400).json({ error: 'Le paramètre budgetId est obligatoire' })
             }
             const appels = await appelFondsService.generateFromBudget(parseInt(budgetId))
             res.status(201).json({
                 data: appels,
-                message: `${appels.length} appel(s) de fonds genere(s) avec succes`,
+                message: `${appels.length} appel(s) de fonds généré(s) avec succès`,
             })
         } catch (error) {
             logger.error(`[AppelFondsController] Error generating from budget: ${error.message}`)
-            res.status(500).json({ error: error.message || 'Impossible de generer les appels de fonds' })
+            res.status(500).json({ error: error.message || 'Impossible de générer les appels de fonds' })
         }
     }
 }

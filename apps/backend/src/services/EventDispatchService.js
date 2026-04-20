@@ -46,8 +46,8 @@ class EventDispatchService {
         await notificationService.create({
           user_id: userId,
           type: 'paiement',
-          titre: 'Paiement recu',
-          message: `Votre paiement de ${montantFormatted} a bien ete enregistre.`,
+          titre: 'Paiement reçu',
+          message: `Votre paiement de ${montantFormatted} a bien été enregistré.`,
           lien: '/extranet',
         })
       } catch (error) {
@@ -65,9 +65,9 @@ class EventDispatchService {
       try {
         await sendEmail({
           to: email,
-          subject: 'CoproPilot — Paiement enregistre',
+          subject: 'CoproPilot — Paiement enregistré',
           html: `<p>Bonjour,</p>
-<p>Votre paiement de <strong>${montantFormatted}</strong> a bien ete enregistre.</p>
+<p>Votre paiement de <strong>${montantFormatted}</strong> a bien été enregistré.</p>
 <p>Cordialement,<br>CoproPilot</p>`,
         })
       } catch (error) {
@@ -226,7 +226,7 @@ class EventDispatchService {
           copropriete_id: coproprieteId,
           type: 'document',
           titre: `Nouveau document : ${document.nom}`,
-          message: `Un document${document.categorie ? ` (${document.categorie})` : ''} a ete ajoute${coproprieteNom ? ` pour ${coproprieteNom}` : ''}.`,
+          message: `Un document${document.categorie ? ` (${document.categorie})` : ''} a été ajouté${coproprieteNom ? ` pour ${coproprieteNom}` : ''}.`,
           lien: '/documents',
         })
       } catch (error) {

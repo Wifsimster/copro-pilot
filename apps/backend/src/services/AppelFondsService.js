@@ -112,7 +112,7 @@ class AppelFondsService {
                 .where('id', budgetId)
                 .first()
             if (!budget) {
-                throw new Error('Budget non trouve')
+                throw new Error('Budget non trouvé')
             }
 
             const lots = await db('lots')

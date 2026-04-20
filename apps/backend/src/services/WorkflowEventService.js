@@ -75,8 +75,8 @@ class WorkflowEventService {
         await NotificationModel.create({
           user_id: userId,
           type: 'paiement',
-          titre: 'Paiement enregistre',
-          message: `Votre paiement de ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(paiement.montant)} a ete enregistre.`,
+          titre: 'Paiement enregistré',
+          message: `Votre paiement de ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(paiement.montant)} a été enregistré.`,
           lien: '/extranet',
         })
       }

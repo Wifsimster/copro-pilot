@@ -292,7 +292,7 @@ describe('AppelFondsService.generateFromBudget', () => {
 
     await expect(
       appelFondsService.generateFromBudget(999)
-    ).rejects.toThrow('Budget non trouve')
+    ).rejects.toThrow('Budget non trouvé')
   })
 
   it('throws when totalTantiemes is 0', async () => {

@@ -44,10 +44,10 @@ export class TicketController {
         auteur_id: req.body.auteur_id || req.user?.id,
       }
       const result = await ticketService.create(data)
-      res.status(201).json({ data: result, message: 'Ticket cree avec succes' })
+      res.status(201).json({ data: result, message: 'Ticket créé avec succès' })
     } catch (error) {
       logger.error(`[TicketController] Error creating: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de creer le ticket' })
+      res.status(500).json({ error: 'Impossible de créer le ticket' })
     }
   }
 
@@ -55,11 +55,11 @@ export class TicketController {
     try {
       const { id } = req.params
       const result = await ticketService.update(id, req.body)
-      if (!result) return res.status(404).json({ error: 'Ticket non trouve' })
-      res.json({ data: result, message: 'Ticket mis a jour avec succes' })
+      if (!result) return res.status(404).json({ error: 'Ticket non trouvé' })
+      res.json({ data: result, message: 'Ticket mis à jour avec succès' })
     } catch (error) {
       logger.error(`[TicketController] Error updating: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de mettre a jour le ticket' })
+      res.status(500).json({ error: 'Impossible de mettre à jour le ticket' })
     }
   }
 
@@ -67,8 +67,8 @@ export class TicketController {
     try {
       const { id } = req.params
       const deleted = await ticketService.delete(id)
-      if (!deleted) return res.status(404).json({ error: 'Ticket non trouve' })
-      res.json({ message: 'Ticket supprime avec succes' })
+      if (!deleted) return res.status(404).json({ error: 'Ticket non trouvé' })
+      res.json({ message: 'Ticket supprimé avec succès' })
     } catch (error) {
       logger.error(`[TicketController] Error deleting: ${error.message}`)
       res.status(500).json({ error: 'Impossible de supprimer le ticket' })
@@ -87,8 +87,8 @@ export class TicketController {
         auteur_id: req.body.auteur_id || req.user?.id,
       }
       const result = await ticketService.addMessage(id, data)
-      if (!result) return res.status(404).json({ error: 'Ticket non trouve' })
-      res.status(201).json({ data: result, message: 'Message ajoute avec succes' })
+      if (!result) return res.status(404).json({ error: 'Ticket non trouvé' })
+      res.status(201).json({ data: result, message: 'Message ajouté avec succès' })
     } catch (error) {
       logger.error(`[TicketController] Error adding message: ${error.message}`)
       res.status(500).json({ error: 'Impossible d\'ajouter le message' })

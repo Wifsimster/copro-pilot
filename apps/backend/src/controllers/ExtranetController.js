@@ -130,11 +130,11 @@ export class ExtranetController {
       if (!updated) {
         return res
           .status(403)
-          .json({ error: 'Acces reserve aux coproprietaires' })
+          .json({ error: 'Accès réservé aux copropriétaires' })
       }
       res.json({
         data: updated,
-        message: 'Profil mis a jour avec succes',
+        message: 'Profil mis à jour avec succès',
       })
     } catch (error) {
       logger.error(
@@ -142,7 +142,7 @@ export class ExtranetController {
       )
       res
         .status(500)
-        .json({ error: 'Impossible de mettre a jour le profil' })
+        .json({ error: 'Impossible de mettre à jour le profil' })
     }
   }
 
@@ -152,7 +152,7 @@ export class ExtranetController {
       const { name } = req.body
       if (!name || name.trim().length < 2) {
         return res.status(400).json({
-          error: 'Le nom est obligatoire (2 caracteres minimum)',
+          error: 'Le nom est obligatoire (2 caractères minimum)',
         })
       }
       const db = req.db
@@ -165,7 +165,7 @@ export class ExtranetController {
         .returning(['id', 'name', 'email', 'role'])
       res.json({
         data: updated,
-        message: 'Compte mis a jour avec succes',
+        message: 'Compte mis à jour avec succès',
       })
     } catch (error) {
       logger.error(
@@ -173,7 +173,7 @@ export class ExtranetController {
       )
       res
         .status(500)
-        .json({ error: 'Impossible de mettre a jour le compte' })
+        .json({ error: 'Impossible de mettre à jour le compte' })
     }
   }
 }

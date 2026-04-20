@@ -32,7 +32,7 @@ export class MouvementBancaireController {
         return res.status(400).json({ error: 'Les champs compte_id, date, libelle, montant et type sont obligatoires' })
       }
       const result = await mouvementBancaireService.create(req.body)
-      res.status(201).json({ data: result, message: 'Mouvement bancaire enregistre avec succes' })
+      res.status(201).json({ data: result, message: 'Mouvement bancaire enregistré avec succès' })
     } catch (error) {
       logger.error(`[MouvementBancaireController] Error creating: ${error.message}`)
       res.status(500).json({ error: 'Impossible d\'enregistrer le mouvement bancaire' })
@@ -43,10 +43,10 @@ export class MouvementBancaireController {
     try {
       const { id } = req.params
       const result = await mouvementBancaireService.update(id, req.body)
-      res.json({ data: result, message: 'Mouvement bancaire mis a jour avec succes' })
+      res.json({ data: result, message: 'Mouvement bancaire mis à jour avec succès' })
     } catch (error) {
       logger.error(`[MouvementBancaireController] Error updating: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de mettre a jour le mouvement bancaire' })
+      res.status(500).json({ error: 'Impossible de mettre à jour le mouvement bancaire' })
     }
   }
 
@@ -54,8 +54,8 @@ export class MouvementBancaireController {
     try {
       const { id } = req.params
       const deleted = await mouvementBancaireService.delete(id)
-      if (!deleted) return res.status(404).json({ error: 'Mouvement bancaire non trouve' })
-      res.json({ message: 'Mouvement bancaire supprime avec succes' })
+      if (!deleted) return res.status(404).json({ error: 'Mouvement bancaire non trouvé' })
+      res.json({ message: 'Mouvement bancaire supprimé avec succès' })
     } catch (error) {
       logger.error(`[MouvementBancaireController] Error deleting: ${error.message}`)
       res.status(500).json({ error: 'Impossible de supprimer le mouvement bancaire' })

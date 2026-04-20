@@ -20,10 +20,10 @@ export default function DonneesPersonnellesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">
-          Mes donnees personnelles
+          Mes données personnelles
         </h1>
         <p className="text-muted-foreground">
-          Gerez vos donnees personnelles conformement au RGPD.
+          Gérez vos données personnelles conformément au RGPD.
         </p>
       </div>
 

@@ -25,7 +25,7 @@ import type { BudgetPrevisionnel } from '@/types'
 
 const budgetSchema = z.object({
   annee: z.coerce.number().min(2000).max(2100),
-  montant_total: z.coerce.number().min(0, 'Le montant doit etre positif'),
+  montant_total: z.coerce.number().min(0, 'Le montant doit être positif'),
   statut: z.enum(['brouillon', 'vote', 'approuve']),
   notes: z.string().optional(),
 })

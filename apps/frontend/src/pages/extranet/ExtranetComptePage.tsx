@@ -55,7 +55,7 @@ export default function ExtranetComptePage() {
 
     if (status === 'canceled') {
       confirmedRef.current = true
-      toast.info('Paiement annule')
+      toast.info('Paiement annulé')
       const cleanHash = hash.slice(0, queryIndex)
       window.history.replaceState(null, '', cleanHash || '#/')
       return
@@ -66,7 +66,7 @@ export default function ExtranetComptePage() {
       confirmPaymentRef.current
         .mutateAsync(sessionId)
         .then(() => {
-          toast.success('Paiement enregistre avec succes')
+          toast.success('Paiement enregistré avec succès')
           queryClientRef.current.invalidateQueries({
             queryKey: EXTRANET_KEY,
           })
@@ -74,7 +74,7 @@ export default function ExtranetComptePage() {
         .catch((err: Error) => {
           toast.error(
             err?.message ||
-              'Impossible de confirmer le paiement. Il sera enregistre automatiquement.'
+              'Impossible de confirmer le paiement. Il sera enregistré automatiquement.'
           )
         })
         .finally(() => {
@@ -98,13 +98,13 @@ export default function ExtranetComptePage() {
       return
     }
     if (numeric >= 10000) {
-      setError('Le montant doit etre inferieur a 10 000 €')
+      setError('Le montant doit être inférieur à 10 000 €')
       return
     }
     try {
       await createCheckout.mutateAsync({
         amount: numeric,
-        description: 'Reglement du solde coproprietaire',
+        description: 'Règlement du solde copropriétaire',
       })
       // On success the hook redirects to Stripe — nothing else to do.
     } catch (err) {
@@ -122,13 +122,13 @@ export default function ExtranetComptePage() {
         <div>
           <h1 className="text-2xl font-bold">Mon compte</h1>
           <p className="text-muted-foreground">
-            Etat de votre compte coproprietaire
+            État de votre compte copropriétaire
           </p>
         </div>
         {isDebiteur && (
           <Button onClick={handleOpen}>
             <CreditCard className="mr-2 size-4" />
-            Regler mon solde
+            Régler mon solde
           </Button>
         )}
       </div>
@@ -137,17 +137,17 @@ export default function ExtranetComptePage() {
         <div className="animate-pulse h-32 rounded bg-muted" />
       ) : !compte ? (
         <p className="text-sm text-muted-foreground">
-          Aucune donnee.
+          Aucune donnée.
         </p>
       ) : (
         <div className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-3">
             <StatCard
-              label="Total appele"
+              label="Total appelé"
               value={formatEur(compte.total_du)}
             />
             <StatCard
-              label="Total paye"
+              label="Total payé"
               value={formatEur(compte.total_paye)}
             />
             <StatCard
@@ -164,9 +164,9 @@ export default function ExtranetComptePage() {
           </div>
           {isDebiteur && (
             <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400">
-              Vous avez un solde debiteur de{' '}
+              Vous avez un solde débiteur de{' '}
               {formatEur(Number(compte.solde))}. Merci de
-              regulariser votre situation.
+              régulariser votre situation.
             </div>
           )}
         </div>
@@ -177,11 +177,11 @@ export default function ExtranetComptePage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <CreditCard className="size-5" />
-              Regler mon solde
+              Régler mon solde
             </DialogTitle>
             <DialogDescription>
-              Saisissez le montant que vous souhaitez regler. Vous
-              serez redirige vers la page de paiement securisee
+              Saisissez le montant que vous souhaitez régler. Vous
+              serez redirigé vers la page de paiement sécurisée
               Stripe.
             </DialogDescription>
           </DialogHeader>

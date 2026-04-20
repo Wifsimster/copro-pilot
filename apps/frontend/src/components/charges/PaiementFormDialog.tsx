@@ -24,7 +24,7 @@ import { FormSection } from '@/components/ui/form-section'
 import type { Paiement } from '@/types'
 
 const schema = z.object({
-  montant: z.coerce.number().positive('Le montant doit etre positif'),
+  montant: z.coerce.number().positive('Le montant doit être positif'),
   date_paiement: z.string().min(1, 'La date est obligatoire'),
   mode: z.enum(['virement', 'cheque', 'prelevement', 'especes', 'autre']),
   reference: z.string().optional(),

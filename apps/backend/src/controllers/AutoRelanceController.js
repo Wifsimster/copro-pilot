@@ -18,7 +18,7 @@ export class AutoRelanceController {
 
       res.status(201).json({
         data: relances,
-        message: `${relances.length} relance(s) generee(s)`,
+        message: `${relances.length} relance(s) générée(s)`,
       })
     } catch (error) {
       logger.error(

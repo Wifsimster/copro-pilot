@@ -31,11 +31,11 @@ const TYPE_OPTIONS: { value: TypeLot; label: string }[] = [
 ]
 
 const lotSchema = z.object({
-  numero: z.string().min(1, 'Le numero est obligatoire'),
+  numero: z.string().min(1, 'Le numéro est obligatoire'),
   type: z.enum(['appartement', 'cave', 'parking', 'commerce', 'bureau', 'autre']),
-  surface: z.coerce.number().positive('La surface doit etre positive').optional().or(z.literal('')),
+  surface: z.coerce.number().positive('La surface doit être positive').optional().or(z.literal('')),
   etage: z.coerce.number().optional().or(z.literal('')),
-  tantiemes: z.coerce.number().min(1, 'Les tantiemes sont obligatoires'),
+  tantiemes: z.coerce.number().min(1, 'Les tantièmes sont obligatoires'),
   description: z.string().optional(),
 })
 

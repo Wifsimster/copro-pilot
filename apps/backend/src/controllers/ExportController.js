@@ -7,14 +7,14 @@ export class ExportController {
       const { id } = req.params
       const pdfDoc = await exportService.getBudgetPdf(id)
       if (!pdfDoc) {
-        return res.status(404).json({ error: 'Budget non trouve' })
+        return res.status(404).json({ error: 'Budget non trouvé' })
       }
       res.setHeader('Content-Type', 'application/pdf')
       res.setHeader('Content-Disposition', `attachment; filename="budget-${id}.pdf"`)
       pdfDoc.pipe(res)
     } catch (error) {
       logger.error(`[ExportController] Error generating budget PDF: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de generer le PDF du budget' })
+      res.status(500).json({ error: 'Impossible de générer le PDF du budget' })
     }
   }
 
@@ -23,14 +23,14 @@ export class ExportController {
       const { id } = req.params
       const pdfDoc = await exportService.getAppelFondsPdf(id)
       if (!pdfDoc) {
-        return res.status(404).json({ error: 'Appel de fonds non trouve' })
+        return res.status(404).json({ error: 'Appel de fonds non trouvé' })
       }
       res.setHeader('Content-Type', 'application/pdf')
       res.setHeader('Content-Disposition', `attachment; filename="appel-fonds-${id}.pdf"`)
       pdfDoc.pipe(res)
     } catch (error) {
       logger.error(`[ExportController] Error generating appel de fonds PDF: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de generer le PDF de l\'appel de fonds' })
+      res.status(500).json({ error: 'Impossible de générer le PDF de l\'appel de fonds' })
     }
   }
 
@@ -39,14 +39,14 @@ export class ExportController {
       const { id } = req.params
       const pdfDoc = await exportService.getFeuillePresencePdf(id)
       if (!pdfDoc) {
-        return res.status(404).json({ error: 'Assemblee generale non trouvee' })
+        return res.status(404).json({ error: 'Assemblée générale non trouvée' })
       }
       res.setHeader('Content-Type', 'application/pdf')
       res.setHeader('Content-Disposition', `attachment; filename="feuille-presence-ag-${id}.pdf"`)
       pdfDoc.pipe(res)
     } catch (error) {
       logger.error(`[ExportController] Error generating feuille de presence PDF: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de generer la feuille de presence' })
+      res.status(500).json({ error: 'Impossible de générer la feuille de présence' })
     }
   }
 
@@ -55,14 +55,14 @@ export class ExportController {
       const { coproprieteId } = req.params
       const pdfDoc = await exportService.getCarnetEntretienPdf(coproprieteId)
       if (!pdfDoc) {
-        return res.status(404).json({ error: 'Copropriete non trouvee' })
+        return res.status(404).json({ error: 'Copropriété non trouvée' })
       }
       res.setHeader('Content-Type', 'application/pdf')
       res.setHeader('Content-Disposition', `attachment; filename="carnet-entretien-${coproprieteId}.pdf"`)
       pdfDoc.pipe(res)
     } catch (error) {
       logger.error(`[ExportController] Error generating carnet d'entretien PDF: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de generer le carnet d\'entretien' })
+      res.status(500).json({ error: 'Impossible de générer le carnet d\'entretien' })
     }
   }
 
@@ -71,14 +71,14 @@ export class ExportController {
       const { coproprieteId } = req.params
       const pdfDoc = await exportService.getEtatImpayesPdf(coproprieteId)
       if (!pdfDoc) {
-        return res.status(404).json({ error: 'Copropriete non trouvee' })
+        return res.status(404).json({ error: 'Copropriété non trouvée' })
       }
       res.setHeader('Content-Type', 'application/pdf')
       res.setHeader('Content-Disposition', `attachment; filename="etat-impayes-${coproprieteId}.pdf"`)
       pdfDoc.pipe(res)
     } catch (error) {
       logger.error(`[ExportController] Error generating etat des impayes PDF: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de generer l\'etat des impayes' })
+      res.status(500).json({ error: 'Impossible de générer l\'état des impayés' })
     }
   }
 
@@ -94,7 +94,7 @@ export class ExportController {
       res.end(buffer)
     } catch (error) {
       logger.error(`[ExportController] Error generating coproprietaires Excel: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de generer l\'export Excel des coproprietaires' })
+      res.status(500).json({ error: 'Impossible de générer l\'export Excel des copropriétaires' })
     }
   }
 
@@ -103,14 +103,14 @@ export class ExportController {
       const { coproprieteId } = req.params
       const buffer = await exportService.getBalanceComptesExcel(coproprieteId)
       if (!buffer) {
-        return res.status(404).json({ error: 'Copropriete non trouvee' })
+        return res.status(404).json({ error: 'Copropriété non trouvée' })
       }
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
       res.setHeader('Content-Disposition', `attachment; filename="balance-comptes-${coproprieteId}.xlsx"`)
       res.end(buffer)
     } catch (error) {
       logger.error(`[ExportController] Error generating balance des comptes Excel: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de generer la balance des comptes' })
+      res.status(500).json({ error: 'Impossible de générer la balance des comptes' })
     }
   }
 
@@ -119,14 +119,14 @@ export class ExportController {
       const { budgetId } = req.params
       const buffer = await exportService.getEtatChargesExcel(budgetId)
       if (!buffer) {
-        return res.status(404).json({ error: 'Budget non trouve' })
+        return res.status(404).json({ error: 'Budget non trouvé' })
       }
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
       res.setHeader('Content-Disposition', `attachment; filename="etat-charges-${budgetId}.xlsx"`)
       res.end(buffer)
     } catch (error) {
       logger.error(`[ExportController] Error generating etat des charges Excel: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de generer l\'etat des charges' })
+      res.status(500).json({ error: 'Impossible de générer l\'état des charges' })
     }
   }
 
@@ -135,14 +135,14 @@ export class ExportController {
       const { coproprieteId } = req.params
       const buffer = await exportService.getEtatImpayesExcel(coproprieteId)
       if (!buffer) {
-        return res.status(404).json({ error: 'Copropriete non trouvee' })
+        return res.status(404).json({ error: 'Copropriété non trouvée' })
       }
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
       res.setHeader('Content-Disposition', `attachment; filename="etat-impayes-${coproprieteId}.xlsx"`)
       res.end(buffer)
     } catch (error) {
       logger.error(`[ExportController] Error generating etat des impayes Excel: ${error.message}`)
-      res.status(500).json({ error: 'Impossible de generer l\'etat des impayes' })
+      res.status(500).json({ error: 'Impossible de générer l\'état des impayés' })
     }
   }
 }
