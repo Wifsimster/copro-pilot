@@ -92,3 +92,117 @@ export function generateAccountLinkedEmail(name, coproprieteNom) {
     <p>Aucune action n'est requise de votre part.</p>
   `)
 }
+
+function formatEuros(amount) {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: 'EUR',
+  }).format(amount)
+}
+
+export function generateRelanceEmail({
+  name,
+  montant,
+  type,
+  coproprieteNom,
+  dateRelance,
+  extranetUrl,
+}) {
+  const isMiseEnDemeure = type === 'mise_en_demeure'
+  const title = isMiseEnDemeure
+    ? 'Mise en demeure de paiement'
+    : 'Relance amiable de paiement'
+  const urgencyMessage = isMiseEnDemeure
+    ? `<p style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 12px 16px; border-radius: 4px; color: #991b1b;">
+        <strong>Important :</strong> Cette mise en demeure fait suite à une relance amiable restée sans effet. À défaut de règlement sous 8 jours, une procédure contentieuse pourra être engagée à votre encontre.
+      </p>`
+    : `<p>Nous vous invitons à procéder au règlement dans les meilleurs délais afin d'éviter toute procédure complémentaire.</p>`
+
+  return layout(`
+    <p>Bonjour${name ? ` ${name}` : ''},</p>
+    <p><strong>${title}</strong></p>
+    <p>Nous vous informons qu'un solde impayé a été constaté sur votre compte copropriétaire${coproprieteNom ? ` pour la copropriété <strong>${coproprieteNom}</strong>` : ''}${dateRelance ? ` à la date du ${dateRelance}` : ''}.</p>
+    <p style="text-align: center;">
+      <span class="code" style="letter-spacing: 2px; font-size: 24px;">${formatEuros(montant)}</span>
+    </p>
+    ${urgencyMessage}
+    ${extranetUrl
+      ? `<p style="text-align: center;">
+          <a href="${extranetUrl}" class="btn">Accéder à mon espace</a>
+        </p>`
+      : ''
+    }
+    <p>Si ce règlement a déjà été effectué, nous vous prions de bien vouloir ignorer cet email.</p>
+    <p>Cordialement,<br>Votre syndic — CoproPilot</p>
+  `)
+}
+
+export function generatePaymentReceivedEmail({
+  name,
+  montant,
+  coproprieteNom,
+  datePaiement,
+  extranetUrl,
+}) {
+  return layout(`
+    <p>Bonjour${name ? ` ${name}` : ''},</p>
+    <p>Nous accusons bonne réception de votre paiement${coproprieteNom ? ` pour la copropriété <strong>${coproprieteNom}</strong>` : ''}.</p>
+    <p style="text-align: center;">
+      <span class="code" style="letter-spacing: 2px; font-size: 24px;">${formatEuros(montant)}</span>
+    </p>
+    ${datePaiement ? `<p>Date d'enregistrement : <strong>${datePaiement}</strong></p>` : ''}
+    ${extranetUrl
+      ? `<p style="text-align: center;">
+          <a href="${extranetUrl}" class="btn">Consulter mon espace</a>
+        </p>`
+      : ''
+    }
+    <p>Nous vous remercions pour votre règlement.</p>
+    <p>Cordialement,<br>Votre syndic — CoproPilot</p>
+  `)
+}
+
+export function generateAGConvocationEmail({
+  name,
+  coproprieteNom,
+  dateAG,
+  lieuAG,
+  convocationUrl,
+}) {
+  return layout(`
+    <p>Bonjour${name ? ` ${name}` : ''},</p>
+    <p>Vous êtes convoqué(e) à l'assemblée générale des copropriétaires${coproprieteNom ? ` de <strong>${coproprieteNom}</strong>` : ''}.</p>
+    ${dateAG ? `<p><strong>Date :</strong> ${dateAG}</p>` : ''}
+    ${lieuAG ? `<p><strong>Lieu :</strong> ${lieuAG}</p>` : ''}
+    <p>Veuillez consulter votre espace CoproPilot pour prendre connaissance de l'ordre du jour, des documents joints et des modalités de vote.</p>
+    ${convocationUrl
+      ? `<p style="text-align: center;">
+          <a href="${convocationUrl}" class="btn">Consulter la convocation</a>
+        </p>`
+      : ''
+    }
+    <p>En cas d'indisponibilité, vous pouvez donner pouvoir à un autre copropriétaire ou voter par correspondance depuis votre espace.</p>
+    <p>Cordialement,<br>Votre syndic — CoproPilot</p>
+  `)
+}
+
+export function generateNotificationEmail({
+  name,
+  titre,
+  message,
+  lien,
+  linkLabel,
+}) {
+  return layout(`
+    <p>Bonjour${name ? ` ${name}` : ''},</p>
+    ${titre ? `<p><strong>${titre}</strong></p>` : ''}
+    <p>${message}</p>
+    ${lien
+      ? `<p style="text-align: center;">
+          <a href="${lien}" class="btn">${linkLabel || 'Consulter mon espace'}</a>
+        </p>`
+      : ''
+    }
+    <p>Cordialement,<br>CoproPilot</p>
+  `)
+}
