@@ -1,9 +1,25 @@
 import { notificationService } from './NotificationService.js'
 import { sendEmail } from '../utils/email.js'
+import {
+  generateRelanceEmail,
+  generatePaymentReceivedEmail,
+  generateAGConvocationEmail,
+} from '../utils/email-templates.js'
 import knexDatabase from '../config/knex-database.js'
 import logger from '../logger.js'
 
 const getDb = () => knexDatabase.getKnex()
+
+function formatDateFr(date) {
+  if (!date) return null
+  const d = date instanceof Date ? date : new Date(date)
+  if (Number.isNaN(d.getTime())) return null
+  return new Intl.DateTimeFormat('fr-FR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  }).format(d)
+}
 
 class EventDispatchService {
   // --- Helpers ---
@@ -21,12 +37,31 @@ class EventDispatchService {
     return copro?.user_id || null
   }
 
-  async _getCoproprietaireEmail(coproprietaireId) {
+  async _getCoproprietaire(coproprietaireId) {
     const db = getDb()
-    const copro = await db('coproprietaires')
-      .where('id', coproprietaireId)
-      .first()
+    return db('coproprietaires').where('id', coproprietaireId).first()
+  }
+
+  async _getCoproprietaireEmail(coproprietaireId) {
+    const copro = await this._getCoproprietaire(coproprietaireId)
     return copro?.email || null
+  }
+
+  async _getCoproprieteNom(coproprieteId) {
+    if (!coproprieteId) return null
+    const db = getDb()
+    const copro = await db('coproprietes').where('id', coproprieteId).first()
+    return copro?.nom || null
+  }
+
+  _extranetUrl() {
+    const base = process.env.BASE_URL || 'http://localhost:3000'
+    return `${base.replace(/\/$/, '')}/#/extranet`
+  }
+
+  _assembleeUrl(agId) {
+    const base = process.env.BASE_URL || 'http://localhost:3000'
+    return `${base.replace(/\/$/, '')}/#/assemblees/${agId}`
   }
 
   // --- Domain events ---
@@ -58,17 +93,27 @@ class EventDispatchService {
     }
 
     // 2. Email to the coproprietaire
-    const email = coproprietaire?.email
-      || await this._getCoproprietaireEmail(paiement.coproprietaire_id)
+    const fullCoproprietaire =
+      coproprietaire ||
+      (await this._getCoproprietaire(paiement.coproprietaire_id))
+    const email = fullCoproprietaire?.email
 
     if (email) {
+      const coproprieteNom = await this._getCoproprieteNom(
+        paiement.copropriete_id || fullCoproprietaire?.copropriete_id
+      )
+
       try {
         await sendEmail({
           to: email,
           subject: 'CoproPilot — Paiement enregistré',
-          html: `<p>Bonjour,</p>
-<p>Votre paiement de <strong>${montantFormatted}</strong> a bien été enregistré.</p>
-<p>Cordialement,<br>CoproPilot</p>`,
+          html: generatePaymentReceivedEmail({
+            name: fullCoproprietaire?.nom || fullCoproprietaire?.prenom,
+            montant: paiement.montant,
+            coproprieteNom,
+            datePaiement: formatDateFr(paiement.date_paiement || paiement.date),
+            extranetUrl: this._extranetUrl(),
+          }),
         })
       } catch (error) {
         logger.error(
@@ -78,7 +123,7 @@ class EventDispatchService {
     }
 
     logger.info(
-      `[EventDispatch] notifyPaymentReceived dispatched (paiement ${paiement.id})`
+      `[EventDispatch] notifyPaymentReceived dispatched (paiement ${paiement.id}, montant ${montantFormatted})`
     )
   }
 
@@ -138,18 +183,32 @@ class EventDispatchService {
     }
 
     // 2. Email
-    const email = coproprietaire?.email
-      || await this._getCoproprietaireEmail(relance.coproprietaire_id)
+    const fullCoproprietaire =
+      coproprietaire ||
+      (await this._getCoproprietaire(relance.coproprietaire_id))
+    const email = fullCoproprietaire?.email
 
     if (email) {
+      const coproprieteNom = await this._getCoproprieteNom(
+        relance.copropriete_id
+      )
+      const isMiseEnDemeure = relance.type === 'mise_en_demeure'
+      const subject = isMiseEnDemeure
+        ? 'CoproPilot — Mise en demeure de paiement'
+        : 'CoproPilot — Relance de paiement'
+
       try {
         await sendEmail({
           to: email,
-          subject: 'CoproPilot — Relance de paiement',
-          html: `<p>Bonjour,</p>
-<p>Nous vous informons qu'une relance de <strong>${montantFormatted}</strong> a ete emise.</p>
-<p>Merci de proceder au reglement dans les meilleurs delais.</p>
-<p>Cordialement,<br>CoproPilot</p>`,
+          subject,
+          html: generateRelanceEmail({
+            name: fullCoproprietaire?.nom || fullCoproprietaire?.prenom,
+            montant: relance.montant_du,
+            type: relance.type,
+            coproprieteNom,
+            dateRelance: formatDateFr(relance.date_relance),
+            extranetUrl: this._extranetUrl(),
+          }),
         })
       } catch (error) {
         logger.error(
@@ -159,7 +218,7 @@ class EventDispatchService {
     }
 
     logger.info(
-      `[EventDispatch] notifyRelanceSent dispatched (relance ${relance.id})`
+      `[EventDispatch] notifyRelanceSent dispatched (relance ${relance.id}, montant ${montantFormatted})`
     )
   }
 
@@ -191,14 +250,21 @@ class EventDispatchService {
         || await this._getCoproprietaireEmail(dest.coproprietaire_id)
 
       if (email) {
+        const coproprieteNom = convocation.copropriete_id
+          ? await this._getCoproprieteNom(convocation.copropriete_id)
+          : null
+
         try {
           await sendEmail({
             to: email,
-            subject: 'CoproPilot — Convocation assemblee generale',
-            html: `<p>Bonjour,</p>
-<p>Vous etes convoque a une assemblee generale.</p>
-<p>Veuillez consulter votre espace CoproPilot pour plus de details.</p>
-<p>Cordialement,<br>CoproPilot</p>`,
+            subject: 'CoproPilot — Convocation assemblée générale',
+            html: generateAGConvocationEmail({
+              name: dest.nom || dest.prenom,
+              coproprieteNom,
+              dateAG: formatDateFr(convocation.date_ag || convocation.date),
+              lieuAG: convocation.lieu,
+              convocationUrl: this._assembleeUrl(convocation.ag_id),
+            }),
           })
         } catch (error) {
           logger.error(
