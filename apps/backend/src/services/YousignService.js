@@ -1,4 +1,6 @@
 import crypto from 'crypto'
+import fs from 'node:fs'
+import path from 'node:path'
 import logger from '../logger.js'
 
 /**
@@ -87,6 +89,51 @@ class YousignService {
   }
 
   /**
+   * Upload a document to an existing signature request using
+   * multipart/form-data. Yousign expects the file under the `file`
+   * field and a `nature` discriminator (signable_document | attachment).
+   *
+   * @param {string} requestId        Yousign signature request id
+   * @param {string} documentPath     Local filesystem path to the document
+   * @param {string} [nature='signable_document']
+   * @returns {Promise<Object>}       Yousign document payload
+   */
+  async _uploadDocument(
+    requestId,
+    documentPath,
+    nature = 'signable_document'
+  ) {
+    if (!fs.existsSync(documentPath)) {
+      throw new Error(`Document not found at path: ${documentPath}`)
+    }
+
+    const blob = await fs.openAsBlob(documentPath)
+    const filename = path.basename(documentPath)
+
+    const form = new FormData()
+    form.append('file', blob, filename)
+    form.append('nature', nature)
+
+    const url = `${this.apiUrl}/signature_requests/${requestId}/documents`
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: form,
+    })
+
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => '')
+      throw new Error(
+        `Yousign API error ${response.status} on document upload for ${requestId}: ${errorBody}`
+      )
+    }
+
+    return response.json()
+  }
+
+  /**
    * Create a signature request: initialises the request, uploads
    * the document, adds each signer and returns a compact object
    * containing the request id, status and per-signer signing URLs.
@@ -117,11 +164,8 @@ class YousignService {
         },
       })
 
-      // 2. Upload the document (real implementation would use
-      //    multipart/form-data — left as a TODO for the stub).
-      logger.info(
-        `[YousignService] Document upload not implemented yet (path: ${documentPath})`
-      )
+      // 2. Upload the document via multipart/form-data
+      await this._uploadDocument(request.id, documentPath)
 
       // 3. Add signers
       const addedSigners = []
