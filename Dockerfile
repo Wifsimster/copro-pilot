@@ -6,17 +6,19 @@ WORKDIR /app
 ARG VITE_API_URL=/api
 ENV VITE_API_URL=$VITE_API_URL
 
-# Copy root package.json (version only)
-COPY package.json /tmp/package.json
-RUN node -e "const p=JSON.parse(require('fs').readFileSync('/tmp/package.json','utf8')); console.log(JSON.stringify({name:p.name,version:p.version,private:true}))" > ./package.json
+# Workspace-aware install: root package.json declares the `workspaces` array,
+# so every workspace package.json must be present on disk for npm to resolve
+# the local `@copro-pilot/shared-enums` symlink. shared-enums itself has no
+# build step (plain ESM source) so we copy its files alongside.
+COPY package.json package-lock.json* ./
+COPY apps/frontend/package.json ./apps/frontend/
+COPY apps/backend/package.json ./apps/backend/
+COPY packages/shared-enums/ ./packages/shared-enums/
 
-# Install frontend dependencies
-COPY apps/frontend/package*.json ./apps/frontend/
-WORKDIR /app/apps/frontend
-RUN npm install --legacy-peer-deps && npm cache clean --force
+RUN npm install --legacy-peer-deps --workspaces --include-workspace-root && \
+    npm cache clean --force
 
 # Copy frontend source and build
-WORKDIR /app
 COPY apps/frontend/ ./apps/frontend/
 RUN cd apps/frontend && npx vite build
 
@@ -32,20 +34,26 @@ RUN addgroup -g 1001 -S nodejs && \
 
 WORKDIR /app
 
-# Install backend dependencies
-COPY apps/backend/package*.json ./apps/backend/
-RUN cd apps/backend && npm install --omit=dev && npm cache clean --force && \
-    chown -R nodejs:nodejs /app/apps/backend/node_modules
+# Install backend prod deps with workspace resolution so the local
+# @copro-pilot/shared-enums symlink works at runtime. Frontend package.json
+# is required because the root `workspaces` glob enumerates it; npm only
+# installs deps for the backend workspace thanks to --workspace filter.
+COPY package.json package-lock.json* ./
+COPY apps/backend/package.json ./apps/backend/
+COPY apps/frontend/package.json ./apps/frontend/
+COPY packages/shared-enums/ ./packages/shared-enums/
+
+RUN npm install --omit=dev --workspace=@copro-pilot/backend --include-workspace-root && \
+    npm cache clean --force
 
 # Copy backend source
-COPY --chown=nodejs:nodejs apps/backend/ ./apps/backend/
+COPY apps/backend/ ./apps/backend/
 
 # Copy frontend build
-COPY --chown=nodejs:nodejs --from=frontend-builder /app/apps/frontend/dist /app/frontend-dist
+COPY --from=frontend-builder /app/apps/frontend/dist /app/frontend-dist
 
-# Create log directory
 RUN mkdir -p /app/logs && \
-    chown -R nodejs:nodejs /app/logs
+    chown -R nodejs:nodejs /app
 
 USER nodejs
 
