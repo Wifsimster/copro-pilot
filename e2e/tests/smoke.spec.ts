@@ -43,7 +43,7 @@ test.describe('Smoke tests', () => {
     await page.goto('/#/charges')
     await page.reload()
     await expect(
-      page.getByRole('button', { name: 'Budgets' })
+      page.getByRole('tab', { name: 'Budgets' })
     ).toBeVisible({ timeout: 10_000 })
   })
 
