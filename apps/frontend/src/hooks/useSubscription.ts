@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
-import { stripeApi } from '@/api/stripe'
+import { stripeApi, type Cadence } from '@/api/stripe'
 
 export function useSubscription(sessionId?: string) {
   return useQuery({
@@ -9,10 +9,15 @@ export function useSubscription(sessionId?: string) {
   })
 }
 
+interface CheckoutArgs {
+  plan: string
+  cadence?: Cadence
+}
+
 export function useCheckout() {
   return useMutation({
-    mutationFn: (plan: string) =>
-      stripeApi.createCheckoutSession(plan),
+    mutationFn: ({ plan, cadence = 'monthly' }: CheckoutArgs) =>
+      stripeApi.createCheckoutSession(plan, cadence),
     onSuccess: data => {
       // Redirect to Stripe Checkout
       window.location.href = data.data.url

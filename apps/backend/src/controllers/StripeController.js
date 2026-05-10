@@ -10,17 +10,23 @@ export class StripeController {
    */
   static async createCheckoutSession(req, res) {
     try {
-      const { plan } = req.body
+      const { plan, cadence = 'monthly' } = req.body
       if (!plan || !['essentiel', 'pro', 'entreprise'].includes(plan)) {
         return res
           .status(400)
           .json({ error: 'Plan invalide. Choisir: essentiel, pro, entreprise' })
       }
+      if (!['monthly', 'yearly'].includes(cadence)) {
+        return res
+          .status(400)
+          .json({ error: 'Cadence invalide. Choisir: monthly, yearly' })
+      }
 
       const session = await stripeService.createCheckoutSession(
         req.user.id,
         req.user.email,
-        plan
+        plan,
+        cadence
       )
 
       res.json({ data: { url: session.url, sessionId: session.id } })
