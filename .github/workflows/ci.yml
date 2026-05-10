@@ -63,7 +63,7 @@ jobs:
       POSTGRES_USER: copro_pilot
       POSTGRES_PASSWORD: copro_pilot
       BETTER_AUTH_SECRET: e2e-test-secret-key-not-for-production
-      BASE_URL: http://localhost:3000
+      BASE_URL: http://localhost:3001
 
     services:
       postgres:
@@ -103,23 +103,30 @@ jobs:
       - name: Build frontend
         run: npm run build --workspace=copro-pilot-frontend
 
+      - name: Stage frontend bundle for backend SPA serving
+        run: ln -s "$GITHUB_WORKSPACE/apps/frontend/dist" "$GITHUB_WORKSPACE/frontend-dist"
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Start backend
-        run: node --env-file=apps/backend/.env apps/backend/src/index.js &
+      - name: Start backend (serves API + SPA on 3001)
+        run: node --env-file=apps/backend/.env apps/backend/src/index.js > backend.log 2>&1 &
 
-      - name: Start frontend
-        run: npx vite preview --port 3000 --host &
-        working-directory: apps/frontend
-
-      - name: Wait for servers
-        run: npx wait-on --timeout 30000 http://localhost:3001/api/health http://localhost:3000
+      - name: Wait for server
+        run: npx wait-on --timeout 30000 http://localhost:3001/api/health http://localhost:3001/
 
       - name: Run E2E tests
         run: npm run test:e2e
         env:
-          E2E_BASE_URL: http://localhost:3000
+          E2E_BASE_URL: http://localhost:3001
+
+      - name: Upload backend log
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-log
+          path: backend.log
+          retention-days: 7
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

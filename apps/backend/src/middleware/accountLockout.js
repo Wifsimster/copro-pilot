@@ -1,4 +1,3 @@
-import { Readable } from 'stream'
 import cache from '../utils/cache.js'
 import logger from '../logger.js'
 
@@ -45,19 +44,22 @@ export function accountLockout(req, res, next) {
   })
 
   req.on('end', () => {
+    // Hand the already-consumed body to Better Auth. better-call's
+    // toNodeHandler checks `req.body` first and only re-reads the
+    // raw stream when it's undefined — assigning the raw string is
+    // enough to keep auth working without trying to replay the stream
+    // (which fails with "body disturbed or locked" once consumed).
+    req.body = body
+
     let email
     try {
       const parsed = JSON.parse(body)
       email = parsed.email
     } catch {
-      // If we can't parse the body, let Better Auth handle it
-      // Re-create a readable stream from the buffered body
-      replayBody(req, body)
       return next()
     }
 
     if (!email) {
-      replayBody(req, body)
       return next()
     }
 
@@ -80,19 +82,8 @@ export function accountLockout(req, res, next) {
 
     // Intercept the response to check for login failure
     const originalEnd = res.end
-    const originalWrite = res.write
-    const chunks = []
-
-    res.write = function (chunk, ...args) {
-      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
-      return originalWrite.apply(res, [chunk, ...args])
-    }
 
     res.end = function (chunk, ...args) {
-      if (chunk) {
-        chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
-      }
-
       // Check if login failed (non-2xx status)
       if (res.statusCode >= 400) {
         const attempts = (cache.get(k.attempts) || 0) + 1
@@ -121,37 +112,6 @@ export function accountLockout(req, res, next) {
       return originalEnd.apply(res, [chunk, ...args])
     }
 
-    // Replay the body so Better Auth can read it
-    replayBody(req, body)
     next()
   })
-}
-
-/**
- * Replace the request stream so downstream middleware
- * (including Better Auth / express.json) can re-read the body.
- */
-function replayBody(req, body) {
-  const readable = new Readable()
-  readable.push(body)
-  readable.push(null)
-
-  // Copy over the original request properties
-  req.headers['content-length'] = Buffer.byteLength(body)
-
-  // Monkey-patch the request to replay the body
-  req._readableState = readable._readableState
-  req._read = readable._read.bind(readable)
-  req.push = readable.push.bind(readable)
-  req.unshift = readable.unshift.bind(readable)
-  req.isPaused = readable.isPaused.bind(readable)
-  req.read = readable.read.bind(readable)
-  req.on = function (event, handler) {
-    if (event === 'data' || event === 'end') {
-      readable.on(event, handler)
-    } else {
-      Object.getPrototypeOf(req).on.call(req, event, handler)
-    }
-    return req
-  }
 }
