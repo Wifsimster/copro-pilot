@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
@@ -6,6 +7,7 @@ import {
   usePortalSession,
   useUsage,
 } from '@/hooks/useSubscription'
+import type { Cadence } from '@/api/stripe'
 import {
   CreditCard,
   CheckCircle,
@@ -22,11 +24,23 @@ const planLabels: Record<string, string> = {
   entreprise: 'Entreprise',
 }
 
-const planPrices: Record<string, string> = {
-  gratuit: '0 €/mois',
-  essentiel: '9 €/mois',
-  pro: '29 €/mois',
-  entreprise: '99 €/mois',
+const PLAN_PRICES: Record<
+  string,
+  { monthly: number; yearly: number } | null
+> = {
+  gratuit: null,
+  essentiel: { monthly: 9, yearly: 69 },
+  pro: { monthly: 29, yearly: 219 },
+  entreprise: { monthly: 99, yearly: 749 },
+}
+
+function formatPrice(plan: string, cadence: Cadence): string {
+  if (plan === 'gratuit') return '0 €/mois'
+  const prices = PLAN_PRICES[plan]
+  if (!prices) return ''
+  return cadence === 'yearly'
+    ? `${prices.yearly} €/an`
+    : `${prices.monthly} €/mois`
 }
 
 const statusLabels: Record<string, { label: string; color: string }> = {
@@ -92,6 +106,58 @@ function UsageBar({
   )
 }
 
+function CadenceToggle({
+  value,
+  onChange,
+  disabled,
+}: {
+  value: Cadence
+  onChange: (c: Cadence) => void
+  disabled?: boolean
+}) {
+  return (
+    <div
+      className="inline-flex items-center rounded-full border border-slate-200 dark:border-slate-700 p-1 text-sm"
+      role="group"
+      aria-label="Cadence de facturation"
+    >
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => onChange('monthly')}
+        className={`px-3 py-1 rounded-full transition ${
+          value === 'monthly'
+            ? 'bg-primary text-primary-foreground'
+            : 'text-muted-foreground hover:text-foreground'
+        }`}
+      >
+        Mensuel
+      </button>
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => onChange('yearly')}
+        className={`px-3 py-1 rounded-full transition flex items-center gap-1.5 ${
+          value === 'yearly'
+            ? 'bg-primary text-primary-foreground'
+            : 'text-muted-foreground hover:text-foreground'
+        }`}
+      >
+        Annuel
+        <span
+          className={`text-xs font-semibold ${
+            value === 'yearly'
+              ? 'text-primary-foreground/90'
+              : 'text-emerald-600 dark:text-emerald-400'
+          }`}
+        >
+          −36 %
+        </span>
+      </button>
+    </div>
+  )
+}
+
 export default function SubscriptionPage() {
   const [searchParams] = useSearchParams()
   const sessionId = searchParams.get('session_id') || undefined
@@ -100,6 +166,10 @@ export default function SubscriptionPage() {
   const { data: usage } = useUsage()
   const checkout = useCheckout()
   const portal = usePortalSession()
+
+  const [cadence, setCadence] = useState<Cadence>(
+    (searchParams.get('cadence') as Cadence) || 'monthly'
+  )
 
   if (isLoading) {
     return (
@@ -113,6 +183,7 @@ export default function SubscriptionPage() {
   const status = subscription?.status || 'active'
   const statusInfo = statusLabels[status] || statusLabels.active
   const isSuccess = !!sessionId
+  const currentCadence: Cadence = subscription?.cadence || 'monthly'
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -142,7 +213,7 @@ export default function SubscriptionPage() {
                 Plan {planLabels[plan]}
               </h2>
               <p className="text-sm text-muted-foreground">
-                {planPrices[plan]}
+                {formatPrice(plan, currentCadence)}
               </p>
             </div>
           </div>
@@ -176,6 +247,19 @@ export default function SubscriptionPage() {
           </p>
         )}
 
+        {plan === 'gratuit' && (
+          <div className="flex items-center justify-between pt-2">
+            <span className="text-sm text-muted-foreground">
+              Cadence de facturation
+            </span>
+            <CadenceToggle
+              value={cadence}
+              onChange={setCadence}
+              disabled={checkout.isPending}
+            />
+          </div>
+        )}
+
         <div className="flex flex-wrap gap-3 pt-2">
           {plan !== 'gratuit' &&
             subscription?.stripe_customer_id && (
@@ -191,18 +275,25 @@ export default function SubscriptionPage() {
 
           {plan === 'gratuit' && (
             <Button
-              onClick={() => checkout.mutate('pro')}
+              onClick={() =>
+                checkout.mutate({ plan: 'pro', cadence })
+              }
               disabled={checkout.isPending}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
               <CreditCard className="size-4" />
-              Passer au plan Pro
+              Passer au plan Pro — {formatPrice('pro', cadence)}
             </Button>
           )}
 
           {plan === 'essentiel' && (
             <Button
-              onClick={() => checkout.mutate('pro')}
+              onClick={() =>
+                checkout.mutate({
+                  plan: 'pro',
+                  cadence: currentCadence,
+                })
+              }
               disabled={checkout.isPending}
             >
               Passer au plan Pro

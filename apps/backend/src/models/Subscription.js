@@ -30,6 +30,7 @@ export class SubscriptionModel {
         stripe_customer_id: data.stripe_customer_id || null,
         stripe_subscription_id: data.stripe_subscription_id || null,
         plan: data.plan || 'gratuit',
+        cadence: data.cadence || 'monthly',
         status: data.status || 'active',
         current_period_end: data.current_period_end || null,
       })

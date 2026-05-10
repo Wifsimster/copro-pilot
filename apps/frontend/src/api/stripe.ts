@@ -4,9 +4,12 @@ interface CheckoutSessionResponse {
   data: { url: string; sessionId: string }
 }
 
+export type Cadence = 'monthly' | 'yearly'
+
 interface SubscriptionResponse {
   data: {
     plan: string
+    cadence?: Cadence
     status: string
     current_period_end?: string
     stripe_customer_id?: string
@@ -33,9 +36,10 @@ export interface UsageResponse {
 }
 
 export const stripeApi = {
-  createCheckoutSession: (plan: string) =>
+  createCheckoutSession: (plan: string, cadence: Cadence = 'monthly') =>
     api.post<CheckoutSessionResponse>('/stripe/checkout-session', {
       plan,
+      cadence,
     }),
 
   getSubscription: (sessionId?: string) =>

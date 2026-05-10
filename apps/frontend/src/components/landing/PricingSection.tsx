@@ -1,13 +1,15 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { motion, useInView } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import { Check, Github, Users } from 'lucide-react'
 import { PricingCalculator } from './PricingCalculator'
 
+type Cadence = 'monthly' | 'yearly'
+
 interface PricingTier {
   id: string
   name: string
-  price: number | null
+  price: { monthly: number; yearly: number } | null
   description: string
   features: string[]
   included: { coproprietes: string; users: string }
@@ -21,7 +23,7 @@ const tiers: PricingTier[] = [
   {
     id: 'gratuit',
     name: 'Cloud Gratuit',
-    price: 0,
+    price: null,
     description: 'Pour démarrer avec une copropriété',
     included: { coproprietes: '1 copropriété', users: '3 utilisateurs' },
     features: [
@@ -39,7 +41,7 @@ const tiers: PricingTier[] = [
   {
     id: 'essentiel',
     name: 'Essentiel',
-    price: 19,
+    price: { monthly: 19, yearly: 144 },
     description: 'Pour une copropriété plus importante',
     included: {
       coproprietes: '3 copropriétés',
@@ -60,7 +62,7 @@ const tiers: PricingTier[] = [
   {
     id: 'pro',
     name: 'Pro',
-    price: 49,
+    price: { monthly: 49, yearly: 375 },
     description: 'Pour les syndics gérant plusieurs immeubles',
     included: {
       coproprietes: '20 copropriétés',
@@ -85,7 +87,7 @@ const tiers: PricingTier[] = [
   {
     id: 'entreprise',
     name: 'Entreprise',
-    price: 149,
+    price: { monthly: 149, yearly: 1140 },
     description: 'Pour les cabinets de syndic',
     included: {
       coproprietes: '50 copropriétés',
@@ -107,7 +109,19 @@ const tiers: PricingTier[] = [
   },
 ]
 
-function PricingCard({ tier }: { tier: PricingTier }) {
+function ctaHrefFor(tier: PricingTier, cadence: Cadence): string {
+  if (!tier.price) return tier.cta.href
+  const sep = tier.cta.href.includes('?') ? '&' : '?'
+  return `${tier.cta.href}${sep}cadence=${cadence}`
+}
+
+function PricingCard({
+  tier,
+  cadence,
+}: {
+  tier: PricingTier
+  cadence: Cadence
+}) {
   return (
     <div
       className={`relative rounded-xl flex flex-col
@@ -154,7 +168,7 @@ function PricingCard({ tier }: { tier: PricingTier }) {
       </div>
 
       <div className="mb-6">
-        {tier.price === 0 ? (
+        {tier.id === 'gratuit' ? (
           <div className="flex items-baseline gap-1">
             <span
               className="font-display text-5xl font-bold
@@ -169,20 +183,39 @@ function PricingCard({ tier }: { tier: PricingTier }) {
               / mois
             </span>
           </div>
-        ) : tier.price !== null ? (
-          <div className="flex items-baseline gap-1">
-            <span
-              className="font-display text-5xl font-bold
-                text-stone-900 dark:text-white"
-            >
-              {tier.price} EUR
-            </span>
-            <span
-              className="text-sm text-stone-400
-                dark:text-stone-500"
-            >
-              / mois
-            </span>
+        ) : tier.price ? (
+          <div className="space-y-1">
+            <div className="flex items-baseline gap-1">
+              <span
+                className="font-display text-5xl font-bold
+                  text-stone-900 dark:text-white"
+              >
+                {cadence === 'yearly'
+                  ? tier.price.yearly
+                  : tier.price.monthly}{' '}
+                EUR
+              </span>
+              <span
+                className="text-sm text-stone-400
+                  dark:text-stone-500"
+              >
+                {cadence === 'yearly' ? '/ an' : '/ mois'}
+              </span>
+            </div>
+            {cadence === 'yearly' && (
+              <p
+                className="text-xs text-emerald-600
+                  dark:text-emerald-400 font-medium"
+              >
+                Soit {Math.round(tier.price.yearly / 12)} EUR/mois
+                — économisez{' '}
+                {Math.round(
+                  (1 - tier.price.yearly / (tier.price.monthly * 12))
+                    * 100
+                )}{' '}
+                %
+              </p>
+            )}
           </div>
         ) : (
           <div
@@ -240,7 +273,7 @@ function PricingCard({ tier }: { tier: PricingTier }) {
         }`}
         variant={tier.promoted ? 'default' : 'outline'}
       >
-        <a href={tier.cta.href}>{tier.cta.label}</a>
+        <a href={ctaHrefFor(tier, cadence)}>{tier.cta.label}</a>
       </Button>
 
       <ul className="space-y-3 flex-1">
@@ -269,6 +302,7 @@ function PricingCard({ tier }: { tier: PricingTier }) {
 export function PricingSection() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
+  const [cadence, setCadence] = useState<Cadence>('monthly')
 
   return (
     <section
@@ -314,11 +348,65 @@ export function PricingSection() {
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ delay: 0.1, duration: 0.5 }}
           className="text-center text-sm text-amber-600
-            dark:text-amber-400 font-semibold mb-12"
+            dark:text-amber-400 font-semibold mb-8"
         >
           Soit à partir de 0,38 EUR/lot/mois — jusqu'à 10x
           moins cher que les logiciels traditionnels
         </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.15, duration: 0.5 }}
+          className="flex justify-center mb-12"
+        >
+          <div
+            className="inline-flex items-center rounded-full
+              border border-stone-200 dark:border-stone-700
+              bg-white dark:bg-stone-900 p-1 text-sm shadow-sm"
+            role="group"
+            aria-label="Cadence de facturation"
+          >
+            <button
+              type="button"
+              onClick={() => setCadence('monthly')}
+              className={`px-4 py-1.5 rounded-full transition ${
+                cadence === 'monthly'
+                  ? 'bg-stone-900 dark:bg-stone-100'
+                    + ' text-white dark:text-stone-900'
+                  : 'text-stone-500 dark:text-stone-400'
+              }`}
+            >
+              Mensuel
+            </button>
+            <button
+              type="button"
+              onClick={() => setCadence('yearly')}
+              className={`px-4 py-1.5 rounded-full transition
+                flex items-center gap-2 ${
+                  cadence === 'yearly'
+                    ? 'bg-stone-900 dark:bg-stone-100'
+                      + ' text-white dark:text-stone-900'
+                    : 'text-stone-500 dark:text-stone-400'
+                }`}
+            >
+              Annuel
+              <span
+                className={`text-xs font-semibold rounded-full
+                  px-2 py-0.5 ${
+                    cadence === 'yearly'
+                      ? 'bg-emerald-500/20'
+                        + ' text-emerald-200'
+                      : 'bg-emerald-100 dark:bg-emerald-900/40'
+                        + ' text-emerald-700'
+                        + ' dark:text-emerald-400'
+                  }`}
+              >
+                −36 %
+              </span>
+            </button>
+          </div>
+        </motion.div>
 
         <div
           className="grid grid-cols-1 sm:grid-cols-2
@@ -334,7 +422,7 @@ export function PricingSection() {
                 duration: 0.5,
               }}
             >
-              <PricingCard tier={tier} />
+              <PricingCard tier={tier} cadence={cadence} />
             </motion.div>
           ))}
         </div>

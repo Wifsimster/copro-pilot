@@ -1,6 +1,7 @@
 import {
   getStripe,
-  PLAN_PRICE_MAP,
+  getPriceId,
+  getPlanCadenceFromPriceId,
   PLAN_QUOTAS,
   OVERAGE_PRICE_MAP,
 } from '../config/stripe.js'
@@ -13,17 +14,23 @@ import logger from '../logger.js'
 class StripeService {
   /**
    * Create a Stripe Checkout Session for a paid plan.
+   * @param {string} userId
+   * @param {string} userEmail
+   * @param {string} plan      essentiel | pro | entreprise
+   * @param {string} cadence   monthly | yearly (default monthly)
    */
-  async createCheckoutSession(userId, userEmail, plan) {
+  async createCheckoutSession(userId, userEmail, plan, cadence = 'monthly') {
     try {
       const stripe = getStripe()
       if (!stripe) {
         throw new Error('Stripe is not configured')
       }
 
-      const priceId = PLAN_PRICE_MAP[plan]
+      const priceId = getPriceId(plan, cadence)
       if (!priceId) {
-        throw new Error(`No Stripe price configured for plan: ${plan}`)
+        throw new Error(
+          `No Stripe price configured for plan ${plan} (${cadence})`
+        )
       }
 
       // Get or create subscription record to track stripe_customer_id
@@ -37,7 +44,7 @@ class StripeService {
         customer_email: subscription?.stripe_customer_id
           ? undefined
           : userEmail,
-        metadata: { plan, user_id: userId },
+        metadata: { plan, cadence, user_id: userId },
       }
 
       // Reuse existing Stripe customer if available
@@ -47,7 +54,7 @@ class StripeService {
 
       const session = await stripe.checkout.sessions.create(sessionParams)
       logger.info(
-        `[StripeService] Checkout session created for user ${userId}, plan ${plan}`
+        `[StripeService] Checkout session created for user ${userId}, plan ${plan} (${cadence})`
       )
       return session
     } catch (error) {
@@ -143,6 +150,7 @@ class StripeService {
 
       const userId = session.client_reference_id
       const plan = session.metadata?.plan || 'essentiel'
+      const cadence = session.metadata?.cadence || 'monthly'
       const stripeCustomerId = session.customer
       const stripeSubscriptionId = session.subscription
 
@@ -162,6 +170,7 @@ class StripeService {
                 user_id: userId,
                 stripe_subscription_id: stripeSubscriptionId,
                 plan,
+                cadence,
                 status: 'active',
                 copropriete_limit: quota.coproprietes ?? null,
                 user_limit: quota.users ?? null,
@@ -176,7 +185,7 @@ class StripeService {
         })
 
       logger.info(
-        `[StripeService] Checkout completed: user ${userId} → plan ${plan}`
+        `[StripeService] Checkout completed: user ${userId} → plan ${plan} (${cadence})`
       )
       return subscription
     } catch (error) {
@@ -220,17 +229,36 @@ class StripeService {
         ? new Date(stripeSubscription.current_period_end * 1000)
         : null
 
+      // Reverse-lookup the active price to detect plan/cadence changes
+      // performed via the Stripe Customer Portal.
+      const activePriceId =
+        stripeSubscription.items?.data?.[0]?.price?.id
+      const resolved = getPlanCadenceFromPriceId(activePriceId)
+
       // Wrap both operations in a transaction to keep
       // subscription record and user plan in sync
       await knexDatabase.getKnex().transaction(async trx => {
-        await SubscriptionModel.update(
-          subscription.user_id,
-          {
-            status: newStatus,
-            current_period_end: periodEnd,
-          },
-          trx
-        )
+        const update = {
+          status: newStatus,
+          current_period_end: periodEnd,
+        }
+        if (resolved) {
+          update.plan = resolved.plan
+          update.cadence = resolved.cadence
+        }
+        await SubscriptionModel.update(subscription.user_id, update, trx)
+
+        // Propagate plan change to denormalized user.plan
+        if (resolved && resolved.plan !== subscription.plan) {
+          await SubscriptionModel.updateUserPlan(
+            subscription.user_id,
+            resolved.plan,
+            trx
+          )
+          logger.info(
+            `[StripeService] Plan changed via portal: user ${subscription.user_id} → ${resolved.plan} (${resolved.cadence})`
+          )
+        }
 
         // If canceled, revert user plan to gratuit
         if (newStatus === 'canceled') {
