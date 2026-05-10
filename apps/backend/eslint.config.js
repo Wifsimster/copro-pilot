@@ -17,6 +17,7 @@ export default [
         URLSearchParams: 'readonly',
         Buffer: 'readonly',
         fetch: 'readonly',
+        FormData: 'readonly',
       }
     },
     rules: {
