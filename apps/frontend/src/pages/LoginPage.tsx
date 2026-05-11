@@ -158,7 +158,7 @@ export default function LoginPage() {
     }
 
     if (!consentAccepted) {
-      setSignUpError('Vous devez accepter la politique de confidentialite pour vous inscrire')
+      setSignUpError('Vous devez accepter la politique de confidentialité pour vous inscrire')
       return
     }
 
@@ -460,9 +460,9 @@ export default function LoginPage() {
                           }
                           className="mt-0.5"
                         />
-                        <Label
+                        <label
                           htmlFor="consent"
-                          className="text-xs leading-relaxed text-muted-foreground font-normal cursor-pointer"
+                          className="text-xs leading-relaxed text-muted-foreground cursor-pointer select-none"
                         >
                           J&apos;accepte la{' '}
                           <a
@@ -471,11 +471,11 @@ export default function LoginPage() {
                             rel="noopener noreferrer"
                             className="underline text-primary hover:text-primary/80"
                           >
-                            politique de confidentialite
+                            politique de confidentialité
                           </a>{' '}
-                          et le traitement de mes donnees personnelles
-                          conformement au RGPD.
-                        </Label>
+                          et le traitement de mes données personnelles
+                          conformément au RGPD.
+                        </label>
                       </div>
 
                       {signUpError && (
@@ -511,7 +511,7 @@ export default function LoginPage() {
               href="/#/politique-confidentialite"
               className="underline hover:text-foreground transition-colors"
             >
-              conditions d&apos;utilisation et la politique de confidentialite
+              conditions d&apos;utilisation et la politique de confidentialité
             </a>
             .
           </p>
