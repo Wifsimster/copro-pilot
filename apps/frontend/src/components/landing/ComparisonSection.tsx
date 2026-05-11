@@ -12,9 +12,9 @@ interface ComparisonRow {
 const rows: ComparisonRow[] = [
   {
     feature: 'Prix moyen / lot / mois',
-    coproPilot: 'À partir de 0 EUR',
-    traditional: '3 - 8 EUR',
-    excel: '0 EUR',
+    coproPilot: 'À partir de 0 €',
+    traditional: '3 - 8 €',
+    excel: '0 €',
   },
   {
     feature: 'Mise en place',

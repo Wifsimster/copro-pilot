@@ -208,7 +208,7 @@ export function PricingCalculator() {
             className="text-lg font-bold text-emerald-700
               dark:text-emerald-400 tabular-nums"
           >
-            {result.totalPrice} EUR/mois
+            {result.totalPrice} €/mois
           </span>
         </div>
 
@@ -217,11 +217,11 @@ export function PricingCalculator() {
             className="text-xs text-emerald-600
               dark:text-emerald-500"
           >
-            {result.plan.basePrice} EUR base
+            {result.plan.basePrice} € base
             {result.extraCopros > 0 &&
-              ` + ${result.extraCopros} copro(s) suppl. (${result.extraCopros * result.plan.extraCoproPrice} EUR)`}
+              ` + ${result.extraCopros} copro(s) suppl. (${result.extraCopros * result.plan.extraCoproPrice} €)`}
             {result.extraUsers > 0 &&
-              ` + ${result.extraUsers} utilisateur(s) suppl. (${result.extraUsers * result.plan.extraUserPrice} EUR)`}
+              ` + ${result.extraUsers} utilisateur(s) suppl. (${result.extraUsers * result.plan.extraUserPrice} €)`}
           </p>
         )}
 
@@ -230,9 +230,9 @@ export function PricingCalculator() {
             dark:text-emerald-500 mt-1.5"
         >
           Soit{' '}
-          <strong>{perLotPrice} EUR/lot/mois</strong>{' '}
+          <strong>{perLotPrice} €/lot/mois</strong>{' '}
           (moyenne 30 lots/copro) — les logiciels traditionnels
-          facturent 3 à 8 EUR/lot/mois
+          facturent 3 à 8 €/lot/mois
         </p>
       </div>
     </motion.div>
