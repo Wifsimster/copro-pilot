@@ -1,11 +1,19 @@
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || '/api'
 
+const MUTATING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE'])
+
 interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined>
 }
 
+function getCsrfToken(): string | null {
+  if (typeof document === 'undefined') return null
+  const match = document.cookie.match(/(?:^|;\s*)csrf-token=([^;]+)/)
+  return match ? decodeURIComponent(match[1]) : null
+}
+
 async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-  const { params, ...fetchOptions } = options
+  const { params, headers: customHeaders, ...fetchOptions } = options
 
   let url = `${API_BASE_URL}${endpoint}`
 
@@ -22,13 +30,23 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     }
   }
 
+  const method = (fetchOptions.method || 'GET').toUpperCase()
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(customHeaders as Record<string, string> | undefined),
+  }
+
+  if (MUTATING_METHODS.has(method)) {
+    const csrfToken = getCsrfToken()
+    if (csrfToken) {
+      headers['X-CSRF-Token'] = csrfToken
+    }
+  }
+
   const response = await fetch(url, {
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...fetchOptions.headers,
-    },
     ...fetchOptions,
+    headers,
   })
 
   if (!response.ok) {

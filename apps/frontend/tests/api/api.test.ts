@@ -155,6 +155,56 @@ describe('api.delete', () => {
   })
 })
 
+// ─── CSRF token ────────────────────────────────────────────────────────
+
+describe('CSRF token', () => {
+  afterEach(() => {
+    document.cookie = 'csrf-token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/'
+  })
+
+  it('sends X-CSRF-Token header on POST when cookie is present', async () => {
+    document.cookie = 'csrf-token=abc123; path=/'
+    mockFetch.mockReturnValue(jsonResponse({}))
+
+    await api.post('/coproprietes', { nom: 'x' })
+
+    const headers = mockFetch.mock.calls[0][1].headers
+    expect(headers['X-CSRF-Token']).toBe('abc123')
+  })
+
+  it('sends X-CSRF-Token header on PUT, PATCH, and DELETE', async () => {
+    document.cookie = 'csrf-token=tok; path=/'
+    mockFetch.mockReturnValue(jsonResponse({}))
+
+    await api.put('/notifications/read-all')
+    await api.patch('/coproprietes/1', {})
+    await api.delete('/coproprietes/1')
+
+    for (const call of mockFetch.mock.calls) {
+      expect(call[1].headers['X-CSRF-Token']).toBe('tok')
+    }
+  })
+
+  it('does not send X-CSRF-Token header on GET', async () => {
+    document.cookie = 'csrf-token=tok; path=/'
+    mockFetch.mockReturnValue(jsonResponse([]))
+
+    await api.get('/coproprietes')
+
+    const headers = mockFetch.mock.calls[0][1].headers
+    expect(headers['X-CSRF-Token']).toBeUndefined()
+  })
+
+  it('omits the header when no cookie is present', async () => {
+    mockFetch.mockReturnValue(jsonResponse({}))
+
+    await api.put('/notifications/read-all')
+
+    const headers = mockFetch.mock.calls[0][1].headers
+    expect(headers['X-CSRF-Token']).toBeUndefined()
+  })
+})
+
 // ─── Error handling ────────────────────────────────────────────────────
 
 describe('error handling', () => {
