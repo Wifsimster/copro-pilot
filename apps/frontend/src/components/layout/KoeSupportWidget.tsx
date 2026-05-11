@@ -1,5 +1,4 @@
 import { KoeWidget } from '@wifsimster/koe'
-import '@wifsimster/koe/style.css'
 import { useAuthStore } from '@/store/authStore'
 
 interface KoeSupportWidgetProps {
