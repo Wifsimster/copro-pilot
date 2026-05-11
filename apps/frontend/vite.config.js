@@ -33,7 +33,7 @@ export default defineConfig({
         react(),
         tailwindcss(),
         VitePWA({
-            registerType: 'autoUpdate',
+            registerType: 'prompt',
             workbox: {
                 globPatterns: ['**/*.{js,css,html,svg,png,ico,webp}'],
                 runtimeCaching: [
