@@ -11,7 +11,7 @@ const painPoints = [
   {
     icon: Banknote,
     pain: 'Votre syndic coûte trop cher ?',
-    relief: 'CoproPilot démarre à 0 EUR et reste 10x moins cher'
+    relief: 'CoproPilot démarre à 0 € et reste 10x moins cher'
       + ' que les solutions traditionnelles.',
     accent: 'border-l-red-400 dark:border-l-red-500',
     iconColor: 'text-red-500 dark:text-red-400',

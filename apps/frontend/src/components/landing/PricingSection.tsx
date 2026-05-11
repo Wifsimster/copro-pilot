@@ -68,7 +68,7 @@ const tiers: PricingTier[] = [
       coproprietes: '20 copropriétés',
       users: '10 utilisateurs',
     },
-    overage: '+3 EUR/copro, +5 EUR/utilisateur supplémentaire',
+    overage: '+3 €/copro, +5 €/utilisateur supplémentaire',
     features: [
       'Lots illimités',
       'Tout du plan Essentiel',
@@ -93,7 +93,7 @@ const tiers: PricingTier[] = [
       coproprietes: '50 copropriétés',
       users: '25 utilisateurs',
     },
-    overage: '+2 EUR/copro, +4 EUR/utilisateur supplémentaire',
+    overage: '+2 €/copro, +4 €/utilisateur supplémentaire',
     features: [
       'Tout du plan Pro',
       'SSO (Azure AD)',
@@ -174,7 +174,7 @@ function PricingCard({
               className="font-display text-5xl font-bold
                 text-stone-900 dark:text-white"
             >
-              0 EUR
+              0 €
             </span>
             <span
               className="text-sm text-stone-400
@@ -193,7 +193,7 @@ function PricingCard({
                 {cadence === 'yearly'
                   ? tier.price.yearly
                   : tier.price.monthly}{' '}
-                EUR
+                €
               </span>
               <span
                 className="text-sm text-stone-400
@@ -207,7 +207,7 @@ function PricingCard({
                 className="text-xs text-emerald-600
                   dark:text-emerald-400 font-medium"
               >
-                Soit {Math.round(tier.price.yearly / 12)} EUR/mois
+                Soit {Math.round(tier.price.yearly / 12)} €/mois
                 — économisez{' '}
                 {Math.round(
                   (1 - tier.price.yearly / (tier.price.monthly * 12))
@@ -350,7 +350,7 @@ export function PricingSection() {
           className="text-center text-sm text-amber-600
             dark:text-amber-400 font-semibold mb-8"
         >
-          Soit à partir de 0,38 EUR/lot/mois — jusqu'à 10x
+          Soit à partir de 0,38 €/lot/mois — jusqu'à 10x
           moins cher que les logiciels traditionnels
         </motion.p>
 

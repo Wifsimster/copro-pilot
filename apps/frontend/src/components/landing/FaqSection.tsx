@@ -48,7 +48,7 @@ const faqs: FaqItem[] = [
     question: 'Que se passe-t-il si je dépasse 20 lots ?',
     answer:
       "Vous recevrez une notification vous invitant à passer au"
-      + " plan Essentiel (19 EUR/mois). Vos données restent"
+      + " plan Essentiel (19 €/mois). Vos données restent"
       + " accessibles en lecture, vous ne perdez jamais rien."
       + " La mise à niveau se fait en un clic.",
   },

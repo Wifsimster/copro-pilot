@@ -21,7 +21,7 @@ const testimonials: Testimonial[] = [
   },
   {
     quote:
-      "Notre ancien logiciel nous coûtait 4,50 EUR/lot/mois et"
+      "Notre ancien logiciel nous coûtait 4,50 €/lot/mois et"
       + " l'interface datait de 2010. On a basculé nos 5 petites"
       + " copros sur CoproPilot, le plus dur c'était la reprise"
       + " des données. Depuis, les copropriétaires ont accès à"
