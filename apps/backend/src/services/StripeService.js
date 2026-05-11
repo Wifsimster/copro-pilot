@@ -80,9 +80,14 @@ class StripeService {
         throw new Error('No Stripe customer found for this user')
       }
 
+      // Restricts the portal to CoproPilot plans (Essentiel/Pro/Entreprise).
+      // The four apps share one Stripe account, so without a config a
+      // customer would see WAWPTN / Tokō / The Box prices in the picker.
+      const portalConfigId = process.env.STRIPE_PORTAL_CONFIG_ID
       const session = await stripe.billingPortal.sessions.create({
         customer: subscription.stripe_customer_id,
         return_url: `${process.env.BASE_URL || 'http://localhost:3000'}/#/subscription`,
+        ...(portalConfigId ? { configuration: portalConfigId } : {}),
       })
 
       logger.info(
