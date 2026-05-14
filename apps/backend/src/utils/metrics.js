@@ -33,9 +33,20 @@ export const activeSessions = new client.Gauge({
   help: 'Number of active user sessions',
 })
 
+// Real User Monitoring of Core Web Vitals (LCP, INP, CLS, FCP, TTFB).
+// LCP/FCP/TTFB are reported in milliseconds, CLS is unitless (×1000 here),
+// INP is in milliseconds. Buckets cover the typical CWV thresholds.
+export const webVitals = new client.Histogram({
+  name: 'web_vitals',
+  help: 'Core Web Vitals measured in the browser (RUM)',
+  labelNames: ['metric', 'rating'],
+  buckets: [50, 100, 200, 300, 500, 800, 1200, 1800, 2500, 4000, 6000, 10000],
+})
+
 register.registerMetric(httpRequestDuration)
 register.registerMetric(httpRequestTotal)
 register.registerMetric(dbQueryDuration)
 register.registerMetric(activeSessions)
+register.registerMetric(webVitals)
 
 export { register }

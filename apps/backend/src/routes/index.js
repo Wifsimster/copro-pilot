@@ -81,6 +81,8 @@ import votesRoutes from './votes.js'
 import procurationsRoutes from './procurations.js'
 // Signatures électroniques (Yousign)
 import signaturesRoutes from './signatures.js'
+// Real User Monitoring of Core Web Vitals
+import webVitalsRoutes from './web-vitals.js'
 
 const router = Router()
 
@@ -198,6 +200,9 @@ router.use('/procurations', procurationsRoutes)
 
 // Signatures électroniques (Yousign)
 router.use('/signatures', signaturesRoutes)
+
+// Real User Monitoring of Core Web Vitals (anonymous, no CSRF)
+router.use('/web-vitals', webVitalsRoutes)
 
 // Root health check
 router.get('/', (req, res) => {

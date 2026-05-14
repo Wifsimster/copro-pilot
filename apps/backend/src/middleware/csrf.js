@@ -29,6 +29,11 @@ export const csrf = (req, res, next) => {
     return next()
   }
 
+  // Exclude Web Vitals beacon (sendBeacon cannot set custom headers)
+  if (path.startsWith('/api/web-vitals') || path.startsWith('/api/v1/web-vitals')) {
+    return next()
+  }
+
   // For safe methods, issue a CSRF token cookie
   if (!MUTATING_METHODS.includes(req.method)) {
     if (!req.cookies?.[CSRF_COOKIE]) {
