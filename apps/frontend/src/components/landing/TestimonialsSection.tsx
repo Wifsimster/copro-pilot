@@ -125,18 +125,18 @@ export function TestimonialsSection() {
                   {t.initials}
                 </div>
                 <div>
-                  <div
+                  <h3
                     className="text-sm font-semibold
                       text-stone-900 dark:text-white"
                   >
                     {t.name}
-                  </div>
-                  <div
+                  </h3>
+                  <p
                     className="text-xs text-stone-400
                       dark:text-stone-500"
                   >
                     {t.role}
-                  </div>
+                  </p>
                 </div>
               </div>
             </motion.div>

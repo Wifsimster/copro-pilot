@@ -80,7 +80,7 @@ function FaqAccordionItem({
         className="flex w-full items-center justify-between
           py-5 text-left group"
       >
-        <span
+        <h3
           className="font-display text-lg font-medium
             text-stone-900 dark:text-white pr-4
             group-hover:text-emerald-700
@@ -88,7 +88,7 @@ function FaqAccordionItem({
             transition-colors"
         >
           {item.question}
-        </span>
+        </h3>
         <ChevronDown
           className={`size-5 shrink-0 text-stone-400
             dark:text-stone-500 transition-transform
