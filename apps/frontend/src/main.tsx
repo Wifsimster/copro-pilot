@@ -30,6 +30,17 @@ const initializeTheme = () => {
 
 initializeTheme()
 
+// Rewrites legacy HashRouter URLs (#/path?token=xxx) to their
+// BrowserRouter equivalent (/path?token=xxx) before React mounts.
+// Necessary so password-reset, first-login, AG-notification, and
+// other emails sent before the BrowserRouter migration still land
+// users on the correct route.
+const legacyHash = window.location.hash.match(/^#(\/[^?]*)(\?.*)?$/)
+if (legacyHash) {
+  const [, path, query = ''] = legacyHash
+  window.history.replaceState(null, '', path + query)
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
