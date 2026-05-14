@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Building2, Menu, X } from 'lucide-react'
 
@@ -11,6 +12,7 @@ const navLinks = [
 export function LandingHeader() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const isLanding = useLocation().pathname === '/'
 
   useEffect(() => {
     function onScroll() {
@@ -22,6 +24,10 @@ export function LandingHeader() {
 
   function scrollTo(href: string) {
     setMobileOpen(false)
+    if (!isLanding) {
+      window.location.href = `/${href}`
+      return
+    }
     const id = href.replace('#', '')
     const el = document.getElementById(id)
     if (el) el.scrollIntoView({ behavior: 'smooth' })
