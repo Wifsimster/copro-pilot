@@ -33,7 +33,21 @@ export function LandingFooter() {
             </span>
           </div>
 
-          <nav className="flex items-center gap-6">
+          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            <a
+              href="/vs/logiciels-traditionnels"
+              className="text-sm text-stone-500
+                hover:text-stone-300 transition-colors"
+            >
+              Comparatif
+            </a>
+            <a
+              href="/securite"
+              className="text-sm text-stone-500
+                hover:text-stone-300 transition-colors"
+            >
+              Sécurité
+            </a>
             <a
               href="/politique-confidentialite"
               className="text-sm text-stone-500

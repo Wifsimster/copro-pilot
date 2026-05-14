@@ -43,6 +43,8 @@ const DonneesPersonnellesPage = lazy(
 const PolitiqueConfidentialitePage = lazy(
   () => import('@/pages/PolitiqueConfidentialitePage')
 )
+const VsTraditionnelsPage = lazy(() => import('@/pages/VsTraditionnelsPage'))
+const SecuritePage = lazy(() => import('@/pages/SecuritePage'))
 const ForgotPasswordPage = lazy(() => import('@/pages/ForgotPasswordPage'))
 const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'))
 const VerifyEmailPage = lazy(() => import('@/pages/VerifyEmailPage'))
@@ -96,6 +98,22 @@ export const router = createBrowserRouter([
     element: (
       <Suspense fallback={<PageLoader />}>
         <PolitiqueConfidentialitePage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/vs/logiciels-traditionnels',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <VsTraditionnelsPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/securite',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <SecuritePage />
       </Suspense>
     ),
   },
