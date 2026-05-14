@@ -49,6 +49,14 @@ jobs:
       - name: Build frontend
         run: npm run build --workspace=copro-pilot-frontend
 
+      - name: Run Lighthouse CI on landing page
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./.lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+        continue-on-error: true
+
   e2e:
     runs-on: ubuntu-latest
     needs: ci

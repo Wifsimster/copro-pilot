@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
 import './style/index.css'
+import { reportWebVitals } from './utils/reportWebVitals'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,3 +37,5 @@ createRoot(document.getElementById('root')!).render(
     </QueryClientProvider>
   </StrictMode>,
 )
+
+reportWebVitals()

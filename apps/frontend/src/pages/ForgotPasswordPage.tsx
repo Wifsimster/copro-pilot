@@ -59,7 +59,7 @@ export default function ForgotPasswordPage() {
                 </p>
               </div>
               <a
-                href="/#/login"
+                href="/login"
                 className="inline-flex items-center gap-2 text-sm text-primary hover:underline mt-2"
               >
                 <ArrowLeft className="size-4" />
@@ -118,7 +118,7 @@ export default function ForgotPasswordPage() {
 
               <div className="text-center">
                 <a
-                  href="/#/login"
+                  href="/login"
                   className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
                 >
                   <ArrowLeft className="size-4" />

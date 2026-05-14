@@ -65,7 +65,7 @@ export function FinalCTA() {
               text-white text-base px-10 h-13 rounded-xl
               shadow-lg shadow-emerald-600/30 group"
           >
-            <a href="/#/login">
+            <a href="/login">
               Commencer gratuitement
               <ArrowRight
                 className="size-4 ml-2 transition-transform

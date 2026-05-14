@@ -7,7 +7,7 @@ interface FaqItem {
   answer: string
 }
 
-const faqs: FaqItem[] = [
+export const faqs: FaqItem[] = [
   {
     question: "C'est vraiment gratuit ?",
     answer:

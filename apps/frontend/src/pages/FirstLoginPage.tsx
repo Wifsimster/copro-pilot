@@ -77,7 +77,7 @@ export default function FirstLoginPage() {
           setStep('password')
         } else {
           // Already has a password, redirect to extranet
-          window.location.href = '/#/extranet'
+          window.location.href = '/extranet'
         }
       }
     } catch {
@@ -106,7 +106,7 @@ export default function FirstLoginPage() {
 
     try {
       await userManagementApi.setInitialPassword(password)
-      window.location.href = '/#/extranet'
+      window.location.href = '/extranet'
     } catch {
       setError(
         'Erreur lors de la définition du mot de passe'
@@ -366,7 +366,7 @@ export default function FirstLoginPage() {
 
           <div className="text-center">
             <a
-              href="/#/login"
+              href="/login"
               className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
             >
               <ArrowLeft className="size-4" />

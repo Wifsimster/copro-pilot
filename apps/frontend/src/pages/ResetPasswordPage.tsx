@@ -17,7 +17,7 @@ export default function ResetPasswordPage() {
   const [success, setSuccess] = useState(false)
 
   // Extract token from URL query params
-  const params = new URLSearchParams(window.location.hash.split('?')[1] || '')
+  const params = new URLSearchParams(window.location.search)
   const token = params.get('token') || ''
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -90,7 +90,7 @@ export default function ResetPasswordPage() {
                 </p>
               </div>
               <a
-                href="/#/login"
+                href="/login"
                 className="inline-flex items-center gap-2 text-sm text-primary hover:underline mt-2"
               >
                 <ArrowLeft className="size-4" />
@@ -169,7 +169,7 @@ export default function ResetPasswordPage() {
 
               <div className="text-center">
                 <a
-                  href="/#/login"
+                  href="/login"
                   className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
                 >
                   <ArrowLeft className="size-4" />

@@ -35,7 +35,7 @@ const tiers: PricingTier[] = [
     ],
     cta: {
       label: 'Commencer gratuitement',
-      href: '/#/login',
+      href: '/login',
     },
   },
   {
@@ -56,7 +56,7 @@ const tiers: PricingTier[] = [
     ],
     cta: {
       label: 'Essai gratuit',
-      href: '/#/login?plan=essentiel',
+      href: '/login?plan=essentiel',
     },
   },
   {
@@ -79,7 +79,7 @@ const tiers: PricingTier[] = [
     ],
     cta: {
       label: 'Essai gratuit',
-      href: '/#/login?plan=pro',
+      href: '/login?plan=pro',
     },
     badge: 'Populaire',
     promoted: true,
@@ -104,7 +104,7 @@ const tiers: PricingTier[] = [
     ],
     cta: {
       label: 'Essai gratuit',
-      href: '/#/login?plan=entreprise',
+      href: '/login?plan=entreprise',
     },
   },
 ]

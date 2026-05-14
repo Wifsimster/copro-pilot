@@ -1,10 +1,9 @@
-import { createHashRouter, Outlet } from 'react-router-dom'
+import { createBrowserRouter, Outlet } from 'react-router-dom'
 import { ProtectedRoute, PublicRoute } from './ProtectedRoute'
 import { RoleGuard } from './RoleGuard'
 import { MainLayout } from '@/components/layout/MainLayout'
 import { lazy, Suspense } from 'react'
-
-const LandingPage = lazy(() => import('@/pages/LandingPage'))
+import LandingPage from '@/pages/LandingPage'
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
 const CoproprietesPage = lazy(() => import('@/pages/CoproprietesPage'))
@@ -44,6 +43,8 @@ const DonneesPersonnellesPage = lazy(
 const PolitiqueConfidentialitePage = lazy(
   () => import('@/pages/PolitiqueConfidentialitePage')
 )
+const VsTraditionnelsPage = lazy(() => import('@/pages/VsTraditionnelsPage'))
+const SecuritePage = lazy(() => import('@/pages/SecuritePage'))
 const ForgotPasswordPage = lazy(() => import('@/pages/ForgotPasswordPage'))
 const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'))
 const VerifyEmailPage = lazy(() => import('@/pages/VerifyEmailPage'))
@@ -73,15 +74,12 @@ function AuthenticatedLayout() {
   )
 }
 
-export const router = createHashRouter([
-  // Landing page (public, default route)
+export const router = createBrowserRouter([
+  // Landing page (public, default route) — eager-loaded so the SEO entrypoint
+  // renders without waiting for a chunk fetch.
   {
     path: '/',
-    element: (
-      <Suspense fallback={<PageLoader />}>
-        <LandingPage />
-      </Suspense>
-    ),
+    element: <LandingPage />,
   },
 
   // Public routes
@@ -100,6 +98,22 @@ export const router = createHashRouter([
     element: (
       <Suspense fallback={<PageLoader />}>
         <PolitiqueConfidentialitePage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/vs/logiciels-traditionnels',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <VsTraditionnelsPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/securite',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <SecuritePage />
       </Suspense>
     ),
   },

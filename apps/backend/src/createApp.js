@@ -3,6 +3,7 @@ import express from 'express'
 import cookieParser from 'cookie-parser'
 import methodOverride from 'method-override'
 import helmet from 'helmet'
+import compression from 'compression'
 import { toNodeHandler } from 'better-auth/node'
 
 import routes from './routes/index.js'
@@ -64,6 +65,9 @@ export function createApp({ getDb, auth } = {}) {
       referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
     })
   )
+
+  // gzip/brotli compression for HTML/JS/CSS responses
+  app.use(compression())
 
   // CORS configuration
   const frontendUrl = process.env.BASE_URL || process.env.FRONTEND_URL

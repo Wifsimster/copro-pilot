@@ -45,19 +45,17 @@ export default function ExtranetComptePage() {
   useEffect(() => {
     if (confirmedRef.current) return
 
-    const hash = window.location.hash
-    const queryIndex = hash.indexOf('?')
-    if (queryIndex === -1) return
-
-    const params = new URLSearchParams(hash.slice(queryIndex + 1))
+    const params = new URLSearchParams(window.location.search)
     const status = params.get('payment')
+    if (!status) return
     const sessionId = params.get('session_id')
+
+    const cleanUrl = window.location.pathname
 
     if (status === 'canceled') {
       confirmedRef.current = true
       toast.info('Paiement annulé')
-      const cleanHash = hash.slice(0, queryIndex)
-      window.history.replaceState(null, '', cleanHash || '#/')
+      window.history.replaceState(null, '', cleanUrl)
       return
     }
 
@@ -78,8 +76,7 @@ export default function ExtranetComptePage() {
           )
         })
         .finally(() => {
-          const cleanHash = hash.slice(0, queryIndex)
-          window.history.replaceState(null, '', cleanHash || '#/')
+          window.history.replaceState(null, '', cleanUrl)
         })
     }
   }, [])

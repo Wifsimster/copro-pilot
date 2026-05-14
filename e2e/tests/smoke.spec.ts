@@ -2,12 +2,12 @@ import { test, expect, type Page } from '@playwright/test'
 
 /** Login as syndic user */
 async function login(page: Page) {
-  await page.goto('/#/login')
+  await page.goto('/login')
   await expect(page.locator('#signin-email')).toBeVisible({ timeout: 10_000 })
   await page.locator('#signin-email').fill('syndic@copropilot.local')
   await page.locator('#signin-password').fill('syndic')
   await page.getByRole('button', { name: 'Se connecter' }).click()
-  await expect(page).toHaveURL(/\/#\/dashboard/, { timeout: 15_000 })
+  await expect(page).toHaveURL(/\/dashboard/, { timeout: 15_000 })
 }
 
 test.describe('Smoke tests', () => {
@@ -21,7 +21,7 @@ test.describe('Smoke tests', () => {
   })
 
   test('copropriétés page lists properties', async ({ page }) => {
-    await page.goto('/#/coproprietes')
+    await page.goto('/coproprietes')
     await expect(page.getByPlaceholder(/Rechercher/)).toBeVisible({
       timeout: 10_000,
     })
@@ -40,7 +40,7 @@ test.describe('Smoke tests', () => {
         })
       )
     })
-    await page.goto('/#/charges')
+    await page.goto('/charges')
     await page.reload()
     await expect(
       page.getByRole('tab', { name: 'Budgets' })
@@ -57,7 +57,7 @@ test.describe('Smoke tests', () => {
         })
       )
     })
-    await page.goto('/#/travaux')
+    await page.goto('/travaux')
     await page.reload()
     await expect(
       page.getByRole('button', { name: 'Incidents' })
@@ -66,7 +66,7 @@ test.describe('Smoke tests', () => {
 
   test('sidebar navigation works', async ({ page }) => {
     // Click a sidebar link to coproprietes
-    const link = page.locator('a[href*="#/coproprietes"]').first()
+    const link = page.locator('a[href*="/coproprietes"]').first()
     await expect(link).toBeVisible({ timeout: 5_000 })
     await link.click()
     await expect(page).toHaveURL(/coproprietes/)

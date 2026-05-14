@@ -104,7 +104,36 @@ export default defineConfig({
     },
     build: {
         outDir: 'dist',
-        sourcemap: true
+        sourcemap: process.env.NODE_ENV !== 'production',
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+                    'vendor-query': ['@tanstack/react-query', '@tanstack/react-table'],
+                    'vendor-charting': ['recharts'],
+                    'vendor-form': ['react-hook-form', '@hookform/resolvers', 'zod'],
+                    'vendor-radix': [
+                        '@radix-ui/react-alert-dialog',
+                        '@radix-ui/react-avatar',
+                        '@radix-ui/react-checkbox',
+                        '@radix-ui/react-dialog',
+                        '@radix-ui/react-dropdown-menu',
+                        '@radix-ui/react-label',
+                        '@radix-ui/react-popover',
+                        '@radix-ui/react-select',
+                        '@radix-ui/react-separator',
+                        '@radix-ui/react-slot',
+                        '@radix-ui/react-switch',
+                        '@radix-ui/react-tabs',
+                        '@radix-ui/react-toast',
+                        '@radix-ui/react-tooltip',
+                    ],
+                    'vendor-motion': ['motion'],
+                    'vendor-icons': ['lucide-react'],
+                    'vendor-date': ['date-fns'],
+                }
+            }
+        }
     },
     define: {
         __BUILD_DATE__: JSON.stringify(new Date().toISOString()),

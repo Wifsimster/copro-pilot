@@ -117,9 +117,7 @@ export default function LoginPage() {
   const [consentAccepted, setConsentAccepted] = useState(false)
 
   // Detect ?plan= query param from landing page CTAs
-  const params = new URLSearchParams(
-    window.location.hash.split('?')[1] || ''
-  )
+  const params = new URLSearchParams(window.location.search)
   const selectedPlan = params.get('plan') || ''
   const hasPaidPlan = selectedPlan in PAID_PLANS
 
@@ -275,7 +273,7 @@ export default function LoginPage() {
                     <div className="flex items-center justify-between">
                       <Label htmlFor="signin-password">Mot de passe</Label>
                       <a
-                        href="/#/forgot-password"
+                        href="/forgot-password"
                         className="text-xs text-primary hover:underline"
                       >
                         Mot de passe oublié ?
@@ -356,7 +354,7 @@ export default function LoginPage() {
 
                   <p className="text-center text-xs text-muted-foreground pt-1">
                     <a
-                      href="/#/first-login"
+                      href="/first-login"
                       className="text-primary hover:underline"
                     >
                       Première connexion (copropriétaire) ?
@@ -466,7 +464,7 @@ export default function LoginPage() {
                         >
                           J&apos;accepte la{' '}
                           <a
-                            href="/#/politique-confidentialite"
+                            href="/politique-confidentialite"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="underline text-primary hover:text-primary/80"
@@ -508,7 +506,7 @@ export default function LoginPage() {
           <p className="text-center text-xs text-muted-foreground/70 leading-relaxed px-4">
             En continuant, vous acceptez les{' '}
             <a
-              href="/#/politique-confidentialite"
+              href="/politique-confidentialite"
               className="underline hover:text-foreground transition-colors"
             >
               conditions d&apos;utilisation et la politique de confidentialité

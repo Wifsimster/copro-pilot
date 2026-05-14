@@ -47,8 +47,8 @@ class ExtranetPaymentService {
             },
           },
         ],
-        success_url: `${baseUrl}/#/extranet/compte?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${baseUrl}/#/extranet/compte?payment=canceled`,
+        success_url: `${baseUrl}/extranet/compte?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${baseUrl}/extranet/compte?payment=canceled`,
         customer_email: copro.email || undefined,
         metadata: {
           coproprietaireId: String(coproprietaireId),
