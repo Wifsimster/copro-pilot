@@ -3,8 +3,7 @@ import { ProtectedRoute, PublicRoute } from './ProtectedRoute'
 import { RoleGuard } from './RoleGuard'
 import { MainLayout } from '@/components/layout/MainLayout'
 import { lazy, Suspense } from 'react'
-
-const LandingPage = lazy(() => import('@/pages/LandingPage'))
+import LandingPage from '@/pages/LandingPage'
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
 const CoproprietesPage = lazy(() => import('@/pages/CoproprietesPage'))
@@ -74,14 +73,11 @@ function AuthenticatedLayout() {
 }
 
 export const router = createHashRouter([
-  // Landing page (public, default route)
+  // Landing page (public, default route) — eager-loaded so the SEO entrypoint
+  // renders without waiting for a chunk fetch.
   {
     path: '/',
-    element: (
-      <Suspense fallback={<PageLoader />}>
-        <LandingPage />
-      </Suspense>
-    ),
+    element: <LandingPage />,
   },
 
   // Public routes

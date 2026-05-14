@@ -104,7 +104,7 @@ export default defineConfig({
     },
     build: {
         outDir: 'dist',
-        sourcemap: true
+        sourcemap: process.env.NODE_ENV !== 'production'
     },
     define: {
         __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
