@@ -246,7 +246,7 @@ export class BulkUserCreationService {
           html: generateWelcomeEmail(
             copro.prenom || userName,
             email,
-            `${baseURL}/#/first-login`
+            `${baseURL}/first-login`
           ),
         }).catch(err =>
           logger.error(

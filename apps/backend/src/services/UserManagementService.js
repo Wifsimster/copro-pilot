@@ -123,7 +123,7 @@ export class UserManagementService {
       await auth.api.forgetPassword({
         body: {
           email: targetUser.email,
-          redirectTo: `${baseURL}/#/reset-password`,
+          redirectTo: `${baseURL}/reset-password`,
         },
       })
     } catch (error) {

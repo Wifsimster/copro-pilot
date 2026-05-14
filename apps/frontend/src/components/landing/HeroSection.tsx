@@ -307,7 +307,7 @@ export function HeroSection() {
                   shadow-lg shadow-emerald-700/20
                   dark:shadow-emerald-600/20 group"
               >
-                <a href="/#/login">
+                <a href="/login">
                   Essayer gratuitement
                   <ArrowRight
                     className="size-4 ml-2 transition-transform

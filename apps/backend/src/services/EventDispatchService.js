@@ -56,12 +56,12 @@ class EventDispatchService {
 
   _extranetUrl() {
     const base = process.env.BASE_URL || 'http://localhost:3000'
-    return `${base.replace(/\/$/, '')}/#/extranet`
+    return `${base.replace(/\/$/, '')}/extranet`
   }
 
   _assembleeUrl(agId) {
     const base = process.env.BASE_URL || 'http://localhost:3000'
-    return `${base.replace(/\/$/, '')}/#/assemblees/${agId}`
+    return `${base.replace(/\/$/, '')}/assemblees/${agId}`
   }
 
   // --- Domain events ---

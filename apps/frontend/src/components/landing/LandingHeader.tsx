@@ -41,7 +41,7 @@ export function LandingHeader() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <a
-            href="/#/"
+            href="/"
             className="flex items-center gap-2.5 group"
           >
             <div className="flex size-9 items-center justify-center
@@ -83,7 +83,7 @@ export function LandingHeader() {
               className="text-stone-600 dark:text-stone-400
                 hover:text-stone-900 dark:hover:text-stone-100"
             >
-              <a href="/#/login">Se connecter</a>
+              <a href="/login">Se connecter</a>
             </Button>
             <Button
               size="sm"
@@ -92,7 +92,7 @@ export function LandingHeader() {
                 text-white rounded-lg"
               asChild
             >
-              <a href="/#/login">Essai gratuit</a>
+              <a href="/login">Essai gratuit</a>
             </Button>
           </div>
 
@@ -127,7 +127,7 @@ export function LandingHeader() {
             ))}
             <div className="px-4 pt-3 flex flex-col gap-2">
               <Button variant="outline" size="sm" asChild>
-                <a href="/#/login">Se connecter</a>
+                <a href="/login">Se connecter</a>
               </Button>
               <Button
                 size="sm"
@@ -135,7 +135,7 @@ export function LandingHeader() {
                   hover:bg-emerald-800 text-white"
                 asChild
               >
-                <a href="/#/login">Essai gratuit</a>
+                <a href="/login">Essai gratuit</a>
               </Button>
             </div>
           </div>

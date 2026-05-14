@@ -35,7 +35,7 @@ export function LandingFooter() {
 
           <nav className="flex items-center gap-6">
             <a
-              href="/#/politique-confidentialite"
+              href="/politique-confidentialite"
               className="text-sm text-stone-500
                 hover:text-stone-300 transition-colors"
             >

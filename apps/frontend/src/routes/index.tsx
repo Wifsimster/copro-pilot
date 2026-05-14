@@ -1,4 +1,4 @@
-import { createHashRouter, Outlet } from 'react-router-dom'
+import { createBrowserRouter, Outlet } from 'react-router-dom'
 import { ProtectedRoute, PublicRoute } from './ProtectedRoute'
 import { RoleGuard } from './RoleGuard'
 import { MainLayout } from '@/components/layout/MainLayout'
@@ -72,7 +72,7 @@ function AuthenticatedLayout() {
   )
 }
 
-export const router = createHashRouter([
+export const router = createBrowserRouter([
   // Landing page (public, default route) — eager-loaded so the SEO entrypoint
   // renders without waiting for a chunk fetch.
   {

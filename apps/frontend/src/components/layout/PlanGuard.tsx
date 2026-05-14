@@ -31,7 +31,7 @@ export function PlanGuard({ requiredPlan, feature }: PlanGuardProps) {
         Passez à un plan supérieur pour débloquer cette fonctionnalité.
       </p>
       <Button asChild className="bg-green-600 hover:bg-green-700 text-white">
-        <a href="/#/subscription">
+        <a href="/subscription">
           <CreditCard className="size-4" />
           Voir les plans
         </a>

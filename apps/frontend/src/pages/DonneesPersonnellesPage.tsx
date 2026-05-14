@@ -67,7 +67,7 @@ export default function DonneesPersonnellesPage() {
             variant="outline"
             onClick={() =>
               window.open(
-                '/#/politique-confidentialite',
+                '/politique-confidentialite',
                 '_blank'
               )
             }

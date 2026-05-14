@@ -125,7 +125,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
           }
         }
 
-        window.location.hash = '#/dashboard'
+        window.location.href = '/dashboard'
       }
     } catch (error) {
       logger.error('Sign in failed:', error)
@@ -187,7 +187,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       get().clearAuth()
       set({ isLoading: false })
     }
-    window.location.hash = '#/'
+    window.location.href = '/'
   },
 
   validateToken: async () => {
