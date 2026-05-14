@@ -39,7 +39,7 @@ class StripeService {
         mode: 'subscription',
         line_items: [{ price: priceId, quantity: 1 }],
         success_url: `${process.env.BASE_URL || 'http://localhost:3000'}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.BASE_URL || 'http://localhost:3000'}/landing`,
+        cancel_url: `${process.env.BASE_URL || 'http://localhost:3000'}/`,
         client_reference_id: userId,
         customer_email: subscription?.stripe_customer_id
           ? undefined
