@@ -3,8 +3,7 @@ import { Button } from '@/components/ui/button'
 import { LandingHeader } from '@/components/landing/LandingHeader'
 import { LandingFooter } from '@/components/landing/LandingFooter'
 import { SEOHead } from '@/components/SEO/SEOHead'
-
-const SITE_URL = 'https://copropilot.fr'
+import { SITE_URL } from '@/lib/siteUrl'
 
 interface Row {
   feature: string
