@@ -1,3 +1,5 @@
+import { SITE_URL, DEFAULT_OG_IMAGE } from '@/lib/siteUrl'
+
 type SEOHeadProps = {
   title: string
   description: string
@@ -7,9 +9,6 @@ type SEOHeadProps = {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[]
   noindex?: boolean
 }
-
-const DEFAULT_SITE = 'https://copropilot.fr'
-const DEFAULT_OG_IMAGE = `${DEFAULT_SITE}/logo.svg`
 
 export function SEOHead({
   title,
@@ -23,7 +22,7 @@ export function SEOHead({
   const canonicalUrl = canonical
     ? canonical.startsWith('http')
       ? canonical
-      : `${DEFAULT_SITE}${canonical}`
+      : `${SITE_URL}${canonical}`
     : undefined
 
   const schemas = jsonLd

@@ -11,8 +11,7 @@ import { FaqSection, faqs } from '@/components/landing/FaqSection'
 import { FinalCTA } from '@/components/landing/FinalCTA'
 import { LandingFooter } from '@/components/landing/LandingFooter'
 import { SEOHead } from '@/components/SEO/SEOHead'
-
-const SITE_URL = 'https://copropilot.fr'
+import { SITE_URL } from '@/lib/siteUrl'
 
 const organizationSchema = {
   '@context': 'https://schema.org',
