@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { documentsApi } from '@/api/documents'
 import type { Document } from '@/types'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const DOCUMENTS_QUERY_KEY = ['documents'] as const
 
 export function useDocumentsByCopropriete(coproprieteId: number | undefined, filters?: { categorie?: string; entite_type?: string; search?: string }) {
@@ -15,6 +16,7 @@ export function useDocumentsByCopropriete(coproprieteId: number | undefined, fil
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useDocumentsByEntity(entiteType: string | undefined, entiteId: number | undefined) {
   return useQuery({
     queryKey: [...DOCUMENTS_QUERY_KEY, 'entity', entiteType, entiteId],
@@ -37,6 +39,7 @@ export function useUploadDocument() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useCreateDocument() {
   const queryClient = useQueryClient()
   return useMutation({

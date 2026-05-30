@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { employesSyndicatApi } from '@/api/employes-syndicat'
 import type { EmployeSyndicat } from '@/types'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const EMPLOYES_SYNDICAT_QUERY_KEY = ['employes-syndicat'] as const
 
 export function useEmployesSyndicatByCopropriete(coproprieteId: number | undefined) {
@@ -15,6 +16,7 @@ export function useEmployesSyndicatByCopropriete(coproprieteId: number | undefin
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useEmployeSyndicat(id: number | undefined) {
   return useQuery({
     queryKey: [...EMPLOYES_SYNDICAT_QUERY_KEY, id],

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { relancesApi } from '@/api/relances'
 import type { Relance } from '@/types'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const RELANCES_QUERY_KEY = ['relances'] as const
 
 export function useRelancesByCopropriete(coproprieteId: number | undefined) {
@@ -15,6 +16,7 @@ export function useRelancesByCopropriete(coproprieteId: number | undefined) {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useRelance(id: number | undefined) {
   return useQuery({
     queryKey: [...RELANCES_QUERY_KEY, id],

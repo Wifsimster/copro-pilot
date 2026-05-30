@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { contratsApi } from '@/api/contrats'
 import type { Contrat } from '@/types'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const CONTRATS_QUERY_KEY = ['contrats'] as const
 
 export function useContratsByCopropriete(coproprieteId: number | undefined) {
@@ -15,6 +16,7 @@ export function useContratsByCopropriete(coproprieteId: number | undefined) {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useContratsExpiringSoon(coproprieteId: number | undefined) {
   return useQuery({
     queryKey: [...CONTRATS_QUERY_KEY, 'echeances', coproprieteId],

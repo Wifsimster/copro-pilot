@@ -16,6 +16,7 @@ export function useConvocationsByAg(agId: number | undefined) {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useConvocation(id: number | undefined) {
   return useQuery({
     queryKey: [...CONVOCATIONS_QUERY_KEY, id],
@@ -69,6 +70,7 @@ export function useDeleteConvocation() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useAddDestinataire() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -79,6 +81,7 @@ export function useAddDestinataire() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useUpdateDestinataire() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -90,6 +93,7 @@ export function useUpdateDestinataire() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useDeleteDestinataire() {
   const queryClient = useQueryClient()
   return useMutation({

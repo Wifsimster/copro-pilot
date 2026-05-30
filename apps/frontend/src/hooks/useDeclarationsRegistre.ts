@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { declarationsRegistreApi } from '@/api/declarations-registre'
 import type { DeclarationRegistre } from '@/types'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const DECLARATIONS_REGISTRE_QUERY_KEY = ['declarations-registre'] as const
 
 export function useDeclarationsRegistreByCopropriete(coproprieteId: number | undefined) {
@@ -15,6 +16,7 @@ export function useDeclarationsRegistreByCopropriete(coproprieteId: number | und
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useDeclarationRegistre(id: number | undefined) {
   return useQuery({
     queryKey: [...DECLARATIONS_REGISTRE_QUERY_KEY, id],
@@ -57,6 +59,7 @@ export function useDeleteDeclarationRegistre() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function usePreparerDonnees(coproprieteId: number | undefined, annee: number | undefined) {
   return useQuery({
     queryKey: [...DECLARATIONS_REGISTRE_QUERY_KEY, 'preparer', coproprieteId, annee],

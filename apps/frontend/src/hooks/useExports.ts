@@ -22,6 +22,7 @@ export function useExportBudgetPdf() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useExportAppelFondsPdf() {
   // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- download only
   return useMutation({

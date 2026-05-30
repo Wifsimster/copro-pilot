@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { incidentsApi } from '@/api/incidents'
 import type { Incident } from '@/types'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const INCIDENTS_QUERY_KEY = ['incidents'] as const
 
 export function useIncidentsByCopropriete(coproprieteId: number | undefined) {
@@ -15,6 +16,7 @@ export function useIncidentsByCopropriete(coproprieteId: number | undefined) {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useIncident(id: number | undefined) {
   return useQuery({
     queryKey: [...INCIDENTS_QUERY_KEY, id],

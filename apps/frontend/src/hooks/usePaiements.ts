@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { paiementsApi } from '@/api/paiements'
 import type { Paiement } from '@/types'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const PAIEMENTS_QUERY_KEY = ['paiements'] as const
 
 export function usePaiementsByCopropriete(coproprieteId: number | undefined) {
@@ -15,6 +16,7 @@ export function usePaiementsByCopropriete(coproprieteId: number | undefined) {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function usePaiementsByCoproprietaire(coproprietaireId: number | undefined) {
   return useQuery({
     queryKey: [...PAIEMENTS_QUERY_KEY, 'coproprietaire', coproprietaireId],
@@ -26,6 +28,7 @@ export function usePaiementsByCoproprietaire(coproprietaireId: number | undefine
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function usePaiementsByAppelFonds(appelFondsId: number | undefined) {
   return useQuery({
     queryKey: [...PAIEMENTS_QUERY_KEY, 'appel-fonds', appelFondsId],
@@ -67,6 +70,7 @@ export function useDeletePaiement() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useSoldeCoproprietaire(coproprietaireId: number | undefined) {
   return useQuery({
     queryKey: [...PAIEMENTS_QUERY_KEY, 'solde', coproprietaireId],

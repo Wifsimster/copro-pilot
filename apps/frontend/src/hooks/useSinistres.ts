@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { sinistresApi } from '@/api/sinistres'
 import type { Sinistre } from '@/types'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const SINISTRES_QUERY_KEY = ['sinistres'] as const
 
 export function useSinistresByCopropriete(coproprieteId: number | undefined) {
@@ -15,6 +16,7 @@ export function useSinistresByCopropriete(coproprieteId: number | undefined) {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useSinistresByAssurance(assuranceId: number | undefined) {
   return useQuery({
     queryKey: [...SINISTRES_QUERY_KEY, 'assurance', assuranceId],
@@ -26,6 +28,7 @@ export function useSinistresByAssurance(assuranceId: number | undefined) {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useSinistre(id: number | undefined) {
   return useQuery({
     queryKey: [...SINISTRES_QUERY_KEY, id],
