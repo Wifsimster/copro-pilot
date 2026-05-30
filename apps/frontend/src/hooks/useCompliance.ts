@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { complianceApi } from '@/api/compliance'
 
-export const COMPLIANCE_QUERY_KEY = ['compliance'] as const
+const COMPLIANCE_QUERY_KEY = ['compliance'] as const
 
 export function useCompliance(coproprieteId: number | undefined) {
   return useQuery({

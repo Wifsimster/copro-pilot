@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { diagnosticsApi } from '@/api/diagnostics'
 import type { Diagnostic } from '@/types'
 
-export const DIAGNOSTICS_QUERY_KEY = ['diagnostics'] as const
+const DIAGNOSTICS_QUERY_KEY = ['diagnostics'] as const
 
 export function useDiagnosticsByCopropriete(coproprieteId: number | undefined) {
   return useQuery({

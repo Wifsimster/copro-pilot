@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { clesRepartitionApi } from '@/api/cles-repartition'
 import type { CleRepartition } from '@/types'
 
-export const CLES_REPARTITION_QUERY_KEY = ['cles-repartition'] as const
+const CLES_REPARTITION_QUERY_KEY = ['cles-repartition'] as const
 
 export function useClesRepartitionByCopropriete(coproprieteId: number | undefined) {
   return useQuery({

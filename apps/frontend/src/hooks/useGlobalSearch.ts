@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useState, useEffect } from 'react'
 import { searchApi } from '@/api/search'
 
-export const SEARCH_QUERY_KEY = ['global-search'] as const
+const SEARCH_QUERY_KEY = ['global-search'] as const
 
 export function useGlobalSearch(coproprieteId?: number) {
   const [query, setQuery] = useState('')

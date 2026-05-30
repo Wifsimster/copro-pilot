@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { partiesCommunesApi } from '@/api/parties-communes'
 import type { PartieCommune } from '@/types'
 
-export const PARTIES_COMMUNES_QUERY_KEY = ['parties-communes'] as const
+const PARTIES_COMMUNES_QUERY_KEY = ['parties-communes'] as const
 
 export function usePartiesCommunesByCopropriete(coproprieteId: number | undefined) {
   return useQuery({

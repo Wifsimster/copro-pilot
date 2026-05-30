@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { contratsSyndicApi } from '@/api/contrats-syndic'
 import type { ContratSyndic } from '@/types'
 
-export const CONTRATS_SYNDIC_QUERY_KEY = ['contrats-syndic'] as const
+const CONTRATS_SYNDIC_QUERY_KEY = ['contrats-syndic'] as const
 
 export function useContratsSyndicByCopropriete(coproprieteId: number | undefined) {
   return useQuery({

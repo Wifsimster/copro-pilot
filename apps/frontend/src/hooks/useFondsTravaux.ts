@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { fondsTravauxApi } from '@/api/fonds-travaux'
 import type { FondsTravaux } from '@/types'
 
-export const FONDS_TRAVAUX_QUERY_KEY = ['fonds-travaux'] as const
+const FONDS_TRAVAUX_QUERY_KEY = ['fonds-travaux'] as const
 
 export function useFondsTravauxByCopropriete(coproprieteId: number | undefined) {
   return useQuery({
