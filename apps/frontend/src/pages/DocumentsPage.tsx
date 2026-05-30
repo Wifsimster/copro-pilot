@@ -313,6 +313,7 @@ export default function DocumentsPage() {
                   src={documentsApi.getDownloadUrl(previewDoc.id)}
                   className="size-full rounded border border-border"
                   title={previewDoc.nom}
+                  sandbox="allow-same-origin allow-popups"
                 />
               ) : null}
             </div>

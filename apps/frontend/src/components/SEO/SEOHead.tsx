@@ -52,11 +52,9 @@ export function SEOHead({
       <meta name="twitter:image" content={ogImage} />
 
       {schemas.map((schema) => (
-        <script
-          key={String(schema['@type'])}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
+        <script key={String(schema['@type'])} type="application/ld+json">
+          {JSON.stringify(schema)}
+        </script>
       ))}
     </>
   )

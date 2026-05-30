@@ -16,10 +16,11 @@ const PLAN_LABELS: Record<string, string> = {
 }
 
 export default function VerifyEmailPage() {
-  const [status, setStatus] = useState<
-    'loading' | 'success' | 'error'
-  >('loading')
-  const [error, setError] = useState('')
+  const [state, setState] = useState<{
+    status: 'loading' | 'success' | 'error'
+    error: string
+  }>({ status: 'loading', error: '' })
+  const { status, error } = state
 
   const pendingPlan = sessionStorage.getItem('pending_plan') || ''
   const hasPendingPlan = pendingPlan in PLAN_LABELS
@@ -29,8 +30,10 @@ export default function VerifyEmailPage() {
 
   useEffect(() => {
     if (!token) {
-      setStatus('error')
-      setError('Lien de vérification invalide ou manquant')
+      setState({
+        status: 'error',
+        error: 'Lien de vérification invalide ou manquant',
+      })
       return
     }
 
@@ -38,20 +41,20 @@ export default function VerifyEmailPage() {
       .verifyEmail({ query: { token } })
       .then(result => {
         if (result.error) {
-          setStatus('error')
-          setError(
-            result.error.message ||
-              'La vérification a échoué'
-          )
+          setState({
+            status: 'error',
+            error: result.error.message || 'La vérification a échoué',
+          })
         } else {
-          setStatus('success')
+          setState({ status: 'success', error: '' })
         }
       })
       .catch(() => {
-        setStatus('error')
-        setError(
-          'Erreur lors de la vérification. Le lien est peut-être expiré.'
-        )
+        setState({
+          status: 'error',
+          error:
+            'Erreur lors de la vérification. Le lien est peut-être expiré.',
+        })
       })
   }, [token])
 

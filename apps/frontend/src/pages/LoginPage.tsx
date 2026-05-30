@@ -32,8 +32,10 @@ import {
 } from '@/components/auth/PasswordInput'
 import { validatePassword } from '@/utils/passwordValidation'
 
+const CURRENT_YEAR = new Date().getFullYear()
+
 function ThemeToggle() {
-  const [isDark, setIsDark] = useState(
+  const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains('dark')
   )
 
@@ -209,7 +211,7 @@ export default function LoginPage() {
         </div>
 
         <p className="relative z-10 text-xs text-stone-500">
-          &copy; {new Date().getFullYear()} CoproPilot. Tous droits réservés. &middot; v{__APP_VERSION__}
+          &copy; {CURRENT_YEAR} CoproPilot. Tous droits réservés. &middot; v{__APP_VERSION__}
         </p>
       </div>
 

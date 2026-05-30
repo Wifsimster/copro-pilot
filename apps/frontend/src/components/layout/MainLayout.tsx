@@ -180,7 +180,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [tourRunning, setTourRunning] = useState(false)
   const [koeOpenSignal, setKoeOpenSignal] = useState(0)
-  const [isDark, setIsDark] = useState(
+  const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains('dark')
   )
 
