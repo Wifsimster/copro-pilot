@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import {  } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -54,7 +54,7 @@ export function AssembleeFormDialog({
 }: AssembleeFormDialogProps) {
   const form = useForm<AGFormData>({
     resolver: zodResolver(agSchema),
-    defaultValues: {
+    values: {
       date: defaultValues?.date || '',
       heure: defaultValues?.heure || '',
       lieu: defaultValues?.lieu || '',
@@ -63,18 +63,7 @@ export function AssembleeFormDialog({
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        date: defaultValues?.date || '',
-        heure: defaultValues?.heure || '',
-        lieu: defaultValues?.lieu || '',
-        type: defaultValues?.type || 'ordinaire',
-        ordre_du_jour: defaultValues?.ordre_du_jour || '',
-      })
-    }
-  }, [open, defaultValues, form])
-
+  
   const handleFormSubmit = async (data: AGFormData) => {
     await onSubmit({
       ...data,

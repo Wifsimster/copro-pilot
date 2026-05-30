@@ -21,7 +21,7 @@ import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import { useCoproprietaires } from '@/hooks/useCoproprietaires'
 import type { PresenceAG } from '@/types'
-import { useEffect } from 'react'
+import {  } from 'react'
 
 const schema = z.object({
   coproprietaire_id: z.coerce.number().positive('Le coproprietaire est obligatoire'),
@@ -46,7 +46,7 @@ export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoadi
   const { data: coproprietaires } = useCoproprietaires()
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
+    values: {
       coproprietaire_id: defaultValues?.coproprietaire_id ?? 0,
       statut: defaultValues?.statut ?? 'present',
       represente_par_id: defaultValues?.represente_par_id ?? 0,
@@ -54,17 +54,7 @@ export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoadi
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        coproprietaire_id: defaultValues?.coproprietaire_id ?? 0,
-        statut: defaultValues?.statut ?? 'present',
-        represente_par_id: defaultValues?.represente_par_id ?? 0,
-        tantiemes: defaultValues?.tantiemes ?? 0,
-      })
-    }
-  }, [open, defaultValues, form.reset])
-
+  
   const currentStatut = form.watch('statut')
 
   const onFormSubmit = async (data: FormData) => {

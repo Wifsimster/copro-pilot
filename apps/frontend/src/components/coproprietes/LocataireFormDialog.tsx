@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import {  } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -39,7 +39,7 @@ interface Props {
 export function LocataireFormDialog({ open, onOpenChange, lotId, onSubmit, isLoading, defaultValues, title = 'Nouveau locataire' }: Props) {
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
+    values: {
       nom: defaultValues?.nom || '',
       prenom: defaultValues?.prenom || '',
       email: defaultValues?.email || '',
@@ -49,19 +49,7 @@ export function LocataireFormDialog({ open, onOpenChange, lotId, onSubmit, isLoa
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        nom: defaultValues?.nom || '',
-        prenom: defaultValues?.prenom || '',
-        email: defaultValues?.email || '',
-        telephone: defaultValues?.telephone || '',
-        date_entree: defaultValues?.date_entree || '',
-        date_sortie: defaultValues?.date_sortie || '',
-      })
-    }
-  }, [open, defaultValues, form])
-
+  
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({
       ...data,

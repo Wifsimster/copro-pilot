@@ -80,12 +80,19 @@ export default function ReglementsPage() {
   const updateArticle = useUpdateArticleReglement()
   const deleteArticle = useDeleteArticleReglement()
 
-  // Auto-select first reglement when switching to articles tab
-  useEffect(() => {
-    if (activeTab === 'articles' && reglements && reglements.length > 0 && !selectedReglementId) {
+  // Switch tabs, auto-selecting the first reglement the first time the user
+  // opens the articles tab (handled here rather than in an effect).
+  const handleTabChange = (tab: Tab) => {
+    setActiveTab(tab)
+    if (
+      tab === 'articles' &&
+      !selectedReglementId &&
+      reglements &&
+      reglements.length > 0
+    ) {
       setSelectedReglementId(reglements[0].id)
     }
-  }, [activeTab, reglements, selectedReglementId])
+  }
 
   return (
     <div className="space-y-6">
@@ -108,7 +115,7 @@ export default function ReglementsPage() {
             ]).map((tab) => (
               <button type="button"
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
+                onClick={() => handleTabChange(tab.key)}
                 className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === tab.key
                     ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'

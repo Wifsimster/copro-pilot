@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import { useForm } from 'react-hook-form'
@@ -124,7 +124,6 @@ export default function TicketsPage() {
   const [newMessage, setNewMessage] = useState('')
   const [deleteId, setDeleteId] = useState<number | null>(null)
 
-  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const {
     data: tickets,
@@ -151,32 +150,35 @@ export default function TicketsPage() {
     },
   })
 
+  // Sync the edit form to the ticket being edited without an effect:
+  // react-hook-form resets fields whenever `values` changes (deep compare).
   const editForm = useForm<UpdateTicketFormData>({
     resolver: zodResolver(updateTicketSchema),
-    defaultValues: {
-      sujet: '',
-      categorie: 'general',
-      statut: 'ouvert',
-      priorite: 'normale',
-    },
+    values: editingTicket
+      ? {
+          sujet: editingTicket.sujet,
+          categorie:
+            editingTicket.categorie as UpdateTicketFormData['categorie'],
+          statut: editingTicket.statut as UpdateTicketFormData['statut'],
+          priorite:
+            editingTicket.priorite as UpdateTicketFormData['priorite'],
+        }
+      : {
+          sujet: '',
+          categorie: 'general',
+          statut: 'ouvert',
+          priorite: 'normale',
+        },
   })
 
-  useEffect(() => {
-    if (editingTicket) {
-      editForm.reset({
-        sujet: editingTicket.sujet,
-        categorie: editingTicket.categorie as UpdateTicketFormData['categorie'],
-        statut: editingTicket.statut as UpdateTicketFormData['statut'],
-        priorite: editingTicket.priorite as UpdateTicketFormData['priorite'],
-      })
-    }
-  }, [editingTicket, editForm])
-
-  useEffect(() => {
-    if (selectedTicket?.messages) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }
-  }, [selectedTicket?.messages])
+  // Callback ref on the scroll anchor: re-runs whenever the message count
+  // changes, scrolling the thread to the latest message without an effect.
+  const scrollAnchorRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      node?.scrollIntoView({ behavior: 'smooth' })
+    },
+    [selectedTicket?.messages?.length]
+  )
 
   const handleCreate = async (data: TicketFormData) => {
     if (!selectedCoproId) return
@@ -318,7 +320,7 @@ export default function TicketsPage() {
                     )
                   })
                 )}
-                <div ref={messagesEndRef} />
+                <div ref={scrollAnchorRef} />
               </div>
 
               {/* Message input */}

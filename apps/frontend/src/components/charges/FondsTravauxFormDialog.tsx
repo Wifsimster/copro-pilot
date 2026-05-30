@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import {  } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -36,23 +36,14 @@ interface Props {
 export function FondsTravauxFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading, defaultValues, title = 'Nouveau fonds travaux' }: Props) {
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
+    values: {
       annee: defaultValues?.annee || new Date().getFullYear(),
       cotisation_annuelle: defaultValues?.cotisation_annuelle || 0,
       solde: defaultValues?.solde || 0,
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        annee: defaultValues?.annee || new Date().getFullYear(),
-        cotisation_annuelle: defaultValues?.cotisation_annuelle || 0,
-        solde: defaultValues?.solde || 0,
-      })
-    }
-  }, [open, defaultValues, form])
-
+  
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({ ...data, copropriete_id: coproprieteId })
     form.reset()

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import {  } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -57,7 +57,7 @@ export function CoproprieteFormDialog({
 }: CoproprieteFormDialogProps) {
   const form = useForm<CoproprieteFormData>({
     resolver: zodResolver(coproprieteSchema),
-    defaultValues: {
+    values: {
       nom: defaultValues?.nom || '',
       adresse: defaultValues?.adresse || '',
       code_postal: defaultValues?.code_postal || '',
@@ -72,24 +72,7 @@ export function CoproprieteFormDialog({
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        nom: defaultValues?.nom || '',
-        adresse: defaultValues?.adresse || '',
-        code_postal: defaultValues?.code_postal || '',
-        ville: defaultValues?.ville || '',
-        nombre_lots: defaultValues?.nombre_lots || 0,
-        numero_immatriculation: defaultValues?.numero_immatriculation || '',
-        nombre_batiments: defaultValues?.nombre_batiments || 0,
-        nombre_ascenseurs: defaultValues?.nombre_ascenseurs || 0,
-        periode_construction: defaultValues?.periode_construction || '',
-        type_chauffage: defaultValues?.type_chauffage || '',
-        energie_chauffage: defaultValues?.energie_chauffage || '',
-      })
-    }
-  }, [open, defaultValues, form])
-
+  
   const handleFormSubmit = async (data: CoproprieteFormData) => {
     const cleanData = {
       ...data,
