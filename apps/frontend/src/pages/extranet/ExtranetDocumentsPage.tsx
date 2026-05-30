@@ -97,9 +97,9 @@ export default function ExtranetDocumentsPage() {
               title="Diagnostics techniques"
               icon={ClipboardList}
             >
-              {docs.diagnostics.map((d: any, i: number) => (
+              {docs.diagnostics.map((d: any) => (
                 <div
-                  key={i}
+                  key={d.id}
                   className="flex items-center justify-between rounded border border-border px-3 py-2"
                 >
                   <div>
@@ -158,9 +158,9 @@ export default function ExtranetDocumentsPage() {
               title="Contrats en cours"
               icon={Handshake}
             >
-              {docs.contrats.map((c: any, i: number) => (
+              {docs.contrats.map((c: any) => (
                 <div
-                  key={i}
+                  key={c.id}
                   className="flex items-center justify-between rounded border border-border px-3 py-2"
                 >
                   <div>

@@ -74,12 +74,12 @@ export function ComplianceCard({ coproprieteId }: ComplianceCardProps) {
         </span>
       </div>
       <div className="divide-y divide-stone-100 dark:divide-stone-700/50">
-        {report.checks.map((check, index) => {
+        {report.checks.map((check) => {
           const config = STATUS_CONFIG[check.status]
           const Icon = config.icon
           return (
             <div
-              key={index}
+              key={check.name}
               className={`flex items-start gap-3 px-5 py-3 ${config.bg}`}
             >
               <Icon className={`mt-0.5 size-4 shrink-0 ${config.color}`} />

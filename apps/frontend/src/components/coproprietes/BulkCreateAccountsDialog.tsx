@@ -116,8 +116,8 @@ export function BulkCreateAccountsDialog({
                   Erreurs ({results.errors.length})
                 </h4>
                 <ul className="text-sm text-destructive space-y-1">
-                  {results.errors.map((err, i) => (
-                    <li key={i}>
+                  {results.errors.map((err) => (
+                    <li key={err.email}>
                       {err.email} - {err.error}
                     </li>
                   ))}

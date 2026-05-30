@@ -267,8 +267,8 @@ export function DeclarationFormDialog({
                 <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
                   <h4 className="font-medium text-stone-900 dark:text-white">Diagnostics</h4>
                   <div className="mt-2 space-y-2">
-                    {donnees.diagnostics.map((d, i) => (
-                      <div key={i} className="flex items-center justify-between">
+                    {donnees.diagnostics.map((d) => (
+                      <div key={d.type} className="flex items-center justify-between">
                         <span className="text-stone-600 dark:text-stone-400 uppercase text-xs font-medium">
                           {d.type}
                         </span>

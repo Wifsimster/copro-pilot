@@ -179,8 +179,8 @@ export default function FicheSynthetiquePage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {fiche.finances.postes_depenses.map((p, i) => (
-                        <tr key={i} className="border-b border-stone-100 dark:border-stone-700/50">
+                      {fiche.finances.postes_depenses.map((p) => (
+                        <tr key={p.nom} className="border-b border-stone-100 dark:border-stone-700/50">
                           <td className="py-2 text-stone-900 dark:text-white">{p.nom}</td>
                           <td className="py-2 text-right text-stone-600 dark:text-stone-300">{p.montant_prevu.toLocaleString('fr-FR')} EUR</td>
                           <td className="py-2 text-right text-stone-600 dark:text-stone-300">{p.montant_reel ? `${p.montant_reel.toLocaleString('fr-FR')} EUR` : '—'}</td>
@@ -199,8 +199,8 @@ export default function FicheSynthetiquePage() {
               <p className="text-sm text-stone-500 dark:text-stone-400 py-2">Aucun diagnostic enregistre</p>
             ) : (
               <div className="space-y-2">
-                {fiche.diagnostics.map((d, i) => (
-                  <div key={i} className="flex items-center justify-between py-2 border-b border-stone-100 dark:border-stone-700/50 last:border-0">
+                {fiche.diagnostics.map((d) => (
+                  <div key={d.type} className="flex items-center justify-between py-2 border-b border-stone-100 dark:border-stone-700/50 last:border-0">
                     <div>
                       <span className="text-sm font-medium text-stone-900 dark:text-white">
                         {DIAGNOSTIC_LABELS[d.type] || d.type}

@@ -191,9 +191,15 @@ export function DataTable<T>({
               </TableCell>
             </TableRow>
           ) : (
-            sorted.map((item, index) => (
+            sorted.map(item => {
+              const rowKey =
+                (item as { id?: string | number }).id ??
+                columns
+                  .map(col => String(getNestedValue(item, col.key)))
+                  .join('|')
+              return (
               <TableRow
-                key={index}
+                key={rowKey}
                 className={
                   onRowClick ? 'cursor-pointer' : undefined
                 }
@@ -215,7 +221,7 @@ export function DataTable<T>({
                   <TableCell>{actions(item)}</TableCell>
                 )}
               </TableRow>
-            ))
+            )})
           )}
         </TableBody>
       </Table>

@@ -89,8 +89,8 @@ function Annexe1Table({ data }: { data: AgReportPack['annexe1'] }) {
                 </TableCell>
               </TableRow>
             ) : (
-              data.postes.map((p, i) => (
-                <TableRow key={i}>
+              data.postes.map((p) => (
+                <TableRow key={p.nom}>
                   <TableCell className="font-medium">{p.nom}</TableCell>
                   <TableCell className="text-right">
                     {formatCurrency(p.budget_prevu)}
@@ -177,8 +177,8 @@ function Annexe2Table({ data }: { data: AgReportPack['annexe2'] }) {
                 </TableCell>
               </TableRow>
             ) : (
-              data.comptes.map((c, i) => (
-                <TableRow key={i}>
+              data.comptes.map((c) => (
+                <TableRow key={c.iban}>
                   <TableCell className="font-medium">{c.nom}</TableCell>
                   <TableCell className="font-mono text-sm">
                     {c.iban}
@@ -264,8 +264,8 @@ function Annexe3Table({ data }: { data: AgReportPack['annexe3'] }) {
                 </TableCell>
               </TableRow>
             ) : (
-              data.coproprietaires.map((c, i) => (
-                <TableRow key={i}>
+              data.coproprietaires.map((c) => (
+                <TableRow key={`${c.nom}-${c.prenom}-${c.lots}`}>
                   <TableCell className="font-medium">
                     {c.nom} {c.prenom}
                   </TableCell>
@@ -340,8 +340,8 @@ function Annexe4Table({ data }: { data: AgReportPack['annexe4'] }) {
                 </TableCell>
               </TableRow>
             ) : (
-              data.fournisseurs.map((f, i) => (
-                <TableRow key={i}>
+              data.fournisseurs.map((f) => (
+                <TableRow key={`${f.nom}-${f.contrat}`}>
                   <TableCell className="font-medium">{f.nom}</TableCell>
                   <TableCell>{f.contrat}</TableCell>
                   <TableCell className="text-right">
@@ -443,8 +443,8 @@ function Annexe5Table({ data }: { data: AgReportPack['annexe5'] }) {
                 </TableCell>
               </TableRow>
             ) : (
-              data.mouvements.map((m, i) => (
-                <TableRow key={i}>
+              data.mouvements.map((m) => (
+                <TableRow key={`${m.libelle}-${m.montant}-${m.type}`}>
                   <TableCell className="font-medium">
                     {m.libelle}
                   </TableCell>

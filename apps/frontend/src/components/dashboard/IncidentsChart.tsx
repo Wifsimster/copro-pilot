@@ -102,8 +102,8 @@ export default function IncidentsChart({
               paddingAngle={3}
               strokeWidth={0}
             >
-              {chartData.map((entry, i) => (
-                <Cell key={i} fill={entry.fill} />
+              {chartData.map((entry) => (
+                <Cell key={entry.name} fill={entry.fill} />
               ))}
             </Pie>
             <Tooltip content={<CustomTooltip />} />
