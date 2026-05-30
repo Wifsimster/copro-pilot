@@ -116,9 +116,8 @@ function CadenceToggle({
   disabled?: boolean
 }) {
   return (
-    <div
-      className="inline-flex items-center rounded-full border border-slate-200 dark:border-slate-700 p-1 text-sm"
-      role="group"
+    <fieldset
+      className="m-0 inline-flex min-w-0 items-center rounded-full border border-slate-200 dark:border-slate-700 p-1 text-sm"
       aria-label="Cadence de facturation"
     >
       <button
@@ -154,7 +153,7 @@ function CadenceToggle({
           −36 %
         </span>
       </button>
-    </div>
+    </fieldset>
   )
 }
 

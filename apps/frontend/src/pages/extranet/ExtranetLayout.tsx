@@ -74,11 +74,15 @@ export default function ExtranetLayout() {
       {/* Copropriete selector */}
       {coproprietes.length > 1 && (
         <div className="flex items-center gap-3">
-          <label className="text-sm font-medium text-muted-foreground">
+          <label
+            htmlFor="extranet-copro-select"
+            className="text-sm font-medium text-muted-foreground"
+          >
             Copropriete :
           </label>
           <div className="relative">
             <select
+              id="extranet-copro-select"
               value={currentCoproId ?? ''}
               onChange={e =>
                 setSelectedCoproId(Number(e.target.value))

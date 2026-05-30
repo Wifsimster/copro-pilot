@@ -119,12 +119,12 @@ export function PaiementFormDialog({
         <FormSection icon={Users} label="Attribution">
           {showCoproSelect && (
             <div className="grid gap-2">
-              <label className="text-sm font-medium">Coproprietaire *</label>
+              <span className="text-sm font-medium">Coproprietaire *</span>
               <Select
                 value={selectedCoproId ? String(selectedCoproId) : ''}
                 onValueChange={(val) => { setSelectedCoproId(parseInt(val)); setCoproError('') }}
               >
-                <SelectTrigger>
+                <SelectTrigger aria-label="Coproprietaire">
                   <SelectValue placeholder="Selectionner un coproprietaire..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -143,12 +143,12 @@ export function PaiementFormDialog({
 
           {showAppelSelect && (
             <div className="grid gap-2">
-              <label className="text-sm font-medium">Appel de fonds</label>
+              <span className="text-sm font-medium">Appel de fonds</span>
               <Select
                 value={selectedAppelId ? String(selectedAppelId) : 'none'}
                 onValueChange={(val) => setSelectedAppelId(val === 'none' ? null : parseInt(val))}
               >
-                <SelectTrigger>
+                <SelectTrigger aria-label="Appel de fonds">
                   <SelectValue placeholder="Aucun (paiement libre)" />
                 </SelectTrigger>
                 <SelectContent>

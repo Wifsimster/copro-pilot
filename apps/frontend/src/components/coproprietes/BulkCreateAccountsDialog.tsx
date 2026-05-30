@@ -54,7 +54,9 @@ export function BulkCreateAccountsDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div
+      <button
+        type="button"
+        aria-label="Fermer"
         className="fixed inset-0 bg-black/50"
         onClick={handleClose}
       />

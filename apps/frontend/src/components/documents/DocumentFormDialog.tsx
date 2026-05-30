@@ -183,24 +183,27 @@ export function DocumentFormDialog({
               </button>
             </div>
           ) : (
-            <div
-              onDragOver={(e) => { e.preventDefault(); setIsDragOver(true) }}
-              onDragLeave={() => setIsDragOver(false)}
-              onDrop={handleDrop}
-              className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-colors ${
-                isDragOver
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border hover:border-primary/50 hover:bg-accent/30'
-              }`}
-              onClick={() => document.getElementById('file-input')?.click()}
-            >
-              <Upload className={`size-8 ${isDragOver ? 'text-primary' : 'text-muted-foreground'}`} />
-              <p className="mt-2 text-sm font-medium text-foreground">
-                Deposez un fichier ici
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                ou cliquez pour parcourir (max 20 Mo)
-              </p>
+            <>
+              <button
+                type="button"
+                onDragOver={(e) => { e.preventDefault(); setIsDragOver(true) }}
+                onDragLeave={() => setIsDragOver(false)}
+                onDrop={handleDrop}
+                className={`flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-colors ${
+                  isDragOver
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border hover:border-primary/50 hover:bg-accent/30'
+                }`}
+                onClick={() => document.getElementById('file-input')?.click()}
+              >
+                <Upload className={`size-8 ${isDragOver ? 'text-primary' : 'text-muted-foreground'}`} />
+                <p className="mt-2 text-sm font-medium text-foreground">
+                  Deposez un fichier ici
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  ou cliquez pour parcourir (max 20 Mo)
+                </p>
+              </button>
               <input
                 aria-label="Choisir un fichier"
                 id="file-input"
@@ -209,7 +212,7 @@ export function DocumentFormDialog({
                 className="hidden"
                 accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.txt,.csv"
               />
-            </div>
+            </>
           )}
         </div>
       )}

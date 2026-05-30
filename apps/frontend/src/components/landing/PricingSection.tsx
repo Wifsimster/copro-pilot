@@ -360,11 +360,10 @@ export function PricingSection() {
           transition={{ delay: 0.15, duration: 0.5 }}
           className="flex justify-center mb-12"
         >
-          <div
-            className="inline-flex items-center rounded-full
+          <fieldset
+            className="m-0 inline-flex min-w-0 items-center rounded-full
               border border-stone-200 dark:border-stone-700
               bg-white dark:bg-stone-900 p-1 text-sm shadow-sm"
-            role="group"
             aria-label="Cadence de facturation"
           >
             <button
@@ -405,7 +404,7 @@ export function PricingSection() {
                 −36 %
               </span>
             </button>
-          </div>
+          </fieldset>
         </m.div>
 
         <div

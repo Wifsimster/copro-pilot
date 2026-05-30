@@ -94,9 +94,15 @@ export default function ComptabiliteReglementairePage() {
           {/* Exercice selector */}
           {exercices && exercices.length > 0 && (
             <div className="flex items-center gap-3">
-              <label className="text-sm font-medium text-muted-foreground">Exercice :</label>
+              <label
+                htmlFor="compta-exercice-select"
+                className="text-sm font-medium text-muted-foreground"
+              >
+                Exercice :
+              </label>
               <div className="relative">
                 <select
+                  id="compta-exercice-select"
                   value={exerciceId ?? ''}
                   onChange={(e) => setSelectedExerciceId(Number(e.target.value))}
                   className="appearance-none rounded-lg border border-input bg-background py-2 pl-3 pr-8 text-sm font-medium ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"

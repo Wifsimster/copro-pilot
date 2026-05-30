@@ -319,7 +319,9 @@ export function MainLayout({ children }: MainLayoutProps) {
     <div className="flex h-screen bg-[#FAF8F5] dark:bg-stone-950">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div
+        <button
+          type="button"
+          aria-label="Fermer le menu"
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
