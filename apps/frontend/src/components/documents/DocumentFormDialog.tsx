@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -82,9 +82,12 @@ export function DocumentFormDialog({
   const [isDragOver, setIsDragOver] = useState(false)
   const isEditing = !!defaultValues?.id
 
+  // Sync the form to the incoming props without an effect: react-hook-form
+  // resets the fields automatically whenever `values` changes (deep compare),
+  // so reopening the dialog for a different document shows the right data.
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
+    values: {
       nom: defaultValues?.nom ?? '',
       categorie: defaultValues?.categorie ?? 'autre',
       description: defaultValues?.description ?? '',
@@ -93,40 +96,40 @@ export function DocumentFormDialog({
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        nom: defaultValues?.nom ?? '',
-        categorie: defaultValues?.categorie ?? 'autre',
-        description: defaultValues?.description ?? '',
-        entite_type: defaultValues?.entite_type ?? '',
-        entite_id: defaultValues?.entite_id ? String(defaultValues.entite_id) : '',
-      })
-      setSelectedFile(null)
-    }
-  }, [open, defaultValues, form.reset])
+  // The picked file is local UI state; clear it when the dialog closes so the
+  // next opening starts fresh (handled in an event handler, not an effect).
+  const handleOpenChange = (next: boolean) => {
+    if (!next) setSelectedFile(null)
+    onOpenChange(next)
+  }
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragOver(false)
-    const file = e.dataTransfer.files[0]
-    if (file) {
-      setSelectedFile(file)
-      if (!form.watch('nom')) {
-        form.setValue('nom', file.name.replace(/\.[^/.]+$/, ''))
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault()
+      setIsDragOver(false)
+      const file = e.dataTransfer.files[0]
+      if (file) {
+        setSelectedFile(file)
+        if (!form.getValues('nom')) {
+          form.setValue('nom', file.name.replace(/\.[^/.]+$/, ''))
+        }
       }
-    }
-  }, [form.setValue, form.watch])
+    },
+    [form]
+  )
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setSelectedFile(file)
-      if (!form.watch('nom')) {
-        form.setValue('nom', file.name.replace(/\.[^/.]+$/, ''))
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (file) {
+        setSelectedFile(file)
+        if (!form.getValues('nom')) {
+          form.setValue('nom', file.name.replace(/\.[^/.]+$/, ''))
+        }
       }
-    }
-  }, [form.setValue, form.watch])
+    },
+    [form]
+  )
 
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({
@@ -147,7 +150,7 @@ export function DocumentFormDialog({
   return (
     <FormDialog
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={handleOpenChange}
       title={title}
       description={isEditing
         ? 'Modifiez les informations du document.'
