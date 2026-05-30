@@ -229,7 +229,7 @@ export function HeroSection() {
               <span className="relative flex size-2">
                 <span
                   className="animate-ping absolute inline-flex
-                    h-full w-full rounded-full
+                    size-full rounded-full
                     bg-emerald-400 opacity-75"
                 />
                 <span

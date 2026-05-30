@@ -49,7 +49,7 @@ export default function ExtranetLayout() {
           </h1>
         </div>
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-16">
-          <AlertCircle className="h-16 w-16 text-muted-foreground/40" />
+          <AlertCircle className="size-16 text-muted-foreground/40" />
           <h3 className="mt-6 text-lg font-medium">
             Acces non disponible
           </h3>

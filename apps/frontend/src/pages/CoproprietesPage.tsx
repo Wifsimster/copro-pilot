@@ -35,7 +35,7 @@ export default function CoproprietesPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+        <div className="size-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
       </div>
     )
   }
@@ -55,7 +55,7 @@ export default function CoproprietesPage() {
           onClick={() => setShowCreate(true)}
           className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="size-4" />
           Nouvelle copropriété
         </button>
       </div>
@@ -75,7 +75,7 @@ export default function CoproprietesPage() {
 
       {(!filtered || filtered.length === 0) ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <Building2 className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <Building2 className="size-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">
             {search ? 'Aucun résultat' : 'Aucune copropriété'}
           </h3>
@@ -87,7 +87,7 @@ export default function CoproprietesPage() {
               onClick={() => setShowCreate(true)}
               className="mt-4 flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm text-white hover:bg-emerald-800"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Creer une copropriete
             </button>
           )}
@@ -101,13 +101,13 @@ export default function CoproprietesPage() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
-                    <Building2 className="h-5 w-5" />
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                    <Building2 className="size-5" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-stone-900 dark:text-white">{copro.nom}</h3>
                     <div className="flex items-center gap-1 text-sm text-stone-500 dark:text-stone-400">
-                      <MapPin className="h-3 w-3" />
+                      <MapPin className="size-3" />
                       {copro.ville} ({copro.code_postal})
                     </div>
                   </div>
@@ -118,21 +118,21 @@ export default function CoproprietesPage() {
                     className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-emerald-700 dark:hover:bg-stone-800"
                     aria-label="Voir"
                   >
-                    <Eye className="h-4 w-4" />
+                    <Eye className="size-4" />
                   </Link>
                   <button
                     onClick={() => setEditingCopro(copro)}
                     className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-emerald-700 dark:hover:bg-stone-800"
                     aria-label="Modifier"
                   >
-                    <Pencil className="h-4 w-4" />
+                    <Pencil className="size-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(copro.id)}
                     className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-red-600 dark:hover:bg-stone-800"
                     aria-label="Supprimer"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="size-4" />
                   </button>
                 </div>
               </div>

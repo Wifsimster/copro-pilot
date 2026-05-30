@@ -86,7 +86,7 @@ export default function EmployesPage() {
       header: 'Logement',
       render: (e) =>
         e.logement_fonction ? (
-          <Home className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
+          <Home className="size-4 text-emerald-700 dark:text-emerald-400" />
         ) : (
           '\u2014'
         ),
@@ -113,7 +113,7 @@ export default function EmployesPage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <HardHat className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <HardHat className="size-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
           <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
@@ -125,7 +125,7 @@ export default function EmployesPage() {
               onClick={() => setShowDialog(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Nouvel employe
             </button>
           </div>
@@ -145,14 +145,14 @@ export default function EmployesPage() {
                     className="rounded p-1 text-stone-400 hover:text-emerald-700"
                     aria-label="Modifier"
                   >
-                    <Pencil className="h-4 w-4" />
+                    <Pencil className="size-4" />
                   </button>
                   <button
                     onClick={() => setDeleteId(employe.id)}
                     className="rounded p-1 text-stone-400 hover:text-red-600"
                     aria-label="Supprimer"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="size-4" />
                   </button>
                 </div>
               )}

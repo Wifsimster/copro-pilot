@@ -127,7 +127,7 @@ export default function CoproprieteDetailPage() {
   if (loadingCopro || loadingLots) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+        <div className="size-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
       </div>
     )
   }
@@ -170,7 +170,7 @@ export default function CoproprieteDetailPage() {
           to="/coproprietes"
           className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft className="size-5" />
         </Link>
         <div className="flex-1">
           <h1 className="text-2xl font-bold text-stone-900 dark:text-white">{copropriete.nom}</h1>
@@ -184,7 +184,7 @@ export default function CoproprieteDetailPage() {
               onClick={() => setShowBulkCreate(true)}
               className="flex items-center gap-2 rounded-lg border border-stone-300 px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800"
             >
-              <UserPlus className="h-4 w-4" />
+              <UserPlus className="size-4" />
               Créer les comptes extranet
             </button>
           )}
@@ -192,7 +192,7 @@ export default function CoproprieteDetailPage() {
             onClick={() => setShowEditCopro(true)}
             className="flex items-center gap-2 rounded-lg border border-stone-300 px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800"
           >
-            <Pencil className="h-4 w-4" />
+            <Pencil className="size-4" />
             Modifier
           </button>
         </div>
@@ -229,7 +229,7 @@ export default function CoproprieteDetailPage() {
                 : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
             }`}
           >
-            <tab.icon className="h-4 w-4" />
+            <tab.icon className="size-4" />
             {tab.label}
             {'count' in tab && (
               <span className="ml-1 rounded-full bg-stone-200 px-1.5 py-0.5 text-xs dark:bg-stone-600">{tab.count}</span>
@@ -247,14 +247,14 @@ export default function CoproprieteDetailPage() {
               onClick={() => setShowCreateLot(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Ajouter un lot
             </button>
           </div>
 
           {(!lots || lots.length === 0) ? (
             <div className="flex flex-col items-center py-12">
-              <Home className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <Home className="size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun lot enregistre</p>
             </div>
           ) : (
@@ -292,14 +292,14 @@ export default function CoproprieteDetailPage() {
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="size-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteLot(lot.id)}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="size-4" />
                           </button>
                         </div>
                       </td>
@@ -321,14 +321,14 @@ export default function CoproprieteDetailPage() {
               onClick={() => setShowCreatePC(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Ajouter
             </button>
           </div>
 
           {(!partiesCommunes || partiesCommunes.length === 0) ? (
             <div className="flex flex-col items-center py-12">
-              <DoorOpen className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <DoorOpen className="size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune partie commune enregistree</p>
             </div>
           ) : (
@@ -363,14 +363,14 @@ export default function CoproprieteDetailPage() {
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="size-4" />
                           </button>
                           <button
                             onClick={() => setDeleteTarget({ type: 'pc', id: pc.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="size-4" />
                           </button>
                         </div>
                       </td>
@@ -392,14 +392,14 @@ export default function CoproprieteDetailPage() {
               onClick={() => setShowCreateCle(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Ajouter
             </button>
           </div>
 
           {(!clesRepartition || clesRepartition.length === 0) ? (
             <div className="flex flex-col items-center py-12">
-              <Key className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <Key className="size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune cle de repartition enregistree</p>
             </div>
           ) : (
@@ -424,14 +424,14 @@ export default function CoproprieteDetailPage() {
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="size-4" />
                           </button>
                           <button
                             onClick={() => setDeleteTarget({ type: 'cle', id: cle.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="size-4" />
                           </button>
                         </div>
                       </td>
@@ -465,7 +465,7 @@ export default function CoproprieteDetailPage() {
                   onClick={() => setShowCreateLocataire(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Ajouter
                 </button>
               )}
@@ -474,12 +474,12 @@ export default function CoproprieteDetailPage() {
 
           {!selectedLotId ? (
             <div className="flex flex-col items-center py-12">
-              <UserCheck className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <UserCheck className="size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">Selectionnez un lot pour voir ses locataires</p>
             </div>
           ) : (!locataires || locataires.length === 0) ? (
             <div className="flex flex-col items-center py-12">
-              <UserCheck className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <UserCheck className="size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun locataire pour ce lot</p>
             </div>
           ) : (
@@ -510,14 +510,14 @@ export default function CoproprieteDetailPage() {
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="size-4" />
                           </button>
                           <button
                             onClick={() => setDeleteTarget({ type: 'locataire', id: loc.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="size-4" />
                           </button>
                         </div>
                       </td>
@@ -541,7 +541,7 @@ export default function CoproprieteDetailPage() {
                   onClick={() => setShowCreateMutation(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouvelle mutation
                 </button>
               )}
@@ -562,12 +562,12 @@ export default function CoproprieteDetailPage() {
 
           {!selectedLotId ? (
             <div className="flex flex-col items-center py-12">
-              <ArrowRightLeft className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <ArrowRightLeft className="size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">Selectionnez un lot pour voir ses mutations</p>
             </div>
           ) : (!mutations || mutations.length === 0) ? (
             <div className="flex flex-col items-center py-12">
-              <ArrowRightLeft className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <ArrowRightLeft className="size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune mutation pour ce lot</p>
             </div>
           ) : (
@@ -604,14 +604,14 @@ export default function CoproprieteDetailPage() {
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="size-4" />
                           </button>
                           <button
                             onClick={() => setDeleteTarget({ type: 'mutation', id: m.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="size-4" />
                           </button>
                         </div>
                       </td>
@@ -633,14 +633,14 @@ export default function CoproprieteDetailPage() {
               onClick={() => setShowCreateDiagnostic(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Ajouter
             </button>
           </div>
 
           {(!diagnostics || diagnostics.length === 0) ? (
             <div className="flex flex-col items-center py-12">
-              <ClipboardCheck className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <ClipboardCheck className="size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun diagnostic enregistre</p>
             </div>
           ) : (
@@ -681,14 +681,14 @@ export default function CoproprieteDetailPage() {
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="size-4" />
                           </button>
                           <button
                             onClick={() => setDeleteTarget({ type: 'diagnostic', id: diag.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="size-4" />
                           </button>
                         </div>
                       </td>
@@ -706,7 +706,7 @@ export default function CoproprieteDetailPage() {
         <div className="space-y-4">
           {(!cycleAnnuel || cycleAnnuel.length === 0) ? (
             <div className="rounded-xl border border-stone-200 bg-white p-8 text-center dark:border-stone-700 dark:bg-stone-800">
-              <ListChecks className="mx-auto h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <ListChecks className="mx-auto size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">
                 Aucun cycle annuel initialise pour {currentYear}
               </p>

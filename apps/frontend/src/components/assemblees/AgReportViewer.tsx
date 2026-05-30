@@ -500,7 +500,7 @@ export function AgReportViewer({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <FileText className="h-5 w-5 text-muted-foreground" />
+          <FileText className="size-5 text-muted-foreground" />
           <h2 className="text-lg font-semibold">
             Annexes financieres AG
           </h2>
@@ -525,14 +525,14 @@ export function AgReportViewer({
           onClick={handleDownload}
           disabled={!data || isLoading}
         >
-          <Download className="mr-2 h-4 w-4" />
+          <Download className="mr-2 size-4" />
           Telecharger le pack
         </Button>
       </div>
 
       {isLoading && (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Loader2 className="size-8 animate-spin text-muted-foreground" />
         </div>
       )}
 

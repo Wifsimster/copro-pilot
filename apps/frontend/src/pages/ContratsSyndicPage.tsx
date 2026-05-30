@@ -89,7 +89,7 @@ export default function ContratsSyndicPage() {
                     : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
                 }`}
               >
-                <tab.icon className="h-4 w-4" />
+                <tab.icon className="size-4" />
                 {tab.label}
               </button>
             ))}
@@ -104,18 +104,18 @@ export default function ContratsSyndicPage() {
                   onClick={() => setShowContratDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouveau contrat
                 </button>
               </div>
 
               {loadingContrats ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !contrats || contrats.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <FileSignature className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <FileSignature className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun contrat de syndic enregistre</p>
                 </div>
               ) : (
@@ -144,7 +144,7 @@ export default function ContratsSyndicPage() {
                                 {new Date(contrat.date_fin).toLocaleDateString('fr-FR')}
                               </span>
                               {isExpiringSoon(contrat.date_fin) && (
-                                <AlertTriangle className="h-3.5 w-3.5 text-orange-500" />
+                                <AlertTriangle className="size-3.5 text-orange-500" />
                               )}
                             </div>
                           </td>
@@ -165,14 +165,14 @@ export default function ContratsSyndicPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button
                                 onClick={() => setDeleteTarget({ type: 'contrat', id: contrat.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -212,18 +212,18 @@ export default function ContratsSyndicPage() {
                   onClick={() => setShowPropositionDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouvelle proposition
                 </button>
               </div>
 
               {loadingPropositions ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !propositions || propositions.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <Users className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <Users className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune proposition de syndic enregistree</p>
                 </div>
               ) : (
@@ -255,7 +255,7 @@ export default function ContratsSyndicPage() {
                           <td className="px-4 py-3">
                             {proposition.retenue ? (
                               <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                                <CheckCircle2 className="h-3 w-3" />
+                                <CheckCircle2 className="size-3" />
                                 Retenue
                               </span>
                             ) : (
@@ -271,14 +271,14 @@ export default function ContratsSyndicPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button
                                 onClick={() => setDeleteTarget({ type: 'proposition', id: proposition.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>

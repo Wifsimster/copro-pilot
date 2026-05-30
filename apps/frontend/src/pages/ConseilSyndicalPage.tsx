@@ -60,18 +60,18 @@ export default function ConseilSyndicalPage() {
               onClick={() => setShowDialog(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Nouveau membre
             </button>
           </div>
 
           {loadingMembres ? (
             <div className="flex justify-center py-8">
-              <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+              <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
             </div>
           ) : !membres || membres.length === 0 ? (
             <div className="flex flex-col items-center py-12">
-              <UsersRound className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <UsersRound className="size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun membre enregistre</p>
             </div>
           ) : (

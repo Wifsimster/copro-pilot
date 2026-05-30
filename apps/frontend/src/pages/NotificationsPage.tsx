@@ -54,7 +54,7 @@ export default function NotificationsPage() {
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Bell className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+          <Bell className="size-6 text-stone-600 dark:text-stone-400" />
           <div>
             <h1 className="text-2xl font-bold text-stone-900 dark:text-white">
               Notifications
@@ -71,7 +71,7 @@ export default function NotificationsPage() {
             onClick={() => markAllAsRead.mutate()}
             className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800"
           >
-            <CheckCheck className="h-4 w-4" />
+            <CheckCheck className="size-4" />
             Tout marquer comme lu
           </button>
         )}
@@ -79,7 +79,7 @@ export default function NotificationsPage() {
 
       {/* Filters */}
       <div className="flex items-center gap-2">
-        <Filter className="h-4 w-4 text-stone-400" />
+        <Filter className="size-4 text-stone-400" />
         <button
           onClick={() => setFilterType('all')}
           className={cn(
@@ -111,7 +111,7 @@ export default function NotificationsPage() {
       <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+            <div className="size-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="py-12 text-center text-sm text-stone-500 dark:text-stone-400">
@@ -138,7 +138,7 @@ export default function NotificationsPage() {
                       {typeLabels[notification.type]}
                     </span>
                     {!notification.lu && (
-                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                      <span className="size-2 rounded-full bg-emerald-500" />
                     )}
                     <span className="text-xs text-stone-400 dark:text-stone-500">
                       {new Date(notification.created_at).toLocaleDateString('fr-FR', {
@@ -167,7 +167,7 @@ export default function NotificationsPage() {
                       title="Voir"
                       aria-label="Voir"
                     >
-                      <ExternalLink className="h-4 w-4" />
+                      <ExternalLink className="size-4" />
                     </button>
                   )}
                   {!notification.lu && (
@@ -177,7 +177,7 @@ export default function NotificationsPage() {
                       title="Marquer comme lue"
                       aria-label="Marquer comme lue"
                     >
-                      <Check className="h-4 w-4" />
+                      <Check className="size-4" />
                     </button>
                   )}
                   <button
@@ -186,7 +186,7 @@ export default function NotificationsPage() {
                     title="Supprimer"
                     aria-label="Supprimer"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="size-4" />
                   </button>
                 </div>
               </div>

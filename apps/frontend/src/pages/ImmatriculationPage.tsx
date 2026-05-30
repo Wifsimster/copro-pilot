@@ -109,7 +109,7 @@ export default function ImmatriculationPage() {
           {/* Info card */}
           <div className="rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-700 dark:bg-stone-800">
             <div className="flex items-center gap-3 mb-4">
-              <Building2 className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
+              <Building2 className="size-5 text-emerald-700 dark:text-emerald-400" />
               <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Informations d'immatriculation</h2>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

@@ -97,7 +97,7 @@ export default function ContentieuxPage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <Scale className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <Scale className="size-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
           <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
@@ -122,18 +122,18 @@ export default function ContentieuxPage() {
                   onClick={() => setShowRelanceDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouvelle relance
                 </button>
               </div>
 
               {loadingRelances ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !relances || relances.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <Mail className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <Mail className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune relance enregistree</p>
                 </div>
               ) : (

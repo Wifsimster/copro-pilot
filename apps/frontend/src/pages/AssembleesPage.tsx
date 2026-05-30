@@ -52,7 +52,7 @@ export default function AssembleesPage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <Calendar className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <Calendar className="size-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
           <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
@@ -63,18 +63,18 @@ export default function AssembleesPage() {
               onClick={() => setShowDialog(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Nouvelle AG
             </button>
           </div>
 
           {loadingAGs ? (
             <div className="flex justify-center py-8">
-              <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+              <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
             </div>
           ) : !assemblees || assemblees.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-              <Calendar className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+              <Calendar className="size-12 text-stone-400 dark:text-stone-500" />
               <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune assemblee generale</h3>
               <p className="mt-2 text-stone-500 dark:text-stone-400">Planifiez votre premiere AG.</p>
             </div>
@@ -105,21 +105,21 @@ export default function AssembleesPage() {
                         className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-emerald-700 dark:hover:bg-stone-800"
                         aria-label="Voir"
                       >
-                        <Eye className="h-4 w-4" />
+                        <Eye className="size-4" />
                       </Link>
                       <button
                         onClick={() => setEditingAG(ag)}
                         className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-emerald-700 dark:hover:bg-stone-800"
                         aria-label="Modifier"
                       >
-                        <Pencil className="h-4 w-4" />
+                        <Pencil className="size-4" />
                       </button>
                       <button
                         onClick={() => setDeleteId(ag.id)}
                         className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-red-600 dark:hover:bg-stone-800"
                         aria-label="Supprimer"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="size-4" />
                       </button>
                     </div>
                   </div>
@@ -127,13 +127,13 @@ export default function AssembleesPage() {
                   <div className="mt-3 space-y-1">
                     {ag.heure && (
                       <div className="flex items-center gap-2 text-sm text-stone-500 dark:text-stone-400">
-                        <Clock className="h-3.5 w-3.5" />
+                        <Clock className="size-3.5" />
                         {ag.heure}
                       </div>
                     )}
                     {ag.lieu && (
                       <div className="flex items-center gap-2 text-sm text-stone-500 dark:text-stone-400">
-                        <MapPin className="h-3.5 w-3.5" />
+                        <MapPin className="size-3.5" />
                         {ag.lieu}
                       </div>
                     )}

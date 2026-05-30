@@ -80,7 +80,7 @@ export default function ComptesBancairesPage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <Landmark className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <Landmark className="size-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
           <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
@@ -105,18 +105,18 @@ export default function ComptesBancairesPage() {
                   onClick={() => setShowCompteDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouveau compte
                 </button>
               </div>
 
               {loadingComptes ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !comptes || comptes.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <CreditCard className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <CreditCard className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun compte bancaire enregistre</p>
                 </div>
               ) : (
@@ -156,11 +156,11 @@ export default function ComptesBancairesPage() {
                           <td className="px-4 py-3">
                             {compte.actif ? (
                               <span className="inline-flex items-center gap-1 text-green-600 dark:text-green-400">
-                                <CheckCircle className="h-3.5 w-3.5" /> Actif
+                                <CheckCircle className="size-3.5" /> Actif
                               </span>
                             ) : (
                               <span className="inline-flex items-center gap-1 text-stone-400">
-                                <XCircle className="h-3.5 w-3.5" /> Inactif
+                                <XCircle className="size-3.5" /> Inactif
                               </span>
                             )}
                           </td>
@@ -171,14 +171,14 @@ export default function ComptesBancairesPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button
                                 onClick={() => setDeleteTarget({ type: 'compte', id: compte.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -227,7 +227,7 @@ export default function ComptesBancairesPage() {
                         <option key={c.id} value={c.id}>{c.banque} ({TYPE_COMPTE_LABELS[c.type]})</option>
                       ))}
                     </select>
-                    <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-stone-400" />
+                    <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-3 -translate-y-1/2 text-stone-400" />
                   </div>
                 </div>
                 {selectedCompteId && (
@@ -235,7 +235,7 @@ export default function ComptesBancairesPage() {
                     onClick={() => setShowMouvementDialog(true)}
                     className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className="size-4" />
                     Nouveau mouvement
                   </button>
                 )}
@@ -243,16 +243,16 @@ export default function ComptesBancairesPage() {
 
               {!selectedCompteId ? (
                 <div className="flex flex-col items-center py-12">
-                  <ArrowDownUp className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <ArrowDownUp className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Selectionnez un compte pour voir ses mouvements</p>
                 </div>
               ) : loadingMouvements ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !mouvements || mouvements.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <ArrowDownUp className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <ArrowDownUp className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun mouvement enregistre</p>
                 </div>
               ) : (
@@ -284,9 +284,9 @@ export default function ComptesBancairesPage() {
                           <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{mouvement.reference || '\u2014'}</td>
                           <td className="px-4 py-3">
                             {mouvement.rapproche ? (
-                              <CheckCircle className="h-4 w-4 text-green-500" />
+                              <CheckCircle className="size-4 text-green-500" />
                             ) : (
-                              <XCircle className="h-4 w-4 text-stone-300 dark:text-stone-600" />
+                              <XCircle className="size-4 text-stone-300 dark:text-stone-600" />
                             )}
                           </td>
                           <td className="px-4 py-3">
@@ -296,14 +296,14 @@ export default function ComptesBancairesPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button
                                 onClick={() => setDeleteTarget({ type: 'mouvement', id: mouvement.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>

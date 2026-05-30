@@ -32,7 +32,7 @@ export default function DonneesPersonnellesPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Download className="h-5 w-5" />
+            <Download className="size-5" />
             Portabilite des donnees
           </CardTitle>
           <CardDescription>
@@ -45,7 +45,7 @@ export default function DonneesPersonnellesPage() {
             variant="outline"
             onClick={() => gdprApi.exportMyData()}
           >
-            <Download className="mr-2 h-4 w-4" />
+            <Download className="mr-2 size-4" />
             Telecharger mes donnees
           </Button>
         </CardContent>
@@ -54,7 +54,7 @@ export default function DonneesPersonnellesPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
+            <Shield className="size-5" />
             Politique de confidentialite
           </CardTitle>
           <CardDescription>
@@ -72,7 +72,7 @@ export default function DonneesPersonnellesPage() {
               )
             }
           >
-            <ExternalLink className="mr-2 h-4 w-4" />
+            <ExternalLink className="mr-2 size-4" />
             Voir la politique de confidentialite
           </Button>
         </CardContent>

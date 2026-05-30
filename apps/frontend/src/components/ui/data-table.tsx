@@ -122,23 +122,23 @@ export function DataTable<T>({
   const renderSortIcon = (key: string) => {
     if (sortKey !== key) {
       return (
-        <ChevronsUpDown className="ml-1 inline-block h-3.5 w-3.5 text-muted-foreground/50" />
+        <ChevronsUpDown className="ml-1 inline-block size-3.5 text-muted-foreground/50" />
       )
     }
     if (sortDirection === 'asc') {
       return (
-        <ChevronUp className="ml-1 inline-block h-3.5 w-3.5" />
+        <ChevronUp className="ml-1 inline-block size-3.5" />
       )
     }
     return (
-      <ChevronDown className="ml-1 inline-block h-3.5 w-3.5" />
+      <ChevronDown className="ml-1 inline-block size-3.5" />
     )
   }
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <Loader2 className="size-6 animate-spin text-muted-foreground" />
       </div>
     )
   }
@@ -147,7 +147,7 @@ export function DataTable<T>({
     <div className="space-y-3">
       {searchable && (
         <div className="relative max-w-xs">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={search}
             onChange={e => setSearch(e.target.value)}

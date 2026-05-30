@@ -222,7 +222,7 @@ export default function TicketsPage() {
             className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800"
             aria-label="Retour"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="size-5" />
           </button>
           <div className="flex-1">
             <h1 className="text-2xl font-bold text-stone-900 dark:text-white">
@@ -255,14 +255,14 @@ export default function TicketsPage() {
                 }}
                 className="flex items-center gap-2 rounded-lg border border-stone-200 px-3 py-1.5 text-sm text-stone-600 hover:bg-stone-50 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800"
               >
-                <Pencil className="h-4 w-4" />
+                <Pencil className="size-4" />
                 Modifier
               </button>
               <button
                 onClick={() => setDeleteId(selectedTicket.id)}
                 className="flex items-center gap-2 rounded-lg border border-red-200 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="size-4" />
                 Supprimer
               </button>
             </div>
@@ -277,14 +277,14 @@ export default function TicketsPage() {
 
           {loadingDetail ? (
             <div className="flex justify-center py-8">
-              <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+              <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
             </div>
           ) : (
             <>
               <div className="max-h-[500px] space-y-4 overflow-y-auto p-4">
                 {(!selectedTicket?.messages || selectedTicket.messages.length === 0) ? (
                   <div className="flex flex-col items-center py-8">
-                    <MessageSquare className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                    <MessageSquare className="size-10 text-stone-300 dark:text-stone-600" />
                     <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun message pour le moment</p>
                   </div>
                 ) : (
@@ -305,7 +305,7 @@ export default function TicketsPage() {
                           <div className="mb-1 flex items-center gap-2 text-xs opacity-75">
                             <span className="font-medium">{msg.auteur_nom ?? 'Inconnu'}</span>
                             <span className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
+                              <Clock className="size-3" />
                               {new Date(msg.created_at).toLocaleString('fr-FR', {
                                 dateStyle: 'short',
                                 timeStyle: 'short',
@@ -337,7 +337,7 @@ export default function TicketsPage() {
                     disabled={!newMessage.trim() || addMessage.isPending}
                     className="shrink-0"
                   >
-                    <Send className="h-4 w-4" />
+                    <Send className="size-4" />
                   </Button>
                 </div>
               </div>
@@ -463,7 +463,7 @@ export default function TicketsPage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <MessageSquare className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <MessageSquare className="size-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">
             Aucune copropriete selectionnee
           </h3>
@@ -482,18 +482,18 @@ export default function TicketsPage() {
               }}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Nouveau ticket
             </button>
           </div>
 
           {isLoading ? (
             <div className="flex justify-center py-8">
-              <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+              <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
             </div>
           ) : !tickets || tickets.length === 0 ? (
             <div className="flex flex-col items-center py-12">
-              <MessageSquare className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <MessageSquare className="size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun ticket</p>
             </div>
           ) : (
@@ -541,7 +541,7 @@ export default function TicketsPage() {
                       </td>
                       <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
                         <span className="flex items-center gap-1">
-                          <MessageSquare className="h-3.5 w-3.5" />
+                          <MessageSquare className="size-3.5" />
                           {ticket.messages_count ?? 0}
                         </span>
                       </td>
@@ -558,14 +558,14 @@ export default function TicketsPage() {
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="size-4" />
                           </button>
                           <button
                             onClick={() => setDeleteId(ticket.id)}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="size-4" />
                           </button>
                         </div>
                       </td>

@@ -120,18 +120,18 @@ export default function AssurancesPage() {
                   onClick={() => setShowAssuranceDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouvelle assurance
                 </button>
               </div>
 
               {loadingAssurances ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !assurances || assurances.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <Shield className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <Shield className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune assurance enregistree</p>
                 </div>
               ) : (
@@ -176,14 +176,14 @@ export default function AssurancesPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button
                                 onClick={() => setDeleteTarget({ type: 'assurance', id: assurance.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -223,18 +223,18 @@ export default function AssurancesPage() {
                   onClick={() => setShowSinistreDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Declarer un sinistre
                 </button>
               </div>
 
               {loadingSinistres ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !sinistres || sinistres.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <FileWarning className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <FileWarning className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun sinistre enregistre</p>
                 </div>
               ) : (
@@ -283,14 +283,14 @@ export default function AssurancesPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button
                                 onClick={() => setDeleteTarget({ type: 'sinistre', id: sinistre.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>

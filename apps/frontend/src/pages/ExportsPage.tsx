@@ -65,7 +65,7 @@ export default function ExportsPage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <FileDown className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <FileDown className="size-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">
             Aucune copropriete selectionnee
           </h3>
@@ -78,15 +78,15 @@ export default function ExportsPage() {
           {/* PDF Section */}
           <div>
             <div className="mb-4 flex items-center gap-2">
-              <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
+              <FileText className="size-5 text-emerald-700 dark:text-emerald-400" />
               <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Documents PDF</h2>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {/* Budget previsionnel PDF */}
               <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
-                    <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                    <FileText className="size-5 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="font-medium text-stone-900 dark:text-white">Budget previsionnel</h3>
@@ -114,9 +114,9 @@ export default function ExportsPage() {
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {exportBudgetPdf.isPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 className="size-4 animate-spin" />
                     ) : (
-                      <Download className="h-4 w-4" />
+                      <Download className="size-4" />
                     )}
                     Exporter PDF
                   </button>
@@ -126,8 +126,8 @@ export default function ExportsPage() {
               {/* Appel de fonds PDF */}
               <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
-                    <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                    <FileText className="size-5 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="font-medium text-stone-900 dark:text-white">Appel de fonds</h3>
@@ -146,7 +146,7 @@ export default function ExportsPage() {
               {/* Feuille de presence AG PDF */}
               <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
                     <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -175,9 +175,9 @@ export default function ExportsPage() {
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {exportFeuillePresencePdf.isPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 className="size-4 animate-spin" />
                     ) : (
-                      <Download className="h-4 w-4" />
+                      <Download className="size-4" />
                     )}
                     Exporter PDF
                   </button>
@@ -187,7 +187,7 @@ export default function ExportsPage() {
               {/* Carnet d'entretien PDF */}
               <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
                     <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -204,9 +204,9 @@ export default function ExportsPage() {
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {exportCarnetEntretienPdf.isPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 className="size-4 animate-spin" />
                     ) : (
-                      <Download className="h-4 w-4" />
+                      <Download className="size-4" />
                     )}
                     Exporter PDF
                   </button>
@@ -216,8 +216,8 @@ export default function ExportsPage() {
               {/* Etat des impayes PDF */}
               <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
-                    <FileText className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                    <FileText className="size-5 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="font-medium text-stone-900 dark:text-white">Etat des impayes</h3>
@@ -254,7 +254,7 @@ export default function ExportsPage() {
               {/* Liste des coproprietaires Excel */}
               <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
                     <FileSpreadsheet className="h-5 w-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -286,7 +286,7 @@ export default function ExportsPage() {
               {/* Balance des comptes Excel */}
               <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
                     <FileSpreadsheet className="h-5 w-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -315,7 +315,7 @@ export default function ExportsPage() {
               {/* Etat des charges Excel */}
               <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
                     <FileSpreadsheet className="h-5 w-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -344,9 +344,9 @@ export default function ExportsPage() {
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {exportEtatChargesExcel.isPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 className="size-4 animate-spin" />
                     ) : (
-                      <Download className="h-4 w-4" />
+                      <Download className="size-4" />
                     )}
                     Exporter Excel
                   </button>
@@ -356,8 +356,8 @@ export default function ExportsPage() {
               {/* Etat des impayes Excel */}
               <div className="rounded-xl border border-stone-200 bg-white p-6 transition-shadow hover:shadow-md dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
-                    <FileSpreadsheet className="h-5 w-5 text-green-600 dark:text-green-400" />
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20">
+                    <FileSpreadsheet className="size-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="font-medium text-stone-900 dark:text-white">Etat des impayes</h3>
@@ -373,9 +373,9 @@ export default function ExportsPage() {
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {exportEtatImpayesExcel.isPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 className="size-4 animate-spin" />
                     ) : (
-                      <Download className="h-4 w-4" />
+                      <Download className="size-4" />
                     )}
                     Exporter Excel
                   </button>

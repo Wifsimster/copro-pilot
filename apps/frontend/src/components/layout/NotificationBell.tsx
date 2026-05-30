@@ -62,7 +62,7 @@ function NotificationItem({
             {typeLabels[notification.type]}
           </span>
           {!notification.lu && (
-            <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
+            <span className="size-2 rounded-full bg-emerald-500 shrink-0" />
           )}
         </div>
         <p className="mt-1 text-sm font-medium text-stone-900 dark:text-white truncate">
@@ -78,7 +78,7 @@ function NotificationItem({
         </p>
       </div>
       {notification.lien && (
-        <ExternalLink className="mt-1 h-3.5 w-3.5 shrink-0 text-stone-400" />
+        <ExternalLink className="mt-1 size-3.5 shrink-0 text-stone-400" />
       )}
     </button>
   )
@@ -116,7 +116,7 @@ export function NotificationBell() {
           title="Notifications"
           aria-label="Notifications"
         >
-          <Bell className="h-5 w-5" />
+          <Bell className="size-5" />
           {!!unreadCount && unreadCount > 0 && (
             <span className="absolute -right-0.5 -top-0.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
               {unreadCount > 99 ? '99+' : unreadCount}
@@ -134,7 +134,7 @@ export function NotificationBell() {
               onClick={handleMarkAllAsRead}
               className="flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
             >
-              <CheckCheck className="h-3.5 w-3.5" />
+              <CheckCheck className="size-3.5" />
               Tout marquer comme lu
             </button>
           )}

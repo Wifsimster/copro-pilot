@@ -138,9 +138,9 @@ export function PwaInstallPrompt() {
       className='fixed bottom-4 left-4 right-4 z-[9998] sm:left-auto sm:right-4 sm:max-w-sm'
     >
       <div className='bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-lg shadow-lg p-4 flex items-start gap-3'>
-        <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30'>
+        <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30'>
           <Icon
-            className='h-5 w-5 text-emerald-600 dark:text-emerald-400'
+            className='size-5 text-emerald-600 dark:text-emerald-400'
             aria-hidden='true'
           />
         </div>
@@ -153,7 +153,7 @@ export function PwaInstallPrompt() {
           </p>
           {isIos && (
             <p className='mt-2 flex items-center gap-1 text-xs text-stone-500 dark:text-stone-400'>
-              <Share className='h-3.5 w-3.5' aria-hidden='true' />
+              <Share className='size-3.5' aria-hidden='true' />
               <span>Partager → Sur l'ecran d'accueil</span>
             </p>
           )}
@@ -165,7 +165,7 @@ export function PwaInstallPrompt() {
                 onClick={handleInstall}
                 className='bg-emerald-600 hover:bg-emerald-700 text-white'
               >
-                <Download className='h-4 w-4 mr-1' aria-hidden='true' />
+                <Download className='size-4 mr-1' aria-hidden='true' />
                 Installer
               </Button>
             )}
@@ -185,7 +185,7 @@ export function PwaInstallPrompt() {
           onClick={handleDismiss}
           className='text-stone-400 hover:text-stone-600 dark:hover:text-stone-200'
         >
-          <X className='h-4 w-4' aria-hidden='true' />
+          <X className='size-4' aria-hidden='true' />
         </button>
       </div>
     </div>

@@ -16,7 +16,7 @@ export function CycleAnnuelCard({
     return (
       <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 animate-pulse rounded-lg bg-stone-200 dark:bg-stone-700" />
+          <div className="size-10 animate-pulse rounded-lg bg-stone-200 dark:bg-stone-700" />
           <div className="flex-1 space-y-2">
             <div className="h-3 w-32 animate-pulse rounded bg-stone-200 dark:bg-stone-700" />
             <div className="h-5 w-20 animate-pulse rounded bg-stone-200 dark:bg-stone-700" />
@@ -42,8 +42,8 @@ export function CycleAnnuelCard({
   return (
     <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
       <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-500 text-white">
-          <ListChecks className="h-5 w-5" />
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-indigo-500 text-white">
+          <ListChecks className="size-5" />
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm text-stone-500 dark:text-stone-400">

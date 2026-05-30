@@ -128,7 +128,7 @@ export default function AssembleeDetailPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+        <div className="size-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
       </div>
     )
   }
@@ -180,7 +180,7 @@ export default function AssembleeDetailPage() {
           to="/assemblees"
           className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft className="size-5" />
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-3">
@@ -204,9 +204,9 @@ export default function AssembleeDetailPage() {
             className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-50"
           >
             {genererPv.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" />
             ) : (
-              <Download className="h-4 w-4" />
+              <Download className="size-4" />
             )}
             Generer le PV
           </button>
@@ -221,9 +221,9 @@ export default function AssembleeDetailPage() {
             : 'border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20'
         }`}>
           {delai.valide ? (
-            <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
+            <CheckCircle2 className="size-5 text-green-600 dark:text-green-400" />
           ) : (
-            <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            <AlertTriangle className="size-5 text-amber-600 dark:text-amber-400" />
           )}
           <div className="flex-1">
             <p className={`text-sm font-medium ${delai.valide ? 'text-green-700 dark:text-green-300' : 'text-amber-700 dark:text-amber-300'}`}>

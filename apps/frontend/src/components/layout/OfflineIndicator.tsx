@@ -29,7 +29,7 @@ export function OfflineIndicator() {
       aria-live='polite'
       className='fixed top-0 left-0 right-0 z-[9999] bg-red-600 text-white px-4 py-2 text-sm flex items-center justify-center gap-2 shadow-md'
     >
-      <WifiOff className='h-4 w-4' aria-hidden='true' />
+      <WifiOff className='size-4' aria-hidden='true' />
       <span>
         Vous etes hors ligne. Certaines fonctionnalites sont limitees.
       </span>

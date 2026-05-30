@@ -203,7 +203,7 @@ function StatCardSkeleton() {
   return (
     <Card className="py-0">
       <CardContent className="flex items-center gap-4 p-5">
-        <div className="h-10 w-10 animate-pulse rounded-lg bg-muted" />
+        <div className="size-10 animate-pulse rounded-lg bg-muted" />
         <div className="flex-1 space-y-2">
           <div className="h-3 w-20 animate-pulse rounded bg-muted" />
           <div className="h-6 w-12 animate-pulse rounded bg-muted" />
@@ -288,7 +288,7 @@ function AlertsBanner({
           className="flex w-full items-center justify-between bg-red-50 px-4 py-3 text-left dark:bg-red-950/20"
         >
           <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
+            <AlertTriangle className="size-4 text-red-600 dark:text-red-400" />
             <span className="text-sm font-semibold text-red-800 dark:text-red-300">
               {alerts.length} alerte
               {alerts.length > 1 ? 's' : ''}
@@ -298,9 +298,9 @@ function AlertsBanner({
             </span>
           </div>
           {expanded ? (
-            <ChevronUp className="h-4 w-4 text-red-600 dark:text-red-400" />
+            <ChevronUp className="size-4 text-red-600 dark:text-red-400" />
           ) : (
-            <ChevronDown className="h-4 w-4 text-red-600 dark:text-red-400" />
+            <ChevronDown className="size-4 text-red-600 dark:text-red-400" />
           )}
         </button>
 
@@ -317,7 +317,7 @@ function AlertsBanner({
                   to={alert.link}
                   className={`flex items-center gap-3 border-l-3 px-4 py-3 transition-colors hover:bg-accent/50 ${style.border}`}
                 >
-                  <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <Icon className="size-4 shrink-0 text-muted-foreground" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-foreground">
                       {alert.title}
@@ -368,7 +368,7 @@ function DailyTasks({
       </div>
       {tasks.length === 0 ? (
         <div className="flex flex-col items-center py-8">
-          <ListChecks className="h-8 w-8 text-muted-foreground/40" />
+          <ListChecks className="size-8 text-muted-foreground/40" />
           <p className="mt-2 text-sm text-muted-foreground">
             Aucune tache cette semaine
           </p>
@@ -385,13 +385,13 @@ function DailyTasks({
                 className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/50"
               >
                 <div
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                  className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${
                     task.priority === 'haute'
                       ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'
                       : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400'
                   }`}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="size-4" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-foreground">
@@ -414,7 +414,7 @@ function DailyTasks({
                     urgent
                   </span>
                 )}
-                <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                <ArrowRight className="size-3.5 shrink-0 text-muted-foreground" />
               </Link>
             )
           })}
@@ -455,9 +455,9 @@ function MetricsGrid({
               <Card className="py-0 transition-shadow hover:shadow-md">
                 <CardContent className="flex items-center gap-3 p-4">
                   <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${cfg.color} text-white`}
+                    className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${cfg.color} text-white`}
                   >
-                    <cfg.icon className="h-5 w-5" />
+                    <cfg.icon className="size-5" />
                   </div>
                   <div className="min-w-0">
                     <p className="truncate text-xs text-muted-foreground">
@@ -502,7 +502,7 @@ function ActivityFeed({
       </div>
       {activity.length === 0 ? (
         <div className="flex flex-col items-center py-8">
-          <FileUp className="h-8 w-8 text-muted-foreground/40" />
+          <FileUp className="size-8 text-muted-foreground/40" />
           <p className="mt-2 text-sm text-muted-foreground">
             Aucune activite recente
           </p>
@@ -518,7 +518,7 @@ function ActivityFeed({
                 to={item.link}
                 className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-accent/50"
               >
-                <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <Icon className="size-4 shrink-0 text-muted-foreground" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm text-foreground">
                     {item.title}
@@ -738,7 +738,7 @@ export default function DashboardPage() {
             size="sm"
             onClick={qa.action}
           >
-            <qa.icon className="h-4 w-4" />
+            <qa.icon className="size-4" />
             {qa.label}
           </Button>
         ))}

@@ -103,7 +103,7 @@ export default function DocumentsPage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-16">
-          <FolderOpen className="h-16 w-16 text-muted-foreground/40" />
+          <FolderOpen className="size-16 text-muted-foreground/40" />
           <h3 className="mt-6 text-lg font-medium text-foreground">Aucune copropriete selectionnee</h3>
           <p className="mt-2 max-w-md text-center text-muted-foreground">
             Selectionnez une copropriete dans le menu lateral.
@@ -173,7 +173,7 @@ export default function DocumentsPage() {
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="animate-pulse rounded-lg border border-border p-4">
                   <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-lg bg-muted" />
+                    <div className="size-10 rounded-lg bg-muted" />
                     <div className="flex-1 space-y-2">
                       <div className="h-4 w-48 rounded bg-muted" />
                       <div className="h-3 w-32 rounded bg-muted" />
@@ -184,7 +184,7 @@ export default function DocumentsPage() {
             </div>
           ) : !filtered?.length ? (
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-12">
-              <FileText className="h-12 w-12 text-muted-foreground/40" />
+              <FileText className="size-12 text-muted-foreground/40" />
               <h3 className="mt-4 text-base font-medium text-foreground">
                 {search || filterCategorie !== 'all' ? 'Aucun document trouve' : 'Aucun document'}
               </h3>
@@ -203,7 +203,7 @@ export default function DocumentsPage() {
                     key={doc.id}
                     className="flex items-center gap-4 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent/50"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">
                       <IconComponent className="size-5 text-muted-foreground" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -310,7 +310,7 @@ export default function DocumentsPage() {
               ) : previewDoc.mime_type === 'application/pdf' ? (
                 <iframe
                   src={documentsApi.getDownloadUrl(previewDoc.id)}
-                  className="h-full w-full rounded border border-border"
+                  className="size-full rounded border border-border"
                   title={previewDoc.nom}
                 />
               ) : null}

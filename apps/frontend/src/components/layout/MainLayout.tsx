@@ -268,7 +268,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             : 'text-stone-600 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-700'
         )}
       >
-        <item.icon className="h-4 w-4" />
+        <item.icon className="size-4" />
         {item.name}
       </Link>
     )
@@ -299,7 +299,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           {section.label}
           <ChevronRight
             className={cn(
-              'h-3.5 w-3.5 transition-transform duration-200',
+              'size-3.5 transition-transform duration-200',
               isOpen && 'rotate-90'
             )}
           />
@@ -335,14 +335,14 @@ export function MainLayout({ children }: MainLayoutProps) {
       >
         {/* Logo */}
         <div className="flex h-16 items-center gap-3 border-b border-stone-200 px-6 dark:border-stone-700">
-          <img src="/logo.svg" alt="CoproPilot" className="h-8 w-8 rounded-lg" />
+          <img src="/logo.svg" alt="CoproPilot" className="size-8 rounded-lg" />
           <span className="text-lg font-bold text-stone-900 dark:text-white">CoproPilot</span>
           <button
             onClick={() => setSidebarOpen(false)}
             className="ml-auto lg:hidden"
             aria-label="Fermer le menu"
           >
-            <X className="h-5 w-5 text-stone-500" />
+            <X className="size-5 text-stone-500" />
           </button>
         </div>
 
@@ -471,7 +471,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           </button>
           {!isCoproprietaire(user?.role) && (
             <div data-tour="copropriete-selector" className="relative shrink-0">
-              <Building2 className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400 dark:text-stone-500" />
+              <Building2 className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-stone-400 dark:text-stone-500" />
               <select
                 value={selectedCoproprieteId ?? ''}
                 onChange={(e) => {
@@ -494,7 +494,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                   <option key={c.id} value={c.id} className="dark:bg-stone-800 dark:text-white">{c.nom}</option>
                 ))}
               </select>
-              <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400 dark:text-stone-500" />
+              <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-4 -translate-y-1/2 text-stone-400 dark:text-stone-500" />
             </div>
           )}
           <div data-tour="global-search" className="min-w-0 flex-1">

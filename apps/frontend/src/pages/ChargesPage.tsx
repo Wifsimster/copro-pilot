@@ -96,7 +96,7 @@ export default function ChargesPage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <Receipt className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <Receipt className="size-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
           <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
@@ -123,18 +123,18 @@ export default function ChargesPage() {
                   onClick={() => setShowBudgetDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouveau budget
                 </button>
               </div>
 
               {loadingBudgets ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !budgets || budgets.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <FileText className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <FileText className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun budget enregistre</p>
                 </div>
               ) : (
@@ -167,14 +167,14 @@ export default function ChargesPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button
                                 onClick={() => setDeleteTarget({ type: 'budget', id: budget.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -214,18 +214,18 @@ export default function ChargesPage() {
                   onClick={() => setShowAppelDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouvel appel
                 </button>
               </div>
 
               {loadingAppels ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !appels || appels.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <Banknote className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <Banknote className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun appel de fonds enregistre</p>
                 </div>
               ) : (
@@ -266,14 +266,14 @@ export default function ChargesPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button
                                 onClick={() => setDeleteTarget({ type: 'appel', id: appel.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -313,18 +313,18 @@ export default function ChargesPage() {
                   onClick={() => setShowPaiementDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouveau paiement
                 </button>
               </div>
 
               {loadingPaiements ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !paiements || paiements.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <CreditCard className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <CreditCard className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun paiement enregistre</p>
                 </div>
               ) : (
@@ -365,14 +365,14 @@ export default function ChargesPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button
                                 onClick={() => setDeleteTarget({ type: 'paiement', id: paiement.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -415,18 +415,18 @@ export default function ChargesPage() {
                   onClick={() => setShowFondsDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouveau fonds
                 </button>
               </div>
 
               {loadingFonds ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !fondsTravaux || fondsTravaux.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <PiggyBank className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <PiggyBank className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun fonds travaux enregistre</p>
                 </div>
               ) : (
@@ -459,14 +459,14 @@ export default function ChargesPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button
                                 onClick={() => setDeleteTarget({ type: 'fonds', id: fonds.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>

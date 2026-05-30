@@ -52,9 +52,9 @@ export function AppUpdatePrompt() {
       className='fixed bottom-4 left-4 right-4 z-[9999] md:left-auto md:right-4 md:max-w-sm'
     >
       <div className='bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-lg shadow-lg p-4 flex items-start gap-3'>
-        <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30'>
+        <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30'>
           <RefreshCw
-            className='h-5 w-5 text-emerald-600 dark:text-emerald-400'
+            className='size-5 text-emerald-600 dark:text-emerald-400'
             aria-hidden='true'
           />
         </div>

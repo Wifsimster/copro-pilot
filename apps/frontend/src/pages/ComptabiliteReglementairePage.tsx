@@ -66,7 +66,7 @@ export default function ComptabiliteReglementairePage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-16">
-          <BookOpen className="h-16 w-16 text-muted-foreground/40" />
+          <BookOpen className="size-16 text-muted-foreground/40" />
           <h3 className="mt-6 text-lg font-medium text-foreground">Aucune copropriete selectionnee</h3>
           <p className="mt-2 max-w-md text-center text-muted-foreground">
             Selectionnez une copropriete dans le menu lateral.
@@ -171,7 +171,7 @@ function JournalTab({ exerciceId }: { exerciceId: number | undefined }) {
         </div>
       ) : !ecritures?.length ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-12">
-          <List className="h-12 w-12 text-muted-foreground/40" />
+          <List className="size-12 text-muted-foreground/40" />
           <h3 className="mt-4 text-base font-medium">Aucune ecriture</h3>
           <p className="mt-1 text-sm text-muted-foreground">Generez les ecritures automatiques ou saisissez-en manuellement.</p>
         </div>
@@ -234,7 +234,7 @@ function GrandLivreTab({ exerciceId }: { exerciceId: number | undefined }) {
         </div>
       ) : !totals.length ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-12">
-          <BookOpen className="h-12 w-12 text-muted-foreground/40" />
+          <BookOpen className="size-12 text-muted-foreground/40" />
           <h3 className="mt-4 text-base font-medium">Aucune donnee</h3>
           <p className="mt-1 text-sm text-muted-foreground">Generez d'abord les ecritures dans l'onglet Journal.</p>
         </div>
@@ -340,7 +340,7 @@ function BalanceTab({ exerciceId }: { exerciceId: number | undefined }) {
         </div>
       ) : !balance?.length ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-12">
-          <Calculator className="h-12 w-12 text-muted-foreground/40" />
+          <Calculator className="size-12 text-muted-foreground/40" />
           <h3 className="mt-4 text-base font-medium">Aucune donnee</h3>
           <p className="mt-1 text-sm text-muted-foreground">Generez d'abord les ecritures dans l'onglet Journal.</p>
         </div>
@@ -527,7 +527,7 @@ function ExercicesTab({ coproprieteId, exercices, loadingExercices }: { copropri
           </div>
         ) : !exercices?.length ? (
           <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-8">
-            <Settings className="h-10 w-10 text-muted-foreground/40" />
+            <Settings className="size-10 text-muted-foreground/40" />
             <h3 className="mt-3 text-sm font-medium">Aucun exercice</h3>
             <p className="mt-1 text-xs text-muted-foreground">Creez un exercice comptable pour commencer.</p>
           </div>
