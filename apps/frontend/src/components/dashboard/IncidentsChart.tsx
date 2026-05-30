@@ -55,13 +55,17 @@ export default function IncidentsChart({
 }: IncidentsChartProps) {
   const chartData = useMemo(() => {
     if (!data) return []
-    return Object.entries(data)
-      .filter(([, count]) => count > 0)
-      .map(([statut, count]) => ({
-        name: STATUS_LABELS[statut] || statut,
-        value: count,
-        fill: STATUS_COLORS[statut] || '#a8a29e',
-      }))
+    return Object.entries(data).flatMap(([statut, count]) =>
+      count > 0
+        ? [
+            {
+              name: STATUS_LABELS[statut] || statut,
+              value: count,
+              fill: STATUS_COLORS[statut] || '#a8a29e',
+            },
+          ]
+        : []
+    )
   }, [data])
 
   if (chartData.length === 0) {

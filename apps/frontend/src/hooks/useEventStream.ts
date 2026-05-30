@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
 import {
@@ -13,19 +13,22 @@ const SSE_URL = '/api/sse/stream'
 export function useEventStream() {
   const queryClient = useQueryClient()
   const isAuthenticated = useAuthStore(state => state.isAuthenticated)
-  const eventSourceRef = useRef<EventSource | null>(null)
-  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (!isAuthenticated) return
 
+    // The connection and reconnect timer live entirely within this effect, so
+    // they are kept in closure variables the cleanup can safely read.
+    let eventSource: EventSource | null = null
+    let reconnectTimer: ReturnType<typeof setTimeout> | null = null
+
     function connect() {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close()
+      if (eventSource) {
+        eventSource.close()
       }
 
       const es = new EventSource(SSE_URL, { withCredentials: true })
-      eventSourceRef.current = es
+      eventSource = es
 
       es.onopen = () => {
         logger.info('[SSE] Connected')
@@ -58,9 +61,9 @@ export function useEventStream() {
       es.onerror = () => {
         logger.warn('[SSE] Connection lost, reconnecting...')
         es.close()
-        eventSourceRef.current = null
+        eventSource = null
 
-        reconnectTimerRef.current = setTimeout(() => {
+        reconnectTimer = setTimeout(() => {
           connect()
         }, RECONNECT_DELAY)
       }
@@ -69,13 +72,13 @@ export function useEventStream() {
     connect()
 
     return () => {
-      if (reconnectTimerRef.current) {
-        clearTimeout(reconnectTimerRef.current)
-        reconnectTimerRef.current = null
+      if (reconnectTimer) {
+        clearTimeout(reconnectTimer)
+        reconnectTimer = null
       }
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close()
-        eventSourceRef.current = null
+      if (eventSource) {
+        eventSource.close()
+        eventSource = null
       }
     }
   }, [isAuthenticated, queryClient])

@@ -173,11 +173,14 @@ export default function TicketsPage() {
 
   // Callback ref on the scroll anchor: re-runs whenever the message count
   // changes, scrolling the thread to the latest message without an effect.
+  const messageCount = selectedTicket?.messages?.length ?? 0
   const scrollAnchorRef = useCallback(
     (node: HTMLDivElement | null) => {
-      node?.scrollIntoView({ behavior: 'smooth' })
+      if (node && messageCount >= 0) {
+        node.scrollIntoView({ behavior: 'smooth' })
+      }
     },
-    [selectedTicket?.messages?.length]
+    [messageCount]
   )
 
   const handleCreate = async (data: TicketFormData) => {

@@ -207,14 +207,12 @@ export function MainLayout({ children }: MainLayoutProps) {
     const baseSections = isCoproprietaire(role)
       ? coproprietaireNavigationSections
       : navigationSections
-    return baseSections
-      .map(section => ({
-        ...section,
-        items: section.items.filter(item =>
-          canAccessRoute(role, item.href)
-        ),
-      }))
-      .filter(section => section.items.length > 0)
+    return baseSections.flatMap(section => {
+      const items = section.items.filter(item =>
+        canAccessRoute(role, item.href)
+      )
+      return items.length > 0 ? [{ ...section, items }] : []
+    })
   }, [user?.role])
 
   const isItemActive = (href: string) =>
