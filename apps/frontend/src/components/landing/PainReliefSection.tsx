@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useInView } from 'motion/react'
+import { m, useInView } from 'motion/react'
 import {
   Banknote,
   FileSpreadsheet,
@@ -50,7 +50,7 @@ export function PainReliefSection() {
         ref={ref}
         className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
       >
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
@@ -68,13 +68,13 @@ export function PainReliefSection() {
           >
             Et on a construit exactement ce qu'il vous faut.
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {painPoints.map((item, index) => {
             const Icon = item.icon
             return (
-              <motion.div
+              <m.div
                 key={item.pain}
                 initial={{ opacity: 0, y: 24 }}
                 animate={
@@ -117,7 +117,7 @@ export function PainReliefSection() {
                   Notre solution
                   <ArrowRight className="size-3" />
                 </div>
-              </motion.div>
+              </m.div>
             )
           })}
         </div>

@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useInView } from 'motion/react'
+import { m, useInView } from 'motion/react'
 import { Check, X, Minus } from 'lucide-react'
 
 interface ComparisonRow {
@@ -119,7 +119,7 @@ export function ComparisonSection() {
         ref={ref}
         className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
       >
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
@@ -138,9 +138,9 @@ export function ComparisonSection() {
           >
             Comparez objectivement avec les alternatives
           </p>
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 24 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.1, duration: 0.5 }}
@@ -223,7 +223,7 @@ export function ComparisonSection() {
               ))}
             </tbody>
           </table>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

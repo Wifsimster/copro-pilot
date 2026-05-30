@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { motion, useInView } from 'motion/react'
+import { m, useInView } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import { Check, Github, Users } from 'lucide-react'
 import { PricingCalculator } from './PricingCalculator'
@@ -314,7 +314,7 @@ export function PricingSection() {
         ref={ref}
         className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
       >
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
@@ -341,9 +341,9 @@ export function PricingSection() {
             Commencez gratuitement, évoluez quand vous êtes
             prêt. Sans engagement, sans carte bancaire.
           </p>
-        </motion.div>
+        </m.div>
 
-        <motion.p
+        <m.p
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ delay: 0.1, duration: 0.5 }}
@@ -352,9 +352,9 @@ export function PricingSection() {
         >
           Soit à partir de 0,38 €/lot/mois - jusqu'à 10x
           moins cher que les logiciels traditionnels
-        </motion.p>
+        </m.p>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ delay: 0.15, duration: 0.5 }}
@@ -406,14 +406,14 @@ export function PricingSection() {
               </span>
             </button>
           </div>
-        </motion.div>
+        </m.div>
 
         <div
           className="grid grid-cols-1 sm:grid-cols-2
             lg:grid-cols-4 gap-6 lg:gap-4 items-start"
         >
           {tiers.map((tier, index) => (
-            <motion.div
+            <m.div
               key={tier.id}
               initial={{ opacity: 0, y: 24 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -423,13 +423,13 @@ export function PricingSection() {
               }}
             >
               <PricingCard tier={tier} cadence={cadence} />
-            </motion.div>
+            </m.div>
           ))}
         </div>
 
         <PricingCalculator />
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ delay: 0.4, duration: 0.5 }}
@@ -461,7 +461,7 @@ export function PricingSection() {
               Contactez-nous
             </a>
           </p>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

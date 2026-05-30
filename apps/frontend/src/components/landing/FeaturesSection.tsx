@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useInView } from 'motion/react'
+import { m, useInView } from 'motion/react'
 import {
   Shield,
   Wrench,
@@ -108,7 +108,7 @@ export function FeaturesSection() {
         ref={ref}
         className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
       >
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
@@ -135,7 +135,7 @@ export function FeaturesSection() {
             Trois piliers pour gérer vos copropriétés
             en toute sérénité
           </p>
-        </motion.div>
+        </m.div>
 
         <div
           className="grid grid-cols-1 md:grid-cols-3
@@ -144,7 +144,7 @@ export function FeaturesSection() {
           {featureGroups.map((group, index) => {
             const GroupIcon = group.icon
             return (
-              <motion.div
+              <m.div
                 key={group.title}
                 initial={{ opacity: 0, y: 30 }}
                 animate={
@@ -210,7 +210,7 @@ export function FeaturesSection() {
                     )
                   })}
                 </ul>
-              </motion.div>
+              </m.div>
             )
           })}
         </div>

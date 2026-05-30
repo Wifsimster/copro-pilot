@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { motion, useInView, AnimatePresence } from 'motion/react'
+import { m, useInView, AnimatePresence } from 'motion/react'
 import { ChevronDown } from 'lucide-react'
 
 interface FaqItem {
@@ -97,7 +97,7 @@ function FaqAccordionItem({
       </button>
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <m.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -110,7 +110,7 @@ function FaqAccordionItem({
             >
               {item.answer}
             </p>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>
@@ -132,7 +132,7 @@ export function FaqSection() {
         ref={ref}
         className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8"
       >
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
@@ -145,9 +145,9 @@ export function FaqSection() {
           >
             Questions fréquentes
           </h2>
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.1, duration: 0.5 }}
@@ -167,7 +167,7 @@ export function FaqSection() {
               }
             />
           ))}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

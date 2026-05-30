@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useInView } from 'motion/react'
+import { m, useInView } from 'motion/react'
 import {
   UserPlus,
   Building2,
@@ -44,7 +44,7 @@ export function HowItWorksSection() {
         ref={ref}
         className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
       >
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
@@ -64,7 +64,7 @@ export function HowItWorksSection() {
             Pas de formation, pas d'installation,
             pas de prise de tête
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="relative">
           {/* Connecting line */}
@@ -82,7 +82,7 @@ export function HowItWorksSection() {
             {steps.map((step, index) => {
               const Icon = step.icon
               return (
-                <motion.div
+                <m.div
                   key={step.number}
                   initial={{ opacity: 0, y: 24 }}
                   animate={
@@ -131,7 +131,7 @@ export function HowItWorksSection() {
                   >
                     {step.description}
                   </p>
-                </motion.div>
+                </m.div>
               )
             })}
           </div>
