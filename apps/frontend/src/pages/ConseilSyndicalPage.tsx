@@ -21,6 +21,11 @@ const ROLE_COLORS: Record<string, string> = {
   suppleant: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
 }
 
+const isMandatExpired = (dateStr: string | null | undefined) => {
+  if (!dateStr) return false
+  return new Date(dateStr).getTime() < Date.now()
+}
+
 export default function ConseilSyndicalPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
 
@@ -35,11 +40,6 @@ export default function ConseilSyndicalPage() {
   const createMembre = useCreateMembreConseil()
   const updateMembre = useUpdateMembreConseil()
   const deleteMembre = useDeleteMembreConseil()
-
-  const isMandatExpired = (dateStr: string | null | undefined) => {
-    if (!dateStr) return false
-    return new Date(dateStr).getTime() < Date.now()
-  }
 
   return (
     <div className="space-y-6">

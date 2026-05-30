@@ -38,20 +38,24 @@ interface AgReportViewerProps {
   coproprieteId: number
 }
 
+const currencyFormatter = new Intl.NumberFormat('fr-FR', {
+  style: 'currency',
+  currency: 'EUR',
+})
+
 function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(value)
+  return currencyFormatter.format(value)
 }
 
 function formatPercent(value: number): string {
   return `${value >= 0 ? '+' : ''}${value.toFixed(2)} %`
 }
 
+const dateFormatter = new Intl.DateTimeFormat('fr-FR')
+
 function formatDate(value: string | null): string {
   if (!value) return '-'
-  return new Intl.DateTimeFormat('fr-FR').format(new Date(value))
+  return dateFormatter.format(new Date(value))
 }
 
 function Annexe1Table({ data }: { data: AgReportPack['annexe1'] }) {

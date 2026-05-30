@@ -35,6 +35,12 @@ const STATUT_COLORS: Record<string, string> = {
 
 type Tab = 'contrats' | 'propositions'
 
+const isExpiringSoon = (dateStr: string | null) => {
+  if (!dateStr) return false
+  const diff = new Date(dateStr).getTime() - Date.now()
+  return diff > 0 && diff < 180 * 24 * 60 * 60 * 1000
+}
+
 export default function ContratsSyndicPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
   const [activeTab, setActiveTab] = useState<Tab>('contrats')
@@ -54,12 +60,6 @@ export default function ContratsSyndicPage() {
   const createProposition = useCreatePropositionSyndic()
   const updateProposition = useUpdatePropositionSyndic()
   const deleteProposition = useDeletePropositionSyndic()
-
-  const isExpiringSoon = (dateStr: string | null) => {
-    if (!dateStr) return false
-    const diff = new Date(dateStr).getTime() - Date.now()
-    return diff > 0 && diff < 180 * 24 * 60 * 60 * 1000
-  }
 
   return (
     <div className="space-y-6">

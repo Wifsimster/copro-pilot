@@ -71,12 +71,14 @@ function timeAgo(dateStr: string): string {
   return `il y a ${diffMonths} mois`
 }
 
+const euroFormatter = new Intl.NumberFormat('fr-FR', {
+  style: 'currency',
+  currency: 'EUR',
+  maximumFractionDigits: 0,
+})
+
 function formatEuro(value: number): string {
-  return new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
-  }).format(value)
+  return euroFormatter.format(value)
 }
 
 // ---------------------------------------------------------------------------

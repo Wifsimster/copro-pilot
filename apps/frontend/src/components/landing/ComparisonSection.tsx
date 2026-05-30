@@ -159,7 +159,7 @@ export function ComparisonSection() {
                     font-medium text-stone-400
                     dark:text-stone-500 w-1/4"
                 />
-                <th className="py-4 px-4 text-center">
+                <th className="p-4 text-center">
                   <span
                     className="inline-flex items-center gap-1.5
                       text-sm font-bold text-emerald-700
@@ -173,7 +173,7 @@ export function ComparisonSection() {
                   </span>
                 </th>
                 <th
-                  className="py-4 px-4 text-center text-sm
+                  className="p-4 text-center text-sm
                     font-medium text-stone-400
                     dark:text-stone-500"
                 >

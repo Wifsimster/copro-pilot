@@ -98,7 +98,7 @@ export function DataTable<T>({
 
   const sorted = useMemo(() => {
     if (!sortKey || !sortDirection) return filtered
-    return [...filtered].sort((a, b) => {
+    return filtered.toSorted((a, b) => {
       const aVal = getNestedValue(a, sortKey)
       const bVal = getNestedValue(b, sortKey)
 

@@ -16,6 +16,16 @@ import {
 import type { BudgetPrevisionnel, AssembleeGenerale } from '@/types'
 import { FileText, FileSpreadsheet, Download, Loader2, FileDown } from 'lucide-react'
 
+const handleExport = (
+  mutate: { mutate: (arg: number) => void; isPending: boolean },
+  id: number | '',
+  label: string,
+) => {
+  if (id === '') return
+  mutate.mutate(id)
+  toast.success(`Export "${label}" lance`)
+}
+
 export default function ExportsPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
 
@@ -34,16 +44,6 @@ export default function ExportsPage() {
   const exportBalanceComptesExcel = useExportBalanceComptesExcel()
   const exportEtatChargesExcel = useExportEtatChargesExcel()
   const exportEtatImpayesExcel = useExportEtatImpayesExcel()
-
-  const handleExport = (
-    mutate: { mutate: (arg: number) => void; isPending: boolean },
-    id: number | '',
-    label: string,
-  ) => {
-    if (id === '') return
-    mutate.mutate(id)
-    toast.success(`Export "${label}" lance`)
-  }
 
   const handleExportCopro = (
     mutate: { mutate: (arg: number) => void; isPending: boolean },

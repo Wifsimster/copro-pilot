@@ -33,6 +33,12 @@ const FREQUENCE_LABELS: Record<string, string> = {
 
 type Tab = 'contrats' | 'prestataires'
 
+const isExpiringSoon = (dateStr: string | null) => {
+  if (!dateStr) return false
+  const diff = new Date(dateStr).getTime() - Date.now()
+  return diff > 0 && diff < 90 * 24 * 60 * 60 * 1000
+}
+
 export default function ContratsPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
   const [activeTab, setActiveTab] = useState<Tab>('contrats')
@@ -52,12 +58,6 @@ export default function ContratsPage() {
   const createPrestataire = useCreatePrestataire()
   const updatePrestataire = useUpdatePrestataire()
   const deletePrestataire = useDeletePrestataire()
-
-  const isExpiringSoon = (dateStr: string | null) => {
-    if (!dateStr) return false
-    const diff = new Date(dateStr).getTime() - Date.now()
-    return diff > 0 && diff < 90 * 24 * 60 * 60 * 1000
-  }
 
   const contratsError = errorContrats || errorPrestataires
   const hasContratsError = isErrorContrats || isErrorPrestataires

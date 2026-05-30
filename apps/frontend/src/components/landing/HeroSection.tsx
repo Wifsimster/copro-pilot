@@ -182,12 +182,12 @@ function DashboardMockup() {
   )
 }
 
-export function HeroSection() {
-  function scrollToSection(id: string) {
-    const el = document.getElementById(id)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
-  }
+function scrollToSection(id: string) {
+  const el = document.getElementById(id)
+  if (el) el.scrollIntoView({ behavior: 'smooth' })
+}
 
+export function HeroSection() {
   return (
     <section
       className="relative min-h-screen flex items-center

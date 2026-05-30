@@ -30,6 +30,23 @@ import {
   Settings,
 } from 'lucide-react'
 
+const classeLabels: Record<number, string> = {
+  1: 'Classe 1 - Capitaux',
+  4: 'Classe 4 - Tiers',
+  5: 'Classe 5 - Tresorerie',
+  6: 'Classe 6 - Charges',
+  7: 'Classe 7 - Produits',
+}
+
+const ANNEXES = [
+  { num: 1, title: 'Annexe 1 — Etat financier', desc: 'Charges et produits de l\'exercice' },
+  { num: 2, title: 'Annexe 2 — Situation de tresorerie', desc: 'Soldes des comptes bancaires et mouvements non rapproches' },
+  { num: 3, title: 'Annexe 3 — Creances et dettes', desc: 'Etat des impayes par coproprietaire' },
+  { num: 4, title: 'Annexe 4 — Fonds de travaux', desc: 'Cotisations et solde du fonds travaux (loi ALUR)' },
+  { num: 5, title: 'Annexe 5 — Budget previsionnel', desc: 'Postes de depenses previsionnels vs realises' },
+]
+
+
 type Tab = 'journal' | 'grand-livre' | 'balance' | 'annexes' | 'exercices'
 
 const TAB_CONFIG: { key: Tab; label: string; icon: typeof BookOpen }[] = [
@@ -305,13 +322,6 @@ function BalanceTab({ exerciceId }: { exerciceId: number | undefined }) {
   const totalCredit = balance?.reduce((s, l) => s + Number(l.total_credit), 0) ?? 0
   const isBalanced = Math.abs(totalDebit - totalCredit) < 0.01
 
-  const classeLabels: Record<number, string> = {
-    1: 'Classe 1 - Capitaux',
-    4: 'Classe 4 - Tiers',
-    5: 'Classe 5 - Tresorerie',
-    6: 'Classe 6 - Charges',
-    7: 'Classe 7 - Produits',
-  }
 
   // Group by classe
   const grouped = balance?.reduce((acc, l) => {
@@ -396,13 +406,6 @@ function AnnexesTab({ coproprieteId, annee }: { coproprieteId: number; annee: nu
   const { data: annexe4 } = useAnnexe4(selectedAnnexe === 4 ? coproprieteId : undefined, selectedAnnexe === 4 ? year : undefined)
   const { data: annexe5 } = useAnnexe5(selectedAnnexe === 5 ? coproprieteId : undefined, selectedAnnexe === 5 ? year : undefined)
 
-  const ANNEXES = [
-    { num: 1, title: 'Annexe 1 — Etat financier', desc: 'Charges et produits de l\'exercice' },
-    { num: 2, title: 'Annexe 2 — Situation de tresorerie', desc: 'Soldes des comptes bancaires et mouvements non rapproches' },
-    { num: 3, title: 'Annexe 3 — Creances et dettes', desc: 'Etat des impayes par coproprietaire' },
-    { num: 4, title: 'Annexe 4 — Fonds de travaux', desc: 'Cotisations et solde du fonds travaux (loi ALUR)' },
-    { num: 5, title: 'Annexe 5 — Budget previsionnel', desc: 'Postes de depenses previsionnels vs realises' },
-  ]
 
    
   const annexeData: Record<number, any> = { 1: annexe1, 2: annexe2, 3: annexe3, 4: annexe4, 5: annexe5 }

@@ -15,12 +15,14 @@ interface EcheancesCardProps {
   echeances: Echeance[]
 }
 
+const eurFormatter = new Intl.NumberFormat('fr-FR', {
+  style: 'currency',
+  currency: 'EUR',
+  maximumFractionDigits: 0,
+})
+
 function formatEur(value: number): string {
-  return new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
-  }).format(value)
+  return eurFormatter.format(value)
 }
 
 function formatDate(dateStr: string): string {
@@ -40,8 +42,8 @@ export default function EcheancesCard({
 }: EcheancesCardProps) {
   const sorted = useMemo(
     () =>
-      [...echeances]
-        .sort(
+      echeances
+        .toSorted(
           (a, b) =>
             new Date(a.date_echeance).getTime() -
             new Date(b.date_echeance).getTime()
