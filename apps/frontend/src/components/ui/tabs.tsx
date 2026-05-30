@@ -86,4 +86,5 @@ function TabsContent({
   )
 }
 
+// react-doctor-disable-next-line react-doctor/only-export-components -- cva variants colocated per shadcn/ui convention
 export { Tabs, TabsList, TabsTrigger, TabsContent, tabsListVariants }

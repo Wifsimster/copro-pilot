@@ -45,4 +45,5 @@ function Badge({
   )
 }
 
+// react-doctor-disable-next-line react-doctor/only-export-components -- cva variants colocated per shadcn/ui convention
 export { Badge, badgeVariants }
