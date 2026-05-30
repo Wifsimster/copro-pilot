@@ -104,16 +104,31 @@ export default function AssembleeDetailPage() {
   const genererDestinataires = useGenererDestinataires()
   const envoyerConvocation = useEnvoyerConvocation()
 
-  const [activeTab, setActiveTab] = useState<Tab>('resolutions')
-  const [showResolutionDialog, setShowResolutionDialog] = useState(false)
-  const [showPresenceDialog, setShowPresenceDialog] = useState(false)
-  const [showConvocationDialog, setShowConvocationDialog] = useState(false)
-  const [editingResolution, setEditingResolution] = useState<Resolution | null>(null)
-  const [editingPresence, setEditingPresence] = useState<PresenceAG | null>(null)
-  const [editingConvocation, setEditingConvocation] = useState<ConvocationAG | null>(null)
-  const [expandedConvocation, setExpandedConvocation] = useState<number | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<{ type: 'resolution' | 'presence' | 'convocation', id: number } | null>(null)
-  const [showSendConfirm, setShowSendConfirm] = useState<number | null>(null)
+  const [ui, setUi] = useState<{
+    activeTab: Tab
+    showResolutionDialog: boolean
+    showPresenceDialog: boolean
+    showConvocationDialog: boolean
+    editingResolution: Resolution | null
+    editingPresence: PresenceAG | null
+    editingConvocation: ConvocationAG | null
+    expandedConvocation: number | null
+    deleteTarget: { type: 'resolution' | 'presence' | 'convocation', id: number } | null
+    showSendConfirm: number | null
+  }>({
+    activeTab: 'resolutions',
+    showResolutionDialog: false,
+    showPresenceDialog: false,
+    showConvocationDialog: false,
+    editingResolution: null,
+    editingPresence: null,
+    editingConvocation: null,
+    expandedConvocation: null,
+    deleteTarget: null,
+    showSendConfirm: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { activeTab, showResolutionDialog, showPresenceDialog, showConvocationDialog, editingResolution, editingPresence, editingConvocation, expandedConvocation, deleteTarget, showSendConfirm } = ui
 
   // Fetch destinataires when expanding a convocation
   const { data: expandedDestinataires } = useQuery({
@@ -159,7 +174,7 @@ export default function AssembleeDetailPage() {
 
   const handleEnvoyer = async (convocId: number) => {
     if (!delai?.valide) {
-      setShowSendConfirm(convocId)
+      patchUi({ showSendConfirm: convocId })
       return
     }
     await envoyerConvocation.mutateAsync(convocId)
@@ -267,7 +282,7 @@ export default function AssembleeDetailPage() {
       {/* Tabs */}
       <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
         <button type="button"
-          onClick={() => setActiveTab('resolutions')}
+          onClick={() => patchUi({ activeTab: 'resolutions' })}
           className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
             activeTab === 'resolutions'
               ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
@@ -278,7 +293,7 @@ export default function AssembleeDetailPage() {
           Resolutions
         </button>
         <button type="button"
-          onClick={() => setActiveTab('presences')}
+          onClick={() => patchUi({ activeTab: 'presences' })}
           className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
             activeTab === 'presences'
               ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
@@ -289,7 +304,7 @@ export default function AssembleeDetailPage() {
           Presences
         </button>
         <button type="button"
-          onClick={() => setActiveTab('convocations')}
+          onClick={() => patchUi({ activeTab: 'convocations' })}
           className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
             activeTab === 'convocations'
               ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
@@ -312,7 +327,7 @@ export default function AssembleeDetailPage() {
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Resolutions</h2>
             <button type="button"
-              onClick={() => setShowResolutionDialog(true)}
+              onClick={() => patchUi({ showResolutionDialog: true })}
               disabled={createResolution.isPending}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800 disabled:opacity-50"
             >
@@ -373,14 +388,14 @@ export default function AssembleeDetailPage() {
                         </div>
                       )}
                       <button type="button"
-                        onClick={() => setEditingResolution(res)}
+                        onClick={() => patchUi({ editingResolution: res })}
                         className="rounded p-1 text-stone-400 hover:text-emerald-700"
                         aria-label="Modifier"
                       >
                         <Pencil className="size-4" />
                       </button>
                       <button type="button"
-                        onClick={() => setDeleteTarget({ type: 'resolution', id: res.id })}
+                        onClick={() => patchUi({ deleteTarget: { type: 'resolution', id: res.id } })}
                         className="rounded p-1 text-stone-400 hover:text-red-600"
                         aria-label="Supprimer"
                       >
@@ -396,7 +411,7 @@ export default function AssembleeDetailPage() {
           {agId && (
             <ResolutionFormDialog
               open={showResolutionDialog || !!editingResolution}
-              onOpenChange={(open) => { setShowResolutionDialog(open); if (!open) setEditingResolution(null) }}
+              onOpenChange={(open) => { patchUi({ showResolutionDialog: open }); if (!open) patchUi({ editingResolution: null }) }}
               agId={agId}
               numero={nextNumero}
               defaultValues={editingResolution ?? undefined}
@@ -407,8 +422,8 @@ export default function AssembleeDetailPage() {
                 } else {
                   await createResolution.mutateAsync(data)
                 }
-                setShowResolutionDialog(false)
-                setEditingResolution(null)
+                patchUi({ showResolutionDialog: false })
+                patchUi({ editingResolution: null })
               }}
               isLoading={editingResolution ? updateResolution.isPending : createResolution.isPending}
             />
@@ -422,7 +437,7 @@ export default function AssembleeDetailPage() {
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Feuille de presence</h2>
             <button type="button"
-              onClick={() => setShowPresenceDialog(true)}
+              onClick={() => patchUi({ showPresenceDialog: true })}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
               <Plus className="size-4" />
@@ -471,14 +486,14 @@ export default function AssembleeDetailPage() {
                       <td className="px-4 py-3">
                         <div className="flex gap-1">
                           <button type="button"
-                            onClick={() => setEditingPresence(p)}
+                            onClick={() => patchUi({ editingPresence: p })}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
                             <Pencil className="size-4" />
                           </button>
                           <button type="button"
-                            onClick={() => setDeleteTarget({ type: 'presence', id: p.id })}
+                            onClick={() => patchUi({ deleteTarget: { type: 'presence', id: p.id } })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -496,14 +511,14 @@ export default function AssembleeDetailPage() {
           {agId && (
             <PresenceFormDialog
               open={showPresenceDialog || !!editingPresence}
-              onOpenChange={(open) => { setShowPresenceDialog(open); if (!open) setEditingPresence(null) }}
+              onOpenChange={(open) => { patchUi({ showPresenceDialog: open }); if (!open) patchUi({ editingPresence: null }) }}
               agId={agId}
               defaultValues={editingPresence ?? undefined}
               title={editingPresence ? 'Modifier la presence' : 'Ajouter une presence'}
               onSubmit={async (data) => {
                 await setPresence.mutateAsync(data)
-                setShowPresenceDialog(false)
-                setEditingPresence(null)
+                patchUi({ showPresenceDialog: false })
+                patchUi({ editingPresence: null })
               }}
               isLoading={setPresence.isPending}
             />
@@ -518,7 +533,7 @@ export default function AssembleeDetailPage() {
             <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
               <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Convocations</h2>
               <button type="button"
-                onClick={() => setShowConvocationDialog(true)}
+                onClick={() => patchUi({ showConvocationDialog: true })}
                 className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
               >
                 <Plus className="size-4" />
@@ -584,7 +599,7 @@ export default function AssembleeDetailPage() {
                             </>
                           )}
                           <button type="button"
-                            onClick={() => setExpandedConvocation(expandedConvocation === convoc.id ? null : convoc.id)}
+                            onClick={() => patchUi({ expandedConvocation: expandedConvocation === convoc.id ? null : convoc.id })}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             title="Voir les destinataires"
                             aria-label="Voir les destinataires"
@@ -593,7 +608,7 @@ export default function AssembleeDetailPage() {
                           </button>
                           {convoc.statut === 'brouillon' && (
                             <button type="button"
-                              onClick={() => setEditingConvocation(convoc)}
+                              onClick={() => patchUi({ editingConvocation: convoc })}
                               className="rounded p-1 text-stone-400 hover:text-emerald-700"
                               aria-label="Modifier"
                             >
@@ -602,7 +617,7 @@ export default function AssembleeDetailPage() {
                           )}
                           {convoc.statut === 'brouillon' && (
                             <button type="button"
-                              onClick={() => setDeleteTarget({ type: 'convocation', id: convoc.id })}
+                              onClick={() => patchUi({ deleteTarget: { type: 'convocation', id: convoc.id } })}
                               className="rounded p-1 text-stone-400 hover:text-red-600"
                               aria-label="Supprimer"
                             >
@@ -684,7 +699,7 @@ export default function AssembleeDetailPage() {
           {agId && (
             <ConvocationFormDialog
               open={showConvocationDialog || !!editingConvocation}
-              onOpenChange={(open) => { setShowConvocationDialog(open); if (!open) setEditingConvocation(null) }}
+              onOpenChange={(open) => { patchUi({ showConvocationDialog: open }); if (!open) patchUi({ editingConvocation: null }) }}
               agId={agId}
               defaultValues={editingConvocation ?? undefined}
               title={editingConvocation ? 'Modifier la convocation' : 'Nouvelle convocation'}
@@ -694,8 +709,8 @@ export default function AssembleeDetailPage() {
                 } else {
                   await createConvocation.mutateAsync(data)
                 }
-                setShowConvocationDialog(false)
-                setEditingConvocation(null)
+                patchUi({ showConvocationDialog: false })
+                patchUi({ editingConvocation: null })
               }}
               isLoading={editingConvocation ? updateConvocation.isPending : createConvocation.isPending}
             />
@@ -704,7 +719,7 @@ export default function AssembleeDetailPage() {
       )}
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteTarget: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
@@ -712,19 +727,19 @@ export default function AssembleeDetailPage() {
           if (deleteTarget?.type === 'resolution') deleteResolution.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'presence') deletePresence.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'convocation') deleteConvocation.mutate(deleteTarget.id)
-          setDeleteTarget(null)
+          patchUi({ deleteTarget: null })
         }}
       />
 
       <ConfirmDialog
         open={showSendConfirm !== null}
-        onOpenChange={(o) => !o && setShowSendConfirm(null)}
+        onOpenChange={(o) => !o && patchUi({ showSendConfirm: null })}
         title="Delai legal non respecte"
         description="Le delai legal de 21 jours n'est pas respecte. Envoyer quand meme ?"
         variant="default"
         onConfirm={() => {
           envoyerConvocation.mutateAsync(showSendConfirm!)
-          setShowSendConfirm(null)
+          patchUi({ showSendConfirm: null })
         }}
       />
     </div>

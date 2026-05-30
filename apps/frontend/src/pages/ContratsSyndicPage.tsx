@@ -43,13 +43,24 @@ const isExpiringSoon = (dateStr: string | null) => {
 
 export default function ContratsSyndicPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
-  const [activeTab, setActiveTab] = useState<Tab>('contrats')
+  const [ui, setUi] = useState<{
+    activeTab: Tab
+    showContratDialog: boolean
+    editingContrat: ContratSyndic | null
+    showPropositionDialog: boolean
+    editingProposition: PropositionSyndic | null
+    deleteTarget: { type: 'contrat' | 'proposition', id: number } | null
+  }>({
+    activeTab: 'contrats',
+    showContratDialog: false,
+    editingContrat: null,
+    showPropositionDialog: false,
+    editingProposition: null,
+    deleteTarget: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { activeTab, showContratDialog, editingContrat, showPropositionDialog, editingProposition, deleteTarget } = ui
 
-  const [showContratDialog, setShowContratDialog] = useState(false)
-  const [editingContrat, setEditingContrat] = useState<ContratSyndic | null>(null)
-  const [showPropositionDialog, setShowPropositionDialog] = useState(false)
-  const [editingProposition, setEditingProposition] = useState<PropositionSyndic | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<{ type: 'contrat' | 'proposition', id: number } | null>(null)
 
   const { data: contrats, isLoading: loadingContrats } = useContratsSyndicByCopropriete(selectedCoproId)
   const { data: propositions, isLoading: loadingPropositions } = usePropositionsSyndicByCopropriete(selectedCoproId)
@@ -82,7 +93,7 @@ export default function ContratsSyndicPage() {
             ]).map((tab) => (
               <button type="button"
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
+                onClick={() => patchUi({ activeTab: tab.key })}
                 className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === tab.key
                     ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
@@ -101,7 +112,7 @@ export default function ContratsSyndicPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Contrats de syndic</h2>
                 <button type="button"
-                  onClick={() => setShowContratDialog(true)}
+                  onClick={() => patchUi({ showContratDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -161,14 +172,14 @@ export default function ContratsSyndicPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingContrat(contrat); setShowContratDialog(true) }}
+                                onClick={() => { patchUi({ editingContrat: contrat }); patchUi({ showContratDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'contrat', id: contrat.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'contrat', id: contrat.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -185,7 +196,7 @@ export default function ContratsSyndicPage() {
 
               <ContratSyndicFormDialog
                 open={showContratDialog}
-                onOpenChange={(open) => { setShowContratDialog(open); if (!open) setEditingContrat(null) }}
+                onOpenChange={(open) => { patchUi({ showContratDialog: open }); if (!open) patchUi({ editingContrat: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingContrat || undefined}
                 title={editingContrat ? 'Modifier le contrat de syndic' : 'Nouveau contrat de syndic'}
@@ -195,8 +206,8 @@ export default function ContratsSyndicPage() {
                   } else {
                     await createContrat.mutateAsync(data)
                   }
-                  setShowContratDialog(false)
-                  setEditingContrat(null)
+                  patchUi({ showContratDialog: false })
+                  patchUi({ editingContrat: null })
                 }}
                 isLoading={editingContrat ? updateContrat.isPending : createContrat.isPending}
               />
@@ -209,7 +220,7 @@ export default function ContratsSyndicPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Propositions de syndic</h2>
                 <button type="button"
-                  onClick={() => setShowPropositionDialog(true)}
+                  onClick={() => patchUi({ showPropositionDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -267,14 +278,14 @@ export default function ContratsSyndicPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingProposition(proposition); setShowPropositionDialog(true) }}
+                                onClick={() => { patchUi({ editingProposition: proposition }); patchUi({ showPropositionDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'proposition', id: proposition.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'proposition', id: proposition.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -291,7 +302,7 @@ export default function ContratsSyndicPage() {
 
               <PropositionSyndicFormDialog
                 open={showPropositionDialog}
-                onOpenChange={(open) => { setShowPropositionDialog(open); if (!open) setEditingProposition(null) }}
+                onOpenChange={(open) => { patchUi({ showPropositionDialog: open }); if (!open) patchUi({ editingProposition: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingProposition || undefined}
                 title={editingProposition ? 'Modifier la proposition' : 'Nouvelle proposition'}
@@ -301,8 +312,8 @@ export default function ContratsSyndicPage() {
                   } else {
                     await createProposition.mutateAsync(data)
                   }
-                  setShowPropositionDialog(false)
-                  setEditingProposition(null)
+                  patchUi({ showPropositionDialog: false })
+                  patchUi({ editingProposition: null })
                 }}
                 isLoading={editingProposition ? updateProposition.isPending : createProposition.isPending}
               />
@@ -313,14 +324,14 @@ export default function ContratsSyndicPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteTarget: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
         onConfirm={() => {
           if (deleteTarget?.type === 'contrat') deleteContrat.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'proposition') deleteProposition.mutate(deleteTarget.id)
-          setDeleteTarget(null)
+          patchUi({ deleteTarget: null })
         }}
       />
     </div>

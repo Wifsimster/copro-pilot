@@ -63,13 +63,25 @@ export default function ReglementsPage() {
     if (param) setSelectedCoproprieteId(parseInt(param))
   }, [searchParams, setSelectedCoproprieteId])
 
-  const [activeTab, setActiveTab] = useState<Tab>('reglements')
-  const [showReglementDialog, setShowReglementDialog] = useState(false)
-  const [showArticleDialog, setShowArticleDialog] = useState(false)
-  const [editingReglement, setEditingReglement] = useState<ReglementCopropriete | null>(null)
-  const [editingArticle, setEditingArticle] = useState<ArticleReglement | null>(null)
-  const [selectedReglementId, setSelectedReglementId] = useState<number | undefined>(undefined)
-  const [deleteTarget, setDeleteTarget] = useState<{ type: 'reglement' | 'article', id: number } | null>(null)
+  const [ui, setUi] = useState<{
+    activeTab: Tab
+    showReglementDialog: boolean
+    showArticleDialog: boolean
+    editingReglement: ReglementCopropriete | null
+    editingArticle: ArticleReglement | null
+    selectedReglementId: number | undefined
+    deleteTarget: { type: 'reglement' | 'article', id: number } | null
+  }>({
+    activeTab: 'reglements',
+    showReglementDialog: false,
+    showArticleDialog: false,
+    editingReglement: null,
+    editingArticle: null,
+    selectedReglementId: undefined,
+    deleteTarget: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { activeTab, showReglementDialog, showArticleDialog, editingReglement, editingArticle, selectedReglementId, deleteTarget } = ui
 
   const { data: reglements, isLoading: loadingReglements } = useReglementsByCopropriete(selectedCoproId)
   const { data: articles, isLoading: loadingArticles } = useArticlesByReglement(selectedReglementId)
@@ -83,14 +95,14 @@ export default function ReglementsPage() {
   // Switch tabs, auto-selecting the first reglement the first time the user
   // opens the articles tab (handled here rather than in an effect).
   const handleTabChange = (tab: Tab) => {
-    setActiveTab(tab)
+    patchUi({ activeTab: tab })
     if (
       tab === 'articles' &&
       !selectedReglementId &&
       reglements &&
       reglements.length > 0
     ) {
-      setSelectedReglementId(reglements[0].id)
+      patchUi({ selectedReglementId: reglements[0].id })
     }
   }
 
@@ -134,7 +146,7 @@ export default function ReglementsPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Reglements</h2>
                 <button type="button"
-                  onClick={() => setShowReglementDialog(true)}
+                  onClick={() => patchUi({ showReglementDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -189,14 +201,14 @@ export default function ReglementsPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingReglement(reglement); setShowReglementDialog(true) }}
+                                onClick={() => { patchUi({ editingReglement: reglement }); patchUi({ showReglementDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'reglement', id: reglement.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'reglement', id: reglement.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -213,7 +225,7 @@ export default function ReglementsPage() {
 
               <ReglementFormDialog
                 open={showReglementDialog}
-                onOpenChange={(open) => { setShowReglementDialog(open); if (!open) setEditingReglement(null) }}
+                onOpenChange={(open) => { patchUi({ showReglementDialog: open }); if (!open) patchUi({ editingReglement: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingReglement || undefined}
                 title={editingReglement ? 'Modifier le reglement' : 'Nouveau reglement'}
@@ -223,8 +235,8 @@ export default function ReglementsPage() {
                   } else {
                     await createReglement.mutateAsync(data)
                   }
-                  setShowReglementDialog(false)
-                  setEditingReglement(null)
+                  patchUi({ showReglementDialog: false })
+                  patchUi({ editingReglement: null })
                 }}
                 isLoading={editingReglement ? updateReglement.isPending : createReglement.isPending}
               />
@@ -240,7 +252,7 @@ export default function ReglementsPage() {
                   {reglements && reglements.length > 0 && (
                     <select
                       value={selectedReglementId || ''}
-                      onChange={(e) => setSelectedReglementId(e.target.value ? Number(e.target.value) : undefined)}
+                      onChange={(e) => patchUi({ selectedReglementId: e.target.value ? Number(e.target.value) : undefined })}
                       className="rounded-md border border-stone-300 bg-white px-3 py-1.5 text-sm dark:border-stone-600 dark:bg-stone-700 dark:text-white"
                     >
                       {reglements.map((r: ReglementCopropriete) => (
@@ -253,7 +265,7 @@ export default function ReglementsPage() {
                 </div>
                 {selectedReglementId && (
                   <button type="button"
-                    onClick={() => setShowArticleDialog(true)}
+                    onClick={() => patchUi({ showArticleDialog: true })}
                     className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                   >
                     <Plus className="size-4" />
@@ -302,14 +314,14 @@ export default function ReglementsPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingArticle(article); setShowArticleDialog(true) }}
+                                onClick={() => { patchUi({ editingArticle: article }); patchUi({ showArticleDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'article', id: article.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'article', id: article.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -327,7 +339,7 @@ export default function ReglementsPage() {
               {selectedReglementId && (
                 <ArticleReglementFormDialog
                   open={showArticleDialog}
-                  onOpenChange={(open) => { setShowArticleDialog(open); if (!open) setEditingArticle(null) }}
+                  onOpenChange={(open) => { patchUi({ showArticleDialog: open }); if (!open) patchUi({ editingArticle: null }) }}
                   reglementId={selectedReglementId}
                   defaultValues={editingArticle || undefined}
                   title={editingArticle ? 'Modifier l\'article' : 'Nouvel article'}
@@ -337,8 +349,8 @@ export default function ReglementsPage() {
                     } else {
                       await createArticle.mutateAsync(data)
                     }
-                    setShowArticleDialog(false)
-                    setEditingArticle(null)
+                    patchUi({ showArticleDialog: false })
+                    patchUi({ editingArticle: null })
                   }}
                   isLoading={editingArticle ? updateArticle.isPending : createArticle.isPending}
                 />
@@ -350,14 +362,14 @@ export default function ReglementsPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteTarget: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
         onConfirm={() => {
           if (deleteTarget?.type === 'reglement') deleteReglement.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'article') deleteArticle.mutate(deleteTarget.id)
-          setDeleteTarget(null)
+          patchUi({ deleteTarget: null })
         }}
       />
     </div>

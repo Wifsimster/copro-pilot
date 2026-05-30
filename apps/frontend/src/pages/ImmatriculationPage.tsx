@@ -42,13 +42,25 @@ export default function ImmatriculationPage() {
     if (param) setSelectedCoproprieteId(parseInt(param))
   }, [searchParams, setSelectedCoproprieteId])
 
-  const [showDialog, setShowDialog] = useState(false)
-  const [editingDeclaration, setEditingDeclaration] = useState<DeclarationRegistre | null>(null)
-  const [donneesPreparees, setDonneesPreparees] = useState<DonneesDeclarees | null>(null)
-  const [isPreparating, setIsPreparating] = useState(false)
-  const [complianceData, setComplianceData] = useState<DonneesDeclarees | null>(null)
-  const [expandedRow, setExpandedRow] = useState<number | null>(null)
-  const [deleteId, setDeleteId] = useState<number | null>(null)
+  const [ui, setUi] = useState<{
+    showDialog: boolean
+    editingDeclaration: DeclarationRegistre | null
+    donneesPreparees: DonneesDeclarees | null
+    isPreparating: boolean
+    complianceData: DonneesDeclarees | null
+    expandedRow: number | null
+    deleteId: number | null
+  }>({
+    showDialog: false,
+    editingDeclaration: null,
+    donneesPreparees: null,
+    isPreparating: false,
+    complianceData: null,
+    expandedRow: null,
+    deleteId: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { showDialog, editingDeclaration, donneesPreparees, isPreparating, complianceData, expandedRow, deleteId } = ui
 
   const { data: coproprietes } = useCoproprietes()
   const { data: declarations, isLoading } = useDeclarationsRegistreByCopropriete(selectedCoproId)
@@ -61,28 +73,28 @@ export default function ImmatriculationPage() {
   // Fetch compliance data for current year
   useEffect(() => {
     if (!selectedCoproId) {
-      setComplianceData(null)
+      patchUi({ complianceData: null })
       return
     }
     const annee = new Date().getFullYear()
     declarationsRegistreApi.preparerDonnees(selectedCoproId, annee)
-      .then(res => setComplianceData(res.data))
-      .catch(() => setComplianceData(null))
+      .then(res => patchUi({ complianceData: res.data }))
+      .catch(() => patchUi({ complianceData: null }))
   }, [selectedCoproId])
 
   const handlePreparer = async () => {
     if (!selectedCoproId) return
     const annee = new Date().getFullYear()
-    setIsPreparating(true)
+    patchUi({ isPreparating: true })
     try {
       const response = await declarationsRegistreApi.preparerDonnees(selectedCoproId, annee)
-      setDonneesPreparees(response.data)
-      setEditingDeclaration(null)
-      setShowDialog(true)
+      patchUi({ donneesPreparees: response.data })
+      patchUi({ editingDeclaration: null })
+      patchUi({ showDialog: true })
     } catch {
       // Error handled by API layer
     } finally {
-      setIsPreparating(false)
+      patchUi({ isPreparating: false })
     }
   }
 
@@ -236,7 +248,7 @@ export default function ImmatriculationPage() {
                   {isPreparating ? 'Preparation...' : 'Preparer declaration'}
                 </button>
                 <button type="button"
-                  onClick={() => { setDonneesPreparees(null); setEditingDeclaration(null); setShowDialog(true) }}
+                  onClick={() => { patchUi({ donneesPreparees: null }); patchUi({ editingDeclaration: null }); patchUi({ showDialog: true }) }}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -273,7 +285,7 @@ export default function ImmatriculationPage() {
                         <tr
                           key={decl.id}
                           className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30 cursor-pointer"
-                          onClick={() => setExpandedRow(expandedRow === decl.id ? null : decl.id)}
+                          onClick={() => patchUi({ expandedRow: expandedRow === decl.id ? null : decl.id })}
                         >
                           <td className="px-4 py-3 text-stone-400">
                             {decl.donnees_declarees ? (
@@ -299,14 +311,14 @@ export default function ImmatriculationPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
                               <button type="button"
-                                onClick={() => { setDonneesPreparees(null); setEditingDeclaration(decl); setShowDialog(true) }}
+                                onClick={() => { patchUi({ donneesPreparees: null }); patchUi({ editingDeclaration: decl }); patchUi({ showDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteId(decl.id)}
+                                onClick={() => patchUi({ deleteId: decl.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -331,7 +343,7 @@ export default function ImmatriculationPage() {
 
             <DeclarationFormDialog
               open={showDialog}
-              onOpenChange={(open) => { setShowDialog(open); if (!open) { setEditingDeclaration(null); setDonneesPreparees(null) } }}
+              onOpenChange={(open) => { patchUi({ showDialog: open }); if (!open) { patchUi({ editingDeclaration: null }); patchUi({ donneesPreparees: null }) } }}
               coproprieteId={selectedCoproId}
               defaultValues={editingDeclaration || undefined}
               title={editingDeclaration ? 'Modifier la declaration' : 'Nouvelle declaration'}
@@ -342,9 +354,9 @@ export default function ImmatriculationPage() {
                 } else {
                   await createDeclaration.mutateAsync(data)
                 }
-                setShowDialog(false)
-                setEditingDeclaration(null)
-                setDonneesPreparees(null)
+                patchUi({ showDialog: false })
+                patchUi({ editingDeclaration: null })
+                patchUi({ donneesPreparees: null })
               }}
               isLoading={editingDeclaration ? updateDeclaration.isPending : createDeclaration.isPending}
             />
@@ -354,11 +366,11 @@ export default function ImmatriculationPage() {
 
       <ConfirmDialog
         open={deleteId !== null}
-        onOpenChange={(o) => !o && setDeleteId(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteId: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
-        onConfirm={() => { deleteDeclaration.mutate(deleteId!); setDeleteId(null) }}
+        onConfirm={() => { deleteDeclaration.mutate(deleteId!); patchUi({ deleteId: null }) }}
       />
     </div>
   )

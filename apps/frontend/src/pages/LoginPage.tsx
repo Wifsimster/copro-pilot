@@ -106,17 +106,32 @@ function PlanBanner({ plan }: { plan: string }) {
 export default function LoginPage() {
   const { signIn, signUp, isLoading } = useAuthStore()
 
-  const [signInEmail, setSignInEmail] = useState('')
-  const [signInPassword, setSignInPassword] = useState('')
-  const [signInError, setSignInError] = useState('')
+  const [ui, setUi] = useState<{
+    signInEmail: string
+    signInPassword: string
+    signInError: string
+    signUpName: string
+    signUpEmail: string
+    signUpPassword: string
+    signUpConfirm: string
+    signUpError: string
+    signUpSuccess: boolean
+    consentAccepted: boolean
+  }>({
+    signInEmail: '',
+    signInPassword: '',
+    signInError: '',
+    signUpName: '',
+    signUpEmail: '',
+    signUpPassword: '',
+    signUpConfirm: '',
+    signUpError: '',
+    signUpSuccess: false,
+    consentAccepted: false,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { signInEmail, signInPassword, signInError, signUpName, signUpEmail, signUpPassword, signUpConfirm, signUpError, signUpSuccess, consentAccepted } = ui
 
-  const [signUpName, setSignUpName] = useState('')
-  const [signUpEmail, setSignUpEmail] = useState('')
-  const [signUpPassword, setSignUpPassword] = useState('')
-  const [signUpConfirm, setSignUpConfirm] = useState('')
-  const [signUpError, setSignUpError] = useState('')
-  const [signUpSuccess, setSignUpSuccess] = useState(false)
-  const [consentAccepted, setConsentAccepted] = useState(false)
 
   // Detect ?plan= query param from landing page CTAs
   const params = new URLSearchParams(window.location.search)
@@ -132,20 +147,20 @@ export default function LoginPage() {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSignInError('')
+    patchUi({ signInError: '' })
     try {
       await signIn(signInEmail, signInPassword)
     } catch (error) {
-      setSignInError(error instanceof Error ? error.message : 'Erreur de connexion')
+      patchUi({ signInError: error instanceof Error ? error.message : 'Erreur de connexion' })
     }
   }
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSignUpError('')
+    patchUi({ signUpError: '' })
 
     if (signUpPassword !== signUpConfirm) {
-      setSignUpError('Les mots de passe ne correspondent pas')
+      patchUi({ signUpError: 'Les mots de passe ne correspondent pas' })
       return
     }
 
@@ -153,20 +168,20 @@ export default function LoginPage() {
       email: signUpEmail,
     })
     if (!passwordCheck.valid) {
-      setSignUpError(passwordCheck.errors.join('. '))
+      patchUi({ signUpError: passwordCheck.errors.join('. ') })
       return
     }
 
     if (!consentAccepted) {
-      setSignUpError('Vous devez accepter la politique de confidentialité pour vous inscrire')
+      patchUi({ signUpError: 'Vous devez accepter la politique de confidentialité pour vous inscrire' })
       return
     }
 
     try {
       await signUp(signUpName, signUpEmail, signUpPassword)
-      setSignUpSuccess(true)
+      patchUi({ signUpSuccess: true })
     } catch (error) {
-      setSignUpError(error instanceof Error ? error.message : "Erreur lors de l'inscription")
+      patchUi({ signUpError: error instanceof Error ? error.message : "Erreur lors de l'inscription" })
     }
   }
 
@@ -265,7 +280,7 @@ export default function LoginPage() {
                       type="email"
                       placeholder="vous@exemple.com"
                       value={signInEmail}
-                      onChange={(e) => setSignInEmail(e.target.value)}
+                      onChange={(e) => patchUi({ signInEmail: e.target.value })}
                       required
                       autoComplete="email"
                       className="h-11"
@@ -284,7 +299,7 @@ export default function LoginPage() {
                     <PasswordInput
                       id="signin-password"
                       value={signInPassword}
-                      onChange={(e) => setSignInPassword(e.target.value)}
+                      onChange={(e) => patchUi({ signInPassword: e.target.value })}
                       autoComplete="current-password"
                     />
                   </div>
@@ -328,9 +343,9 @@ export default function LoginPage() {
                       className="flex-1 h-11"
                       disabled={isLoading}
                       onClick={() => {
-                        setSignInError('')
+                        patchUi({ signInError: '' })
                         signIn('syndic@copropilot.local', 'syndic').catch(err => {
-                          setSignInError(err instanceof Error ? err.message : 'Erreur de connexion')
+                          patchUi({ signInError: err instanceof Error ? err.message : 'Erreur de connexion' })
                         })
                       }}
                     >
@@ -343,9 +358,9 @@ export default function LoginPage() {
                       className="flex-1 h-11"
                       disabled={isLoading}
                       onClick={() => {
-                        setSignInError('')
+                        patchUi({ signInError: '' })
                         signIn('copro@copropilot.local', 'copro').catch(err => {
-                          setSignInError(err instanceof Error ? err.message : 'Erreur de connexion')
+                          patchUi({ signInError: err instanceof Error ? err.message : 'Erreur de connexion' })
                         })
                       }}
                     >
@@ -395,7 +410,7 @@ export default function LoginPage() {
                             type="text"
                             placeholder="Jean Dupont"
                             value={signUpName}
-                            onChange={(e) => setSignUpName(e.target.value)}
+                            onChange={(e) => patchUi({ signUpName: e.target.value })}
                             required
                             autoComplete="name"
                             className="h-11"
@@ -408,7 +423,7 @@ export default function LoginPage() {
                             type="email"
                             placeholder="vous@exemple.com"
                             value={signUpEmail}
-                            onChange={(e) => setSignUpEmail(e.target.value)}
+                            onChange={(e) => patchUi({ signUpEmail: e.target.value })}
                             required
                             autoComplete="email"
                             className="h-11"
@@ -424,7 +439,7 @@ export default function LoginPage() {
                           <PasswordInput
                             id="signup-password"
                             value={signUpPassword}
-                            onChange={(e) => setSignUpPassword(e.target.value)}
+                            onChange={(e) => patchUi({ signUpPassword: e.target.value })}
                             minLength={12}
                             autoComplete="new-password"
                           />
@@ -439,7 +454,7 @@ export default function LoginPage() {
                           <PasswordInput
                             id="signup-confirm"
                             value={signUpConfirm}
-                            onChange={(e) => setSignUpConfirm(e.target.value)}
+                            onChange={(e) => patchUi({ signUpConfirm: e.target.value })}
                             minLength={12}
                             autoComplete="new-password"
                           />
@@ -456,7 +471,7 @@ export default function LoginPage() {
                           id="consent"
                           checked={consentAccepted}
                           onCheckedChange={(checked) =>
-                            setConsentAccepted(checked === true)
+                            patchUi({ consentAccepted: checked === true })
                           }
                           className="mt-0.5"
                         />

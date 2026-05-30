@@ -22,18 +22,30 @@ import { userManagementApi } from '@/api/userManagement'
 type Step = 'email' | 'otp' | 'password'
 
 export default function FirstLoginPage() {
-  const [step, setStep] = useState<Step>('email')
-  const [email, setEmail] = useState('')
-  const [otp, setOtp] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirm, setConfirm] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [ui, setUi] = useState<{
+    step: Step
+    email: string
+    otp: string
+    password: string
+    confirm: string
+    isLoading: boolean
+    error: string
+  }>({
+    step: 'email',
+    email: '',
+    otp: '',
+    password: '',
+    confirm: '',
+    isLoading: false,
+    error: '',
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { step, email, otp, password, confirm, isLoading, error } = ui
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setIsLoading(true)
+    patchUi({ error: '' })
+    patchUi({ isLoading: true })
 
     try {
       const result = await authClient.emailOtp.sendVerificationOtp({
@@ -41,24 +53,22 @@ export default function FirstLoginPage() {
         type: 'sign-in',
       })
       if (result.error) {
-        setError(
-          result.error.message ||
-            "Erreur lors de l'envoi du code"
-        )
+        patchUi({ error: result.error.message ||
+            "Erreur lors de l'envoi du code" })
       } else {
-        setStep('otp')
+        patchUi({ step: 'otp' })
       }
     } catch {
-      setError("Erreur lors de l'envoi du code")
+      patchUi({ error: "Erreur lors de l'envoi du code" })
     } finally {
-      setIsLoading(false)
+      patchUi({ isLoading: false })
     }
   }
 
   const handleVerifyOTP = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setIsLoading(true)
+    patchUi({ error: '' })
+    patchUi({ isLoading: true })
 
     try {
       const result = await authClient.signIn.emailOtp({
@@ -66,53 +76,49 @@ export default function FirstLoginPage() {
         otp,
       })
       if (result.error) {
-        setError(
-          result.error.message || 'Code incorrect ou expiré'
-        )
+        patchUi({ error: result.error.message || 'Code incorrect ou expiré' })
       } else {
         // Check if user needs to change password
         const session = await authClient.getSession()
         const user = session?.data?.user as any
         if (user?.mustChangePassword) {
-          setStep('password')
+          patchUi({ step: 'password' })
         } else {
           // Already has a password, redirect to extranet
           window.location.href = '/extranet'
         }
       }
     } catch {
-      setError('Erreur de vérification')
+      patchUi({ error: 'Erreur de vérification' })
     } finally {
-      setIsLoading(false)
+      patchUi({ isLoading: false })
     }
   }
 
   const handleSetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
+    patchUi({ error: '' })
 
     if (password !== confirm) {
-      setError('Les mots de passe ne correspondent pas')
+      patchUi({ error: 'Les mots de passe ne correspondent pas' })
       return
     }
 
     const validation = validatePassword(password, { email })
     if (!validation.valid) {
-      setError(validation.errors.join('. '))
+      patchUi({ error: validation.errors.join('. ') })
       return
     }
 
-    setIsLoading(true)
+    patchUi({ isLoading: true })
 
     try {
       await userManagementApi.setInitialPassword(password)
       window.location.href = '/extranet'
     } catch {
-      setError(
-        'Erreur lors de la définition du mot de passe'
-      )
+      patchUi({ error: 'Erreur lors de la définition du mot de passe' })
     } finally {
-      setIsLoading(false)
+      patchUi({ isLoading: false })
     }
   }
 
@@ -198,7 +204,7 @@ export default function FirstLoginPage() {
                   id="email"
                   type="email"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={e => patchUi({ email: e.target.value })}
                   placeholder="vous@exemple.com"
                   required
                   autoComplete="email"
@@ -249,7 +255,7 @@ export default function FirstLoginPage() {
 
               <OTPInput
                 value={otp}
-                onChange={setOtp}
+                onChange={v => patchUi({ otp: v })}
                 disabled={isLoading}
               />
 
@@ -278,8 +284,8 @@ export default function FirstLoginPage() {
                 type="button"
                 className="w-full text-sm text-primary hover:underline"
                 onClick={() => {
-                  setOtp('')
-                  setError('')
+                  patchUi({ otp: '' })
+                  patchUi({ error: '' })
                   handleSendOTP(
                     new Event('submit') as unknown as React.FormEvent
                   )
@@ -314,7 +320,7 @@ export default function FirstLoginPage() {
                 <PasswordInput
                   id="password"
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  onChange={e => patchUi({ password: e.target.value })}
                   minLength={12}
                   autoComplete="new-password"
                 />
@@ -330,7 +336,7 @@ export default function FirstLoginPage() {
                 <PasswordInput
                   id="confirm"
                   value={confirm}
-                  onChange={e => setConfirm(e.target.value)}
+                  onChange={e => patchUi({ confirm: e.target.value })}
                   minLength={12}
                   autoComplete="new-password"
                 />

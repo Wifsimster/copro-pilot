@@ -66,12 +66,27 @@ export default function TravauxPage() {
     const param = searchParams.get('copropriete')
     if (param) setSelectedCoproprieteId(parseInt(param))
   }, [searchParams, setSelectedCoproprieteId])
-  const [activeTab, setActiveTab] = useState<Tab>('incidents')
-  const [showIncidentDialog, setShowIncidentDialog] = useState(false)
-  const [showInterventionDialog, setShowInterventionDialog] = useState(false)
-  const [showCarnetDialog, setShowCarnetDialog] = useState(false)
-  const [editingIncident, setEditingIncident] = useState<Incident | null>(null)
-  const [editingIntervention, setEditingIntervention] = useState<Intervention | null>(null)
+  const [ui, setUi] = useState<{
+    activeTab: Tab
+    showIncidentDialog: boolean
+    showInterventionDialog: boolean
+    showCarnetDialog: boolean
+    editingIncident: Incident | null
+    editingIntervention: Intervention | null
+    editingCarnet: CarnetEntretien | null
+    deleteTarget: { type: 'incident' | 'intervention' | 'carnet', id: number } | null
+  }>({
+    activeTab: 'incidents',
+    showIncidentDialog: false,
+    showInterventionDialog: false,
+    showCarnetDialog: false,
+    editingIncident: null,
+    editingIntervention: null,
+    editingCarnet: null,
+    deleteTarget: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { activeTab, showIncidentDialog, showInterventionDialog, showCarnetDialog, editingIncident, editingIntervention, editingCarnet, deleteTarget } = ui
 
   const { data: incidents, isLoading: loadingIncidents } = useIncidentsByCopropriete(selectedCoproId)
   const { data: interventions, isLoading: loadingInterventions } = useInterventionsByCopropriete(selectedCoproId)
@@ -85,8 +100,6 @@ export default function TravauxPage() {
   const createCarnet = useCreateCarnetEntretien()
   const updateCarnet = useUpdateCarnetEntretien()
   const deleteCarnet = useDeleteCarnetEntretien()
-  const [editingCarnet, setEditingCarnet] = useState<CarnetEntretien | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<{ type: 'incident' | 'intervention' | 'carnet', id: number } | null>(null)
 
   return (
     <div className="space-y-6">
@@ -110,7 +123,7 @@ export default function TravauxPage() {
             ]).map((tab) => (
               <button type="button"
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
+                onClick={() => patchUi({ activeTab: tab.key })}
                 className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === tab.key
                     ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
@@ -129,7 +142,7 @@ export default function TravauxPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Incidents</h2>
                 <button type="button"
-                  onClick={() => setShowIncidentDialog(true)}
+                  onClick={() => patchUi({ showIncidentDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -180,14 +193,14 @@ export default function TravauxPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingIncident(incident); setShowIncidentDialog(true) }}
+                                onClick={() => { patchUi({ editingIncident: incident }); patchUi({ showIncidentDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'incident', id: incident.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'incident', id: incident.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -204,7 +217,7 @@ export default function TravauxPage() {
 
               <IncidentFormDialog
                 open={showIncidentDialog}
-                onOpenChange={(open) => { setShowIncidentDialog(open); if (!open) setEditingIncident(null) }}
+                onOpenChange={(open) => { patchUi({ showIncidentDialog: open }); if (!open) patchUi({ editingIncident: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingIncident || undefined}
                 title={editingIncident ? 'Modifier l\'incident' : 'Signaler un incident'}
@@ -214,8 +227,8 @@ export default function TravauxPage() {
                   } else {
                     await createIncident.mutateAsync(data)
                   }
-                  setShowIncidentDialog(false)
-                  setEditingIncident(null)
+                  patchUi({ showIncidentDialog: false })
+                  patchUi({ editingIncident: null })
                 }}
                 isLoading={editingIncident ? updateIncident.isPending : createIncident.isPending}
               />
@@ -228,7 +241,7 @@ export default function TravauxPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Interventions</h2>
                 <button type="button"
-                  onClick={() => setShowInterventionDialog(true)}
+                  onClick={() => patchUi({ showInterventionDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -283,14 +296,14 @@ export default function TravauxPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingIntervention(inter); setShowInterventionDialog(true) }}
+                                onClick={() => { patchUi({ editingIntervention: inter }); patchUi({ showInterventionDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'intervention', id: inter.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'intervention', id: inter.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -307,7 +320,7 @@ export default function TravauxPage() {
 
               <InterventionFormDialog
                 open={showInterventionDialog}
-                onOpenChange={(open) => { setShowInterventionDialog(open); if (!open) setEditingIntervention(null) }}
+                onOpenChange={(open) => { patchUi({ showInterventionDialog: open }); if (!open) patchUi({ editingIntervention: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingIntervention || undefined}
                 title={editingIntervention ? 'Modifier l\'intervention' : 'Nouvelle intervention'}
@@ -317,8 +330,8 @@ export default function TravauxPage() {
                   } else {
                     await createIntervention.mutateAsync(data)
                   }
-                  setShowInterventionDialog(false)
-                  setEditingIntervention(null)
+                  patchUi({ showInterventionDialog: false })
+                  patchUi({ editingIntervention: null })
                 }}
                 isLoading={editingIntervention ? updateIntervention.isPending : createIntervention.isPending}
               />
@@ -331,7 +344,7 @@ export default function TravauxPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Carnet d'entretien</h2>
                 <button type="button"
-                  onClick={() => setShowCarnetDialog(true)}
+                  onClick={() => patchUi({ showCarnetDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -378,14 +391,14 @@ export default function TravauxPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingCarnet(entree); setShowCarnetDialog(true) }}
+                                onClick={() => { patchUi({ editingCarnet: entree }); patchUi({ showCarnetDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'carnet', id: entree.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'carnet', id: entree.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -402,7 +415,7 @@ export default function TravauxPage() {
 
               <CarnetEntretienFormDialog
                 open={showCarnetDialog}
-                onOpenChange={(open) => { setShowCarnetDialog(open); if (!open) setEditingCarnet(null) }}
+                onOpenChange={(open) => { patchUi({ showCarnetDialog: open }); if (!open) patchUi({ editingCarnet: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingCarnet || undefined}
                 title={editingCarnet ? 'Modifier l\'entree' : 'Nouvelle entree au carnet'}
@@ -412,8 +425,8 @@ export default function TravauxPage() {
                   } else {
                     await createCarnet.mutateAsync(data)
                   }
-                  setShowCarnetDialog(false)
-                  setEditingCarnet(null)
+                  patchUi({ showCarnetDialog: false })
+                  patchUi({ editingCarnet: null })
                 }}
                 isLoading={editingCarnet ? updateCarnet.isPending : createCarnet.isPending}
               />
@@ -424,7 +437,7 @@ export default function TravauxPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteTarget: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
@@ -432,7 +445,7 @@ export default function TravauxPage() {
           if (deleteTarget?.type === 'incident') deleteIncident.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'intervention') deleteIntervention.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'carnet') deleteCarnet.mutate(deleteTarget.id)
-          setDeleteTarget(null)
+          patchUi({ deleteTarget: null })
         }}
       />
     </div>

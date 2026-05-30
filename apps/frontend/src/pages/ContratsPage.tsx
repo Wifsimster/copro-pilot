@@ -41,13 +41,24 @@ const isExpiringSoon = (dateStr: string | null) => {
 
 export default function ContratsPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
-  const [activeTab, setActiveTab] = useState<Tab>('contrats')
+  const [ui, setUi] = useState<{
+    activeTab: Tab
+    showContratDialog: boolean
+    editingContrat: Contrat | null
+    showPrestataireDialog: boolean
+    editingPrestataire: Prestataire | null
+    deleteTarget: { type: 'contrat' | 'prestataire', id: number } | null
+  }>({
+    activeTab: 'contrats',
+    showContratDialog: false,
+    editingContrat: null,
+    showPrestataireDialog: false,
+    editingPrestataire: null,
+    deleteTarget: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { activeTab, showContratDialog, editingContrat, showPrestataireDialog, editingPrestataire, deleteTarget } = ui
 
-  const [showContratDialog, setShowContratDialog] = useState(false)
-  const [editingContrat, setEditingContrat] = useState<Contrat | null>(null)
-  const [showPrestataireDialog, setShowPrestataireDialog] = useState(false)
-  const [editingPrestataire, setEditingPrestataire] = useState<Prestataire | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<{ type: 'contrat' | 'prestataire', id: number } | null>(null)
 
   const { data: prestataires, isLoading: loadingPrestataires, isError: isErrorPrestataires, error: errorPrestataires } = usePrestataires()
   const { data: contrats, isLoading: loadingContrats, isError: isErrorContrats, error: errorContrats } = useContratsByCopropriete(selectedCoproId)
@@ -88,7 +99,7 @@ export default function ContratsPage() {
               { key: 'prestataires', label: 'Prestataires', icon: Building2 },
             ]}
             activeTab={activeTab}
-            onTabChange={(key) => setActiveTab(key as Tab)}
+            onTabChange={(key) => patchUi({ activeTab: key as Tab })}
           />
 
           {/* Contrats tab */}
@@ -97,7 +108,7 @@ export default function ContratsPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Contrats</h2>
                 <button type="button"
-                  onClick={() => setShowContratDialog(true)}
+                  onClick={() => patchUi({ showContratDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -170,14 +181,14 @@ export default function ContratsPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingContrat(contrat); setShowContratDialog(true) }}
+                                onClick={() => { patchUi({ editingContrat: contrat }); patchUi({ showContratDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'contrat', id: contrat.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'contrat', id: contrat.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -194,7 +205,7 @@ export default function ContratsPage() {
 
               <ContratFormDialog
                 open={showContratDialog}
-                onOpenChange={(open) => { setShowContratDialog(open); if (!open) setEditingContrat(null) }}
+                onOpenChange={(open) => { patchUi({ showContratDialog: open }); if (!open) patchUi({ editingContrat: null }) }}
                 coproprieteId={selectedCoproId}
                 prestataires={prestataires || []}
                 defaultValues={editingContrat || undefined}
@@ -205,8 +216,8 @@ export default function ContratsPage() {
                   } else {
                     await createContrat.mutateAsync(data)
                   }
-                  setShowContratDialog(false)
-                  setEditingContrat(null)
+                  patchUi({ showContratDialog: false })
+                  patchUi({ editingContrat: null })
                 }}
                 isLoading={editingContrat ? updateContrat.isPending : createContrat.isPending}
               />
@@ -219,7 +230,7 @@ export default function ContratsPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Prestataires</h2>
                 <button type="button"
-                  onClick={() => setShowPrestataireDialog(true)}
+                  onClick={() => patchUi({ showPrestataireDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -265,14 +276,14 @@ export default function ContratsPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingPrestataire(presta); setShowPrestataireDialog(true) }}
+                                onClick={() => { patchUi({ editingPrestataire: presta }); patchUi({ showPrestataireDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'prestataire', id: presta.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'prestataire', id: presta.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -289,7 +300,7 @@ export default function ContratsPage() {
 
               <PrestataireFormDialog
                 open={showPrestataireDialog}
-                onOpenChange={(open) => { setShowPrestataireDialog(open); if (!open) setEditingPrestataire(null) }}
+                onOpenChange={(open) => { patchUi({ showPrestataireDialog: open }); if (!open) patchUi({ editingPrestataire: null }) }}
                 defaultValues={editingPrestataire || undefined}
                 title={editingPrestataire ? 'Modifier le prestataire' : 'Nouveau prestataire'}
                 onSubmit={async (data) => {
@@ -298,8 +309,8 @@ export default function ContratsPage() {
                   } else {
                     await createPrestataire.mutateAsync(data)
                   }
-                  setShowPrestataireDialog(false)
-                  setEditingPrestataire(null)
+                  patchUi({ showPrestataireDialog: false })
+                  patchUi({ editingPrestataire: null })
                 }}
                 isLoading={editingPrestataire ? updatePrestataire.isPending : createPrestataire.isPending}
               />
@@ -310,14 +321,14 @@ export default function ContratsPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteTarget: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
         onConfirm={() => {
           if (deleteTarget?.type === 'contrat') deleteContrat.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'prestataire') deletePrestataire.mutate(deleteTarget.id)
-          setDeleteTarget(null)
+          patchUi({ deleteTarget: null })
         }}
       />
     </div>

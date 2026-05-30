@@ -56,12 +56,23 @@ export default function AssurancesPage() {
     const param = searchParams.get('copropriete')
     if (param) setSelectedCoproprieteId(parseInt(param))
   }, [searchParams, setSelectedCoproprieteId])
-  const [activeTab, setActiveTab] = useState<Tab>('assurances')
-  const [showAssuranceDialog, setShowAssuranceDialog] = useState(false)
-  const [showSinistreDialog, setShowSinistreDialog] = useState(false)
-  const [editingAssurance, setEditingAssurance] = useState<Assurance | null>(null)
-  const [editingSinistre, setEditingSinistre] = useState<Sinistre | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<{ type: 'assurance' | 'sinistre', id: number } | null>(null)
+  const [ui, setUi] = useState<{
+    activeTab: Tab
+    showAssuranceDialog: boolean
+    showSinistreDialog: boolean
+    editingAssurance: Assurance | null
+    editingSinistre: Sinistre | null
+    deleteTarget: { type: 'assurance' | 'sinistre', id: number } | null
+  }>({
+    activeTab: 'assurances',
+    showAssuranceDialog: false,
+    showSinistreDialog: false,
+    editingAssurance: null,
+    editingSinistre: null,
+    deleteTarget: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { activeTab, showAssuranceDialog, showSinistreDialog, editingAssurance, editingSinistre, deleteTarget } = ui
 
   const { data: assurances, isLoading: loadingAssurances } = useAssurancesByCopropriete(selectedCoproId)
   const { data: sinistres, isLoading: loadingSinistres } = useSinistresByCopropriete(selectedCoproId)
@@ -98,7 +109,7 @@ export default function AssurancesPage() {
             ]).map((tab) => (
               <button type="button"
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
+                onClick={() => patchUi({ activeTab: tab.key })}
                 className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === tab.key
                     ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
@@ -117,7 +128,7 @@ export default function AssurancesPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Polices d'assurance</h2>
                 <button type="button"
-                  onClick={() => setShowAssuranceDialog(true)}
+                  onClick={() => patchUi({ showAssuranceDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -172,14 +183,14 @@ export default function AssurancesPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingAssurance(assurance); setShowAssuranceDialog(true) }}
+                                onClick={() => { patchUi({ editingAssurance: assurance }); patchUi({ showAssuranceDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'assurance', id: assurance.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'assurance', id: assurance.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -196,7 +207,7 @@ export default function AssurancesPage() {
 
               <AssuranceFormDialog
                 open={showAssuranceDialog}
-                onOpenChange={(open) => { setShowAssuranceDialog(open); if (!open) setEditingAssurance(null) }}
+                onOpenChange={(open) => { patchUi({ showAssuranceDialog: open }); if (!open) patchUi({ editingAssurance: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingAssurance || undefined}
                 title={editingAssurance ? 'Modifier l\'assurance' : 'Nouvelle assurance'}
@@ -206,8 +217,8 @@ export default function AssurancesPage() {
                   } else {
                     await createAssurance.mutateAsync(data)
                   }
-                  setShowAssuranceDialog(false)
-                  setEditingAssurance(null)
+                  patchUi({ showAssuranceDialog: false })
+                  patchUi({ editingAssurance: null })
                 }}
                 isLoading={editingAssurance ? updateAssurance.isPending : createAssurance.isPending}
               />
@@ -220,7 +231,7 @@ export default function AssurancesPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Sinistres</h2>
                 <button type="button"
-                  onClick={() => setShowSinistreDialog(true)}
+                  onClick={() => patchUi({ showSinistreDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -279,14 +290,14 @@ export default function AssurancesPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingSinistre(sinistre); setShowSinistreDialog(true) }}
+                                onClick={() => { patchUi({ editingSinistre: sinistre }); patchUi({ showSinistreDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'sinistre', id: sinistre.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'sinistre', id: sinistre.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -303,7 +314,7 @@ export default function AssurancesPage() {
 
               <SinistreFormDialog
                 open={showSinistreDialog}
-                onOpenChange={(open) => { setShowSinistreDialog(open); if (!open) setEditingSinistre(null) }}
+                onOpenChange={(open) => { patchUi({ showSinistreDialog: open }); if (!open) patchUi({ editingSinistre: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingSinistre || undefined}
                 title={editingSinistre ? 'Modifier le sinistre' : 'Declarer un sinistre'}
@@ -315,8 +326,8 @@ export default function AssurancesPage() {
                   } else {
                     await createSinistre.mutateAsync(data)
                   }
-                  setShowSinistreDialog(false)
-                  setEditingSinistre(null)
+                  patchUi({ showSinistreDialog: false })
+                  patchUi({ editingSinistre: null })
                 }}
                 isLoading={editingSinistre ? updateSinistre.isPending : createSinistre.isPending}
               />
@@ -327,14 +338,14 @@ export default function AssurancesPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteTarget: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
         onConfirm={() => {
           if (deleteTarget?.type === 'assurance') deleteAssurance.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'sinistre') deleteSinistre.mutate(deleteTarget.id)
-          setDeleteTarget(null)
+          patchUi({ deleteTarget: null })
         }}
       />
     </div>

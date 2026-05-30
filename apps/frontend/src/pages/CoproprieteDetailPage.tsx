@@ -102,23 +102,45 @@ export default function CoproprieteDetailPage() {
   const { data: cycleAnnuel } = useCycleAnnuel(coproprieteId, currentYear)
   const initCycle = useInitializeCycle()
   const refreshCycleAction = useRefreshCycle()
-  const [showCreateLot, setShowCreateLot] = useState(false)
-  const [showEditCopro, setShowEditCopro] = useState(false)
-  const [showCreatePC, setShowCreatePC] = useState(false)
-  const [showCreateCle, setShowCreateCle] = useState(false)
-  const [showCreateLocataire, setShowCreateLocataire] = useState(false)
-  const [showCreateMutation, setShowCreateMutation] = useState(false)
-  const [showCreateDiagnostic, setShowCreateDiagnostic] = useState(false)
-  const [editingLot, setEditingLot] = useState<LotWithProprietaire | null>(null)
-  const [editingPC, setEditingPC] = useState<PartieCommune | null>(null)
-  const [editingCle, setEditingCle] = useState<CleRepartition | null>(null)
-  const [editingLocataire, setEditingLocataire] = useState<Locataire | null>(null)
-  const [editingMutation, setEditingMutation] = useState<Mutation | null>(null)
-  const [editingDiagnostic, setEditingDiagnostic] = useState<Diagnostic | null>(null)
-  const [activeTab, setActiveTab] = useState<Tab>('lots')
-  const [selectedLotId, setSelectedLotId] = useState<number | undefined>()
-  const [showBulkCreate, setShowBulkCreate] = useState(false)
-  const [deleteTarget, setDeleteTarget] = useState<{ type: 'lot' | 'pc' | 'cle' | 'locataire' | 'mutation' | 'diagnostic', id: number } | null>(null)
+  const [ui, setUi] = useState<{
+    showCreateLot: boolean
+    showEditCopro: boolean
+    showCreatePC: boolean
+    showCreateCle: boolean
+    showCreateLocataire: boolean
+    showCreateMutation: boolean
+    showCreateDiagnostic: boolean
+    editingLot: LotWithProprietaire | null
+    editingPC: PartieCommune | null
+    editingCle: CleRepartition | null
+    editingLocataire: Locataire | null
+    editingMutation: Mutation | null
+    editingDiagnostic: Diagnostic | null
+    activeTab: Tab
+    selectedLotId: number | undefined
+    showBulkCreate: boolean
+    deleteTarget: { type: 'lot' | 'pc' | 'cle' | 'locataire' | 'mutation' | 'diagnostic', id: number } | null
+  }>({
+    showCreateLot: false,
+    showEditCopro: false,
+    showCreatePC: false,
+    showCreateCle: false,
+    showCreateLocataire: false,
+    showCreateMutation: false,
+    showCreateDiagnostic: false,
+    editingLot: null,
+    editingPC: null,
+    editingCle: null,
+    editingLocataire: null,
+    editingMutation: null,
+    editingDiagnostic: null,
+    activeTab: 'lots',
+    selectedLotId: undefined,
+    showBulkCreate: false,
+    deleteTarget: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { showCreateLot, showEditCopro, showCreatePC, showCreateCle, showCreateLocataire, showCreateMutation, showCreateDiagnostic, editingLot, editingPC, editingCle, editingLocataire, editingMutation, editingDiagnostic, activeTab, selectedLotId, showBulkCreate, deleteTarget } = ui
   const userRole = useAuthStore(state => state.user?.role)
 
   const { data: locataires } = useLocatairesByLot(selectedLotId)
@@ -144,7 +166,7 @@ export default function CoproprieteDetailPage() {
   }
 
   const handleDeleteLot = (lotId: number) => {
-    setDeleteTarget({ type: 'lot', id: lotId })
+    patchUi({ deleteTarget: { type: 'lot', id: lotId } })
   }
 
   const tabs = [
@@ -181,7 +203,7 @@ export default function CoproprieteDetailPage() {
         <div className="flex items-center gap-2">
           {(userRole === 'syndic' || userRole === 'admin') && (
             <button type="button"
-              onClick={() => setShowBulkCreate(true)}
+              onClick={() => patchUi({ showBulkCreate: true })}
               className="flex items-center gap-2 rounded-lg border border-stone-300 px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800"
             >
               <UserPlus className="size-4" />
@@ -189,7 +211,7 @@ export default function CoproprieteDetailPage() {
             </button>
           )}
           <button type="button"
-            onClick={() => setShowEditCopro(true)}
+            onClick={() => patchUi({ showEditCopro: true })}
             className="flex items-center gap-2 rounded-lg border border-stone-300 px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800"
           >
             <Pencil className="size-4" />
@@ -222,7 +244,7 @@ export default function CoproprieteDetailPage() {
         {tabs.map((tab) => (
           <button type="button"
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => patchUi({ activeTab: tab.id })}
             className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === tab.id
                 ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
@@ -244,7 +266,7 @@ export default function CoproprieteDetailPage() {
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Lots</h2>
             <button type="button"
-              onClick={() => setShowCreateLot(true)}
+              onClick={() => patchUi({ showCreateLot: true })}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
               <Plus className="size-4" />
@@ -288,7 +310,7 @@ export default function CoproprieteDetailPage() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
                           <button type="button"
-                            onClick={() => setEditingLot(lot)}
+                            onClick={() => patchUi({ editingLot: lot })}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
@@ -318,7 +340,7 @@ export default function CoproprieteDetailPage() {
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Parties communes</h2>
             <button type="button"
-              onClick={() => setShowCreatePC(true)}
+              onClick={() => patchUi({ showCreatePC: true })}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
               <Plus className="size-4" />
@@ -359,14 +381,14 @@ export default function CoproprieteDetailPage() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
                           <button type="button"
-                            onClick={() => setEditingPC(pc)}
+                            onClick={() => patchUi({ editingPC: pc })}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
                             <Pencil className="size-4" />
                           </button>
                           <button type="button"
-                            onClick={() => setDeleteTarget({ type: 'pc', id: pc.id })}
+                            onClick={() => patchUi({ deleteTarget: { type: 'pc', id: pc.id } })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -389,7 +411,7 @@ export default function CoproprieteDetailPage() {
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Cles de repartition</h2>
             <button type="button"
-              onClick={() => setShowCreateCle(true)}
+              onClick={() => patchUi({ showCreateCle: true })}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
               <Plus className="size-4" />
@@ -420,14 +442,14 @@ export default function CoproprieteDetailPage() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
                           <button type="button"
-                            onClick={() => setEditingCle(cle)}
+                            onClick={() => patchUi({ editingCle: cle })}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
                             <Pencil className="size-4" />
                           </button>
                           <button type="button"
-                            onClick={() => setDeleteTarget({ type: 'cle', id: cle.id })}
+                            onClick={() => patchUi({ deleteTarget: { type: 'cle', id: cle.id } })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -452,7 +474,7 @@ export default function CoproprieteDetailPage() {
             <div className="mt-3 flex items-center gap-3">
               <select
                 value={selectedLotId || ''}
-                onChange={(e) => setSelectedLotId(e.target.value ? parseInt(e.target.value) : undefined)}
+                onChange={(e) => patchUi({ selectedLotId: e.target.value ? parseInt(e.target.value) : undefined })}
                 className="flex-1 rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm dark:border-stone-600 dark:bg-stone-800 dark:text-white"
               >
                 <option value="">Selectionner un lot…</option>
@@ -462,7 +484,7 @@ export default function CoproprieteDetailPage() {
               </select>
               {selectedLotId && (
                 <button type="button"
-                  onClick={() => setShowCreateLocataire(true)}
+                  onClick={() => patchUi({ showCreateLocataire: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -506,14 +528,14 @@ export default function CoproprieteDetailPage() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
                           <button type="button"
-                            onClick={() => setEditingLocataire(loc)}
+                            onClick={() => patchUi({ editingLocataire: loc })}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
                             <Pencil className="size-4" />
                           </button>
                           <button type="button"
-                            onClick={() => setDeleteTarget({ type: 'locataire', id: loc.id })}
+                            onClick={() => patchUi({ deleteTarget: { type: 'locataire', id: loc.id } })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -538,7 +560,7 @@ export default function CoproprieteDetailPage() {
               <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Mutations par lot</h2>
               {selectedLotId && (
                 <button type="button"
-                  onClick={() => setShowCreateMutation(true)}
+                  onClick={() => patchUi({ showCreateMutation: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -549,7 +571,7 @@ export default function CoproprieteDetailPage() {
             <div className="mt-3">
               <select
                 value={selectedLotId || ''}
-                onChange={(e) => setSelectedLotId(e.target.value ? parseInt(e.target.value) : undefined)}
+                onChange={(e) => patchUi({ selectedLotId: e.target.value ? parseInt(e.target.value) : undefined })}
                 className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm dark:border-stone-600 dark:bg-stone-800 dark:text-white"
               >
                 <option value="">Selectionner un lot…</option>
@@ -600,14 +622,14 @@ export default function CoproprieteDetailPage() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
                           <button type="button"
-                            onClick={() => setEditingMutation(m)}
+                            onClick={() => patchUi({ editingMutation: m })}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
                             <Pencil className="size-4" />
                           </button>
                           <button type="button"
-                            onClick={() => setDeleteTarget({ type: 'mutation', id: m.id })}
+                            onClick={() => patchUi({ deleteTarget: { type: 'mutation', id: m.id } })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -630,7 +652,7 @@ export default function CoproprieteDetailPage() {
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Diagnostics techniques</h2>
             <button type="button"
-              onClick={() => setShowCreateDiagnostic(true)}
+              onClick={() => patchUi({ showCreateDiagnostic: true })}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
               <Plus className="size-4" />
@@ -677,14 +699,14 @@ export default function CoproprieteDetailPage() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
                           <button type="button"
-                            onClick={() => setEditingDiagnostic(diag)}
+                            onClick={() => patchUi({ editingDiagnostic: diag })}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
                             <Pencil className="size-4" />
                           </button>
                           <button type="button"
-                            onClick={() => setDeleteTarget({ type: 'diagnostic', id: diag.id })}
+                            onClick={() => patchUi({ deleteTarget: { type: 'diagnostic', id: diag.id } })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -731,59 +753,59 @@ export default function CoproprieteDetailPage() {
       {/* Dialogs */}
       <LotFormDialog
         open={showCreateLot || !!editingLot}
-        onOpenChange={(open) => { if (!open) { setShowCreateLot(false); setEditingLot(null) } }}
+        onOpenChange={(open) => { if (!open) { patchUi({ showCreateLot: false }); patchUi({ editingLot: null }) } }}
         coproprieteId={coproprieteId!}
         defaultValues={editingLot || undefined}
         title={editingLot ? 'Modifier le lot' : 'Nouveau lot'}
         onSubmit={async (data) => {
           if (editingLot) {
             await updateLot.mutateAsync({ id: editingLot.id, data })
-            setEditingLot(null)
+            patchUi({ editingLot: null })
           } else {
             await createLot.mutateAsync(data)
-            setShowCreateLot(false)
+            patchUi({ showCreateLot: false })
           }
         }}
         isLoading={editingLot ? updateLot.isPending : createLot.isPending}
       />
       <CoproprieteFormDialog
         open={showEditCopro}
-        onOpenChange={setShowEditCopro}
+        onOpenChange={v => patchUi({ showEditCopro: v })}
         defaultValues={copropriete}
         title="Modifier la copropriete"
-        onSubmit={async (data) => { await updateCopropriete.mutateAsync({ id: coproprieteId!, data }); setShowEditCopro(false) }}
+        onSubmit={async (data) => { await updateCopropriete.mutateAsync({ id: coproprieteId!, data }); patchUi({ showEditCopro: false }) }}
         isLoading={updateCopropriete.isPending}
       />
       <PartieCommuneFormDialog
         open={showCreatePC || !!editingPC}
-        onOpenChange={(open) => { if (!open) { setShowCreatePC(false); setEditingPC(null) } }}
+        onOpenChange={(open) => { if (!open) { patchUi({ showCreatePC: false }); patchUi({ editingPC: null }) } }}
         coproprieteId={coproprieteId!}
         defaultValues={editingPC || undefined}
         title={editingPC ? 'Modifier la partie commune' : 'Nouvelle partie commune'}
         onSubmit={async (data) => {
           if (editingPC) {
             await updatePC.mutateAsync({ id: editingPC.id, data })
-            setEditingPC(null)
+            patchUi({ editingPC: null })
           } else {
             await createPC.mutateAsync(data)
-            setShowCreatePC(false)
+            patchUi({ showCreatePC: false })
           }
         }}
         isLoading={editingPC ? updatePC.isPending : createPC.isPending}
       />
       <CleRepartitionFormDialog
         open={showCreateCle || !!editingCle}
-        onOpenChange={(open) => { if (!open) { setShowCreateCle(false); setEditingCle(null) } }}
+        onOpenChange={(open) => { if (!open) { patchUi({ showCreateCle: false }); patchUi({ editingCle: null }) } }}
         coproprieteId={coproprieteId!}
         defaultValues={editingCle || undefined}
         title={editingCle ? 'Modifier la cle de repartition' : 'Nouvelle cle de repartition'}
         onSubmit={async (data) => {
           if (editingCle) {
             await updateCle.mutateAsync({ id: editingCle.id, data })
-            setEditingCle(null)
+            patchUi({ editingCle: null })
           } else {
             await createCle.mutateAsync(data)
-            setShowCreateCle(false)
+            patchUi({ showCreateCle: false })
           }
         }}
         isLoading={editingCle ? updateCle.isPending : createCle.isPending}
@@ -792,34 +814,34 @@ export default function CoproprieteDetailPage() {
         <>
           <LocataireFormDialog
             open={showCreateLocataire || !!editingLocataire}
-            onOpenChange={(open) => { if (!open) { setShowCreateLocataire(false); setEditingLocataire(null) } }}
+            onOpenChange={(open) => { if (!open) { patchUi({ showCreateLocataire: false }); patchUi({ editingLocataire: null }) } }}
             lotId={selectedLotId}
             defaultValues={editingLocataire || undefined}
             title={editingLocataire ? 'Modifier le locataire' : 'Nouveau locataire'}
             onSubmit={async (data) => {
               if (editingLocataire) {
                 await updateLocataire.mutateAsync({ id: editingLocataire.id, data })
-                setEditingLocataire(null)
+                patchUi({ editingLocataire: null })
               } else {
                 await createLocataire.mutateAsync(data)
-                setShowCreateLocataire(false)
+                patchUi({ showCreateLocataire: false })
               }
             }}
             isLoading={editingLocataire ? updateLocataire.isPending : createLocataire.isPending}
           />
           <MutationFormDialog
             open={showCreateMutation || !!editingMutation}
-            onOpenChange={(open) => { if (!open) { setShowCreateMutation(false); setEditingMutation(null) } }}
+            onOpenChange={(open) => { if (!open) { patchUi({ showCreateMutation: false }); patchUi({ editingMutation: null }) } }}
             lotId={selectedLotId}
             defaultValues={editingMutation || undefined}
             title={editingMutation ? 'Modifier la mutation' : 'Nouvelle mutation'}
             onSubmit={async (data) => {
               if (editingMutation) {
                 await updateMutation.mutateAsync({ id: editingMutation.id, data })
-                setEditingMutation(null)
+                patchUi({ editingMutation: null })
               } else {
                 await createMutation.mutateAsync(data)
-                setShowCreateMutation(false)
+                patchUi({ showCreateMutation: false })
               }
             }}
             isLoading={editingMutation ? updateMutation.isPending : createMutation.isPending}
@@ -828,17 +850,17 @@ export default function CoproprieteDetailPage() {
       )}
       <DiagnosticFormDialog
         open={showCreateDiagnostic || !!editingDiagnostic}
-        onOpenChange={(open) => { if (!open) { setShowCreateDiagnostic(false); setEditingDiagnostic(null) } }}
+        onOpenChange={(open) => { if (!open) { patchUi({ showCreateDiagnostic: false }); patchUi({ editingDiagnostic: null }) } }}
         coproprieteId={coproprieteId!}
         defaultValues={editingDiagnostic || undefined}
         title={editingDiagnostic ? 'Modifier le diagnostic' : 'Nouveau diagnostic'}
         onSubmit={async (data) => {
           if (editingDiagnostic) {
             await updateDiagnostic.mutateAsync({ id: editingDiagnostic.id, data })
-            setEditingDiagnostic(null)
+            patchUi({ editingDiagnostic: null })
           } else {
             await createDiagnostic.mutateAsync(data)
-            setShowCreateDiagnostic(false)
+            patchUi({ showCreateDiagnostic: false })
           }
         }}
         isLoading={editingDiagnostic ? updateDiagnostic.isPending : createDiagnostic.isPending}
@@ -847,13 +869,13 @@ export default function CoproprieteDetailPage() {
         <BulkCreateAccountsDialog
           coproprieteId={coproprieteId}
           isOpen={showBulkCreate}
-          onClose={() => setShowBulkCreate(false)}
+          onClose={() => patchUi({ showBulkCreate: false })}
         />
       )}
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteTarget: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
@@ -864,7 +886,7 @@ export default function CoproprieteDetailPage() {
           else if (deleteTarget?.type === 'locataire') deleteLocataire.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'mutation') deleteMutation.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'diagnostic') deleteDiagnostic.mutate(deleteTarget.id)
-          setDeleteTarget(null)
+          patchUi({ deleteTarget: null })
         }}
       />
     </div>

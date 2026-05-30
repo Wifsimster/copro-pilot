@@ -51,16 +51,31 @@ type Tab = 'budgets' | 'appels' | 'paiements' | 'fonds-travaux'
 
 export default function ChargesPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
-  const [activeTab, setActiveTab] = useState<Tab>('budgets')
-  const [showBudgetDialog, setShowBudgetDialog] = useState(false)
-  const [showAppelDialog, setShowAppelDialog] = useState(false)
-  const [showFondsDialog, setShowFondsDialog] = useState(false)
-  const [editingBudget, setEditingBudget] = useState<BudgetPrevisionnel | null>(null)
-  const [editingAppel, setEditingAppel] = useState<AppelFonds | null>(null)
-  const [editingFonds, setEditingFonds] = useState<FondsTravaux | null>(null)
-  const [showPaiementDialog, setShowPaiementDialog] = useState(false)
-  const [editingPaiement, setEditingPaiement] = useState<Paiement | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<{ type: 'budget' | 'appel' | 'paiement' | 'fonds', id: number } | null>(null)
+  const [ui, setUi] = useState<{
+    activeTab: Tab
+    showBudgetDialog: boolean
+    showAppelDialog: boolean
+    showFondsDialog: boolean
+    editingBudget: BudgetPrevisionnel | null
+    editingAppel: AppelFonds | null
+    editingFonds: FondsTravaux | null
+    showPaiementDialog: boolean
+    editingPaiement: Paiement | null
+    deleteTarget: { type: 'budget' | 'appel' | 'paiement' | 'fonds', id: number } | null
+  }>({
+    activeTab: 'budgets',
+    showBudgetDialog: false,
+    showAppelDialog: false,
+    showFondsDialog: false,
+    editingBudget: null,
+    editingAppel: null,
+    editingFonds: null,
+    showPaiementDialog: false,
+    editingPaiement: null,
+    deleteTarget: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { activeTab, showBudgetDialog, showAppelDialog, showFondsDialog, editingBudget, editingAppel, editingFonds, showPaiementDialog, editingPaiement, deleteTarget } = ui
 
   const { data: coproprietaires } = useCoproprietaires()
   const { data: budgets, isLoading: loadingBudgets, isError: isErrorBudgets, error: errorBudgets } = useBudgetsByCopropriete(selectedCoproId)
@@ -111,7 +126,7 @@ export default function ChargesPage() {
               { key: 'fonds-travaux', label: 'Fonds travaux', icon: PiggyBank },
             ]}
             activeTab={activeTab}
-            onTabChange={(key) => setActiveTab(key as Tab)}
+            onTabChange={(key) => patchUi({ activeTab: key as Tab })}
           />
 
           {/* Budgets tab */}
@@ -120,7 +135,7 @@ export default function ChargesPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Budgets previsionnels</h2>
                 <button type="button"
-                  onClick={() => setShowBudgetDialog(true)}
+                  onClick={() => patchUi({ showBudgetDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -163,14 +178,14 @@ export default function ChargesPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingBudget(budget); setShowBudgetDialog(true) }}
+                                onClick={() => { patchUi({ editingBudget: budget }); patchUi({ showBudgetDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'budget', id: budget.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'budget', id: budget.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -187,7 +202,7 @@ export default function ChargesPage() {
 
               <BudgetFormDialog
                 open={showBudgetDialog}
-                onOpenChange={(open) => { setShowBudgetDialog(open); if (!open) setEditingBudget(null) }}
+                onOpenChange={(open) => { patchUi({ showBudgetDialog: open }); if (!open) patchUi({ editingBudget: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingBudget || undefined}
                 title={editingBudget ? 'Modifier le budget' : 'Nouveau budget'}
@@ -197,8 +212,8 @@ export default function ChargesPage() {
                   } else {
                     await createBudget.mutateAsync(data)
                   }
-                  setShowBudgetDialog(false)
-                  setEditingBudget(null)
+                  patchUi({ showBudgetDialog: false })
+                  patchUi({ editingBudget: null })
                 }}
                 isLoading={editingBudget ? updateBudget.isPending : createBudget.isPending}
               />
@@ -211,7 +226,7 @@ export default function ChargesPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Appels de fonds</h2>
                 <button type="button"
-                  onClick={() => setShowAppelDialog(true)}
+                  onClick={() => patchUi({ showAppelDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -262,14 +277,14 @@ export default function ChargesPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingAppel(appel); setShowAppelDialog(true) }}
+                                onClick={() => { patchUi({ editingAppel: appel }); patchUi({ showAppelDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'appel', id: appel.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'appel', id: appel.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -286,7 +301,7 @@ export default function ChargesPage() {
 
               <AppelFondsFormDialog
                 open={showAppelDialog}
-                onOpenChange={(open) => { setShowAppelDialog(open); if (!open) setEditingAppel(null) }}
+                onOpenChange={(open) => { patchUi({ showAppelDialog: open }); if (!open) patchUi({ editingAppel: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingAppel || undefined}
                 title={editingAppel ? 'Modifier l\'appel de fonds' : 'Nouvel appel de fonds'}
@@ -296,8 +311,8 @@ export default function ChargesPage() {
                   } else {
                     await createAppel.mutateAsync(data)
                   }
-                  setShowAppelDialog(false)
-                  setEditingAppel(null)
+                  patchUi({ showAppelDialog: false })
+                  patchUi({ editingAppel: null })
                 }}
                 isLoading={editingAppel ? updateAppel.isPending : createAppel.isPending}
               />
@@ -310,7 +325,7 @@ export default function ChargesPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Paiements</h2>
                 <button type="button"
-                  onClick={() => setShowPaiementDialog(true)}
+                  onClick={() => patchUi({ showPaiementDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -361,14 +376,14 @@ export default function ChargesPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingPaiement(paiement); setShowPaiementDialog(true) }}
+                                onClick={() => { patchUi({ editingPaiement: paiement }); patchUi({ showPaiementDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'paiement', id: paiement.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'paiement', id: paiement.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -385,7 +400,7 @@ export default function ChargesPage() {
 
               <PaiementFormDialog
                 open={showPaiementDialog}
-                onOpenChange={(open) => { setShowPaiementDialog(open); if (!open) setEditingPaiement(null) }}
+                onOpenChange={(open) => { patchUi({ showPaiementDialog: open }); if (!open) patchUi({ editingPaiement: null }) }}
                 coproprietaireId={editingPaiement?.coproprietaire_id}
                 appelFondsId={editingPaiement?.appel_fonds_id || undefined}
                 coproprietaires={coproprietaires || []}
@@ -398,8 +413,8 @@ export default function ChargesPage() {
                   } else {
                     await createPaiement.mutateAsync(data)
                   }
-                  setShowPaiementDialog(false)
-                  setEditingPaiement(null)
+                  patchUi({ showPaiementDialog: false })
+                  patchUi({ editingPaiement: null })
                 }}
                 isLoading={editingPaiement ? updatePaiement.isPending : createPaiement.isPending}
               />
@@ -412,7 +427,7 @@ export default function ChargesPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Fonds travaux</h2>
                 <button type="button"
-                  onClick={() => setShowFondsDialog(true)}
+                  onClick={() => patchUi({ showFondsDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -455,14 +470,14 @@ export default function ChargesPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingFonds(fonds); setShowFondsDialog(true) }}
+                                onClick={() => { patchUi({ editingFonds: fonds }); patchUi({ showFondsDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'fonds', id: fonds.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'fonds', id: fonds.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -479,7 +494,7 @@ export default function ChargesPage() {
 
               <FondsTravauxFormDialog
                 open={showFondsDialog}
-                onOpenChange={(open) => { setShowFondsDialog(open); if (!open) setEditingFonds(null) }}
+                onOpenChange={(open) => { patchUi({ showFondsDialog: open }); if (!open) patchUi({ editingFonds: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingFonds || undefined}
                 title={editingFonds ? 'Modifier le fonds travaux' : 'Nouveau fonds travaux'}
@@ -489,8 +504,8 @@ export default function ChargesPage() {
                   } else {
                     await createFonds.mutateAsync(data)
                   }
-                  setShowFondsDialog(false)
-                  setEditingFonds(null)
+                  patchUi({ showFondsDialog: false })
+                  patchUi({ editingFonds: null })
                 }}
                 isLoading={editingFonds ? updateFonds.isPending : createFonds.isPending}
               />
@@ -501,7 +516,7 @@ export default function ChargesPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteTarget: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
@@ -510,7 +525,7 @@ export default function ChargesPage() {
           else if (deleteTarget?.type === 'appel') deleteAppel.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'paiement') deletePaiement.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'fonds') deleteFonds.mutate(deleteTarget.id)
-          setDeleteTarget(null)
+          patchUi({ deleteTarget: null })
         }}
       />
     </div>

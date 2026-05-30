@@ -65,12 +65,23 @@ export default function ContentieuxPage() {
     const param = searchParams.get('copropriete')
     if (param) setSelectedCoproprieteId(parseInt(param))
   }, [searchParams, setSelectedCoproprieteId])
-  const [activeTab, setActiveTab] = useState<Tab>('relances')
-  const [showRelanceDialog, setShowRelanceDialog] = useState(false)
-  const [showProcedureDialog, setShowProcedureDialog] = useState(false)
-  const [editingRelance, setEditingRelance] = useState<Relance | null>(null)
-  const [editingProcedure, setEditingProcedure] = useState<Procedure | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<{ type: 'relance' | 'procedure', id: number } | null>(null)
+  const [ui, setUi] = useState<{
+    activeTab: Tab
+    showRelanceDialog: boolean
+    showProcedureDialog: boolean
+    editingRelance: Relance | null
+    editingProcedure: Procedure | null
+    deleteTarget: { type: 'relance' | 'procedure', id: number } | null
+  }>({
+    activeTab: 'relances',
+    showRelanceDialog: false,
+    showProcedureDialog: false,
+    editingRelance: null,
+    editingProcedure: null,
+    deleteTarget: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { activeTab, showRelanceDialog, showProcedureDialog, editingRelance, editingProcedure, deleteTarget } = ui
 
   const { data: relances, isLoading: loadingRelances, isError: isErrorRelances, error: errorRelances } = useRelancesByCopropriete(selectedCoproId)
   const { data: procedures, isLoading: loadingProcedures, isError: isErrorProcedures, error: errorProcedures } = useProceduresByCopropriete(selectedCoproId)
@@ -110,7 +121,7 @@ export default function ContentieuxPage() {
               { key: 'procedures', label: 'Procedures', icon: Scale },
             ]}
             activeTab={activeTab}
-            onTabChange={(key) => setActiveTab(key as Tab)}
+            onTabChange={(key) => patchUi({ activeTab: key as Tab })}
           />
 
           {/* Relances tab */}
@@ -119,7 +130,7 @@ export default function ContentieuxPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Relances</h2>
                 <button type="button"
-                  onClick={() => setShowRelanceDialog(true)}
+                  onClick={() => patchUi({ showRelanceDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -178,14 +189,14 @@ export default function ContentieuxPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingRelance(relance); setShowRelanceDialog(true) }}
+                                onClick={() => { patchUi({ editingRelance: relance }); patchUi({ showRelanceDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'relance', id: relance.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'relance', id: relance.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -202,7 +213,7 @@ export default function ContentieuxPage() {
 
               <RelanceFormDialog
                 open={showRelanceDialog}
-                onOpenChange={(open) => { setShowRelanceDialog(open); if (!open) setEditingRelance(null) }}
+                onOpenChange={(open) => { patchUi({ showRelanceDialog: open }); if (!open) patchUi({ editingRelance: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingRelance || undefined}
                 title={editingRelance ? 'Modifier la relance' : 'Nouvelle relance'}
@@ -212,8 +223,8 @@ export default function ContentieuxPage() {
                   } else {
                     await createRelance.mutateAsync(data)
                   }
-                  setShowRelanceDialog(false)
-                  setEditingRelance(null)
+                  patchUi({ showRelanceDialog: false })
+                  patchUi({ editingRelance: null })
                 }}
                 isLoading={editingRelance ? updateRelance.isPending : createRelance.isPending}
               />
@@ -226,7 +237,7 @@ export default function ContentieuxPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Procedures</h2>
                 <button type="button"
-                  onClick={() => setShowProcedureDialog(true)}
+                  onClick={() => patchUi({ showProcedureDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -279,14 +290,14 @@ export default function ContentieuxPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingProcedure(procedure); setShowProcedureDialog(true) }}
+                                onClick={() => { patchUi({ editingProcedure: procedure }); patchUi({ showProcedureDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'procedure', id: procedure.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'procedure', id: procedure.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -303,7 +314,7 @@ export default function ContentieuxPage() {
 
               <ProcedureFormDialog
                 open={showProcedureDialog}
-                onOpenChange={(open) => { setShowProcedureDialog(open); if (!open) setEditingProcedure(null) }}
+                onOpenChange={(open) => { patchUi({ showProcedureDialog: open }); if (!open) patchUi({ editingProcedure: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingProcedure || undefined}
                 title={editingProcedure ? 'Modifier la procedure' : 'Nouvelle procedure'}
@@ -313,8 +324,8 @@ export default function ContentieuxPage() {
                   } else {
                     await createProcedure.mutateAsync(data)
                   }
-                  setShowProcedureDialog(false)
-                  setEditingProcedure(null)
+                  patchUi({ showProcedureDialog: false })
+                  patchUi({ editingProcedure: null })
                 }}
                 isLoading={editingProcedure ? updateProcedure.isPending : createProcedure.isPending}
               />
@@ -325,14 +336,14 @@ export default function ContentieuxPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteTarget: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
         onConfirm={() => {
           if (deleteTarget?.type === 'relance') deleteRelance.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'procedure') deleteProcedure.mutate(deleteTarget.id)
-          setDeleteTarget(null)
+          patchUi({ deleteTarget: null })
         }}
       />
     </div>

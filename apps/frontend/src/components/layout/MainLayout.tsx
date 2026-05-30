@@ -177,8 +177,12 @@ export function MainLayout({ children }: MainLayoutProps) {
 
   useEventStream()
 
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [tourRunning, setTourRunning] = useState(false)
+  const [ui, setUi] = useState<{ sidebarOpen: boolean; tourRunning: boolean }>({
+    sidebarOpen: false,
+    tourRunning: false,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { sidebarOpen, tourRunning } = ui
   const [koeOpenSignal, setKoeOpenSignal] = useState(0)
   const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains('dark')
@@ -244,12 +248,12 @@ export function MainLayout({ children }: MainLayoutProps) {
   }
 
   const startTour = useCallback(() => {
-    setSidebarOpen(false)
-    setTourRunning(true)
+    patchUi({ sidebarOpen: false })
+    patchUi({ tourRunning: true })
   }, [])
 
   const onTourFinish = useCallback(() => {
-    setTourRunning(false)
+    patchUi({ tourRunning: false })
   }, [])
 
   const renderNavItem = (item: NavItem) => {
@@ -258,7 +262,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       <Link
         key={item.name}
         to={item.href}
-        onClick={() => setSidebarOpen(false)}
+        onClick={() => patchUi({ sidebarOpen: false })}
         className={cn(
           'flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
           active
@@ -321,7 +325,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           type="button"
           aria-label="Fermer le menu"
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
+          onClick={() => patchUi({ sidebarOpen: false })}
         />
       )}
 
@@ -338,7 +342,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <img src="/logo.svg" alt="CoproPilot" className="size-8 rounded-lg" />
           <span className="text-lg font-bold text-stone-900 dark:text-white">CoproPilot</span>
           <button type="button"
-            onClick={() => setSidebarOpen(false)}
+            onClick={() => patchUi({ sidebarOpen: false })}
             className="ml-auto lg:hidden"
             aria-label="Fermer le menu"
           >
@@ -408,7 +412,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                 <DropdownMenuItem
                   onClick={() => {
                     navigate(isCoproprietaire(user?.role) ? '/extranet/profil' : '/profil')
-                    setSidebarOpen(false)
+                    patchUi({ sidebarOpen: false })
                   }}
                 >
                   <UserCircle />
@@ -417,7 +421,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                 <DropdownMenuItem
                   onClick={() => {
                     navigate('/donnees-personnelles')
-                    setSidebarOpen(false)
+                    patchUi({ sidebarOpen: false })
                   }}
                 >
                   <Shield className="size-4" />
@@ -434,7 +438,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                 <DropdownMenuItem
                   onClick={() => {
                     setKoeOpenSignal(s => s + 1)
-                    setSidebarOpen(false)
+                    patchUi({ sidebarOpen: false })
                   }}
                 >
                   <LifeBuoy />
@@ -463,7 +467,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         {/* Top bar */}
         <header className="flex h-16 items-center gap-3 border-b border-stone-200 bg-white px-4 dark:border-stone-700 dark:bg-stone-900">
           <button type="button"
-            onClick={() => setSidebarOpen(true)}
+            onClick={() => patchUi({ sidebarOpen: true })}
             className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800 lg:hidden"
             aria-label="Ouvrir le menu"
           >

@@ -61,11 +61,21 @@ function isPreviewable(mimeType: string | null): boolean {
 
 export default function DocumentsPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
-  const [showCreateDialog, setShowCreateDialog] = useState(false)
-  const [editingDoc, setEditingDoc] = useState<Document | null>(null)
-  const [previewDoc, setPreviewDoc] = useState<Document | null>(null)
-  const [search, setSearch] = useState('')
-  const [filterCategorie, setFilterCategorie] = useState<string>('all')
+  const [ui, setUi] = useState<{
+    showCreateDialog: boolean
+    editingDoc: Document | null
+    previewDoc: Document | null
+    search: string
+    filterCategorie: string
+  }>({
+    showCreateDialog: false,
+    editingDoc: null,
+    previewDoc: null,
+    search: '',
+    filterCategorie: 'all',
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { showCreateDialog, editingDoc, previewDoc, search, filterCategorie } = ui
 
   const { data: documents, isLoading: loadingDocs, isError, error } = useDocumentsByCopropriete(selectedCoproId)
   const uploadDocument = useUploadDocument()
@@ -140,7 +150,7 @@ export default function DocumentsPage() {
                   aria-label="Rechercher un document"
                   type="text"
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={(e) => patchUi({ search: e.target.value })}
                   placeholder="Rechercher un document..."
                   className="w-full rounded-lg border border-input bg-background py-2 pl-9 pr-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 />
@@ -148,7 +158,7 @@ export default function DocumentsPage() {
               <div className="relative">
                 <select
                   value={filterCategorie}
-                  onChange={(e) => setFilterCategorie(e.target.value)}
+                  onChange={(e) => patchUi({ filterCategorie: e.target.value })}
                   className="appearance-none rounded-lg border border-input bg-background py-2 pl-3 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   <option value="all">Toutes categories</option>
@@ -160,7 +170,7 @@ export default function DocumentsPage() {
               </div>
             </div>
             <button type="button"
-              onClick={() => setShowCreateDialog(true)}
+              onClick={() => patchUi({ showCreateDialog: true })}
               className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
               <Plus className="size-4" />
@@ -233,7 +243,7 @@ export default function DocumentsPage() {
                     <div className="flex shrink-0 items-center gap-1">
                       {isPreviewable(doc.mime_type) && (
                         <button type="button"
-                          onClick={() => setPreviewDoc(doc)}
+                          onClick={() => patchUi({ previewDoc: doc })}
                           className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                           title="Previsualiser"
                           aria-label="Previsualiser"
@@ -250,7 +260,7 @@ export default function DocumentsPage() {
                         <Download className="size-4" />
                       </a>
                       <button type="button"
-                        onClick={() => setEditingDoc(doc)}
+                        onClick={() => patchUi({ editingDoc: doc })}
                         className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                         title="Modifier"
                         aria-label="Modifier"
@@ -293,7 +303,7 @@ export default function DocumentsPage() {
                   <Download className="size-4" />
                 </a>
                 <button type="button"
-                  onClick={() => setPreviewDoc(null)}
+                  onClick={() => patchUi({ previewDoc: null })}
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
                   aria-label="Fermer"
                 >
@@ -326,8 +336,8 @@ export default function DocumentsPage() {
         open={showCreateDialog || !!editingDoc}
         onOpenChange={(open) => {
           if (!open) {
-            setShowCreateDialog(false)
-            setEditingDoc(null)
+            patchUi({ showCreateDialog: false })
+            patchUi({ editingDoc: null })
           }
         }}
         coproprieteId={selectedCoproId ?? 0}
@@ -337,7 +347,7 @@ export default function DocumentsPage() {
         onSubmit={async ({ file, metadata }) => {
           if (editingDoc) {
             await updateDocument.mutateAsync({ id: editingDoc.id, data: metadata })
-            setEditingDoc(null)
+            patchUi({ editingDoc: null })
           } else if (file) {
             await uploadDocument.mutateAsync({
               file,
@@ -350,7 +360,7 @@ export default function DocumentsPage() {
                 entite_id: metadata.entite_id ?? undefined,
               },
             })
-            setShowCreateDialog(false)
+            patchUi({ showCreateDialog: false })
           }
         }}
       />

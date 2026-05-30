@@ -117,12 +117,23 @@ export default function TicketsPage() {
     if (param) setSelectedCoproprieteId(parseInt(param))
   }, [searchParams, setSelectedCoproprieteId])
 
-  const [showCreateDialog, setShowCreateDialog] = useState(false)
-  const [showEditDialog, setShowEditDialog] = useState(false)
-  const [editingTicket, setEditingTicket] = useState<Ticket | null>(null)
-  const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null)
-  const [newMessage, setNewMessage] = useState('')
-  const [deleteId, setDeleteId] = useState<number | null>(null)
+  const [ui, setUi] = useState<{
+    showCreateDialog: boolean
+    showEditDialog: boolean
+    editingTicket: Ticket | null
+    selectedTicketId: number | null
+    newMessage: string
+    deleteId: number | null
+  }>({
+    showCreateDialog: false,
+    showEditDialog: false,
+    editingTicket: null,
+    selectedTicketId: null,
+    newMessage: '',
+    deleteId: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { showCreateDialog, showEditDialog, editingTicket, selectedTicketId, newMessage, deleteId } = ui
 
 
   const {
@@ -190,15 +201,15 @@ export default function TicketsPage() {
       copropriete_id: selectedCoproId,
       auteur_id: user?.id,
     })
-    setShowCreateDialog(false)
+    patchUi({ showCreateDialog: false })
     createForm.reset()
   }
 
   const handleUpdate = async (data: UpdateTicketFormData) => {
     if (!editingTicket) return
     await updateTicket.mutateAsync({ id: editingTicket.id, data })
-    setShowEditDialog(false)
-    setEditingTicket(null)
+    patchUi({ showEditDialog: false })
+    patchUi({ editingTicket: null })
   }
 
   const handleSendMessage = async () => {
@@ -207,7 +218,7 @@ export default function TicketsPage() {
       ticketId: selectedTicketId,
       data: { contenu: newMessage.trim(), auteur_id: user?.id },
     })
-    setNewMessage('')
+    patchUi({ newMessage: '' })
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -223,7 +234,7 @@ export default function TicketsPage() {
       <div className="space-y-6">
         <div className="flex items-center gap-3">
           <button type="button"
-            onClick={() => setSelectedTicketId(null)}
+            onClick={() => patchUi({ selectedTicketId: null })}
             className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800"
             aria-label="Retour"
           >
@@ -255,8 +266,8 @@ export default function TicketsPage() {
             <div className="flex gap-2">
               <button type="button"
                 onClick={() => {
-                  setEditingTicket(selectedTicket)
-                  setShowEditDialog(true)
+                  patchUi({ editingTicket: selectedTicket })
+                  patchUi({ showEditDialog: true })
                 }}
                 className="flex items-center gap-2 rounded-lg border border-stone-200 px-3 py-1.5 text-sm text-stone-600 hover:bg-stone-50 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800"
               >
@@ -264,7 +275,7 @@ export default function TicketsPage() {
                 Modifier
               </button>
               <button type="button"
-                onClick={() => setDeleteId(selectedTicket.id)}
+                onClick={() => patchUi({ deleteId: selectedTicket.id })}
                 className="flex items-center gap-2 rounded-lg border border-red-200 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
               >
                 <Trash2 className="size-4" />
@@ -331,7 +342,7 @@ export default function TicketsPage() {
                 <div className="flex gap-2">
                   <Textarea
                     value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
+                    onChange={(e) => patchUi({ newMessage: e.target.value })}
                     onKeyDown={handleKeyDown}
                     placeholder="Ecrire un message..."
                     className="min-h-[44px] resize-none"
@@ -354,8 +365,8 @@ export default function TicketsPage() {
         <FormDialog
           open={showEditDialog}
           onOpenChange={(open) => {
-            setShowEditDialog(open)
-            if (!open) setEditingTicket(null)
+            patchUi({ showEditDialog: open })
+            if (!open) patchUi({ editingTicket: null })
           }}
           title="Modifier le ticket"
           form={editForm}
@@ -483,7 +494,7 @@ export default function TicketsPage() {
             <button type="button"
               onClick={() => {
                 createForm.reset()
-                setShowCreateDialog(true)
+                patchUi({ showCreateDialog: true })
               }}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
@@ -521,7 +532,7 @@ export default function TicketsPage() {
                     <tr
                       key={ticket.id}
                       className="cursor-pointer border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30"
-                      onClick={() => setSelectedTicketId(ticket.id)}
+                      onClick={() => patchUi({ selectedTicketId: ticket.id })}
                     >
                       <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">
                         {ticket.sujet}
@@ -557,8 +568,8 @@ export default function TicketsPage() {
                         <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
                           <button type="button"
                             onClick={() => {
-                              setEditingTicket(ticket)
-                              setShowEditDialog(true)
+                              patchUi({ editingTicket: ticket })
+                              patchUi({ showEditDialog: true })
                             }}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
@@ -566,7 +577,7 @@ export default function TicketsPage() {
                             <Pencil className="size-4" />
                           </button>
                           <button type="button"
-                            onClick={() => setDeleteId(ticket.id)}
+                            onClick={() => patchUi({ deleteId: ticket.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
@@ -586,7 +597,7 @@ export default function TicketsPage() {
       {/* Create dialog */}
       <FormDialog
         open={showCreateDialog}
-        onOpenChange={setShowCreateDialog}
+        onOpenChange={v => patchUi({ showCreateDialog: v })}
         title="Nouveau ticket"
         description="Creer un nouveau ticket de support"
         form={createForm}
@@ -660,8 +671,8 @@ export default function TicketsPage() {
       <FormDialog
         open={showEditDialog}
         onOpenChange={(open) => {
-          setShowEditDialog(open)
-          if (!open) setEditingTicket(null)
+          patchUi({ showEditDialog: open })
+          if (!open) patchUi({ editingTicket: null })
         }}
         title="Modifier le ticket"
         form={editForm}
@@ -755,15 +766,15 @@ export default function TicketsPage() {
 
       <ConfirmDialog
         open={deleteId !== null}
-        onOpenChange={(o) => !o && setDeleteId(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteId: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
         onConfirm={() => {
           deleteTicket.mutate(deleteId!, {
-            onSuccess: () => setSelectedTicketId(null),
+            onSuccess: () => patchUi({ selectedTicketId: null }),
           })
-          setDeleteId(null)
+          patchUi({ deleteId: null })
         }}
       />
     </div>

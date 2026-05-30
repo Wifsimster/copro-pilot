@@ -41,18 +41,30 @@ type Tab = 'comptes' | 'mouvements'
 
 export default function ComptesBancairesPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
-  const [activeTab, setActiveTab] = useState<Tab>('comptes')
-  const [selectedCompteId, setSelectedCompteId] = useState<number | undefined>()
+  const [ui, setUi] = useState<{
+    activeTab: Tab
+    selectedCompteId: number | undefined
+    showCompteDialog: boolean
+    editingCompte: CompteBancaire | null
+    showMouvementDialog: boolean
+    editingMouvement: MouvementBancaire | null
+    deleteTarget: { type: 'compte' | 'mouvement', id: number } | null
+  }>({
+    activeTab: 'comptes',
+    selectedCompteId: undefined,
+    showCompteDialog: false,
+    editingCompte: null,
+    showMouvementDialog: false,
+    editingMouvement: null,
+    deleteTarget: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { activeTab, selectedCompteId, showCompteDialog, editingCompte, showMouvementDialog, editingMouvement, deleteTarget } = ui
 
   useEffect(() => {
-    setSelectedCompteId(undefined)
+    patchUi({ selectedCompteId: undefined })
   }, [selectedCoproId])
 
-  const [showCompteDialog, setShowCompteDialog] = useState(false)
-  const [editingCompte, setEditingCompte] = useState<CompteBancaire | null>(null)
-  const [showMouvementDialog, setShowMouvementDialog] = useState(false)
-  const [editingMouvement, setEditingMouvement] = useState<MouvementBancaire | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<{ type: 'compte' | 'mouvement', id: number } | null>(null)
 
   const { data: comptes, isLoading: loadingComptes, isError: isErrorComptes, error: errorComptes } = useComptesBancairesByCopropriete(selectedCoproId)
   const { data: mouvements, isLoading: loadingMouvements, isError: isErrorMouvements, error: errorMouvements } = useMouvementsBancairesByCompte(selectedCompteId)
@@ -93,7 +105,7 @@ export default function ComptesBancairesPage() {
               { key: 'mouvements', label: 'Mouvements', icon: ArrowDownUp },
             ]}
             activeTab={activeTab}
-            onTabChange={(key) => setActiveTab(key as Tab)}
+            onTabChange={(key) => patchUi({ activeTab: key as Tab })}
           />
 
           {/* Comptes tab */}
@@ -102,7 +114,7 @@ export default function ComptesBancairesPage() {
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Comptes bancaires</h2>
                 <button type="button"
-                  onClick={() => setShowCompteDialog(true)}
+                  onClick={() => patchUi({ showCompteDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
@@ -139,7 +151,7 @@ export default function ComptesBancairesPage() {
                           className={`border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30 cursor-pointer ${
                             selectedCompteId === compte.id ? 'bg-emerald-50 dark:bg-emerald-900/20' : ''
                           }`}
-                          onClick={() => { setSelectedCompteId(compte.id); setActiveTab('mouvements') }}
+                          onClick={() => { patchUi({ selectedCompteId: compte.id }); patchUi({ activeTab: 'mouvements' }) }}
                         >
                           <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">{compte.banque}</td>
                           <td className="px-4 py-3 text-stone-600 dark:text-stone-300 font-mono text-xs">{compte.iban}</td>
@@ -167,14 +179,14 @@ export default function ComptesBancairesPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
                               <button type="button"
-                                onClick={() => { setEditingCompte(compte); setShowCompteDialog(true) }}
+                                onClick={() => { patchUi({ editingCompte: compte }); patchUi({ showCompteDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'compte', id: compte.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'compte', id: compte.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -191,7 +203,7 @@ export default function ComptesBancairesPage() {
 
               <CompteBancaireFormDialog
                 open={showCompteDialog}
-                onOpenChange={(open) => { setShowCompteDialog(open); if (!open) setEditingCompte(null) }}
+                onOpenChange={(open) => { patchUi({ showCompteDialog: open }); if (!open) patchUi({ editingCompte: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingCompte || undefined}
                 title={editingCompte ? 'Modifier le compte bancaire' : 'Nouveau compte bancaire'}
@@ -201,8 +213,8 @@ export default function ComptesBancairesPage() {
                   } else {
                     await createCompte.mutateAsync(data)
                   }
-                  setShowCompteDialog(false)
-                  setEditingCompte(null)
+                  patchUi({ showCompteDialog: false })
+                  patchUi({ editingCompte: null })
                 }}
                 isLoading={editingCompte ? updateCompte.isPending : createCompte.isPending}
               />
@@ -219,7 +231,7 @@ export default function ComptesBancairesPage() {
                   <div className="relative">
                     <select
                       value={selectedCompteId || ''}
-                      onChange={(e) => setSelectedCompteId(e.target.value ? parseInt(e.target.value) : undefined)}
+                      onChange={(e) => patchUi({ selectedCompteId: e.target.value ? parseInt(e.target.value) : undefined })}
                       className="appearance-none rounded-lg border border-stone-300 bg-white px-3 py-1.5 pr-8 text-sm text-stone-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 dark:border-stone-600 dark:bg-stone-700 dark:text-white"
                     >
                       <option value="">Selectionner un compte…</option>
@@ -232,7 +244,7 @@ export default function ComptesBancairesPage() {
                 </div>
                 {selectedCompteId && (
                   <button type="button"
-                    onClick={() => setShowMouvementDialog(true)}
+                    onClick={() => patchUi({ showMouvementDialog: true })}
                     className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                   >
                     <Plus className="size-4" />
@@ -292,14 +304,14 @@ export default function ComptesBancairesPage() {
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <button type="button"
-                                onClick={() => { setEditingMouvement(mouvement); setShowMouvementDialog(true) }}
+                                onClick={() => { patchUi({ editingMouvement: mouvement }); patchUi({ showMouvementDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
                               <button type="button"
-                                onClick={() => setDeleteTarget({ type: 'mouvement', id: mouvement.id })}
+                                onClick={() => patchUi({ deleteTarget: { type: 'mouvement', id: mouvement.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
@@ -317,7 +329,7 @@ export default function ComptesBancairesPage() {
               {selectedCompteId && (
                 <MouvementBancaireFormDialog
                   open={showMouvementDialog}
-                  onOpenChange={(open) => { setShowMouvementDialog(open); if (!open) setEditingMouvement(null) }}
+                  onOpenChange={(open) => { patchUi({ showMouvementDialog: open }); if (!open) patchUi({ editingMouvement: null }) }}
                   compteId={selectedCompteId}
                   defaultValues={editingMouvement || undefined}
                   title={editingMouvement ? 'Modifier le mouvement' : 'Nouveau mouvement'}
@@ -327,8 +339,8 @@ export default function ComptesBancairesPage() {
                     } else {
                       await createMouvement.mutateAsync(data)
                     }
-                    setShowMouvementDialog(false)
-                    setEditingMouvement(null)
+                    patchUi({ showMouvementDialog: false })
+                    patchUi({ editingMouvement: null })
                   }}
                   isLoading={editingMouvement ? updateMouvement.isPending : createMouvement.isPending}
                 />
@@ -340,14 +352,14 @@ export default function ComptesBancairesPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteTarget: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
         onConfirm={() => {
           if (deleteTarget?.type === 'compte') deleteCompte.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'mouvement') deleteMouvement.mutate(deleteTarget.id)
-          setDeleteTarget(null)
+          patchUi({ deleteTarget: null })
         }}
       />
     </div>
