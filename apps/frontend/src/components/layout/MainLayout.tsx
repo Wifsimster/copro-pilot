@@ -71,6 +71,94 @@ interface NavSection {
   items: NavItem[]
 }
 
+function isItemActive(pathname: string, href: string) {
+  return href === '/' || href === '/extranet'
+    ? pathname === href
+    : pathname.startsWith(href)
+}
+
+function NavItemLink({
+  item,
+  pathname,
+  onNavigate,
+}: {
+  item: NavItem
+  pathname: string
+  onNavigate: () => void
+}) {
+  const active = isItemActive(pathname, item.href)
+  return (
+    <Link
+      to={item.href}
+      onClick={onNavigate}
+      className={cn(
+        'flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
+        active
+          ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+          : 'text-stone-600 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-700'
+      )}
+    >
+      <item.icon className="size-4" />
+      {item.name}
+    </Link>
+  )
+}
+
+function SectionView({
+  section,
+  pathname,
+  isOpen,
+  onToggle,
+  onNavigate,
+}: {
+  section: NavSection
+  pathname: string
+  isOpen: boolean
+  onToggle: () => void
+  onNavigate: () => void
+}) {
+  const items = section.items.map(item => (
+    <NavItemLink
+      key={item.name}
+      item={item}
+      pathname={pathname}
+      onNavigate={onNavigate}
+    />
+  ))
+
+  if (!section.collapsible) {
+    return (
+      <div className="space-y-0.5">
+        <div className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-stone-400 dark:text-stone-500">
+          {section.label}
+        </div>
+        {items}
+      </div>
+    )
+  }
+
+  return (
+    <Collapsible.Root
+      open={isOpen}
+      onOpenChange={onToggle}
+      data-tour={`section-${section.key}`}
+    >
+      <Collapsible.Trigger className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-stone-400 transition-colors hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300">
+        {section.label}
+        <ChevronRight
+          className={cn(
+            'size-3.5 transition-transform duration-200',
+            isOpen && 'rotate-90'
+          )}
+        />
+      </Collapsible.Trigger>
+      <Collapsible.Content className="overflow-hidden data-[state=closed]:animate-[collapsible-up_150ms_ease-out] data-[state=open]:animate-[collapsible-down_150ms_ease-out]">
+        <div className="space-y-0.5 pt-0.5">{items}</div>
+      </Collapsible.Content>
+    </Collapsible.Root>
+  )
+}
+
 const navigationSections: NavSection[] = [
   {
     key: 'overview',
@@ -219,17 +307,12 @@ export function MainLayout({ children }: MainLayoutProps) {
     })
   }, [user?.role])
 
-  const isItemActive = (href: string) =>
-    href === '/' || href === '/extranet'
-      ? pathname === href
-      : pathname.startsWith(href)
-
   // Auto-expand section containing active route
   const effectiveSectionState = { ...sectionState }
   for (const section of filteredSections) {
     if (
       section.collapsible &&
-      section.items.some(item => isItemActive(item.href))
+      section.items.some(item => isItemActive(pathname, item.href))
     ) {
       effectiveSectionState[section.key] = true
     }
@@ -256,66 +339,7 @@ export function MainLayout({ children }: MainLayoutProps) {
     patchUi({ tourRunning: false })
   }, [])
 
-  const renderNavItem = (item: NavItem) => {
-    const active = isItemActive(item.href)
-    return (
-      <Link
-        key={item.name}
-        to={item.href}
-        onClick={() => patchUi({ sidebarOpen: false })}
-        className={cn(
-          'flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
-          active
-            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-            : 'text-stone-600 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-700'
-        )}
-      >
-        <item.icon className="size-4" />
-        {item.name}
-      </Link>
-    )
-  }
-
-  const renderSection = (section: NavSection) => {
-    if (!section.collapsible) {
-      return (
-        <div key={section.key} className="space-y-0.5">
-          <div className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-stone-400 dark:text-stone-500">
-            {section.label}
-          </div>
-          {section.items.map(renderNavItem)}
-        </div>
-      )
-    }
-
-    const isOpen = effectiveSectionState[section.key] ?? true
-
-    return (
-      <Collapsible.Root
-        key={section.key}
-        open={isOpen}
-        onOpenChange={() => toggleSection(section.key)}
-        data-tour={`section-${section.key}`}
-      >
-        <Collapsible.Trigger className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-stone-400 transition-colors hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300">
-          {section.label}
-          <ChevronRight
-            className={cn(
-              'size-3.5 transition-transform duration-200',
-              isOpen && 'rotate-90'
-            )}
-          />
-        </Collapsible.Trigger>
-        <Collapsible.Content
-          className="overflow-hidden data-[state=closed]:animate-[collapsible-up_150ms_ease-out] data-[state=open]:animate-[collapsible-down_150ms_ease-out]"
-        >
-          <div className="space-y-0.5 pt-0.5">
-            {section.items.map(renderNavItem)}
-          </div>
-        </Collapsible.Content>
-      </Collapsible.Root>
-    )
-  }
+  const closeSidebar = () => patchUi({ sidebarOpen: false })
 
   return (
     <div className="flex h-screen bg-[#FAF8F5] dark:bg-stone-950">
@@ -352,13 +376,28 @@ export function MainLayout({ children }: MainLayoutProps) {
 
         {/* Vue d'ensemble */}
         <div data-tour="section-overview" className="border-b border-stone-200 px-4 pt-4 pb-3 dark:border-stone-700">
-          {renderSection(filteredSections[0])}
+          <SectionView
+            section={filteredSections[0]}
+            pathname={pathname}
+            isOpen={effectiveSectionState[filteredSections[0].key] ?? true}
+            onToggle={() => toggleSection(filteredSections[0].key)}
+            onNavigate={closeSidebar}
+          />
         </div>
 
 
         {/* Navigation */}
         <nav className="flex-1 space-y-4 overflow-y-auto p-4">
-          {filteredSections.slice(1).map(renderSection)}
+          {filteredSections.slice(1).map(section => (
+            <SectionView
+              key={section.key}
+              section={section}
+              pathname={pathname}
+              isOpen={effectiveSectionState[section.key] ?? true}
+              onToggle={() => toggleSection(section.key)}
+              onNavigate={closeSidebar}
+            />
+          ))}
         </nav>
 
         {/* User menu */}

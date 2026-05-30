@@ -50,6 +50,24 @@ function getNestedValue(obj: unknown, path: string): unknown {
     )
 }
 
+function SortIcon({
+  active,
+  direction,
+}: {
+  active: boolean
+  direction: 'asc' | 'desc' | null
+}) {
+  if (!active) {
+    return (
+      <ChevronsUpDown className="ml-1 inline-block size-3.5 text-muted-foreground/50" />
+    )
+  }
+  if (direction === 'asc') {
+    return <ChevronUp className="ml-1 inline-block size-3.5" />
+  }
+  return <ChevronDown className="ml-1 inline-block size-3.5" />
+}
+
 export function DataTable<T>({
   columns,
   data,
@@ -119,22 +137,6 @@ export function DataTable<T>({
     })
   }, [filtered, sortKey, sortDirection])
 
-  const renderSortIcon = (key: string) => {
-    if (sortKey !== key) {
-      return (
-        <ChevronsUpDown className="ml-1 inline-block size-3.5 text-muted-foreground/50" />
-      )
-    }
-    if (sortDirection === 'asc') {
-      return (
-        <ChevronUp className="ml-1 inline-block size-3.5" />
-      )
-    }
-    return (
-      <ChevronDown className="ml-1 inline-block size-3.5" />
-    )
-  }
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -170,7 +172,10 @@ export function DataTable<T>({
                     onClick={() => handleSort(col.key)}
                   >
                     {col.header}
-                    {renderSortIcon(col.key)}
+                    <SortIcon
+                      active={sortKey === col.key}
+                      direction={sortDirection}
+                    />
                   </Button>
                 ) : (
                   col.header
