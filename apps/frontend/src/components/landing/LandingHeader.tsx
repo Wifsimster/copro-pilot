@@ -68,9 +68,8 @@ export function LandingHeader() {
               <button type="button"
                 key={link.href}
                 onClick={() => scrollTo(link.href)}
-                className="text-sm font-medium text-stone-500
-                  hover:text-stone-900 dark:text-stone-400
-                  dark:hover:text-stone-100 transition-colors
+                className="text-sm font-medium text-muted-foreground
+                  hover:text-foreground transition-colors
                   relative after:absolute after:bottom-0
                   after:left-0 after:h-px after:w-0
                   after:bg-emerald-600 after:transition-all

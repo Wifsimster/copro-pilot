@@ -146,7 +146,7 @@ function PricingCard({
             -translate-x-1/2 inline-flex items-center
             rounded-full bg-amber-500 dark:bg-amber-400
             px-3 py-0.5 text-xs font-bold text-white
-            dark:text-stone-950 tracking-wide"
+            dark:text-amber-950 tracking-wide"
         >
           {tier.badge}
         </span>
