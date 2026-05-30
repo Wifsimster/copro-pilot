@@ -44,14 +44,14 @@ export function DeleteAccountDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="destructive">
-          <Trash2 className="mr-2 h-4 w-4" />
+          <Trash2 className="mr-2 size-4" />
           Supprimer mon compte
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-destructive">
-            <AlertTriangle className="h-5 w-5" />
+            <AlertTriangle className="size-5" />
             Suppression du compte
           </DialogTitle>
           <DialogDescription className="space-y-2 text-left">
@@ -75,7 +75,7 @@ export function DeleteAccountDialog() {
             className="w-full"
             onClick={() => gdprApi.exportMyData()}
           >
-            <Download className="mr-2 h-4 w-4" />
+            <Download className="mr-2 size-4" />
             Telecharger mes donnees avant suppression
           </Button>
 

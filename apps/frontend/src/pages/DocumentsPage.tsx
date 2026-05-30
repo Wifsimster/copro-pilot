@@ -3,8 +3,9 @@ import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useDocumentsByCopropriete, useUploadDocument, useUpdateDocument, useDeleteDocument } from '@/hooks/useDocuments'
 import { documentsApi } from '@/api/documents'
 import { DocumentFormDialog } from '@/components/documents/DocumentFormDialog'
+import { DocumentPreviewModal } from '@/components/documents/DocumentPreviewModal'
 import type { Document } from '@/types'
-import { FolderOpen, Plus, Trash2, Pencil, ChevronDown, FileText, Download, Search, Eye, X, Image, FileSpreadsheet, File } from 'lucide-react'
+import { FolderOpen, Plus, Trash2, Pencil, ChevronDown, FileText, Download, Search, Eye, Image, FileSpreadsheet, File } from 'lucide-react'
 import { ErrorAlert } from '@/components/layout/ErrorAlert'
 
 const CATEGORIE_LABELS: Record<string, string> = {
@@ -61,11 +62,21 @@ function isPreviewable(mimeType: string | null): boolean {
 
 export default function DocumentsPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
-  const [showCreateDialog, setShowCreateDialog] = useState(false)
-  const [editingDoc, setEditingDoc] = useState<Document | null>(null)
-  const [previewDoc, setPreviewDoc] = useState<Document | null>(null)
-  const [search, setSearch] = useState('')
-  const [filterCategorie, setFilterCategorie] = useState<string>('all')
+  const [ui, setUi] = useState<{
+    showCreateDialog: boolean
+    editingDoc: Document | null
+    previewDoc: Document | null
+    search: string
+    filterCategorie: string
+  }>({
+    showCreateDialog: false,
+    editingDoc: null,
+    previewDoc: null,
+    search: '',
+    filterCategorie: 'all',
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { showCreateDialog, editingDoc, previewDoc, search, filterCategorie } = ui
 
   const { data: documents, isLoading: loadingDocs, isError, error } = useDocumentsByCopropriete(selectedCoproId)
   const uploadDocument = useUploadDocument()
@@ -103,7 +114,7 @@ export default function DocumentsPage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-16">
-          <FolderOpen className="h-16 w-16 text-muted-foreground/40" />
+          <FolderOpen className="size-16 text-muted-foreground/40" />
           <h3 className="mt-6 text-lg font-medium text-foreground">Aucune copropriete selectionnee</h3>
           <p className="mt-2 max-w-md text-center text-muted-foreground">
             Selectionnez une copropriete dans le menu lateral.
@@ -137,9 +148,10 @@ export default function DocumentsPage() {
               <div className="relative flex-1 max-w-xs">
                 <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <input
+                  aria-label="Rechercher un document"
                   type="text"
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={(e) => patchUi({ search: e.target.value })}
                   placeholder="Rechercher un document..."
                   className="w-full rounded-lg border border-input bg-background py-2 pl-9 pr-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 />
@@ -147,7 +159,7 @@ export default function DocumentsPage() {
               <div className="relative">
                 <select
                   value={filterCategorie}
-                  onChange={(e) => setFilterCategorie(e.target.value)}
+                  onChange={(e) => patchUi({ filterCategorie: e.target.value })}
                   className="appearance-none rounded-lg border border-input bg-background py-2 pl-3 pr-8 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   <option value="all">Toutes categories</option>
@@ -158,8 +170,8 @@ export default function DocumentsPage() {
                 <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
               </div>
             </div>
-            <button
-              onClick={() => setShowCreateDialog(true)}
+            <button type="button"
+              onClick={() => patchUi({ showCreateDialog: true })}
               className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
               <Plus className="size-4" />
@@ -173,7 +185,7 @@ export default function DocumentsPage() {
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="animate-pulse rounded-lg border border-border p-4">
                   <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-lg bg-muted" />
+                    <div className="size-10 rounded-lg bg-muted" />
                     <div className="flex-1 space-y-2">
                       <div className="h-4 w-48 rounded bg-muted" />
                       <div className="h-3 w-32 rounded bg-muted" />
@@ -184,7 +196,7 @@ export default function DocumentsPage() {
             </div>
           ) : !filtered?.length ? (
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-12">
-              <FileText className="h-12 w-12 text-muted-foreground/40" />
+              <FileText className="size-12 text-muted-foreground/40" />
               <h3 className="mt-4 text-base font-medium text-foreground">
                 {search || filterCategorie !== 'all' ? 'Aucun document trouve' : 'Aucun document'}
               </h3>
@@ -203,7 +215,7 @@ export default function DocumentsPage() {
                     key={doc.id}
                     className="flex items-center gap-4 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent/50"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">
                       <IconComponent className="size-5 text-muted-foreground" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -231,8 +243,8 @@ export default function DocumentsPage() {
                     </div>
                     <div className="flex shrink-0 items-center gap-1">
                       {isPreviewable(doc.mime_type) && (
-                        <button
-                          onClick={() => setPreviewDoc(doc)}
+                        <button type="button"
+                          onClick={() => patchUi({ previewDoc: doc })}
                           className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                           title="Previsualiser"
                           aria-label="Previsualiser"
@@ -248,15 +260,15 @@ export default function DocumentsPage() {
                       >
                         <Download className="size-4" />
                       </a>
-                      <button
-                        onClick={() => setEditingDoc(doc)}
+                      <button type="button"
+                        onClick={() => patchUi({ editingDoc: doc })}
                         className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                         title="Modifier"
                         aria-label="Modifier"
                       >
                         <Pencil className="size-4" />
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => { if (confirm('Supprimer ce document ?')) deleteDocument.mutate(doc.id) }}
                         className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
                         title="Supprimer"
@@ -275,48 +287,10 @@ export default function DocumentsPage() {
 
       {/* Preview modal */}
       {previewDoc && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-          <div className="relative flex h-[90vh] w-[90vw] max-w-5xl flex-col rounded-lg bg-background shadow-xl">
-            <div className="flex items-center justify-between border-b border-border px-4 py-3">
-              <div>
-                <h3 className="text-sm font-medium">{previewDoc.nom}</h3>
-                <p className="text-xs text-muted-foreground">{previewDoc.fichier_nom}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <a
-                  href={documentsApi.getDownloadUrl(previewDoc.id)}
-                  className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
-                  title="Telecharger"
-                  aria-label="Telecharger"
-                >
-                  <Download className="size-4" />
-                </a>
-                <button
-                  onClick={() => setPreviewDoc(null)}
-                  className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
-                  aria-label="Fermer"
-                >
-                  <X className="size-5" />
-                </button>
-              </div>
-            </div>
-            <div className="flex-1 overflow-auto p-4">
-              {previewDoc.mime_type?.startsWith('image/') ? (
-                <img
-                  src={documentsApi.getDownloadUrl(previewDoc.id)}
-                  alt={previewDoc.nom}
-                  className="mx-auto max-h-full max-w-full object-contain"
-                />
-              ) : previewDoc.mime_type === 'application/pdf' ? (
-                <iframe
-                  src={documentsApi.getDownloadUrl(previewDoc.id)}
-                  className="h-full w-full rounded border border-border"
-                  title={previewDoc.nom}
-                />
-              ) : null}
-            </div>
-          </div>
-        </div>
+        <DocumentPreviewModal
+          document={previewDoc}
+          onClose={() => patchUi({ previewDoc: null })}
+        />
       )}
 
       {/* Create/Edit dialog */}
@@ -324,8 +298,8 @@ export default function DocumentsPage() {
         open={showCreateDialog || !!editingDoc}
         onOpenChange={(open) => {
           if (!open) {
-            setShowCreateDialog(false)
-            setEditingDoc(null)
+            patchUi({ showCreateDialog: false })
+            patchUi({ editingDoc: null })
           }
         }}
         coproprieteId={selectedCoproId ?? 0}
@@ -335,7 +309,7 @@ export default function DocumentsPage() {
         onSubmit={async ({ file, metadata }) => {
           if (editingDoc) {
             await updateDocument.mutateAsync({ id: editingDoc.id, data: metadata })
-            setEditingDoc(null)
+            patchUi({ editingDoc: null })
           } else if (file) {
             await uploadDocument.mutateAsync({
               file,
@@ -348,7 +322,7 @@ export default function DocumentsPage() {
                 entite_id: metadata.entite_id ?? undefined,
               },
             })
-            setShowCreateDialog(false)
+            patchUi({ showCreateDialog: false })
           }
         }}
       />

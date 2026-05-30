@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { mouvementsBancairesApi } from '@/api/mouvements-bancaires'
 import type { MouvementBancaire } from '@/types'
 
-export const MOUVEMENTS_BANCAIRES_QUERY_KEY = ['mouvements-bancaires'] as const
+const MOUVEMENTS_BANCAIRES_QUERY_KEY = ['mouvements-bancaires'] as const
 
 export function useMouvementsBancairesByCompte(compteId: number | undefined) {
   return useQuery({

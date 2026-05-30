@@ -21,15 +21,15 @@ export default function ExtranetFondsTravauPage() {
         </p>
       ) : (
         <div className="space-y-3">
-          {fonds.map((f: any, i: number) => (
+          {fonds.map((f: any) => (
             <div
-              key={i}
+              key={f.id}
               className="rounded-lg border border-border bg-card p-4"
             >
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium">
-                    Lot {f.lot_numero} — {f.copropriete_nom}
+                    Lot {f.lot_numero} - {f.copropriete_nom}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {f.tantiemes} tantiemes

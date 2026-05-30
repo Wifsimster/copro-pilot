@@ -34,6 +34,7 @@ function Alert({
   )
 }
 
+// react-doctor-disable-next-line react-doctor/no-multi-comp -- shadcn/ui Alert primitive composes its parts in one module
 function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -47,6 +48,7 @@ function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// react-doctor-disable-next-line react-doctor/no-multi-comp -- shadcn/ui Alert primitive composes its parts in one module
 function AlertDescription({
   className,
   ...props

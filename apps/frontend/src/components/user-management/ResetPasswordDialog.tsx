@@ -43,7 +43,9 @@ export function ResetPasswordDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div
+      <button
+        type="button"
+        aria-label="Fermer"
         className="fixed inset-0 bg-black/50"
         onClick={handleClose}
       />
@@ -116,7 +118,7 @@ export function ResetPasswordDialog({
                 {isLoading ? (
                   <>
                     <Loader2 className="size-4 animate-spin" />
-                    Envoi...
+                    Envoi…
                   </>
                 ) : (
                   'Envoyer le lien'

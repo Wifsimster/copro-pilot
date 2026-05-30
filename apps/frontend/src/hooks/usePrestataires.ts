@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { prestatairesApi } from '@/api/prestataires'
 import type { Prestataire } from '@/types'
 
-export const PRESTATAIRES_QUERY_KEY = ['prestataires'] as const
+const PRESTATAIRES_QUERY_KEY = ['prestataires'] as const
 
 export function usePrestataires() {
   return useQuery({

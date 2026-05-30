@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useReducer } from 'react'
 import { Download, Monitor, Share, Smartphone, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -48,10 +48,40 @@ function detectPlatform(): Platform {
   return 'desktop'
 }
 
+interface PromptState {
+  deferredPrompt: BeforeInstallPromptEvent | null
+  visible: boolean
+}
+
+type PromptAction =
+  | { type: 'available'; prompt: BeforeInstallPromptEvent }
+  | { type: 'show' }
+  | { type: 'hide' }
+  | { type: 'reset' }
+
+function promptReducer(state: PromptState, action: PromptAction): PromptState {
+  switch (action.type) {
+    case 'available':
+      return { deferredPrompt: action.prompt, visible: true }
+    case 'show':
+      return { ...state, visible: true }
+    case 'hide':
+      return { ...state, visible: false }
+    case 'reset':
+      return { deferredPrompt: null, visible: false }
+    default:
+      return state
+  }
+}
+
 export function PwaInstallPrompt() {
-  const [deferredPrompt, setDeferredPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null)
-  const [visible, setVisible] = useState(false)
+  // deferredPrompt and visibility change together; a reducer coordinates them
+  // with a single dispatch so the effect has no cascading setState calls.
+  const [state, dispatch] = useReducer(promptReducer, {
+    deferredPrompt: null,
+    visible: false,
+  })
+  const { deferredPrompt, visible } = state
   const platform = useMemo<Platform>(detectPlatform, [])
 
   useEffect(() => {
@@ -60,13 +90,14 @@ export function PwaInstallPrompt() {
 
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault()
-      setDeferredPrompt(event as BeforeInstallPromptEvent)
-      setVisible(true)
+      dispatch({
+        type: 'available',
+        prompt: event as BeforeInstallPromptEvent,
+      })
     }
 
     const handleAppInstalled = () => {
-      setDeferredPrompt(null)
-      setVisible(false)
+      dispatch({ type: 'reset' })
     }
 
     window.addEventListener(
@@ -79,7 +110,7 @@ export function PwaInstallPrompt() {
     // after a short delay so the prompt is not intrusive on first paint.
     let timer: ReturnType<typeof setTimeout> | undefined
     if (platform === 'ios-safari') {
-      timer = setTimeout(() => setVisible(true), SHOW_DELAY_MS)
+      timer = setTimeout(() => dispatch({ type: 'show' }), SHOW_DELAY_MS)
     }
 
     return () => {
@@ -100,8 +131,7 @@ export function PwaInstallPrompt() {
     } catch {
       // ignore
     } finally {
-      setDeferredPrompt(null)
-      setVisible(false)
+      dispatch({ type: 'reset' })
     }
   }
 
@@ -111,7 +141,7 @@ export function PwaInstallPrompt() {
     } catch {
       // ignore
     }
-    setVisible(false)
+    dispatch({ type: 'hide' })
   }
 
   if (!visible) return null
@@ -132,15 +162,15 @@ export function PwaInstallPrompt() {
       : 'Lancez CoproPilot en un clic depuis votre bureau, meme hors ligne.'
 
   return (
-    <div
-      role='dialog'
+    <dialog
+      open
       aria-label='Installer CoproPilot'
-      className='fixed bottom-4 left-4 right-4 z-[9998] sm:left-auto sm:right-4 sm:max-w-sm'
+      className='fixed bottom-4 left-4 right-4 z-[9998] m-0 w-auto border-0 bg-transparent p-0 sm:left-auto sm:right-4 sm:max-w-sm'
     >
       <div className='bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-lg shadow-lg p-4 flex items-start gap-3'>
-        <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30'>
+        <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30'>
           <Icon
-            className='h-5 w-5 text-emerald-600 dark:text-emerald-400'
+            className='size-5 text-emerald-600 dark:text-emerald-400'
             aria-hidden='true'
           />
         </div>
@@ -153,7 +183,7 @@ export function PwaInstallPrompt() {
           </p>
           {isIos && (
             <p className='mt-2 flex items-center gap-1 text-xs text-stone-500 dark:text-stone-400'>
-              <Share className='h-3.5 w-3.5' aria-hidden='true' />
+              <Share className='size-3.5' aria-hidden='true' />
               <span>Partager → Sur l'ecran d'accueil</span>
             </p>
           )}
@@ -165,7 +195,7 @@ export function PwaInstallPrompt() {
                 onClick={handleInstall}
                 className='bg-emerald-600 hover:bg-emerald-700 text-white'
               >
-                <Download className='h-4 w-4 mr-1' aria-hidden='true' />
+                <Download className='size-4 mr-1' aria-hidden='true' />
                 Installer
               </Button>
             )}
@@ -185,10 +215,10 @@ export function PwaInstallPrompt() {
           onClick={handleDismiss}
           className='text-stone-400 hover:text-stone-600 dark:hover:text-stone-200'
         >
-          <X className='h-4 w-4' aria-hidden='true' />
+          <X className='size-4' aria-hidden='true' />
         </button>
       </div>
-    </div>
+    </dialog>
   )
 }
 

@@ -179,7 +179,7 @@ export default function SecuritePage() {
                     {pillar.bullets.map(bullet => (
                       <li
                         key={bullet}
-                        className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed pl-4 relative before:absolute before:left-0 before:top-2 before:size-1.5 before:rounded-full before:bg-emerald-500"
+                        className="text-sm text-muted-foreground leading-relaxed pl-4 relative before:absolute before:left-0 before:top-2 before:size-1.5 before:rounded-full before:bg-emerald-500"
                       >
                         {bullet}
                       </li>

@@ -116,9 +116,8 @@ function CadenceToggle({
   disabled?: boolean
 }) {
   return (
-    <div
-      className="inline-flex items-center rounded-full border border-slate-200 dark:border-slate-700 p-1 text-sm"
-      role="group"
+    <fieldset
+      className="m-0 inline-flex min-w-0 items-center rounded-full border border-slate-200 dark:border-slate-700 p-1 text-sm"
       aria-label="Cadence de facturation"
     >
       <button
@@ -154,7 +153,7 @@ function CadenceToggle({
           −36 %
         </span>
       </button>
-    </div>
+    </fieldset>
   )
 }
 
@@ -174,7 +173,7 @@ export default function SubscriptionPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     )
   }
@@ -282,7 +281,7 @@ export default function SubscriptionPage() {
               className="bg-green-600 hover:bg-green-700 text-white"
             >
               <CreditCard className="size-4" />
-              Passer au plan Pro — {formatPrice('pro', cadence)}
+              Passer au plan Pro - {formatPrice('pro', cadence)}
             </Button>
           )}
 

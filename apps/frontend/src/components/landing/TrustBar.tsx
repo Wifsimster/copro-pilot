@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useInView } from 'motion/react'
+import { m, useInView } from 'motion/react'
 import { Shield, MapPin, Headphones, Code2 } from 'lucide-react'
 
 const trustItems = [
@@ -20,7 +20,7 @@ export function TrustBar() {
         ref={ref}
         className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
       >
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 12 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
@@ -46,7 +46,7 @@ export function TrustBar() {
               </div>
             )
           })}
-        </motion.div>
+        </m.div>
       </div>
       <div className="landing-line h-px w-full absolute bottom-0" />
     </section>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import {  } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -58,7 +58,7 @@ export function AssuranceFormDialog({
 }: AssuranceFormDialogProps) {
   const form = useForm<AssuranceFormData>({
     resolver: zodResolver(assuranceSchema),
-    defaultValues: {
+    values: {
       compagnie: defaultValues?.compagnie || '',
       numero_police: defaultValues?.numero_police || '',
       type: defaultValues?.type || 'multirisque_immeuble',
@@ -71,22 +71,7 @@ export function AssuranceFormDialog({
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        compagnie: defaultValues?.compagnie || '',
-        numero_police: defaultValues?.numero_police || '',
-        type: defaultValues?.type || 'multirisque_immeuble',
-        date_debut: defaultValues?.date_debut || new Date().toISOString().split('T')[0],
-        date_fin: defaultValues?.date_fin || '',
-        prime_annuelle: defaultValues?.prime_annuelle != null ? String(defaultValues.prime_annuelle) : '',
-        franchise: defaultValues?.franchise != null ? String(defaultValues.franchise) : '',
-        statut: defaultValues?.statut || 'actif',
-        notes: defaultValues?.notes || '',
-      })
-    }
-  }, [open, defaultValues, form])
-
+  
   const handleFormSubmit = async (data: AssuranceFormData) => {
     await onSubmit({
       ...data,

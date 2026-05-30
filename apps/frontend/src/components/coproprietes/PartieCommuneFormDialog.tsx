@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import {  } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -44,23 +44,14 @@ interface Props {
 export function PartieCommuneFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading, defaultValues, title = 'Nouvelle partie commune' }: Props) {
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
+    values: {
       nom: defaultValues?.nom || '',
       categorie: (defaultValues?.categorie as FormData['categorie']) || 'generales',
       description: defaultValues?.description || '',
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        nom: defaultValues?.nom || '',
-        categorie: (defaultValues?.categorie as FormData['categorie']) || 'generales',
-        description: defaultValues?.description || '',
-      })
-    }
-  }, [open, defaultValues, form])
-
+  
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({ ...data, copropriete_id: coproprieteId, description: data.description || null })
     form.reset()

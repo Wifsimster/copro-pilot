@@ -13,6 +13,7 @@ function downloadBlob(blob: Blob, filename: string) {
 }
 
 export function useExportBudgetPdf() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- download only
   return useMutation({
     mutationFn: async (budgetId: number) => {
       const blob = await exportsApi.budgetPdf(budgetId)
@@ -21,7 +22,9 @@ export function useExportBudgetPdf() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useExportAppelFondsPdf() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- download only
   return useMutation({
     mutationFn: async (appelId: number) => {
       const blob = await exportsApi.appelFondsPdf(appelId)
@@ -31,6 +34,7 @@ export function useExportAppelFondsPdf() {
 }
 
 export function useExportFeuillePresencePdf() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- download only
   return useMutation({
     mutationFn: async (agId: number) => {
       const blob = await exportsApi.feuillePresencePdf(agId)
@@ -40,6 +44,7 @@ export function useExportFeuillePresencePdf() {
 }
 
 export function useExportCarnetEntretienPdf() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- download only
   return useMutation({
     mutationFn: async (coproprieteId: number) => {
       const blob = await exportsApi.carnetEntretienPdf(coproprieteId)
@@ -49,6 +54,7 @@ export function useExportCarnetEntretienPdf() {
 }
 
 export function useExportEtatImpayesPdf() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- download only
   return useMutation({
     mutationFn: async (coproprieteId: number) => {
       const blob = await exportsApi.etatImpayesPdf(coproprieteId)
@@ -58,6 +64,7 @@ export function useExportEtatImpayesPdf() {
 }
 
 export function useExportCoproprietairesExcel() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- download only
   return useMutation({
     mutationFn: async (coproprieteId?: number) => {
       const blob = await exportsApi.coproprietairesExcel(coproprieteId)
@@ -67,6 +74,7 @@ export function useExportCoproprietairesExcel() {
 }
 
 export function useExportBalanceComptesExcel() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- download only
   return useMutation({
     mutationFn: async (coproprieteId: number) => {
       const blob = await exportsApi.balanceComptesExcel(coproprieteId)
@@ -76,6 +84,7 @@ export function useExportBalanceComptesExcel() {
 }
 
 export function useExportEtatChargesExcel() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- download only
   return useMutation({
     mutationFn: async (budgetId: number) => {
       const blob = await exportsApi.etatChargesExcel(budgetId)
@@ -85,6 +94,7 @@ export function useExportEtatChargesExcel() {
 }
 
 export function useExportEtatImpayesExcel() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- download only
   return useMutation({
     mutationFn: async (coproprieteId: number) => {
       const blob = await exportsApi.etatImpayesExcel(coproprieteId)

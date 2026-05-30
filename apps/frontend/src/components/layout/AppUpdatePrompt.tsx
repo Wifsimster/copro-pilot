@@ -46,15 +46,15 @@ export function AppUpdatePrompt() {
   }
 
   return (
-    <div
-      role='dialog'
+    <dialog
+      open
       aria-label='Mise a jour disponible'
-      className='fixed bottom-4 left-4 right-4 z-[9999] md:left-auto md:right-4 md:max-w-sm'
+      className='fixed bottom-4 left-4 right-4 z-[9999] m-0 w-auto border-0 bg-transparent p-0 md:left-auto md:right-4 md:max-w-sm'
     >
       <div className='bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-lg shadow-lg p-4 flex items-start gap-3'>
-        <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30'>
+        <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30'>
           <RefreshCw
-            className='h-5 w-5 text-emerald-600 dark:text-emerald-400'
+            className='size-5 text-emerald-600 dark:text-emerald-400'
             aria-hidden='true'
           />
         </div>
@@ -93,10 +93,10 @@ export function AppUpdatePrompt() {
           disabled={reloading}
           className='text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 disabled:opacity-50'
         >
-          <X className='h-4 w-4' aria-hidden='true' />
+          <X className='size-4' aria-hidden='true' />
         </button>
       </div>
-    </div>
+    </dialog>
   )
 }
 

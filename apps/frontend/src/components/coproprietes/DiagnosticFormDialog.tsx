@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import {  } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -73,7 +73,7 @@ export function DiagnosticFormDialog({
 }: DiagnosticFormDialogProps) {
   const form = useForm<DiagnosticFormData>({
     resolver: zodResolver(diagnosticSchema),
-    defaultValues: {
+    values: {
       type: defaultValues?.type || 'dpe',
       prestataire: defaultValues?.prestataire || '',
       date_realisation: defaultValues?.date_realisation || new Date().toISOString().split('T')[0],
@@ -84,20 +84,7 @@ export function DiagnosticFormDialog({
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        type: defaultValues?.type || 'dpe',
-        prestataire: defaultValues?.prestataire || '',
-        date_realisation: defaultValues?.date_realisation || new Date().toISOString().split('T')[0],
-        date_validite: defaultValues?.date_validite || '',
-        statut: defaultValues?.statut || 'valide',
-        document_url: defaultValues?.document_url || '',
-        observations: defaultValues?.observations || '',
-      })
-    }
-  }, [open, defaultValues, form.reset])
-
+  
   const handleFormSubmit = async (data: DiagnosticFormData) => {
     await onSubmit({
       ...data,

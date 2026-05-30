@@ -35,15 +35,32 @@ const STATUT_COLORS: Record<string, string> = {
 
 type Tab = 'contrats' | 'propositions'
 
+const isExpiringSoon = (dateStr: string | null) => {
+  if (!dateStr) return false
+  const diff = new Date(dateStr).getTime() - Date.now()
+  return diff > 0 && diff < 180 * 24 * 60 * 60 * 1000
+}
+
 export default function ContratsSyndicPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
-  const [activeTab, setActiveTab] = useState<Tab>('contrats')
+  const [ui, setUi] = useState<{
+    activeTab: Tab
+    showContratDialog: boolean
+    editingContrat: ContratSyndic | null
+    showPropositionDialog: boolean
+    editingProposition: PropositionSyndic | null
+    deleteTarget: { type: 'contrat' | 'proposition', id: number } | null
+  }>({
+    activeTab: 'contrats',
+    showContratDialog: false,
+    editingContrat: null,
+    showPropositionDialog: false,
+    editingProposition: null,
+    deleteTarget: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { activeTab, showContratDialog, editingContrat, showPropositionDialog, editingProposition, deleteTarget } = ui
 
-  const [showContratDialog, setShowContratDialog] = useState(false)
-  const [editingContrat, setEditingContrat] = useState<ContratSyndic | null>(null)
-  const [showPropositionDialog, setShowPropositionDialog] = useState(false)
-  const [editingProposition, setEditingProposition] = useState<PropositionSyndic | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<{ type: 'contrat' | 'proposition', id: number } | null>(null)
 
   const { data: contrats, isLoading: loadingContrats } = useContratsSyndicByCopropriete(selectedCoproId)
   const { data: propositions, isLoading: loadingPropositions } = usePropositionsSyndicByCopropriete(selectedCoproId)
@@ -54,12 +71,6 @@ export default function ContratsSyndicPage() {
   const createProposition = useCreatePropositionSyndic()
   const updateProposition = useUpdatePropositionSyndic()
   const deleteProposition = useDeletePropositionSyndic()
-
-  const isExpiringSoon = (dateStr: string | null) => {
-    if (!dateStr) return false
-    const diff = new Date(dateStr).getTime() - Date.now()
-    return diff > 0 && diff < 180 * 24 * 60 * 60 * 1000
-  }
 
   return (
     <div className="space-y-6">
@@ -80,16 +91,16 @@ export default function ContratsSyndicPage() {
               { key: 'contrats' as Tab, label: 'Contrats de syndic', icon: FileSignature },
               { key: 'propositions' as Tab, label: 'Mise en concurrence', icon: Users },
             ]).map((tab) => (
-              <button
+              <button type="button"
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
+                onClick={() => patchUi({ activeTab: tab.key })}
                 className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === tab.key
                     ? 'bg-white text-stone-900 shadow dark:bg-stone-700 dark:text-white'
                     : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
                 }`}
               >
-                <tab.icon className="h-4 w-4" />
+                <tab.icon className="size-4" />
                 {tab.label}
               </button>
             ))}
@@ -100,22 +111,22 @@ export default function ContratsSyndicPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Contrats de syndic</h2>
-                <button
-                  onClick={() => setShowContratDialog(true)}
+                <button type="button"
+                  onClick={() => patchUi({ showContratDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouveau contrat
                 </button>
               </div>
 
               {loadingContrats ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !contrats || contrats.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <FileSignature className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <FileSignature className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun contrat de syndic enregistre</p>
                 </div>
               ) : (
@@ -127,7 +138,7 @@ export default function ContratsSyndicPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Periode du mandat</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Forfait annuel</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -144,7 +155,7 @@ export default function ContratsSyndicPage() {
                                 {new Date(contrat.date_fin).toLocaleDateString('fr-FR')}
                               </span>
                               {isExpiringSoon(contrat.date_fin) && (
-                                <AlertTriangle className="h-3.5 w-3.5 text-orange-500" />
+                                <AlertTriangle className="size-3.5 text-orange-500" />
                               )}
                             </div>
                           </td>
@@ -160,19 +171,19 @@ export default function ContratsSyndicPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
-                                onClick={() => { setEditingContrat(contrat); setShowContratDialog(true) }}
+                              <button type="button"
+                                onClick={() => { patchUi({ editingContrat: contrat }); patchUi({ showContratDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
-                              <button
-                                onClick={() => setDeleteTarget({ type: 'contrat', id: contrat.id })}
+                              <button type="button"
+                                onClick={() => patchUi({ deleteTarget: { type: 'contrat', id: contrat.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -185,7 +196,7 @@ export default function ContratsSyndicPage() {
 
               <ContratSyndicFormDialog
                 open={showContratDialog}
-                onOpenChange={(open) => { setShowContratDialog(open); if (!open) setEditingContrat(null) }}
+                onOpenChange={(open) => { patchUi({ showContratDialog: open }); if (!open) patchUi({ editingContrat: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingContrat || undefined}
                 title={editingContrat ? 'Modifier le contrat de syndic' : 'Nouveau contrat de syndic'}
@@ -195,8 +206,8 @@ export default function ContratsSyndicPage() {
                   } else {
                     await createContrat.mutateAsync(data)
                   }
-                  setShowContratDialog(false)
-                  setEditingContrat(null)
+                  patchUi({ showContratDialog: false })
+                  patchUi({ editingContrat: null })
                 }}
                 isLoading={editingContrat ? updateContrat.isPending : createContrat.isPending}
               />
@@ -208,22 +219,22 @@ export default function ContratsSyndicPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Propositions de syndic</h2>
-                <button
-                  onClick={() => setShowPropositionDialog(true)}
+                <button type="button"
+                  onClick={() => patchUi({ showPropositionDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouvelle proposition
                 </button>
               </div>
 
               {loadingPropositions ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !propositions || propositions.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <Users className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <Users className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune proposition de syndic enregistree</p>
                 </div>
               ) : (
@@ -235,7 +246,7 @@ export default function ContratsSyndicPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date de reception</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant propose</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Retenue</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -255,7 +266,7 @@ export default function ContratsSyndicPage() {
                           <td className="px-4 py-3">
                             {proposition.retenue ? (
                               <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                                <CheckCircle2 className="h-3 w-3" />
+                                <CheckCircle2 className="size-3" />
                                 Retenue
                               </span>
                             ) : (
@@ -266,19 +277,19 @@ export default function ContratsSyndicPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
-                                onClick={() => { setEditingProposition(proposition); setShowPropositionDialog(true) }}
+                              <button type="button"
+                                onClick={() => { patchUi({ editingProposition: proposition }); patchUi({ showPropositionDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
-                              <button
-                                onClick={() => setDeleteTarget({ type: 'proposition', id: proposition.id })}
+                              <button type="button"
+                                onClick={() => patchUi({ deleteTarget: { type: 'proposition', id: proposition.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -291,7 +302,7 @@ export default function ContratsSyndicPage() {
 
               <PropositionSyndicFormDialog
                 open={showPropositionDialog}
-                onOpenChange={(open) => { setShowPropositionDialog(open); if (!open) setEditingProposition(null) }}
+                onOpenChange={(open) => { patchUi({ showPropositionDialog: open }); if (!open) patchUi({ editingProposition: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingProposition || undefined}
                 title={editingProposition ? 'Modifier la proposition' : 'Nouvelle proposition'}
@@ -301,8 +312,8 @@ export default function ContratsSyndicPage() {
                   } else {
                     await createProposition.mutateAsync(data)
                   }
-                  setShowPropositionDialog(false)
-                  setEditingProposition(null)
+                  patchUi({ showPropositionDialog: false })
+                  patchUi({ editingProposition: null })
                 }}
                 isLoading={editingProposition ? updateProposition.isPending : createProposition.isPending}
               />
@@ -313,14 +324,14 @@ export default function ContratsSyndicPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteTarget: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
         onConfirm={() => {
           if (deleteTarget?.type === 'contrat') deleteContrat.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'proposition') deleteProposition.mutate(deleteTarget.id)
-          setDeleteTarget(null)
+          patchUi({ deleteTarget: null })
         }}
       />
     </div>

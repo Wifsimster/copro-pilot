@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useInView } from 'motion/react'
+import { m, useInView } from 'motion/react'
 
 interface Testimonial {
   quote: string
@@ -54,7 +54,7 @@ export function TestimonialsSection() {
         ref={ref}
         className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
       >
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
@@ -74,11 +74,11 @@ export function TestimonialsSection() {
           >
             Ils gèrent déjà avec CoproPilot
           </h2>
-        </motion.div>
+        </m.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((t, index) => (
-            <motion.div
+            <m.div
               key={t.name}
               initial={{ opacity: 0, y: 24 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -139,7 +139,7 @@ export function TestimonialsSection() {
                   </p>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>

@@ -78,7 +78,7 @@ function SectionCard({ title, icon: Icon, children }: { title: string; icon: Rea
   return (
     <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
       <div className="flex items-center gap-2 border-b border-stone-200 px-5 py-4 dark:border-stone-700">
-        <Icon className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
+        <Icon className="size-5 text-emerald-700 dark:text-emerald-400" />
         <h2 className="text-base font-semibold text-stone-900 dark:text-white">{title}</h2>
       </div>
       <div className="px-5 py-4">{children}</div>
@@ -104,11 +104,11 @@ export default function FicheSynthetiquePage() {
         <NoCoproprieteSelected />
       ) : loadingFiche ? (
         <div className="flex items-center justify-center h-64">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+          <div className="size-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
         </div>
       ) : !fiche ? (
         <div className="flex flex-col items-center py-16">
-          <AlertTriangle className="h-12 w-12 text-orange-400" />
+          <AlertTriangle className="size-12 text-orange-400" />
           <p className="mt-4 text-stone-500 dark:text-stone-400">Impossible de charger la fiche synthetique</p>
         </div>
       ) : (
@@ -179,8 +179,8 @@ export default function FicheSynthetiquePage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {fiche.finances.postes_depenses.map((p, i) => (
-                        <tr key={i} className="border-b border-stone-100 dark:border-stone-700/50">
+                      {fiche.finances.postes_depenses.map((p) => (
+                        <tr key={p.nom} className="border-b border-stone-100 dark:border-stone-700/50">
                           <td className="py-2 text-stone-900 dark:text-white">{p.nom}</td>
                           <td className="py-2 text-right text-stone-600 dark:text-stone-300">{p.montant_prevu.toLocaleString('fr-FR')} EUR</td>
                           <td className="py-2 text-right text-stone-600 dark:text-stone-300">{p.montant_reel ? `${p.montant_reel.toLocaleString('fr-FR')} EUR` : '—'}</td>
@@ -199,8 +199,8 @@ export default function FicheSynthetiquePage() {
               <p className="text-sm text-stone-500 dark:text-stone-400 py-2">Aucun diagnostic enregistre</p>
             ) : (
               <div className="space-y-2">
-                {fiche.diagnostics.map((d, i) => (
-                  <div key={i} className="flex items-center justify-between py-2 border-b border-stone-100 dark:border-stone-700/50 last:border-0">
+                {fiche.diagnostics.map((d) => (
+                  <div key={d.type} className="flex items-center justify-between py-2 border-b border-stone-100 dark:border-stone-700/50 last:border-0">
                     <div>
                       <span className="text-sm font-medium text-stone-900 dark:text-white">
                         {DIAGNOSTIC_LABELS[d.type] || d.type}

@@ -23,6 +23,7 @@ export function useCycleAnnuel(
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useCycleAnnuelSummary(
   coproprieteId: number | undefined,
   annee?: number
@@ -75,6 +76,7 @@ export function useRefreshCycle() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useUpdateTache() {
   const qc = useQueryClient()
   return useMutation({
@@ -94,6 +96,7 @@ export function useUpdateTache() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useGenerateAppelsFromBudget() {
   const qc = useQueryClient()
   return useMutation({

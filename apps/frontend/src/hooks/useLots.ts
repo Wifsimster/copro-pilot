@@ -16,6 +16,7 @@ export function useLotsByCopropriete(coproprieteId: number | undefined) {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useLot(id: number | undefined) {
   return useQuery({
     queryKey: [...LOTS_QUERY_KEY, id],

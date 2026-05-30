@@ -44,6 +44,7 @@ export function Section({
   )
 }
 
+// react-doctor-disable-next-line react-doctor/no-multi-comp -- shared extranet presentational helpers colocated by design
 export function DocRow({
   nom,
   categorie,
@@ -60,7 +61,7 @@ export function DocRow({
       <div>
         <p className="text-sm font-medium">{nom}</p>
         <p className="text-xs text-muted-foreground">
-          {fichierNom} — {categorie}
+          {fichierNom} - {categorie}
         </p>
       </div>
       <a
@@ -75,6 +76,7 @@ export function DocRow({
   )
 }
 
+// react-doctor-disable-next-line react-doctor/no-multi-comp -- shared extranet presentational helpers colocated by design
 export function StatCard({
   label,
   value,

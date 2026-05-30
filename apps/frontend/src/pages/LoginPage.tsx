@@ -1,23 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/authStore'
-import {
-  Building2,
-  AlertCircle,
-  Loader2,
-  Shield,
-  KeyRound,
-  Users,
-  BarChart3,
-  Moon,
-  Sun,
-  Check,
-  Play,
-  CreditCard,
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Building2, Moon, Sun, CreditCard } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Tooltip,
@@ -26,14 +9,13 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { Toggle } from '@/components/ui/toggle'
-import {
-  PasswordInput,
-  PasswordStrength,
-} from '@/components/auth/PasswordInput'
 import { validatePassword } from '@/utils/passwordValidation'
+import LoginBrandingPanel from '@/components/auth/LoginBrandingPanel'
+import SignInForm from '@/components/auth/SignInForm'
+import SignUpForm from '@/components/auth/SignUpForm'
 
 function ThemeToggle() {
-  const [isDark, setIsDark] = useState(
+  const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains('dark')
   )
 
@@ -67,14 +49,6 @@ function ThemeToggle() {
   )
 }
 
-
-const features = [
-  { icon: Shield, title: 'Sécurisé', desc: 'Données chiffrées et protégées' },
-  { icon: BarChart3, title: 'Comptabilité', desc: 'Budgets, appels de fonds, paiements' },
-  { icon: Users, title: 'Assemblées', desc: 'Gestion des AG et résolutions' },
-  { icon: KeyRound, title: 'Multi-accès', desc: 'Syndics, copropriétaires, locataires' },
-]
-
 const PAID_PLANS: Record<string, { label: string; price: string }> = {
   essentiel: { label: 'Essentiel', price: '19 €/mois' },
   pro: { label: 'Pro', price: '49 €/mois' },
@@ -104,17 +78,32 @@ function PlanBanner({ plan }: { plan: string }) {
 export default function LoginPage() {
   const { signIn, signUp, isLoading } = useAuthStore()
 
-  const [signInEmail, setSignInEmail] = useState('')
-  const [signInPassword, setSignInPassword] = useState('')
-  const [signInError, setSignInError] = useState('')
+  const [ui, setUi] = useState<{
+    signInEmail: string
+    signInPassword: string
+    signInError: string
+    signUpName: string
+    signUpEmail: string
+    signUpPassword: string
+    signUpConfirm: string
+    signUpError: string
+    signUpSuccess: boolean
+    consentAccepted: boolean
+  }>({
+    signInEmail: '',
+    signInPassword: '',
+    signInError: '',
+    signUpName: '',
+    signUpEmail: '',
+    signUpPassword: '',
+    signUpConfirm: '',
+    signUpError: '',
+    signUpSuccess: false,
+    consentAccepted: false,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { signInEmail, signInPassword, signInError, signUpName, signUpEmail, signUpPassword, signUpConfirm, signUpError, signUpSuccess, consentAccepted } = ui
 
-  const [signUpName, setSignUpName] = useState('')
-  const [signUpEmail, setSignUpEmail] = useState('')
-  const [signUpPassword, setSignUpPassword] = useState('')
-  const [signUpConfirm, setSignUpConfirm] = useState('')
-  const [signUpError, setSignUpError] = useState('')
-  const [signUpSuccess, setSignUpSuccess] = useState(false)
-  const [consentAccepted, setConsentAccepted] = useState(false)
 
   // Detect ?plan= query param from landing page CTAs
   const params = new URLSearchParams(window.location.search)
@@ -130,20 +119,20 @@ export default function LoginPage() {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSignInError('')
+    patchUi({ signInError: '' })
     try {
       await signIn(signInEmail, signInPassword)
     } catch (error) {
-      setSignInError(error instanceof Error ? error.message : 'Erreur de connexion')
+      patchUi({ signInError: error instanceof Error ? error.message : 'Erreur de connexion' })
     }
   }
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSignUpError('')
+    patchUi({ signUpError: '' })
 
     if (signUpPassword !== signUpConfirm) {
-      setSignUpError('Les mots de passe ne correspondent pas')
+      patchUi({ signUpError: 'Les mots de passe ne correspondent pas' })
       return
     }
 
@@ -151,67 +140,27 @@ export default function LoginPage() {
       email: signUpEmail,
     })
     if (!passwordCheck.valid) {
-      setSignUpError(passwordCheck.errors.join('. '))
+      patchUi({ signUpError: passwordCheck.errors.join('. ') })
       return
     }
 
     if (!consentAccepted) {
-      setSignUpError('Vous devez accepter la politique de confidentialité pour vous inscrire')
+      patchUi({ signUpError: 'Vous devez accepter la politique de confidentialité pour vous inscrire' })
       return
     }
 
     try {
       await signUp(signUpName, signUpEmail, signUpPassword)
-      setSignUpSuccess(true)
+      patchUi({ signUpSuccess: true })
     } catch (error) {
-      setSignUpError(error instanceof Error ? error.message : "Erreur lors de l'inscription")
+      patchUi({ signUpError: error instanceof Error ? error.message : "Erreur lors de l'inscription" })
     }
   }
 
   return (
     <div className="flex min-h-screen bg-background">
       {/* Left Panel — Branding */}
-      <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] relative overflow-hidden bg-stone-900 dark:bg-stone-950 text-white flex-col justify-between p-10">
-        {/* Decorative gradient orbs — matching landing page */}
-        <div className="absolute -top-24 -left-24 size-96 rounded-full bg-emerald-600/10 blur-3xl" />
-        <div className="absolute -bottom-32 -right-32 size-[500px] rounded-full bg-amber-600/8 blur-3xl" />
-        <div className="absolute top-1/2 left-1/3 size-64 rounded-full bg-emerald-500/5 blur-2xl" />
-
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-700">
-              <Building2 className="size-6" />
-            </div>
-            <span className="font-display text-2xl font-semibold tracking-tight">CoproPilot</span>
-          </div>
-          <p className="text-stone-400 text-sm mt-1">
-            Plateforme de gestion de copropriété
-          </p>
-        </div>
-
-        <div className="relative z-10 space-y-8">
-          <h2 className="font-display text-3xl font-semibold leading-tight">
-            Simplifiez la gestion <br />
-            <span className="italic text-emerald-400">de vos copropriétés</span>
-          </h2>
-          <div className="grid grid-cols-2 gap-4">
-            {features.map((f) => (
-              <div
-                key={f.title}
-                className="rounded-xl bg-white/5 p-4 space-y-2 border border-stone-700/60"
-              >
-                <f.icon className="size-5 text-emerald-400" />
-                <p className="font-semibold text-sm">{f.title}</p>
-                <p className="text-xs text-stone-400 leading-relaxed">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <p className="relative z-10 text-xs text-stone-500">
-          &copy; {new Date().getFullYear()} CoproPilot. Tous droits réservés. &middot; v{__APP_VERSION__}
-        </p>
-      </div>
+      <LoginBrandingPanel />
 
       {/* Right Panel — Forms */}
       <div className="relative flex flex-1 items-center justify-center bg-[#FAF8F5] dark:bg-stone-950 p-6 sm:p-10">
@@ -255,249 +204,33 @@ export default function LoginPage() {
 
               {/* Sign In */}
               <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-5">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="signin-email">Adresse email</Label>
-                    <Input
-                      id="signin-email"
-                      type="email"
-                      placeholder="vous@exemple.com"
-                      value={signInEmail}
-                      onChange={(e) => setSignInEmail(e.target.value)}
-                      required
-                      autoComplete="email"
-                      className="h-11"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="signin-password">Mot de passe</Label>
-                      <a
-                        href="/forgot-password"
-                        className="text-xs text-primary hover:underline"
-                      >
-                        Mot de passe oublié ?
-                      </a>
-                    </div>
-                    <PasswordInput
-                      id="signin-password"
-                      value={signInPassword}
-                      onChange={(e) => setSignInPassword(e.target.value)}
-                      autoComplete="current-password"
-                    />
-                  </div>
-
-                  {signInError && (
-                    <div className="flex items-start gap-2.5 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
-                      <AlertCircle className="size-4 mt-0.5 shrink-0" />
-                      <span>{signInError}</span>
-                    </div>
-                  )}
-
-                  <div className="pt-1">
-                    <Button type="submit" className="w-full h-11 text-sm font-medium" disabled={isLoading}>
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="size-4 animate-spin" />
-                          Connexion...
-                        </>
-                      ) : (
-                        'Se connecter'
-                      )}
-                    </Button>
-                  </div>
-
-                  {/* Demo access */}
-                  <div className="relative pt-2">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-border" />
-                    </div>
-                    <div className="relative flex justify-center text-xs">
-                      <span className="bg-white dark:bg-stone-900 px-3 text-muted-foreground">
-                        Accès démo
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="flex-1 h-11"
-                      disabled={isLoading}
-                      onClick={() => {
-                        setSignInError('')
-                        signIn('syndic@copropilot.local', 'syndic').catch(err => {
-                          setSignInError(err instanceof Error ? err.message : 'Erreur de connexion')
-                        })
-                      }}
-                    >
-                      <Play className="size-3.5" />
-                      Syndic
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="flex-1 h-11"
-                      disabled={isLoading}
-                      onClick={() => {
-                        setSignInError('')
-                        signIn('copro@copropilot.local', 'copro').catch(err => {
-                          setSignInError(err instanceof Error ? err.message : 'Erreur de connexion')
-                        })
-                      }}
-                    >
-                      <Play className="size-3.5" />
-                      Copropriétaire
-                    </Button>
-                  </div>
-
-                  <p className="text-center text-xs text-muted-foreground pt-1">
-                    <a
-                      href="/first-login"
-                      className="text-primary hover:underline"
-                    >
-                      Première connexion (copropriétaire) ?
-                    </a>
-                  </p>
-                </form>
+                <SignInForm
+                  signInEmail={signInEmail}
+                  signInPassword={signInPassword}
+                  signInError={signInError}
+                  isLoading={isLoading}
+                  patchUi={patchUi}
+                  onSubmit={handleSignIn}
+                  signIn={signIn}
+                />
               </TabsContent>
 
               {/* Sign Up */}
               <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-5">
-                  {signUpSuccess ? (
-                    <div className="flex flex-col items-center gap-4 py-8 text-center">
-                      <div className="flex size-14 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
-                        <Check className="size-7" />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-foreground">Compte créé avec succès !</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          Un email de vérification a été envoyé à votre adresse. Veuillez cliquer sur le lien pour activer votre compte.
-                        </p>
-                        {hasPaidPlan && (
-                          <p className="text-sm text-primary mt-2">
-                            Après vérification, vous serez redirigé vers le paiement pour le plan {PAID_PLANS[selectedPlan]?.label}.
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="space-y-4">
-                        <div className="space-y-1.5">
-                          <Label htmlFor="signup-name">Nom complet</Label>
-                          <Input
-                            id="signup-name"
-                            type="text"
-                            placeholder="Jean Dupont"
-                            value={signUpName}
-                            onChange={(e) => setSignUpName(e.target.value)}
-                            required
-                            autoComplete="name"
-                            className="h-11"
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label htmlFor="signup-email">Adresse email</Label>
-                          <Input
-                            id="signup-email"
-                            type="email"
-                            placeholder="vous@exemple.com"
-                            value={signUpEmail}
-                            onChange={(e) => setSignUpEmail(e.target.value)}
-                            required
-                            autoComplete="email"
-                            className="h-11"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="h-px bg-border/60" />
-
-                      <div className="space-y-4">
-                        <div className="space-y-1.5">
-                          <Label htmlFor="signup-password">Mot de passe</Label>
-                          <PasswordInput
-                            id="signup-password"
-                            value={signUpPassword}
-                            onChange={(e) => setSignUpPassword(e.target.value)}
-                            minLength={12}
-                            autoComplete="new-password"
-                          />
-                          <PasswordStrength
-                            password={signUpPassword}
-                            email={signUpEmail}
-                            showErrors
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label htmlFor="signup-confirm">Confirmer le mot de passe</Label>
-                          <PasswordInput
-                            id="signup-confirm"
-                            value={signUpConfirm}
-                            onChange={(e) => setSignUpConfirm(e.target.value)}
-                            minLength={12}
-                            autoComplete="new-password"
-                          />
-                          {signUpConfirm && signUpPassword !== signUpConfirm && (
-                            <p className="text-xs text-destructive">
-                              Les mots de passe ne correspondent pas
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3 rounded-lg bg-muted/50 dark:bg-muted/20 p-3.5">
-                        <Checkbox
-                          id="consent"
-                          checked={consentAccepted}
-                          onCheckedChange={(checked) =>
-                            setConsentAccepted(checked === true)
-                          }
-                          className="mt-0.5"
-                        />
-                        <label
-                          htmlFor="consent"
-                          className="text-xs leading-relaxed text-muted-foreground cursor-pointer select-none"
-                        >
-                          J&apos;accepte la{' '}
-                          <a
-                            href="/politique-confidentialite"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="underline text-primary hover:text-primary/80"
-                          >
-                            politique de confidentialité
-                          </a>{' '}
-                          et le traitement de mes données personnelles
-                          conformément au RGPD.
-                        </label>
-                      </div>
-
-                      {signUpError && (
-                        <div className="flex items-start gap-2.5 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
-                          <AlertCircle className="size-4 mt-0.5 shrink-0" />
-                          <span>{signUpError}</span>
-                        </div>
-                      )}
-
-                      <div className="pt-1">
-                        <Button type="submit" className="w-full h-11 text-sm font-medium" disabled={isLoading}>
-                          {isLoading ? (
-                            <>
-                              <Loader2 className="size-4 animate-spin" />
-                              Inscription...
-                            </>
-                          ) : (
-                            "S'inscrire"
-                          )}
-                        </Button>
-                      </div>
-                    </>
-                  )}
-                </form>
+                <SignUpForm
+                  signUpName={signUpName}
+                  signUpEmail={signUpEmail}
+                  signUpPassword={signUpPassword}
+                  signUpConfirm={signUpConfirm}
+                  signUpError={signUpError}
+                  signUpSuccess={signUpSuccess}
+                  consentAccepted={consentAccepted}
+                  isLoading={isLoading}
+                  hasPaidPlan={hasPaidPlan}
+                  selectedPlanLabel={PAID_PLANS[selectedPlan]?.label}
+                  patchUi={patchUi}
+                  onSubmit={handleSignUp}
+                />
               </TabsContent>
             </Tabs>
           </div>

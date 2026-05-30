@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import {  } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -69,7 +69,7 @@ export function ConseilSyndicalFormDialog({
 }: ConseilSyndicalFormDialogProps) {
   const form = useForm<MembreFormData>({
     resolver: zodResolver(membreSchema),
-    defaultValues: {
+    values: {
       coproprietaire_id: defaultValues?.coproprietaire_id ?? 0,
       role: defaultValues?.role ?? 'membre',
       date_election: defaultValues?.date_election ?? '',
@@ -79,19 +79,7 @@ export function ConseilSyndicalFormDialog({
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        coproprietaire_id: defaultValues?.coproprietaire_id ?? 0,
-        role: defaultValues?.role ?? 'membre',
-        date_election: defaultValues?.date_election ?? '',
-        date_fin_mandat: defaultValues?.date_fin_mandat ?? '',
-        ag_election_id: defaultValues?.ag_election_id ?? undefined,
-        notes: defaultValues?.notes ?? '',
-      })
-    }
-  }, [open, defaultValues, form.reset])
-
+  
   const handleFormSubmit = async (data: MembreFormData) => {
     await onSubmit({
       ...data,

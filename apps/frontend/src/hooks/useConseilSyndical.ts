@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { conseilSyndicalApi } from '@/api/conseil-syndical'
 import type { MembreConseilSyndical } from '@/types'
 
-export const CONSEIL_SYNDICAL_QUERY_KEY = ['conseil-syndical'] as const
+const CONSEIL_SYNDICAL_QUERY_KEY = ['conseil-syndical'] as const
 
 export function useConseilSyndicalByCopropriete(coproprieteId: number | undefined) {
   return useQuery({

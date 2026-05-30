@@ -1,39 +1,39 @@
 import { useState } from 'react'
-import {
-  Building2,
-  ArrowLeft,
-  Loader2,
-  Mail,
-  KeyRound,
-  Lock,
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Building2, ArrowLeft } from 'lucide-react'
 import { authClient } from '@/lib/auth-client'
-import { OTPInput } from '@/components/auth/OTPInput'
-import {
-  PasswordInput,
-  PasswordStrength,
-} from '@/components/auth/PasswordInput'
 import { validatePassword } from '@/utils/passwordValidation'
 import { userManagementApi } from '@/api/userManagement'
+import { FirstLoginEmailStep } from '@/components/auth/FirstLoginEmailStep'
+import { FirstLoginOtpStep } from '@/components/auth/FirstLoginOtpStep'
+import { FirstLoginPasswordStep } from '@/components/auth/FirstLoginPasswordStep'
 
 type Step = 'email' | 'otp' | 'password'
 
 export default function FirstLoginPage() {
-  const [step, setStep] = useState<Step>('email')
-  const [email, setEmail] = useState('')
-  const [otp, setOtp] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirm, setConfirm] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [ui, setUi] = useState<{
+    step: Step
+    email: string
+    otp: string
+    password: string
+    confirm: string
+    isLoading: boolean
+    error: string
+  }>({
+    step: 'email',
+    email: '',
+    otp: '',
+    password: '',
+    confirm: '',
+    isLoading: false,
+    error: '',
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { step, email, otp, password, confirm, isLoading, error } = ui
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setIsLoading(true)
+    patchUi({ error: '' })
+    patchUi({ isLoading: true })
 
     try {
       const result = await authClient.emailOtp.sendVerificationOtp({
@@ -41,24 +41,22 @@ export default function FirstLoginPage() {
         type: 'sign-in',
       })
       if (result.error) {
-        setError(
-          result.error.message ||
-            "Erreur lors de l'envoi du code"
-        )
+        patchUi({ error: result.error.message ||
+            "Erreur lors de l'envoi du code" })
       } else {
-        setStep('otp')
+        patchUi({ step: 'otp' })
       }
     } catch {
-      setError("Erreur lors de l'envoi du code")
+      patchUi({ error: "Erreur lors de l'envoi du code" })
     } finally {
-      setIsLoading(false)
+      patchUi({ isLoading: false })
     }
   }
 
   const handleVerifyOTP = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setIsLoading(true)
+    patchUi({ error: '' })
+    patchUi({ isLoading: true })
 
     try {
       const result = await authClient.signIn.emailOtp({
@@ -66,54 +64,58 @@ export default function FirstLoginPage() {
         otp,
       })
       if (result.error) {
-        setError(
-          result.error.message || 'Code incorrect ou expiré'
-        )
+        patchUi({ error: result.error.message || 'Code incorrect ou expiré' })
       } else {
         // Check if user needs to change password
         const session = await authClient.getSession()
         const user = session?.data?.user as any
         if (user?.mustChangePassword) {
-          setStep('password')
+          patchUi({ step: 'password' })
         } else {
           // Already has a password, redirect to extranet
           window.location.href = '/extranet'
         }
       }
     } catch {
-      setError('Erreur de vérification')
+      patchUi({ error: 'Erreur de vérification' })
     } finally {
-      setIsLoading(false)
+      patchUi({ isLoading: false })
     }
   }
 
   const handleSetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
+    patchUi({ error: '' })
 
     if (password !== confirm) {
-      setError('Les mots de passe ne correspondent pas')
+      patchUi({ error: 'Les mots de passe ne correspondent pas' })
       return
     }
 
     const validation = validatePassword(password, { email })
     if (!validation.valid) {
-      setError(validation.errors.join('. '))
+      patchUi({ error: validation.errors.join('. ') })
       return
     }
 
-    setIsLoading(true)
+    patchUi({ isLoading: true })
 
     try {
       await userManagementApi.setInitialPassword(password)
       window.location.href = '/extranet'
     } catch {
-      setError(
-        'Erreur lors de la définition du mot de passe'
-      )
+      patchUi({ error: 'Erreur lors de la définition du mot de passe' })
     } finally {
-      setIsLoading(false)
+      patchUi({ isLoading: false })
     }
+  }
+
+  const handleResendOTP = () => {
+    patchUi({ otp: '' })
+    patchUi({ error: '' })
+    handleSendOTP(
+      new Event('submit') as unknown as React.FormEvent
+    )
   }
 
   const stepIndicator = (
@@ -176,192 +178,40 @@ export default function FirstLoginPage() {
 
           {/* Step 1: Email */}
           {step === 'email' && (
-            <form
+            <FirstLoginEmailStep
+              email={email}
+              error={error}
+              isLoading={isLoading}
+              onEmailChange={value => patchUi({ email: value })}
               onSubmit={handleSendOTP}
-              className="space-y-4"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <Mail className="size-5 text-primary" />
-                <h2 className="text-lg font-semibold">
-                  Votre adresse email
-                </h2>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Saisissez l&apos;adresse email communiquée par
-                votre syndic. Un code de vérification vous sera
-                envoyé.
-              </p>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Adresse email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="vous@exemple.com"
-                  required
-                  autoComplete="email"
-                  autoFocus
-                />
-              </div>
-
-              {error && (
-                <p className="text-sm text-destructive">
-                  {error}
-                </p>
-              )}
-
-              <Button
-                type="submit"
-                className="w-full h-10"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin" />
-                    Envoi...
-                  </>
-                ) : (
-                  'Envoyer le code'
-                )}
-              </Button>
-            </form>
+            />
           )}
 
           {/* Step 2: OTP */}
           {step === 'otp' && (
-            <form
+            <FirstLoginOtpStep
+              email={email}
+              otp={otp}
+              error={error}
+              isLoading={isLoading}
+              onOtpChange={value => patchUi({ otp: value })}
               onSubmit={handleVerifyOTP}
-              className="space-y-4"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <KeyRound className="size-5 text-primary" />
-                <h2 className="text-lg font-semibold">
-                  Code de vérification
-                </h2>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Un code à 6 chiffres a été envoyé à{' '}
-                <strong>{email}</strong>. Il est valable 15
-                minutes.
-              </p>
-
-              <OTPInput
-                value={otp}
-                onChange={setOtp}
-                disabled={isLoading}
-              />
-
-              {error && (
-                <p className="text-sm text-destructive text-center">
-                  {error}
-                </p>
-              )}
-
-              <Button
-                type="submit"
-                className="w-full h-10"
-                disabled={isLoading || otp.length < 6}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin" />
-                    Vérification...
-                  </>
-                ) : (
-                  'Vérifier'
-                )}
-              </Button>
-
-              <button
-                type="button"
-                className="w-full text-sm text-primary hover:underline"
-                onClick={() => {
-                  setOtp('')
-                  setError('')
-                  handleSendOTP(
-                    new Event('submit') as unknown as React.FormEvent
-                  )
-                }}
-                disabled={isLoading}
-              >
-                Renvoyer le code
-              </button>
-            </form>
+              onResend={handleResendOTP}
+            />
           )}
 
           {/* Step 3: Set Password */}
           {step === 'password' && (
-            <form
+            <FirstLoginPasswordStep
+              email={email}
+              password={password}
+              confirm={confirm}
+              error={error}
+              isLoading={isLoading}
+              onPasswordChange={value => patchUi({ password: value })}
+              onConfirmChange={value => patchUi({ confirm: value })}
               onSubmit={handleSetPassword}
-              className="space-y-4"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <Lock className="size-5 text-primary" />
-                <h2 className="text-lg font-semibold">
-                  Définir votre mot de passe
-                </h2>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Choisissez un mot de passe sécurisé d&apos;au
-                moins 12 caractères pour accéder à votre
-                espace.
-              </p>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Mot de passe</Label>
-                <PasswordInput
-                  id="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  minLength={12}
-                  autoComplete="new-password"
-                />
-                <PasswordStrength
-                  password={password}
-                  email={email}
-                  showErrors
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirm">Confirmer</Label>
-                <PasswordInput
-                  id="confirm"
-                  value={confirm}
-                  onChange={e => setConfirm(e.target.value)}
-                  minLength={12}
-                  autoComplete="new-password"
-                />
-                {confirm && password !== confirm && (
-                  <p className="text-xs text-destructive">
-                    Les mots de passe ne correspondent pas
-                  </p>
-                )}
-              </div>
-
-              {error && (
-                <p className="text-sm text-destructive">
-                  {error}
-                </p>
-              )}
-
-              <Button
-                type="submit"
-                className="w-full h-10"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin" />
-                    Enregistrement...
-                  </>
-                ) : (
-                  'Valider et accéder à mon espace'
-                )}
-              </Button>
-            </form>
+            />
           )}
 
           <div className="text-center">

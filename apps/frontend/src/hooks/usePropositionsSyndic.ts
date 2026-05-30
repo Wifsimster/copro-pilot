@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { propositionsSyndicApi } from '@/api/propositions-syndic'
 import type { PropositionSyndic } from '@/types'
 
-export const PROPOSITIONS_SYNDIC_QUERY_KEY = ['propositions-syndic'] as const
+const PROPOSITIONS_SYNDIC_QUERY_KEY = ['propositions-syndic'] as const
 
 export function usePropositionsSyndicByCopropriete(coproprieteId: number | undefined) {
   return useQuery({

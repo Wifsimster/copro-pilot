@@ -54,7 +54,9 @@ export function BulkCreateAccountsDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div
+      <button
+        type="button"
+        aria-label="Fermer"
         className="fixed inset-0 bg-black/50"
         onClick={handleClose}
       />
@@ -84,7 +86,7 @@ export function BulkCreateAccountsDialog({
                 <ul className="text-sm text-muted-foreground space-y-1">
                   {results.created.map(c => (
                     <li key={c.email}>
-                      {c.email} — email d&apos;activation
+                      {c.email} - email d&apos;activation
                       envoyé
                     </li>
                   ))}
@@ -102,7 +104,7 @@ export function BulkCreateAccountsDialog({
                 <ul className="text-sm text-muted-foreground space-y-1">
                   {results.linked.map(l => (
                     <li key={l.email}>
-                      {l.email} — lié automatiquement
+                      {l.email} - lié automatiquement
                     </li>
                   ))}
                 </ul>
@@ -116,9 +118,9 @@ export function BulkCreateAccountsDialog({
                   Erreurs ({results.errors.length})
                 </h4>
                 <ul className="text-sm text-destructive space-y-1">
-                  {results.errors.map((err, i) => (
-                    <li key={i}>
-                      {err.email} — {err.error}
+                  {results.errors.map((err) => (
+                    <li key={err.email}>
+                      {err.email} - {err.error}
                     </li>
                   ))}
                 </ul>
@@ -151,7 +153,7 @@ export function BulkCreateAccountsDialog({
                       <ul className="text-sm text-muted-foreground space-y-1 max-h-32 overflow-y-auto">
                         {preview.toCreate.map(c => (
                           <li key={c.coproprietaireId}>
-                            {c.prenom} {c.nom} — {c.email}
+                            {c.prenom} {c.nom} - {c.email}
                           </li>
                         ))}
                       </ul>
@@ -169,7 +171,7 @@ export function BulkCreateAccountsDialog({
                       <ul className="text-sm text-muted-foreground space-y-1 max-h-32 overflow-y-auto">
                         {preview.toLink.map(l => (
                           <li key={l.coproprietaireId}>
-                            {l.prenom} {l.nom} — {l.email}{' '}
+                            {l.prenom} {l.nom} - {l.email}{' '}
                             (compte existant)
                           </li>
                         ))}
@@ -203,7 +205,7 @@ export function BulkCreateAccountsDialog({
                   {bulkCreate.isPending ? (
                     <>
                       <Loader2 className="size-4 animate-spin" />
-                      Création...
+                      Création…
                     </>
                   ) : (
                     `Créer ${totalActions} compte(s)`

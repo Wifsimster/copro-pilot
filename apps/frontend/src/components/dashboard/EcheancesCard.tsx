@@ -15,12 +15,14 @@ interface EcheancesCardProps {
   echeances: Echeance[]
 }
 
+const eurFormatter = new Intl.NumberFormat('fr-FR', {
+  style: 'currency',
+  currency: 'EUR',
+  maximumFractionDigits: 0,
+})
+
 function formatEur(value: number): string {
-  return new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
-  }).format(value)
+  return eurFormatter.format(value)
 }
 
 function formatDate(dateStr: string): string {
@@ -40,8 +42,8 @@ export default function EcheancesCard({
 }: EcheancesCardProps) {
   const sorted = useMemo(
     () =>
-      [...echeances]
-        .sort(
+      echeances
+        .toSorted(
           (a, b) =>
             new Date(a.date_echeance).getTime() -
             new Date(b.date_echeance).getTime()
@@ -86,13 +88,13 @@ export default function EcheancesCard({
               className="flex items-center gap-3 px-4 py-3"
             >
               <div
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${
                   overdue
                     ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
                     : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400'
                 }`}
               >
-                <Calendar className="h-4 w-4" />
+                <Calendar className="size-4" />
               </div>
               <div className="min-w-0 flex-1">
                 <p

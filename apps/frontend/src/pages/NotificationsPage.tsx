@@ -54,7 +54,7 @@ export default function NotificationsPage() {
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Bell className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+          <Bell className="size-6 text-stone-600 dark:text-stone-400" />
           <div>
             <h1 className="text-2xl font-bold text-stone-900 dark:text-white">
               Notifications
@@ -67,11 +67,11 @@ export default function NotificationsPage() {
           </div>
         </div>
         {unreadCount > 0 && (
-          <button
+          <button type="button"
             onClick={() => markAllAsRead.mutate()}
             className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800"
           >
-            <CheckCheck className="h-4 w-4" />
+            <CheckCheck className="size-4" />
             Tout marquer comme lu
           </button>
         )}
@@ -79,8 +79,8 @@ export default function NotificationsPage() {
 
       {/* Filters */}
       <div className="flex items-center gap-2">
-        <Filter className="h-4 w-4 text-stone-400" />
-        <button
+        <Filter className="size-4 text-stone-400" />
+        <button type="button"
           onClick={() => setFilterType('all')}
           className={cn(
             'rounded-full px-3 py-1 text-xs font-medium transition-colors',
@@ -92,7 +92,7 @@ export default function NotificationsPage() {
           Toutes
         </button>
         {allTypes.map((type) => (
-          <button
+          <button type="button"
             key={type}
             onClick={() => setFilterType(type)}
             className={cn(
@@ -111,7 +111,7 @@ export default function NotificationsPage() {
       <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+            <div className="size-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="py-12 text-center text-sm text-stone-500 dark:text-stone-400">
@@ -138,7 +138,7 @@ export default function NotificationsPage() {
                       {typeLabels[notification.type]}
                     </span>
                     {!notification.lu && (
-                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                      <span className="size-2 rounded-full bg-emerald-500" />
                     )}
                     <span className="text-xs text-stone-400 dark:text-stone-500">
                       {new Date(notification.created_at).toLocaleDateString('fr-FR', {
@@ -161,32 +161,32 @@ export default function NotificationsPage() {
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
                   {notification.lien && (
-                    <button
+                    <button type="button"
                       onClick={() => navigate(notification.lien!)}
                       className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-stone-600 dark:hover:bg-stone-800 dark:hover:text-stone-300"
                       title="Voir"
                       aria-label="Voir"
                     >
-                      <ExternalLink className="h-4 w-4" />
+                      <ExternalLink className="size-4" />
                     </button>
                   )}
                   {!notification.lu && (
-                    <button
+                    <button type="button"
                       onClick={() => markAsRead.mutate(notification.id)}
                       className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-green-600 dark:hover:bg-stone-800 dark:hover:text-green-400"
                       title="Marquer comme lue"
                       aria-label="Marquer comme lue"
                     >
-                      <Check className="h-4 w-4" />
+                      <Check className="size-4" />
                     </button>
                   )}
-                  <button
+                  <button type="button"
                     onClick={() => deleteNotification.mutate(notification.id)}
                     className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-red-600 dark:hover:bg-stone-800 dark:hover:text-red-400"
                     title="Supprimer"
                     aria-label="Supprimer"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="size-4" />
                   </button>
                 </div>
               </div>

@@ -18,10 +18,12 @@ export function isAdminOnlyRoute(routeName: string): boolean {
   return ADMIN_ONLY_ROUTES.includes(routeName)
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function isCoproprietaireRoute(route: string): boolean {
   return COPROPRIETAIRE_ROUTES.includes(route)
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function isSyndic(role?: string): boolean {
   if (!role) return false
   return role.toLowerCase() === 'syndic'

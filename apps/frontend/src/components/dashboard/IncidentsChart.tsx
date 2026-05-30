@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+// react-doctor-disable-next-line react-doctor/prefer-dynamic-import -- already lazy-loaded by its only consumer (DashboardPage)
 import {
   PieChart,
   Pie,
@@ -55,13 +56,17 @@ export default function IncidentsChart({
 }: IncidentsChartProps) {
   const chartData = useMemo(() => {
     if (!data) return []
-    return Object.entries(data)
-      .filter(([, count]) => count > 0)
-      .map(([statut, count]) => ({
-        name: STATUS_LABELS[statut] || statut,
-        value: count,
-        fill: STATUS_COLORS[statut] || '#a8a29e',
-      }))
+    return Object.entries(data).flatMap(([statut, count]) =>
+      count > 0
+        ? [
+            {
+              name: STATUS_LABELS[statut] || statut,
+              value: count,
+              fill: STATUS_COLORS[statut] || '#a8a29e',
+            },
+          ]
+        : []
+    )
   }, [data])
 
   if (chartData.length === 0) {
@@ -102,8 +107,8 @@ export default function IncidentsChart({
               paddingAngle={3}
               strokeWidth={0}
             >
-              {chartData.map((entry, i) => (
-                <Cell key={i} fill={entry.fill} />
+              {chartData.map((entry) => (
+                <Cell key={entry.name} fill={entry.fill} />
               ))}
             </Pie>
             <Tooltip content={<CustomTooltip />} />

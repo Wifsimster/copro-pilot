@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { comptabiliteApi } from '@/api/comptabilite-reglementaire'
 import type { CompteComptable, EcritureComptable } from '@/types'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const COMPTABILITE_KEY = ['comptabilite-reglementaire'] as const
 
 // Exercices
@@ -53,6 +54,7 @@ export function useInitialiserPlanComptable() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useCreateCompte() {
   const qc = useQueryClient()
   return useMutation({
@@ -73,6 +75,7 @@ export function useJournal(exerciceId: number | undefined, params?: { dateDebut?
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useCreateEcriture() {
   const qc = useQueryClient()
   return useMutation({

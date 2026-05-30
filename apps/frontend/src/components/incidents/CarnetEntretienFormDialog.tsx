@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import {  } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -40,7 +40,7 @@ interface Props {
 export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading, defaultValues, title = 'Nouvelle entree au carnet' }: Props) {
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
+    values: {
       titre: defaultValues?.titre || '',
       description: defaultValues?.description || '',
       prestataire: defaultValues?.prestataire || '',
@@ -50,19 +50,7 @@ export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, o
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        titre: defaultValues?.titre || '',
-        description: defaultValues?.description || '',
-        prestataire: defaultValues?.prestataire || '',
-        montant: defaultValues?.montant ?? '',
-        date_realisation: defaultValues?.date_realisation || new Date().toISOString().split('T')[0],
-        categorie: defaultValues?.categorie || '',
-      })
-    }
-  }, [open, defaultValues, form])
-
+  
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({
       ...data,

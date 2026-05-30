@@ -16,7 +16,7 @@ export default function PolitiqueConfidentialitePage() {
           size="sm"
           onClick={() => window.history.back()}
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ArrowLeft className="mr-2 size-4" />
           Retour
         </Button>
         <h1 className="text-2xl font-bold">

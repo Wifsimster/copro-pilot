@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { interventionsApi } from '@/api/interventions'
 import type { Intervention } from '@/types'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const INTERVENTIONS_QUERY_KEY = ['interventions'] as const
 
 export function useInterventionsByCopropriete(coproprieteId: number | undefined) {
@@ -15,6 +16,7 @@ export function useInterventionsByCopropriete(coproprieteId: number | undefined)
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useInterventionsByIncident(incidentId: number | undefined) {
   return useQuery({
     queryKey: [...INTERVENTIONS_QUERY_KEY, 'incident', incidentId],

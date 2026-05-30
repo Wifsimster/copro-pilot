@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { locatairesApi } from '@/api/locataires'
 import type { Locataire } from '@/types'
 
-export const LOCATAIRES_QUERY_KEY = ['locataires'] as const
+const LOCATAIRES_QUERY_KEY = ['locataires'] as const
 
 export function useLocatairesByLot(lotId: number | undefined) {
   return useQuery({

@@ -30,6 +30,23 @@ import {
   Settings,
 } from 'lucide-react'
 
+const classeLabels: Record<number, string> = {
+  1: 'Classe 1 - Capitaux',
+  4: 'Classe 4 - Tiers',
+  5: 'Classe 5 - Tresorerie',
+  6: 'Classe 6 - Charges',
+  7: 'Classe 7 - Produits',
+}
+
+const ANNEXES = [
+  { num: 1, title: 'Annexe 1 — Etat financier', desc: 'Charges et produits de l\'exercice' },
+  { num: 2, title: 'Annexe 2 — Situation de tresorerie', desc: 'Soldes des comptes bancaires et mouvements non rapproches' },
+  { num: 3, title: 'Annexe 3 — Creances et dettes', desc: 'Etat des impayes par coproprietaire' },
+  { num: 4, title: 'Annexe 4 — Fonds de travaux', desc: 'Cotisations et solde du fonds travaux (loi ALUR)' },
+  { num: 5, title: 'Annexe 5 — Budget previsionnel', desc: 'Postes de depenses previsionnels vs realises' },
+]
+
+
 type Tab = 'journal' | 'grand-livre' | 'balance' | 'annexes' | 'exercices'
 
 const TAB_CONFIG: { key: Tab; label: string; icon: typeof BookOpen }[] = [
@@ -66,7 +83,7 @@ export default function ComptabiliteReglementairePage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-16">
-          <BookOpen className="h-16 w-16 text-muted-foreground/40" />
+          <BookOpen className="size-16 text-muted-foreground/40" />
           <h3 className="mt-6 text-lg font-medium text-foreground">Aucune copropriete selectionnee</h3>
           <p className="mt-2 max-w-md text-center text-muted-foreground">
             Selectionnez une copropriete dans le menu lateral.
@@ -77,9 +94,15 @@ export default function ComptabiliteReglementairePage() {
           {/* Exercice selector */}
           {exercices && exercices.length > 0 && (
             <div className="flex items-center gap-3">
-              <label className="text-sm font-medium text-muted-foreground">Exercice :</label>
+              <label
+                htmlFor="compta-exercice-select"
+                className="text-sm font-medium text-muted-foreground"
+              >
+                Exercice :
+              </label>
               <div className="relative">
                 <select
+                  id="compta-exercice-select"
                   value={exerciceId ?? ''}
                   onChange={(e) => setSelectedExerciceId(Number(e.target.value))}
                   className="appearance-none rounded-lg border border-input bg-background py-2 pl-3 pr-8 text-sm font-medium ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
@@ -103,7 +126,7 @@ export default function ComptabiliteReglementairePage() {
           {/* Tabs */}
           <div className="flex gap-1 rounded-lg border border-border bg-muted/50 p-1">
             {TAB_CONFIG.map(({ key, label, icon: Icon }) => (
-              <button
+              <button type="button"
                 key={key}
                 onClick={() => setTab(key)}
                 className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
@@ -144,6 +167,7 @@ function JournalTab({ exerciceId }: { exerciceId: number | undefined }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <input
+            aria-label="Filtrer par compte"
             type="text"
             value={filterCompte}
             onChange={(e) => setFilterCompte(e.target.value)}
@@ -152,7 +176,7 @@ function JournalTab({ exerciceId }: { exerciceId: number | undefined }) {
           />
         </div>
         {exerciceId && (
-          <button
+          <button type="button"
             onClick={() => { if (confirm('Regenerer les ecritures automatiques ? Les ecritures existantes seront remplacees.')) generer.mutate(exerciceId) }}
             disabled={generer.isPending}
             className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
@@ -171,7 +195,7 @@ function JournalTab({ exerciceId }: { exerciceId: number | undefined }) {
         </div>
       ) : !ecritures?.length ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-12">
-          <List className="h-12 w-12 text-muted-foreground/40" />
+          <List className="size-12 text-muted-foreground/40" />
           <h3 className="mt-4 text-base font-medium">Aucune ecriture</h3>
           <p className="mt-1 text-sm text-muted-foreground">Generez les ecritures automatiques ou saisissez-en manuellement.</p>
         </div>
@@ -234,7 +258,7 @@ function GrandLivreTab({ exerciceId }: { exerciceId: number | undefined }) {
         </div>
       ) : !totals.length ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-12">
-          <BookOpen className="h-12 w-12 text-muted-foreground/40" />
+          <BookOpen className="size-12 text-muted-foreground/40" />
           <h3 className="mt-4 text-base font-medium">Aucune donnee</h3>
           <p className="mt-1 text-sm text-muted-foreground">Generez d'abord les ecritures dans l'onglet Journal.</p>
         </div>
@@ -245,7 +269,7 @@ function GrandLivreTab({ exerciceId }: { exerciceId: number | undefined }) {
             const compteEcritures = ecritures.filter((e) => e.compte_code === t.compte_code)
             return (
               <div key={t.compte_code} className="rounded-lg border border-border">
-                <button
+                <button type="button"
                   onClick={() => setExpandedCompte(isExpanded ? null : t.compte_code)}
                   className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-accent/30"
                 >
@@ -305,13 +329,6 @@ function BalanceTab({ exerciceId }: { exerciceId: number | undefined }) {
   const totalCredit = balance?.reduce((s, l) => s + Number(l.total_credit), 0) ?? 0
   const isBalanced = Math.abs(totalDebit - totalCredit) < 0.01
 
-  const classeLabels: Record<number, string> = {
-    1: 'Classe 1 - Capitaux',
-    4: 'Classe 4 - Tiers',
-    5: 'Classe 5 - Tresorerie',
-    6: 'Classe 6 - Charges',
-    7: 'Classe 7 - Produits',
-  }
 
   // Group by classe
   const grouped = balance?.reduce((acc, l) => {
@@ -340,7 +357,7 @@ function BalanceTab({ exerciceId }: { exerciceId: number | undefined }) {
         </div>
       ) : !balance?.length ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-12">
-          <Calculator className="h-12 w-12 text-muted-foreground/40" />
+          <Calculator className="size-12 text-muted-foreground/40" />
           <h3 className="mt-4 text-base font-medium">Aucune donnee</h3>
           <p className="mt-1 text-sm text-muted-foreground">Generez d'abord les ecritures dans l'onglet Journal.</p>
         </div>
@@ -396,13 +413,6 @@ function AnnexesTab({ coproprieteId, annee }: { coproprieteId: number; annee: nu
   const { data: annexe4 } = useAnnexe4(selectedAnnexe === 4 ? coproprieteId : undefined, selectedAnnexe === 4 ? year : undefined)
   const { data: annexe5 } = useAnnexe5(selectedAnnexe === 5 ? coproprieteId : undefined, selectedAnnexe === 5 ? year : undefined)
 
-  const ANNEXES = [
-    { num: 1, title: 'Annexe 1 — Etat financier', desc: 'Charges et produits de l\'exercice' },
-    { num: 2, title: 'Annexe 2 — Situation de tresorerie', desc: 'Soldes des comptes bancaires et mouvements non rapproches' },
-    { num: 3, title: 'Annexe 3 — Creances et dettes', desc: 'Etat des impayes par coproprietaire' },
-    { num: 4, title: 'Annexe 4 — Fonds de travaux', desc: 'Cotisations et solde du fonds travaux (loi ALUR)' },
-    { num: 5, title: 'Annexe 5 — Budget previsionnel', desc: 'Postes de depenses previsionnels vs realises' },
-  ]
 
    
   const annexeData: Record<number, any> = { 1: annexe1, 2: annexe2, 3: annexe3, 4: annexe4, 5: annexe5 }
@@ -410,11 +420,11 @@ function AnnexesTab({ coproprieteId, annee }: { coproprieteId: number; annee: nu
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Annexes reglementaires a presenter en Assemblee Generale (decret du 14 mars 2005) — Exercice {year}
+        Annexes reglementaires a presenter en Assemblee Generale (decret du 14 mars 2005) - Exercice {year}
       </p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {ANNEXES.map(({ num, title, desc }) => (
-          <button
+          <button type="button"
             key={num}
             onClick={() => setSelectedAnnexe(selectedAnnexe === num ? null : num)}
             className={`rounded-lg border p-4 text-left transition-colors ${
@@ -437,7 +447,7 @@ function AnnexesTab({ coproprieteId, annee }: { coproprieteId: number; annee: nu
       {/* Annexe detail */}
       {selectedAnnexe && annexeData[selectedAnnexe] && (
         <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="mb-3 text-sm font-semibold">{ANNEXES[selectedAnnexe - 1].title} — {year}</h3>
+          <h3 className="mb-3 text-sm font-semibold">{ANNEXES[selectedAnnexe - 1].title} - {year}</h3>
           <pre className="max-h-96 overflow-auto rounded bg-muted p-3 text-xs">
             {JSON.stringify(annexeData[selectedAnnexe], null, 2)}
           </pre>
@@ -478,7 +488,7 @@ function ExercicesTab({ coproprieteId, exercices, loadingExercices }: { copropri
             </p>
           </div>
           {!planComptable?.length && (
-            <button
+            <button type="button"
               onClick={() => initPlan.mutate(coproprieteId)}
               disabled={initPlan.isPending}
               className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
@@ -509,7 +519,7 @@ function ExercicesTab({ coproprieteId, exercices, loadingExercices }: { copropri
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold">Exercices comptables</h3>
-          <button
+          <button type="button"
             onClick={handleCreateExercice}
             disabled={createExercice.isPending}
             className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
@@ -527,7 +537,7 @@ function ExercicesTab({ coproprieteId, exercices, loadingExercices }: { copropri
           </div>
         ) : !exercices?.length ? (
           <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-8">
-            <Settings className="h-10 w-10 text-muted-foreground/40" />
+            <Settings className="size-10 text-muted-foreground/40" />
             <h3 className="mt-3 text-sm font-medium">Aucun exercice</h3>
             <p className="mt-1 text-xs text-muted-foreground">Creez un exercice comptable pour commencer.</p>
           </div>
@@ -552,7 +562,7 @@ function ExercicesTab({ coproprieteId, exercices, loadingExercices }: { copropri
                   </p>
                 </div>
                 {ex.statut === 'ouvert' && (
-                  <button
+                  <button type="button"
                     onClick={() => { if (confirm(`Cloturer l'exercice ${ex.annee} ? Cette action est irreversible.`)) clotureExercice.mutate(ex.id) }}
                     disabled={clotureExercice.isPending}
                     className="flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50"

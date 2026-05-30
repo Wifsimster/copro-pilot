@@ -30,13 +30,13 @@ export function ComplianceCard({ coproprieteId }: ComplianceCardProps) {
     return (
       <div className="rounded-xl border border-stone-200 bg-white p-6 dark:border-stone-700 dark:bg-stone-800">
         <div className="flex items-center gap-2 mb-4">
-          <ShieldCheck className="h-5 w-5 text-stone-400" />
+          <ShieldCheck className="size-5 text-stone-400" />
           <h3 className="text-base font-semibold text-stone-900 dark:text-white">
             Conformite Loi ALUR
           </h3>
         </div>
         <div className="flex justify-center py-4">
-          <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+          <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
         </div>
       </div>
     )
@@ -48,7 +48,7 @@ export function ComplianceCard({ coproprieteId }: ComplianceCardProps) {
     <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
       <div className="flex items-center justify-between border-b border-stone-200 px-5 py-4 dark:border-stone-700">
         <div className="flex items-center gap-2">
-          <ShieldCheck className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
+          <ShieldCheck className="size-5 text-emerald-700 dark:text-emerald-400" />
           <h3 className="text-base font-semibold text-stone-900 dark:text-white">
             Conformite Loi ALUR
           </h3>
@@ -62,27 +62,27 @@ export function ComplianceCard({ coproprieteId }: ComplianceCardProps) {
         >
           {report.compliant ? (
             <>
-              <CheckCircle className="h-3.5 w-3.5" />
+              <CheckCircle className="size-3.5" />
               Conforme
             </>
           ) : (
             <>
-              <XCircle className="h-3.5 w-3.5" />
+              <XCircle className="size-3.5" />
               Non conforme
             </>
           )}
         </span>
       </div>
       <div className="divide-y divide-stone-100 dark:divide-stone-700/50">
-        {report.checks.map((check, index) => {
+        {report.checks.map((check) => {
           const config = STATUS_CONFIG[check.status]
           const Icon = config.icon
           return (
             <div
-              key={index}
+              key={check.name}
               className={`flex items-start gap-3 px-5 py-3 ${config.bg}`}
             >
-              <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${config.color}`} />
+              <Icon className={`mt-0.5 size-4 shrink-0 ${config.color}`} />
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-stone-900 dark:text-white">
                   {check.name}

@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useInView } from 'motion/react'
+import { m, useInView } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 
@@ -16,7 +16,7 @@ export function FinalCTA() {
       <div
         className="absolute top-1/2 left-1/2
           -translate-x-1/2 -translate-y-1/2
-          w-[600px] h-[600px]
+          size-[600px]
           bg-emerald-600/8
           rounded-full blur-3xl pointer-events-none"
       />
@@ -26,7 +26,7 @@ export function FinalCTA() {
         className="relative mx-auto max-w-3xl px-4
           sm:px-6 lg:px-8 text-center"
       >
-        <motion.h2
+        <m.h2
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
@@ -41,18 +41,18 @@ export function FinalCTA() {
           >
             votre copropriété ?
           </span>
-        </motion.h2>
+        </m.h2>
 
-        <motion.p
+        <m.p
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.1, duration: 0.6 }}
           className="mt-6 text-lg text-stone-400"
         >
           Rejoignez les syndics qui ont choisi la simplicité.
-        </motion.p>
+        </m.p>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.2, duration: 0.6 }}
@@ -77,7 +77,7 @@ export function FinalCTA() {
             Sans engagement &middot; Sans carte bancaire
             &middot; Opérationnel en 5 min
           </p>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

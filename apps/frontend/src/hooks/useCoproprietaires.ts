@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { coproprietairesApi } from '@/api/coproprietaires'
 import type { Coproprietaire } from '@/types'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const COPROPRIETAIRES_QUERY_KEY = ['coproprietaires'] as const
 
 export function useCoproprietaires() {
@@ -14,6 +15,7 @@ export function useCoproprietaires() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useCoproprietaire(id: number | undefined) {
   return useQuery({
     queryKey: [...COPROPRIETAIRES_QUERY_KEY, id],
@@ -25,6 +27,7 @@ export function useCoproprietaire(id: number | undefined) {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useSearchCoproprietaires(query: string) {
   return useQuery({
     queryKey: [...COPROPRIETAIRES_QUERY_KEY, 'search', query],

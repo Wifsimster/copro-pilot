@@ -21,7 +21,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { Resolution, TypeMajorite } from '@/types'
-import { useEffect } from 'react'
+import {  } from 'react'
 
 const schema = z.object({
   titre: z.string().min(1, 'Le titre est obligatoire'),
@@ -48,7 +48,7 @@ interface Props {
 export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmit, isLoading, defaultValues, title }: Props) {
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
+    values: {
       titre: defaultValues?.titre ?? '',
       description: defaultValues?.description ?? '',
       majorite: defaultValues?.majorite ?? 'article_24',
@@ -58,19 +58,7 @@ export function ResolutionFormDialog({ open, onOpenChange, agId, numero, onSubmi
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        titre: defaultValues?.titre ?? '',
-        description: defaultValues?.description ?? '',
-        majorite: defaultValues?.majorite ?? 'article_24',
-        voix_pour: defaultValues?.voix_pour ?? 0,
-        voix_contre: defaultValues?.voix_contre ?? 0,
-        abstentions: defaultValues?.abstentions ?? 0,
-      })
-    }
-  }, [open, defaultValues, form.reset])
-
+  
   const onFormSubmit = async (data: FormData) => {
     await onSubmit({
       ag_id: agId,

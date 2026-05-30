@@ -1,65 +1,8 @@
 import { useState, useRef } from 'react'
-import { motion, useInView, AnimatePresence } from 'motion/react'
+import { m, useInView, AnimatePresence } from 'motion/react'
 import { ChevronDown } from 'lucide-react'
+import { faqs, type FaqItem } from './faqData'
 
-interface FaqItem {
-  question: string
-  answer: string
-}
-
-export const faqs: FaqItem[] = [
-  {
-    question: "C'est vraiment gratuit ?",
-    answer:
-      "Oui. Le plan Cloud Gratuit vous donne accès à la gestion"
-      + " complète d'une copropriété de 20 lots maximum, sans"
-      + " limite de durée et sans carte bancaire. Vous n'évoluez"
-      + " vers un plan payant que si vous en avez besoin.",
-  },
-  {
-    question:
-      'Je suis syndic bénévole, est-ce fait pour moi ?',
-    answer:
-      "Absolument, c'est notre cible principale. CoproPilot a"
-      + " été conçu pour être utilisable sans formation, même si"
-      + " vous n'êtes pas à l'aise avec l'informatique."
-      + " L'interface est simple et vous guide à chaque étape.",
-  },
-  {
-    question:
-      'Est-ce que mes données sont en sécurité ?',
-    answer:
-      'Vos données sont hébergées en France, conformément au'
-      + ' RGPD. Nous effectuons des sauvegardes quotidiennes et'
-      + ' utilisons un chiffrement pour toutes les'
-      + ' communications. Le code source est auditable'
-      + ' publiquement.',
-  },
-  {
-    question:
-      'Puis-je importer mes données existantes ?',
-    answer:
-      "Oui, vous pouvez importer vos données depuis un fichier"
-      + " Excel. Pour les plans Entreprise, nous proposons une"
-      + " migration assistée depuis les logiciels traditionnels"
-      + " (POWIMO, Thetrawin, etc.).",
-  },
-  {
-    question: 'Que se passe-t-il si je dépasse 20 lots ?',
-    answer:
-      "Vous recevrez une notification vous invitant à passer au"
-      + " plan Essentiel (19 €/mois). Vos données restent"
-      + " accessibles en lecture, vous ne perdez jamais rien."
-      + " La mise à niveau se fait en un clic.",
-  },
-  {
-    question: "Y a-t-il un engagement ?",
-    answer:
-      "Aucun engagement. Tous les plans payants sont mensuels,"
-      + " résiliables à tout moment. Vous pouvez exporter"
-      + " l'intégralité de vos données en un clic à tout moment.",
-  },
-]
 
 function FaqAccordionItem({
   item,
@@ -75,7 +18,7 @@ function FaqAccordionItem({
       className="border-b border-stone-200/60
         dark:border-stone-800 last:border-b-0"
     >
-      <button
+      <button type="button"
         onClick={onToggle}
         className="flex w-full items-center justify-between
           py-5 text-left group"
@@ -97,7 +40,7 @@ function FaqAccordionItem({
       </button>
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <m.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -110,7 +53,7 @@ function FaqAccordionItem({
             >
               {item.answer}
             </p>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>
@@ -132,7 +75,7 @@ export function FaqSection() {
         ref={ref}
         className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8"
       >
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
@@ -145,9 +88,9 @@ export function FaqSection() {
           >
             Questions fréquentes
           </h2>
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.1, duration: 0.5 }}
@@ -167,7 +110,7 @@ export function FaqSection() {
               }
             />
           ))}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

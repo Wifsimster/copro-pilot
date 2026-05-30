@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import { Building2, Users, Calculator } from 'lucide-react'
 
 const plans = [
@@ -92,7 +92,7 @@ export function PricingCalculator() {
       : '0.00'
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -231,10 +231,10 @@ export function PricingCalculator() {
         >
           Soit{' '}
           <strong>{perLotPrice} €/lot/mois</strong>{' '}
-          (moyenne 30 lots/copro) — les logiciels traditionnels
+          (moyenne 30 lots/copro) - les logiciels traditionnels
           facturent 3 à 8 €/lot/mois
         </p>
       </div>
-    </motion.div>
+    </m.div>
   )
 }

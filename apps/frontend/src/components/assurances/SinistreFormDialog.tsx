@@ -49,6 +49,11 @@ interface SinistreFormDialogProps {
   incidents?: Incident[]
 }
 
+// Stable empty defaults so the optional list props keep the same reference
+// across renders (a fresh `[]` default would defeat memoisation downstream).
+const EMPTY_ASSURANCES: Assurance[] = []
+const EMPTY_INCIDENTS: Incident[] = []
+
 export function SinistreFormDialog({
   open,
   onOpenChange,
@@ -57,8 +62,8 @@ export function SinistreFormDialog({
   isLoading,
   defaultValues,
   title = 'Declarer un sinistre',
-  assurances = [],
-  incidents = [],
+  assurances = EMPTY_ASSURANCES,
+  incidents = EMPTY_INCIDENTS,
 }: SinistreFormDialogProps) {
   const form = useForm<SinistreFormData>({
     resolver: zodResolver(sinistreSchema),
@@ -175,7 +180,7 @@ export function SinistreFormDialog({
                     <SelectItem value="">Aucune</SelectItem>
                     {assurances.map((a) => (
                       <SelectItem key={a.id} value={String(a.id)}>
-                        {a.compagnie} — {a.numero_police || 'N/A'}
+                        {a.compagnie} - {a.numero_police || 'N/A'}
                       </SelectItem>
                     ))}
                   </SelectContent>

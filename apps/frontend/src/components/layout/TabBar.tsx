@@ -48,7 +48,7 @@ export function TabBar({ tabs, activeTab, onTabChange }: TabBarProps) {
         const Icon = tab.icon
 
         return (
-          <button
+          <button type="button"
             key={tab.key}
             ref={(el) => {
               tabsRef.current[index] = el
@@ -64,7 +64,7 @@ export function TabBar({ tabs, activeTab, onTabChange }: TabBarProps) {
                 : 'text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white'
             }`}
           >
-            {Icon && <Icon className="h-4 w-4" />}
+            {Icon && <Icon className="size-4" />}
             {tab.label}
           </button>
         )

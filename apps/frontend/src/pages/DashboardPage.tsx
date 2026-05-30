@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { motion } from 'motion/react'
+import { LazyMotion, domAnimation, m } from 'motion/react'
 import { useSyndicDashboard } from '@/hooks/useStats'
 import { useAuthStore } from '@/store/authStore'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
@@ -36,10 +36,20 @@ import {
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ErrorAlert } from '@/components/layout/ErrorAlert'
-import ImpayesChart from '@/components/dashboard/ImpayesChart'
-import IncidentsChart from '@/components/dashboard/IncidentsChart'
+// The two recharts-backed charts are loaded lazily so recharts lands in its
+// own chunk rather than the dashboard's initial bundle.
+const ImpayesChart = lazy(() => import('@/components/dashboard/ImpayesChart'))
+const IncidentsChart = lazy(
+  () => import('@/components/dashboard/IncidentsChart')
+)
 import RecouvrementGauge from '@/components/dashboard/RecouvrementGauge'
 import EcheancesCard from '@/components/dashboard/EcheancesCard'
+
+// Stable empty defaults so lazily-rendered charts keep referential equality
+// across renders when the API has not returned data yet.
+const EMPTY_IMPAYES: never[] = []
+const EMPTY_INCIDENTS: Record<string, number> = {}
+const CHART_FALLBACK = <div className="h-64 animate-pulse rounded-xl bg-muted" />
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -71,12 +81,14 @@ function timeAgo(dateStr: string): string {
   return `il y a ${diffMonths} mois`
 }
 
+const euroFormatter = new Intl.NumberFormat('fr-FR', {
+  style: 'currency',
+  currency: 'EUR',
+  maximumFractionDigits: 0,
+})
+
 function formatEuro(value: number): string {
-  return new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
-  }).format(value)
+  return euroFormatter.format(value)
 }
 
 // ---------------------------------------------------------------------------
@@ -90,8 +102,7 @@ const SEVERITY_STYLES: Record<
   critique: {
     border: 'border-l-red-500',
     bg: 'bg-red-50 dark:bg-red-950/20',
-    badge:
-      'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    badge: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
   },
   haute: {
     border: 'border-l-orange-500',
@@ -203,7 +214,7 @@ function StatCardSkeleton() {
   return (
     <Card className="py-0">
       <CardContent className="flex items-center gap-4 p-5">
-        <div className="h-10 w-10 animate-pulse rounded-lg bg-muted" />
+        <div className="size-10 animate-pulse rounded-lg bg-muted" />
         <div className="flex-1 space-y-2">
           <div className="h-3 w-20 animate-pulse rounded bg-muted" />
           <div className="h-6 w-12 animate-pulse rounded bg-muted" />
@@ -221,10 +232,7 @@ function ListSkeleton({ rows = 4 }: { rows?: number }) {
       </div>
       <div className="divide-y divide-border">
         {Array.from({ length: rows }).map((_, i) => (
-          <div
-            key={i}
-            className="flex items-center justify-between px-4 py-3"
-          >
+          <div key={i} className="flex items-center justify-between px-4 py-3">
             <div className="flex-1 space-y-2">
               <div className="h-4 w-48 animate-pulse rounded bg-muted" />
               <div className="h-3 w-32 animate-pulse rounded bg-muted" />
@@ -243,24 +251,14 @@ function ListSkeleton({ rows = 4 }: { rows?: number }) {
 // Sub-components
 // ---------------------------------------------------------------------------
 
-function AlertsBanner({
-  alerts,
-}: {
-  alerts: DashboardAlert[]
-}) {
+function AlertsBanner({ alerts }: { alerts: DashboardAlert[] }) {
   const [expanded, setExpanded] = useState(true)
 
   if (alerts.length === 0) return null
 
-  const critiques = alerts.filter(
-    a => a.severity === 'critique'
-  )
-  const hautes = alerts.filter(
-    a => a.severity === 'haute'
-  )
-  const moyennes = alerts.filter(
-    a => a.severity === 'moyenne'
-  )
+  const critiques = alerts.filter(a => a.severity === 'critique')
+  const hautes = alerts.filter(a => a.severity === 'haute')
+  const moyennes = alerts.filter(a => a.severity === 'moyenne')
 
   const summaryParts: string[] = []
   if (critiques.length > 0)
@@ -268,27 +266,26 @@ function AlertsBanner({
       `${critiques.length} critique${critiques.length > 1 ? 's' : ''}`
     )
   if (hautes.length > 0)
-    summaryParts.push(
-      `${hautes.length} haute${hautes.length > 1 ? 's' : ''}`
-    )
+    summaryParts.push(`${hautes.length} haute${hautes.length > 1 ? 's' : ''}`)
   if (moyennes.length > 0)
     summaryParts.push(
       `${moyennes.length} moyenne${moyennes.length > 1 ? 's' : ''}`
     )
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
       <Card className="overflow-hidden border-red-200 py-0 dark:border-red-800/40">
         <button
+          type="button"
           onClick={() => setExpanded(!expanded)}
           className="flex w-full items-center justify-between bg-red-50 px-4 py-3 text-left dark:bg-red-950/20"
         >
           <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
+            <AlertTriangle className="size-4 text-red-600 dark:text-red-400" />
             <span className="text-sm font-semibold text-red-800 dark:text-red-300">
               {alerts.length} alerte
               {alerts.length > 1 ? 's' : ''}
@@ -298,9 +295,9 @@ function AlertsBanner({
             </span>
           </div>
           {expanded ? (
-            <ChevronUp className="h-4 w-4 text-red-600 dark:text-red-400" />
+            <ChevronUp className="size-4 text-red-600 dark:text-red-400" />
           ) : (
-            <ChevronDown className="h-4 w-4 text-red-600 dark:text-red-400" />
+            <ChevronDown className="size-4 text-red-600 dark:text-red-400" />
           )}
         </button>
 
@@ -308,16 +305,14 @@ function AlertsBanner({
           <div className="divide-y divide-border">
             {alerts.map(alert => {
               const style = SEVERITY_STYLES[alert.severity]
-              const Icon =
-                CATEGORY_ICONS[alert.category] ||
-                AlertTriangle
+              const Icon = CATEGORY_ICONS[alert.category] || AlertTriangle
               return (
                 <Link
                   key={alert.id}
                   to={alert.link}
                   className={`flex items-center gap-3 border-l-3 px-4 py-3 transition-colors hover:bg-accent/50 ${style.border}`}
                 >
-                  <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <Icon className="size-4 shrink-0 text-muted-foreground" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-foreground">
                       {alert.title}
@@ -325,9 +320,7 @@ function AlertsBanner({
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       {alert.copropriete_nom && (
                         <>
-                          <span>
-                            {alert.copropriete_nom}
-                          </span>
+                          <span>{alert.copropriete_nom}</span>
                           <span>&middot;</span>
                         </>
                       )}
@@ -345,15 +338,11 @@ function AlertsBanner({
           </div>
         )}
       </Card>
-    </motion.div>
+    </m.div>
   )
 }
 
-function DailyTasks({
-  tasks,
-}: {
-  tasks: DashboardTask[]
-}) {
+function DailyTasks({ tasks }: { tasks: DashboardTask[] }) {
   return (
     <Card className="py-0">
       <div className="flex items-center justify-between border-b p-4">
@@ -368,7 +357,7 @@ function DailyTasks({
       </div>
       {tasks.length === 0 ? (
         <div className="flex flex-col items-center py-8">
-          <ListChecks className="h-8 w-8 text-muted-foreground/40" />
+          <ListChecks className="size-8 text-muted-foreground/40" />
           <p className="mt-2 text-sm text-muted-foreground">
             Aucune tache cette semaine
           </p>
@@ -376,8 +365,7 @@ function DailyTasks({
       ) : (
         <div className="divide-y divide-border">
           {tasks.map(task => {
-            const Icon =
-              TASK_ICONS[task.type] || ListChecks
+            const Icon = TASK_ICONS[task.type] || ListChecks
             return (
               <Link
                 key={task.id}
@@ -385,13 +373,13 @@ function DailyTasks({
                 className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/50"
               >
                 <div
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                  className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${
                     task.priority === 'haute'
                       ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'
                       : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400'
                   }`}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="size-4" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-foreground">
@@ -400,9 +388,7 @@ function DailyTasks({
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     {task.copropriete_nom && (
                       <>
-                        <span>
-                          {task.copropriete_nom}
-                        </span>
+                        <span>{task.copropriete_nom}</span>
                         <span>&middot;</span>
                       </>
                     )}
@@ -414,7 +400,7 @@ function DailyTasks({
                     urgent
                   </span>
                 )}
-                <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                <ArrowRight className="size-3.5 shrink-0 text-muted-foreground" />
               </Link>
             )
           })}
@@ -435,14 +421,11 @@ function MetricsGrid({
     <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
       {METRIC_CONFIG.map((cfg, i) => {
         const value = metrics[cfg.key] ?? 0
-        const displayValue =
-          cfg.format === 'euro' ? formatEuro(value) : value
+        const displayValue = cfg.format === 'euro' ? formatEuro(value) : value
         const badgeValue =
-          'badgeKey' in cfg
-            ? metrics[cfg.badgeKey as string]
-            : undefined
+          'badgeKey' in cfg ? metrics[cfg.badgeKey as string] : undefined
         return (
-          <motion.div
+          <m.div
             key={cfg.key}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -455,9 +438,9 @@ function MetricsGrid({
               <Card className="py-0 transition-shadow hover:shadow-md">
                 <CardContent className="flex items-center gap-3 p-4">
                   <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${cfg.color} text-white`}
+                    className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${cfg.color} text-white`}
                   >
-                    <cfg.icon className="h-5 w-5" />
+                    <cfg.icon className="size-5" />
                   </div>
                   <div className="min-w-0">
                     <p className="truncate text-xs text-muted-foreground">
@@ -467,32 +450,25 @@ function MetricsGrid({
                       <p className="text-xl font-bold text-foreground">
                         {displayValue}
                       </p>
-                      {badgeValue != null &&
-                        badgeValue > 0 && (
-                          <span className="rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400">
-                            {badgeValue}{' '}
-                            {'badgeLabel' in cfg
-                              ? cfg.badgeLabel
-                              : ''}
-                          </span>
-                        )}
+                      {badgeValue != null && badgeValue > 0 && (
+                        <span className="rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                          {badgeValue}{' '}
+                          {'badgeLabel' in cfg ? cfg.badgeLabel : ''}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </CardContent>
               </Card>
             </Link>
-          </motion.div>
+          </m.div>
         )
       })}
     </div>
   )
 }
 
-function ActivityFeed({
-  activity,
-}: {
-  activity: DashboardActivity[]
-}) {
+function ActivityFeed({ activity }: { activity: DashboardActivity[] }) {
   return (
     <Card className="py-0">
       <div className="flex items-center justify-between border-b p-4">
@@ -502,7 +478,7 @@ function ActivityFeed({
       </div>
       {activity.length === 0 ? (
         <div className="flex flex-col items-center py-8">
-          <FileUp className="h-8 w-8 text-muted-foreground/40" />
+          <FileUp className="size-8 text-muted-foreground/40" />
           <p className="mt-2 text-sm text-muted-foreground">
             Aucune activite recente
           </p>
@@ -510,15 +486,14 @@ function ActivityFeed({
       ) : (
         <div className="divide-y divide-border">
           {activity.map(item => {
-            const Icon =
-              ACTIVITY_ICONS[item.type] || FileUp
+            const Icon = ACTIVITY_ICONS[item.type] || FileUp
             return (
               <Link
                 key={item.id}
                 to={item.link}
                 className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-accent/50"
               >
-                <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <Icon className="size-4 shrink-0 text-muted-foreground" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm text-foreground">
                     {item.title}
@@ -526,9 +501,7 @@ function ActivityFeed({
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     {item.copropriete_nom && (
                       <>
-                        <span>
-                          {item.copropriete_nom}
-                        </span>
+                        <span>{item.copropriete_nom}</span>
                         <span>&middot;</span>
                       </>
                     )}
@@ -552,8 +525,12 @@ export default function DashboardPage() {
   const selectedCoproprieteId = useCoproprieteStore(
     s => s.selectedCoproprieteId
   )
-  const { data: dashboard, isLoading, isError, error } =
-    useSyndicDashboard(selectedCoproprieteId)
+  const {
+    data: dashboard,
+    isLoading,
+    isError,
+    error,
+  } = useSyndicDashboard(selectedCoproprieteId)
   const user = useAuthStore(s => s.user)
   const navigate = useNavigate()
 
@@ -610,139 +587,139 @@ export default function DashboardPage() {
 
   // ---- Loaded state ----
   return (
-    <div className="space-y-5">
-      {isError && <ErrorAlert error={error} message="Impossible de charger le tableau de bord" />}
-
-      {/* Welcome header */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <h1 className="text-2xl font-bold text-foreground">
-          {getGreeting()}
-          {firstName ? `, ${firstName}` : ''}
-        </h1>
-        <p className="text-sm text-muted-foreground capitalize">
-          {formatCurrentDate()}
-        </p>
-      </motion.div>
-
-      {/* Alerts banner */}
-      {dashboard && dashboard.alerts.length > 0 && (
-        <AlertsBanner alerts={dashboard.alerts} />
-      )}
-
-      {/* Metrics grid */}
-      {dashboard && (
-        <MetricsGrid
-          metrics={
-            dashboard.metrics as unknown as Record<
-              string,
-              number
-            >
-          }
-          delay={0.1}
-        />
-      )}
-
-      {/* KPI Charts */}
-      {dashboard && (
-        <div className="space-y-5">
-          {/* Row 1: Impayes chart (2/3) + Recouvrement gauge (1/3) */}
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-            <motion.div
-              className="lg:col-span-2"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.2 }}
-            >
-              <ImpayesChart
-                data={dashboard.impayes_evolution ?? []}
-              />
-            </motion.div>
-            <motion.div
-              className="lg:col-span-1"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.25 }}
-            >
-              <RecouvrementGauge
-                value={dashboard.taux_recouvrement ?? 0}
-              />
-            </motion.div>
-          </div>
-
-          {/* Row 2: Incidents chart (1/3) + Echeances card (2/3) */}
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-            <motion.div
-              className="lg:col-span-1"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.25 }}
-            >
-              <IncidentsChart
-                data={dashboard.incidents_par_statut ?? {}}
-              />
-            </motion.div>
-            <motion.div
-              className="lg:col-span-2"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.3 }}
-            >
-              <EcheancesCard
-                echeances={
-                  dashboard.prochaines_echeances ?? []
-                }
-              />
-            </motion.div>
-          </div>
-        </div>
-      )}
-
-      {/* Tasks + Activity side by side */}
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-5">
-        <motion.div
-          className="lg:col-span-3"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: 0.3 }}
-        >
-          <DailyTasks tasks={dashboard?.tasks ?? []} />
-        </motion.div>
-
-        <motion.div
-          className="lg:col-span-2"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: 0.35 }}
-        >
-          <ActivityFeed
-            activity={dashboard?.activity ?? []}
+    <LazyMotion features={domAnimation}>
+      <div className="space-y-5">
+        {isError && (
+          <ErrorAlert
+            error={error}
+            message="Impossible de charger le tableau de bord"
           />
-        </motion.div>
-      </div>
+        )}
 
-      {/* Quick actions */}
-      <motion.div
-        className="flex flex-wrap gap-3"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3, delay: 0.45 }}
-      >
-        {quickActions.map(qa => (
-          <Button
-            key={qa.label}
-            variant="outline"
-            size="sm"
-            onClick={qa.action}
+        {/* Welcome header */}
+        <m.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <h1 className="text-2xl font-bold text-foreground">
+            {getGreeting()}
+            {firstName ? `, ${firstName}` : ''}
+          </h1>
+          <p className="text-sm text-muted-foreground capitalize">
+            {formatCurrentDate()}
+          </p>
+        </m.div>
+
+        {/* Alerts banner */}
+        {dashboard && dashboard.alerts.length > 0 && (
+          <AlertsBanner alerts={dashboard.alerts} />
+        )}
+
+        {/* Metrics grid */}
+        {dashboard && (
+          <MetricsGrid
+            metrics={dashboard.metrics as unknown as Record<string, number>}
+            delay={0.1}
+          />
+        )}
+
+        {/* KPI Charts */}
+        {dashboard && (
+          <div className="space-y-5">
+            {/* Row 1: Impayes chart (2/3) + Recouvrement gauge (1/3) */}
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+              <m.div
+                className="lg:col-span-2"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.2 }}
+              >
+                <Suspense fallback={CHART_FALLBACK}>
+                  <ImpayesChart
+                    data={dashboard.impayes_evolution ?? EMPTY_IMPAYES}
+                  />
+                </Suspense>
+              </m.div>
+              <m.div
+                className="lg:col-span-1"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.25 }}
+              >
+                <RecouvrementGauge value={dashboard.taux_recouvrement ?? 0} />
+              </m.div>
+            </div>
+
+            {/* Row 2: Incidents chart (1/3) + Echeances card (2/3) */}
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+              <m.div
+                className="lg:col-span-1"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.25 }}
+              >
+                <Suspense fallback={CHART_FALLBACK}>
+                  <IncidentsChart
+                    data={dashboard.incidents_par_statut ?? EMPTY_INCIDENTS}
+                  />
+                </Suspense>
+              </m.div>
+              <m.div
+                className="lg:col-span-2"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.3 }}
+              >
+                <EcheancesCard
+                  echeances={dashboard.prochaines_echeances ?? []}
+                />
+              </m.div>
+            </div>
+          </div>
+        )}
+
+        {/* Tasks + Activity side by side */}
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-5">
+          <m.div
+            className="lg:col-span-3"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.3 }}
           >
-            <qa.icon className="h-4 w-4" />
-            {qa.label}
-          </Button>
-        ))}
-      </motion.div>
-    </div>
+            <DailyTasks tasks={dashboard?.tasks ?? []} />
+          </m.div>
+
+          <m.div
+            className="lg:col-span-2"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.35 }}
+          >
+            <ActivityFeed activity={dashboard?.activity ?? []} />
+          </m.div>
+        </div>
+
+        {/* Quick actions */}
+        <m.div
+          className="flex flex-wrap gap-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.45 }}
+        >
+          {quickActions.map(qa => (
+            <Button
+              key={qa.label}
+              variant="outline"
+              size="sm"
+              onClick={qa.action}
+            >
+              <qa.icon className="size-4" />
+              {qa.label}
+            </Button>
+          ))}
+        </m.div>
+      </div>
+    </LazyMotion>
   )
 }

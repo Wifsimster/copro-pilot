@@ -29,7 +29,7 @@ export default function ProfilPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center gap-3">
-        <User className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+        <User className="size-6 text-stone-600 dark:text-stone-400" />
         <div>
           <h1 className="text-2xl font-bold text-stone-900 dark:text-white">
             Mon profil
@@ -77,7 +77,7 @@ export default function ProfilPage() {
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-1.5">
-                <Mail className="h-3.5 w-3.5 text-stone-400" />
+                <Mail className="size-3.5 text-stone-400" />
                 <p className="text-xs font-medium uppercase tracking-wider text-stone-400 dark:text-stone-500">
                   Email
                 </p>
@@ -88,7 +88,7 @@ export default function ProfilPage() {
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-1.5">
-                <Shield className="h-3.5 w-3.5 text-stone-400" />
+                <Shield className="size-3.5 text-stone-400" />
                 <p className="text-xs font-medium uppercase tracking-wider text-stone-400 dark:text-stone-500">
                   Rôle
                 </p>

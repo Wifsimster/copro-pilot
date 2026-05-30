@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import {
   Building2,
@@ -11,7 +11,7 @@ import {
 
 function DashboardMockup() {
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 40, rotateY: -4, rotateX: 2 }}
       animate={{ opacity: 1, y: 0, rotateY: -4, rotateX: 2 }}
       transition={{ delay: 0.4, duration: 0.8, ease: 'easeOut' }}
@@ -153,14 +153,11 @@ function DashboardMockup() {
       </div>
 
       {/* Floating notification */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, x: 20, y: -10 }}
         animate={{ opacity: 1, x: 0, y: 0 }}
         transition={{ delay: 1, duration: 0.5 }}
-        className="absolute -top-3 -right-4 sm:-right-8"
-        style={{
-          animation: 'float 4s ease-in-out infinite',
-        }}
+        className="animate-float absolute -top-3 -right-4 sm:-right-8"
       >
         <div
           className="flex items-center gap-2 rounded-xl
@@ -177,17 +174,17 @@ function DashboardMockup() {
             2 paiements en attente
           </span>
         </div>
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   )
 }
 
-export function HeroSection() {
-  function scrollToSection(id: string) {
-    const el = document.getElementById(id)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
-  }
+function scrollToSection(id: string) {
+  const el = document.getElementById(id)
+  if (el) el.scrollIntoView({ behavior: 'smooth' })
+}
 
+export function HeroSection() {
   return (
     <section
       className="relative min-h-screen flex items-center
@@ -196,12 +193,12 @@ export function HeroSection() {
     >
       {/* Decorative gradient orbs */}
       <div
-        className="absolute top-20 -left-40 w-96 h-96
+        className="absolute top-20 -left-40 size-96
           bg-emerald-200/20 dark:bg-emerald-900/10
           rounded-full blur-3xl pointer-events-none"
       />
       <div
-        className="absolute bottom-20 -right-40 w-96 h-96
+        className="absolute bottom-20 -right-40 size-96
           bg-amber-200/20 dark:bg-amber-900/10
           rounded-full blur-3xl pointer-events-none"
       />
@@ -215,7 +212,7 @@ export function HeroSection() {
             items-center"
         >
           <div className="text-center lg:text-left">
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -229,7 +226,7 @@ export function HeroSection() {
               <span className="relative flex size-2">
                 <span
                   className="animate-ping absolute inline-flex
-                    h-full w-full rounded-full
+                    size-full rounded-full
                     bg-emerald-400 opacity-75"
                 />
                 <span
@@ -238,9 +235,9 @@ export function HeroSection() {
                 />
               </span>
               Gratuit pour démarrer
-            </motion.div>
+            </m.div>
 
-            <motion.h1
+            <m.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.6 }}
@@ -276,9 +273,9 @@ export function HeroSection() {
                   moins cher.
                 </span>
               </span>
-            </motion.h1>
+            </m.h1>
 
-            <motion.p
+            <m.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
@@ -289,9 +286,9 @@ export function HeroSection() {
               L'outil moderne pour syndics bénévoles et
               professionnels. Opérationnel en 5 minutes,
               sans installation.
-            </motion.p>
+            </m.p>
 
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
@@ -326,9 +323,9 @@ export function HeroSection() {
               >
                 Voir les tarifs
               </Button>
-            </motion.div>
+            </m.div>
 
-            <motion.p
+            <m.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.6 }}
@@ -349,7 +346,7 @@ export function HeroSection() {
                 &middot;
               </span>
               <span>Données hébergées en France</span>
-            </motion.p>
+            </m.p>
           </div>
 
           <div className="relative">

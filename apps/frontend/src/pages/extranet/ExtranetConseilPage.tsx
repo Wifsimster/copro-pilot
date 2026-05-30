@@ -47,7 +47,7 @@ export default function ExtranetConseilPage() {
                     {c.prenom} {c.nom}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {c.email ?? '—'} — {c.telephone ?? '—'}
+                    {c.email ?? '—'} - {c.telephone ?? '—'}
                   </p>
                 </div>
               </div>
@@ -119,7 +119,7 @@ export default function ExtranetConseilPage() {
                 >
                   <div>
                     <p className="text-sm font-medium">
-                      {cb.banque} — {cb.libelle ?? cb.type}
+                      {cb.banque} - {cb.libelle ?? cb.type}
                     </p>
                     <p className="text-xs font-mono text-muted-foreground">
                       {cb.iban}

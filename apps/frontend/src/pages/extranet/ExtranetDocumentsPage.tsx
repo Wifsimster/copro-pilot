@@ -97,15 +97,15 @@ export default function ExtranetDocumentsPage() {
               title="Diagnostics techniques"
               icon={ClipboardList}
             >
-              {docs.diagnostics.map((d: any, i: number) => (
+              {docs.diagnostics.map((d: any) => (
                 <div
-                  key={i}
+                  key={d.id}
                   className="flex items-center justify-between rounded border border-border px-3 py-2"
                 >
                   <div>
                     <p className="text-sm font-medium">{d.type}</p>
                     <p className="text-xs text-muted-foreground">
-                      {d.organisme} —{' '}
+                      {d.organisme} -{' '}
                       {new Date(
                         d.date_realisation
                       ).toLocaleDateString('fr-FR')}
@@ -140,7 +140,7 @@ export default function ExtranetDocumentsPage() {
                       {a.compagnie}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {a.type} — Police{' '}
+                      {a.type} - Police{' '}
                       {a.numero_police ?? '—'}
                     </p>
                   </div>
@@ -158,9 +158,9 @@ export default function ExtranetDocumentsPage() {
               title="Contrats en cours"
               icon={Handshake}
             >
-              {docs.contrats.map((c: any, i: number) => (
+              {docs.contrats.map((c: any) => (
                 <div
-                  key={i}
+                  key={c.id}
                   className="flex items-center justify-between rounded border border-border px-3 py-2"
                 >
                   <div>

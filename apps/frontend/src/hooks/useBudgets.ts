@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { budgetsApi } from '@/api/budgets'
 import type { BudgetPrevisionnel, PosteDepense } from '@/types'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const BUDGETS_QUERY_KEY = ['budgets'] as const
 
 export function useBudgetsByCopropriete(coproprieteId: number | undefined) {
@@ -15,6 +16,7 @@ export function useBudgetsByCopropriete(coproprieteId: number | undefined) {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useBudget(id: number | undefined) {
   return useQuery({
     queryKey: [...BUDGETS_QUERY_KEY, id],
@@ -57,6 +59,7 @@ export function useDeleteBudget() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useCreatePoste() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -67,6 +70,7 @@ export function useCreatePoste() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useDeletePoste() {
   const queryClient = useQueryClient()
   return useMutation({

@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { carnetEntretienApi } from '@/api/carnet-entretien'
 import type { CarnetEntretien } from '@/types'
 
-export const CARNET_ENTRETIEN_QUERY_KEY = ['carnet-entretien'] as const
+const CARNET_ENTRETIEN_QUERY_KEY = ['carnet-entretien'] as const
 
 export function useCarnetEntretienByCopropriete(coproprieteId: number | undefined) {
   return useQuery({

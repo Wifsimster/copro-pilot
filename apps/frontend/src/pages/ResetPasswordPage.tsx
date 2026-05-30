@@ -10,11 +10,21 @@ import {
 import { validatePassword } from '@/utils/passwordValidation'
 
 export default function ResetPasswordPage() {
-  const [password, setPassword] = useState('')
-  const [confirm, setConfirm] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState(false)
+  const [ui, setUi] = useState<{
+    password: string
+    confirm: string
+    isLoading: boolean
+    error: string
+    success: boolean
+  }>({
+    password: '',
+    confirm: '',
+    isLoading: false,
+    error: '',
+    success: false,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { password, confirm, isLoading, error, success } = ui
 
   // Extract token from URL query params
   const params = new URLSearchParams(window.location.search)
@@ -22,25 +32,25 @@ export default function ResetPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
+    patchUi({ error: '' })
 
     if (password !== confirm) {
-      setError('Les mots de passe ne correspondent pas')
+      patchUi({ error: 'Les mots de passe ne correspondent pas' })
       return
     }
 
     const validation = validatePassword(password)
     if (!validation.valid) {
-      setError(validation.errors.join('. '))
+      patchUi({ error: validation.errors.join('. ') })
       return
     }
 
     if (!token) {
-      setError('Lien de réinitialisation invalide ou expiré')
+      patchUi({ error: 'Lien de réinitialisation invalide ou expiré' })
       return
     }
 
-    setIsLoading(true)
+    patchUi({ isLoading: true })
 
     try {
       const result = await authClient.resetPassword({
@@ -48,17 +58,15 @@ export default function ResetPasswordPage() {
         token,
       })
       if (result.error) {
-        setError(
-          result.error.message ||
-            'Erreur lors de la réinitialisation'
-        )
+        patchUi({ error: result.error.message ||
+            'Erreur lors de la réinitialisation' })
       } else {
-        setSuccess(true)
+        patchUi({ success: true })
       }
     } catch {
-      setError('Erreur lors de la réinitialisation du mot de passe')
+      patchUi({ error: 'Erreur lors de la réinitialisation du mot de passe' })
     } finally {
-      setIsLoading(false)
+      patchUi({ isLoading: false })
     }
   }
 
@@ -117,7 +125,7 @@ export default function ResetPasswordPage() {
                   <PasswordInput
                     id="password"
                     value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={e => patchUi({ password: e.target.value })}
                     minLength={12}
                     autoComplete="new-password"
                   />
@@ -134,7 +142,7 @@ export default function ResetPasswordPage() {
                   <PasswordInput
                     id="confirm"
                     value={confirm}
-                    onChange={e => setConfirm(e.target.value)}
+                    onChange={e => patchUi({ confirm: e.target.value })}
                     minLength={12}
                     autoComplete="new-password"
                   />
@@ -159,7 +167,7 @@ export default function ResetPasswordPage() {
                   {isLoading ? (
                     <>
                       <Loader2 className="size-4 animate-spin" />
-                      Réinitialisation...
+                      Réinitialisation…
                     </>
                   ) : (
                     'Réinitialiser le mot de passe'

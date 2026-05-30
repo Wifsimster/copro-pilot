@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { comptesBancairesApi } from '@/api/comptes-bancaires'
 import type { CompteBancaire } from '@/types'
 
-export const COMPTES_BANCAIRES_QUERY_KEY = ['comptes-bancaires'] as const
+const COMPTES_BANCAIRES_QUERY_KEY = ['comptes-bancaires'] as const
 
 export function useComptesBancairesByCopropriete(coproprieteId: number | undefined) {
   return useQuery({

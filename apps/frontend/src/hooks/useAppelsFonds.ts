@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { appelsFondsApi } from '@/api/appels-fonds'
 import type { AppelFonds, AppelFondsLigne } from '@/types'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const APPELS_FONDS_QUERY_KEY = ['appels-fonds'] as const
 
 export function useAppelsFondsByCopropriete(coproprieteId: number | undefined) {
@@ -15,6 +16,7 @@ export function useAppelsFondsByCopropriete(coproprieteId: number | undefined) {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useAppelFonds(id: number | undefined) {
   return useQuery({
     queryKey: [...APPELS_FONDS_QUERY_KEY, id],
@@ -57,6 +59,7 @@ export function useDeleteAppelFonds() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useCreateLigneAppelFonds() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -67,6 +70,7 @@ export function useCreateLigneAppelFonds() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useUpdateLigneAppelFonds() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -78,6 +82,7 @@ export function useUpdateLigneAppelFonds() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useDeleteLigneAppelFonds() {
   const queryClient = useQueryClient()
   return useMutation({

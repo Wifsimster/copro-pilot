@@ -1,3 +1,4 @@
+// react-doctor-disable-next-line react-doctor/prefer-dynamic-import -- already lazy-loaded by its only consumer (DashboardPage)
 import {
   BarChart,
   Bar,
@@ -17,12 +18,14 @@ interface ImpayesChartProps {
   data: Array<{ mois: string; impayes: number }>
 }
 
+const eurFormatter = new Intl.NumberFormat('fr-FR', {
+  style: 'currency',
+  currency: 'EUR',
+  maximumFractionDigits: 0,
+})
+
 function formatEur(value: number): string {
-  return new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
-  }).format(value)
+  return eurFormatter.format(value)
 }
 
 function CustomTooltip({

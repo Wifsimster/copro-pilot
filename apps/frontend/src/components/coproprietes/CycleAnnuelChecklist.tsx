@@ -48,13 +48,13 @@ export function CycleAnnuelChecklist({
           Cycle annuel de conformite
         </h3>
         {onRefresh && (
-          <button
+          <button type="button"
             onClick={onRefresh}
             disabled={isRefreshing}
             className="flex items-center gap-1.5 rounded-lg border border-stone-300 px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50 disabled:opacity-50 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800"
           >
             <RefreshCw
-              className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin' : ''}`}
+              className={`size-3.5 ${isRefreshing ? 'animate-spin' : ''}`}
             />
             Actualiser
           </button>
@@ -63,7 +63,7 @@ export function CycleAnnuelChecklist({
 
       {taches.length === 0 ? (
         <div className="flex flex-col items-center py-8">
-          <Circle className="h-8 w-8 text-stone-300 dark:text-stone-600" />
+          <Circle className="size-8 text-stone-300 dark:text-stone-600" />
           <p className="mt-2 text-sm text-stone-500 dark:text-stone-400">
             Aucun cycle initialise pour cette annee
           </p>
@@ -79,7 +79,7 @@ export function CycleAnnuelChecklist({
                 className="flex items-center gap-3 px-4 py-3"
               >
                 <Icon
-                  className={`h-5 w-5 shrink-0 ${config.color}`}
+                  className={`size-5 shrink-0 ${config.color}`}
                 />
                 <div className="min-w-0 flex-1">
                   <p

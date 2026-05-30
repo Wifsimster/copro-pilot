@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { statsApi } from '@/api/stats'
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useDashboardStats() {
   return useQuery({
     queryKey: ['stats', 'dashboard'],

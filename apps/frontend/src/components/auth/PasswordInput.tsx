@@ -90,8 +90,8 @@ export function PasswordStrength({
       </p>
       {showErrors && validation.errors.length > 0 && (
         <ul className="text-xs text-destructive space-y-0.5">
-          {validation.errors.map((err, i) => (
-            <li key={i}>{err}</li>
+          {validation.errors.map((err) => (
+            <li key={err}>{err}</li>
           ))}
         </ul>
       )}

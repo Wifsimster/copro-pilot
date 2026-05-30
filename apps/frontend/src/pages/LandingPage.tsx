@@ -1,3 +1,4 @@
+import { LazyMotion, domAnimation } from 'motion/react'
 import { LandingHeader } from '@/components/landing/LandingHeader'
 import { HeroSection } from '@/components/landing/HeroSection'
 import { TrustBar } from '@/components/landing/TrustBar'
@@ -7,7 +8,8 @@ import { ComparisonSection } from '@/components/landing/ComparisonSection'
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
 import { PricingSection } from '@/components/landing/PricingSection'
 import { HowItWorksSection } from '@/components/landing/HowItWorksSection'
-import { FaqSection, faqs } from '@/components/landing/FaqSection'
+import { FaqSection } from '@/components/landing/FaqSection'
+import { faqs } from '@/components/landing/faqData'
 import { FinalCTA } from '@/components/landing/FinalCTA'
 import { LandingFooter } from '@/components/landing/LandingFooter'
 import { SEOHead } from '@/components/SEO/SEOHead'
@@ -32,7 +34,7 @@ const softwareApplicationSchema = {
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   description:
-    "Plateforme moderne de gestion de copropriété : appels de fonds, assemblées générales, comptabilité réglementaire ALUR, extranet copropriétaires, gestion des incidents et des contrats.",
+    'Plateforme moderne de gestion de copropriété : appels de fonds, assemblées générales, comptabilité réglementaire ALUR, extranet copropriétaires, gestion des incidents et des contrats.',
   offers: {
     '@type': 'Offer',
     price: '0',
@@ -57,29 +59,27 @@ const faqSchema = {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen font-body antialiased">
-      <SEOHead
-        title="CoproPilot — Logiciel de gestion de copropriété pour syndics"
-        description="Logiciel moderne de gestion de copropriété pour syndics bénévoles et professionnels : appels de fonds, AG, comptabilité ALUR, extranet copropriétaires. Gratuit jusqu’à 20 lots."
-        canonical="/"
-        jsonLd={[
-          organizationSchema,
-          softwareApplicationSchema,
-          faqSchema,
-        ]}
-      />
-      <LandingHeader />
-      <HeroSection />
-      <TrustBar />
-      <PainReliefSection />
-      <FeaturesSection />
-      <ComparisonSection />
-      <TestimonialsSection />
-      <PricingSection />
-      <HowItWorksSection />
-      <FaqSection />
-      <FinalCTA />
-      <LandingFooter />
-    </div>
+    <LazyMotion features={domAnimation}>
+      <div className="min-h-screen font-body antialiased">
+        <SEOHead
+          title="CoproPilot — Logiciel de gestion de copropriété pour syndics"
+          description="Logiciel moderne de gestion de copropriété pour syndics bénévoles et professionnels : appels de fonds, AG, comptabilité ALUR, extranet copropriétaires. Gratuit jusqu’à 20 lots."
+          canonical="/"
+          jsonLd={[organizationSchema, softwareApplicationSchema, faqSchema]}
+        />
+        <LandingHeader />
+        <HeroSection />
+        <TrustBar />
+        <PainReliefSection />
+        <FeaturesSection />
+        <ComparisonSection />
+        <TestimonialsSection />
+        <PricingSection />
+        <HowItWorksSection />
+        <FaqSection />
+        <FinalCTA />
+        <LandingFooter />
+      </div>
+    </LazyMotion>
   )
 }

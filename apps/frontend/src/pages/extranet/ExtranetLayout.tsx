@@ -29,7 +29,7 @@ export default function ExtranetLayout() {
           <h1 className="text-2xl font-bold">
             Espace coproprietaire
           </h1>
-          <p className="text-muted-foreground">Chargement...</p>
+          <p className="text-muted-foreground">Chargement…</p>
         </div>
         <div className="animate-pulse space-y-4">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -49,7 +49,7 @@ export default function ExtranetLayout() {
           </h1>
         </div>
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-16">
-          <AlertCircle className="h-16 w-16 text-muted-foreground/40" />
+          <AlertCircle className="size-16 text-muted-foreground/40" />
           <h3 className="mt-6 text-lg font-medium">
             Acces non disponible
           </h3>
@@ -74,11 +74,15 @@ export default function ExtranetLayout() {
       {/* Copropriete selector */}
       {coproprietes.length > 1 && (
         <div className="flex items-center gap-3">
-          <label className="text-sm font-medium text-muted-foreground">
+          <label
+            htmlFor="extranet-copro-select"
+            className="text-sm font-medium text-muted-foreground"
+          >
             Copropriete :
           </label>
           <div className="relative">
             <select
+              id="extranet-copro-select"
               value={currentCoproId ?? ''}
               onChange={e =>
                 setSelectedCoproId(Number(e.target.value))

@@ -33,15 +33,32 @@ const FREQUENCE_LABELS: Record<string, string> = {
 
 type Tab = 'contrats' | 'prestataires'
 
+const isExpiringSoon = (dateStr: string | null) => {
+  if (!dateStr) return false
+  const diff = new Date(dateStr).getTime() - Date.now()
+  return diff > 0 && diff < 90 * 24 * 60 * 60 * 1000
+}
+
 export default function ContratsPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
-  const [activeTab, setActiveTab] = useState<Tab>('contrats')
+  const [ui, setUi] = useState<{
+    activeTab: Tab
+    showContratDialog: boolean
+    editingContrat: Contrat | null
+    showPrestataireDialog: boolean
+    editingPrestataire: Prestataire | null
+    deleteTarget: { type: 'contrat' | 'prestataire', id: number } | null
+  }>({
+    activeTab: 'contrats',
+    showContratDialog: false,
+    editingContrat: null,
+    showPrestataireDialog: false,
+    editingPrestataire: null,
+    deleteTarget: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { activeTab, showContratDialog, editingContrat, showPrestataireDialog, editingPrestataire, deleteTarget } = ui
 
-  const [showContratDialog, setShowContratDialog] = useState(false)
-  const [editingContrat, setEditingContrat] = useState<Contrat | null>(null)
-  const [showPrestataireDialog, setShowPrestataireDialog] = useState(false)
-  const [editingPrestataire, setEditingPrestataire] = useState<Prestataire | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<{ type: 'contrat' | 'prestataire', id: number } | null>(null)
 
   const { data: prestataires, isLoading: loadingPrestataires, isError: isErrorPrestataires, error: errorPrestataires } = usePrestataires()
   const { data: contrats, isLoading: loadingContrats, isError: isErrorContrats, error: errorContrats } = useContratsByCopropriete(selectedCoproId)
@@ -52,12 +69,6 @@ export default function ContratsPage() {
   const createPrestataire = useCreatePrestataire()
   const updatePrestataire = useUpdatePrestataire()
   const deletePrestataire = useDeletePrestataire()
-
-  const isExpiringSoon = (dateStr: string | null) => {
-    if (!dateStr) return false
-    const diff = new Date(dateStr).getTime() - Date.now()
-    return diff > 0 && diff < 90 * 24 * 60 * 60 * 1000
-  }
 
   const contratsError = errorContrats || errorPrestataires
   const hasContratsError = isErrorContrats || isErrorPrestataires
@@ -75,7 +86,7 @@ export default function ContratsPage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <Handshake className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <Handshake className="size-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
           <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
@@ -88,7 +99,7 @@ export default function ContratsPage() {
               { key: 'prestataires', label: 'Prestataires', icon: Building2 },
             ]}
             activeTab={activeTab}
-            onTabChange={(key) => setActiveTab(key as Tab)}
+            onTabChange={(key) => patchUi({ activeTab: key as Tab })}
           />
 
           {/* Contrats tab */}
@@ -96,22 +107,22 @@ export default function ContratsPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Contrats</h2>
-                <button
-                  onClick={() => setShowContratDialog(true)}
+                <button type="button"
+                  onClick={() => patchUi({ showContratDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouveau contrat
                 </button>
               </div>
 
               {loadingContrats ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !contrats || contrats.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <FileSignature className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <FileSignature className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun contrat enregistre</p>
                 </div>
               ) : (
@@ -125,7 +136,7 @@ export default function ContratsPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant annuel</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Frequence</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -148,7 +159,7 @@ export default function ContratsPage() {
                                     {new Date(contrat.date_fin).toLocaleDateString('fr-FR')}
                                   </span>
                                   {isExpiringSoon(contrat.date_fin) && (
-                                    <AlertTriangle className="h-3.5 w-3.5 text-orange-500" />
+                                    <AlertTriangle className="size-3.5 text-orange-500" />
                                   )}
                                 </>
                               )}
@@ -169,19 +180,19 @@ export default function ContratsPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
-                                onClick={() => { setEditingContrat(contrat); setShowContratDialog(true) }}
+                              <button type="button"
+                                onClick={() => { patchUi({ editingContrat: contrat }); patchUi({ showContratDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
-                              <button
-                                onClick={() => setDeleteTarget({ type: 'contrat', id: contrat.id })}
+                              <button type="button"
+                                onClick={() => patchUi({ deleteTarget: { type: 'contrat', id: contrat.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -194,7 +205,7 @@ export default function ContratsPage() {
 
               <ContratFormDialog
                 open={showContratDialog}
-                onOpenChange={(open) => { setShowContratDialog(open); if (!open) setEditingContrat(null) }}
+                onOpenChange={(open) => { patchUi({ showContratDialog: open }); if (!open) patchUi({ editingContrat: null }) }}
                 coproprieteId={selectedCoproId}
                 prestataires={prestataires || []}
                 defaultValues={editingContrat || undefined}
@@ -205,8 +216,8 @@ export default function ContratsPage() {
                   } else {
                     await createContrat.mutateAsync(data)
                   }
-                  setShowContratDialog(false)
-                  setEditingContrat(null)
+                  patchUi({ showContratDialog: false })
+                  patchUi({ editingContrat: null })
                 }}
                 isLoading={editingContrat ? updateContrat.isPending : createContrat.isPending}
               />
@@ -218,22 +229,22 @@ export default function ContratsPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Prestataires</h2>
-                <button
-                  onClick={() => setShowPrestataireDialog(true)}
+                <button type="button"
+                  onClick={() => patchUi({ showPrestataireDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouveau prestataire
                 </button>
               </div>
 
               {loadingPrestataires ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !prestataires || prestataires.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <Building2 className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <Building2 className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun prestataire enregistre</p>
                 </div>
               ) : (
@@ -246,7 +257,7 @@ export default function ContratsPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">SIRET</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Contact</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Telephone</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -264,19 +275,19 @@ export default function ContratsPage() {
                           <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{presta.contact_telephone || '—'}</td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
-                                onClick={() => { setEditingPrestataire(presta); setShowPrestataireDialog(true) }}
+                              <button type="button"
+                                onClick={() => { patchUi({ editingPrestataire: presta }); patchUi({ showPrestataireDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
-                              <button
-                                onClick={() => setDeleteTarget({ type: 'prestataire', id: presta.id })}
+                              <button type="button"
+                                onClick={() => patchUi({ deleteTarget: { type: 'prestataire', id: presta.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -289,7 +300,7 @@ export default function ContratsPage() {
 
               <PrestataireFormDialog
                 open={showPrestataireDialog}
-                onOpenChange={(open) => { setShowPrestataireDialog(open); if (!open) setEditingPrestataire(null) }}
+                onOpenChange={(open) => { patchUi({ showPrestataireDialog: open }); if (!open) patchUi({ editingPrestataire: null }) }}
                 defaultValues={editingPrestataire || undefined}
                 title={editingPrestataire ? 'Modifier le prestataire' : 'Nouveau prestataire'}
                 onSubmit={async (data) => {
@@ -298,8 +309,8 @@ export default function ContratsPage() {
                   } else {
                     await createPrestataire.mutateAsync(data)
                   }
-                  setShowPrestataireDialog(false)
-                  setEditingPrestataire(null)
+                  patchUi({ showPrestataireDialog: false })
+                  patchUi({ editingPrestataire: null })
                 }}
                 isLoading={editingPrestataire ? updatePrestataire.isPending : createPrestataire.isPending}
               />
@@ -310,14 +321,14 @@ export default function ContratsPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteTarget: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
         onConfirm={() => {
           if (deleteTarget?.type === 'contrat') deleteContrat.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'prestataire') deletePrestataire.mutate(deleteTarget.id)
-          setDeleteTarget(null)
+          patchUi({ deleteTarget: null })
         }}
       />
     </div>

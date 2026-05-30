@@ -3,7 +3,7 @@ import { mutationsApi } from '@/api/mutations'
 import type { Mutation } from '@/types'
 import { LOTS_QUERY_KEY } from './useLots'
 
-export const MUTATIONS_QUERY_KEY = ['mutations'] as const
+const MUTATIONS_QUERY_KEY = ['mutations'] as const
 
 export function useMutationsByLot(lotId: number | undefined) {
   return useQuery({

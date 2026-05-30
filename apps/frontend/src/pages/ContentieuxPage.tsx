@@ -65,12 +65,23 @@ export default function ContentieuxPage() {
     const param = searchParams.get('copropriete')
     if (param) setSelectedCoproprieteId(parseInt(param))
   }, [searchParams, setSelectedCoproprieteId])
-  const [activeTab, setActiveTab] = useState<Tab>('relances')
-  const [showRelanceDialog, setShowRelanceDialog] = useState(false)
-  const [showProcedureDialog, setShowProcedureDialog] = useState(false)
-  const [editingRelance, setEditingRelance] = useState<Relance | null>(null)
-  const [editingProcedure, setEditingProcedure] = useState<Procedure | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<{ type: 'relance' | 'procedure', id: number } | null>(null)
+  const [ui, setUi] = useState<{
+    activeTab: Tab
+    showRelanceDialog: boolean
+    showProcedureDialog: boolean
+    editingRelance: Relance | null
+    editingProcedure: Procedure | null
+    deleteTarget: { type: 'relance' | 'procedure', id: number } | null
+  }>({
+    activeTab: 'relances',
+    showRelanceDialog: false,
+    showProcedureDialog: false,
+    editingRelance: null,
+    editingProcedure: null,
+    deleteTarget: null,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { activeTab, showRelanceDialog, showProcedureDialog, editingRelance, editingProcedure, deleteTarget } = ui
 
   const { data: relances, isLoading: loadingRelances, isError: isErrorRelances, error: errorRelances } = useRelancesByCopropriete(selectedCoproId)
   const { data: procedures, isLoading: loadingProcedures, isError: isErrorProcedures, error: errorProcedures } = useProceduresByCopropriete(selectedCoproId)
@@ -97,7 +108,7 @@ export default function ContentieuxPage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <Scale className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <Scale className="size-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
           <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
@@ -110,7 +121,7 @@ export default function ContentieuxPage() {
               { key: 'procedures', label: 'Procedures', icon: Scale },
             ]}
             activeTab={activeTab}
-            onTabChange={(key) => setActiveTab(key as Tab)}
+            onTabChange={(key) => patchUi({ activeTab: key as Tab })}
           />
 
           {/* Relances tab */}
@@ -118,22 +129,22 @@ export default function ContentieuxPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Relances</h2>
-                <button
-                  onClick={() => setShowRelanceDialog(true)}
+                <button type="button"
+                  onClick={() => patchUi({ showRelanceDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouvelle relance
                 </button>
               </div>
 
               {loadingRelances ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !relances || relances.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <Mail className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <Mail className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune relance enregistree</p>
                 </div>
               ) : (
@@ -147,7 +158,7 @@ export default function ContentieuxPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Mode d'envoi</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -177,19 +188,19 @@ export default function ContentieuxPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
-                                onClick={() => { setEditingRelance(relance); setShowRelanceDialog(true) }}
+                              <button type="button"
+                                onClick={() => { patchUi({ editingRelance: relance }); patchUi({ showRelanceDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
-                              <button
-                                onClick={() => setDeleteTarget({ type: 'relance', id: relance.id })}
+                              <button type="button"
+                                onClick={() => patchUi({ deleteTarget: { type: 'relance', id: relance.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -202,7 +213,7 @@ export default function ContentieuxPage() {
 
               <RelanceFormDialog
                 open={showRelanceDialog}
-                onOpenChange={(open) => { setShowRelanceDialog(open); if (!open) setEditingRelance(null) }}
+                onOpenChange={(open) => { patchUi({ showRelanceDialog: open }); if (!open) patchUi({ editingRelance: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingRelance || undefined}
                 title={editingRelance ? 'Modifier la relance' : 'Nouvelle relance'}
@@ -212,8 +223,8 @@ export default function ContentieuxPage() {
                   } else {
                     await createRelance.mutateAsync(data)
                   }
-                  setShowRelanceDialog(false)
-                  setEditingRelance(null)
+                  patchUi({ showRelanceDialog: false })
+                  patchUi({ editingRelance: null })
                 }}
                 isLoading={editingRelance ? updateRelance.isPending : createRelance.isPending}
               />
@@ -225,22 +236,22 @@ export default function ContentieuxPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Procedures</h2>
-                <button
-                  onClick={() => setShowProcedureDialog(true)}
+                <button type="button"
+                  onClick={() => patchUi({ showProcedureDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouvelle procedure
                 </button>
               </div>
 
               {loadingProcedures ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !procedures || procedures.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <Scale className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <Scale className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune procedure enregistree</p>
                 </div>
               ) : (
@@ -253,7 +264,7 @@ export default function ContentieuxPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Tribunal</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant reclame</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -278,19 +289,19 @@ export default function ContentieuxPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
-                                onClick={() => { setEditingProcedure(procedure); setShowProcedureDialog(true) }}
+                              <button type="button"
+                                onClick={() => { patchUi({ editingProcedure: procedure }); patchUi({ showProcedureDialog: true }) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
-                              <button
-                                onClick={() => setDeleteTarget({ type: 'procedure', id: procedure.id })}
+                              <button type="button"
+                                onClick={() => patchUi({ deleteTarget: { type: 'procedure', id: procedure.id } })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -303,7 +314,7 @@ export default function ContentieuxPage() {
 
               <ProcedureFormDialog
                 open={showProcedureDialog}
-                onOpenChange={(open) => { setShowProcedureDialog(open); if (!open) setEditingProcedure(null) }}
+                onOpenChange={(open) => { patchUi({ showProcedureDialog: open }); if (!open) patchUi({ editingProcedure: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingProcedure || undefined}
                 title={editingProcedure ? 'Modifier la procedure' : 'Nouvelle procedure'}
@@ -313,8 +324,8 @@ export default function ContentieuxPage() {
                   } else {
                     await createProcedure.mutateAsync(data)
                   }
-                  setShowProcedureDialog(false)
-                  setEditingProcedure(null)
+                  patchUi({ showProcedureDialog: false })
+                  patchUi({ editingProcedure: null })
                 }}
                 isLoading={editingProcedure ? updateProcedure.isPending : createProcedure.isPending}
               />
@@ -325,14 +336,14 @@ export default function ContentieuxPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        onOpenChange={(o) => !o && patchUi({ deleteTarget: null })}
         title="Confirmer la suppression"
         description="Cette action est irréversible."
         variant="destructive"
         onConfirm={() => {
           if (deleteTarget?.type === 'relance') deleteRelance.mutate(deleteTarget.id)
           else if (deleteTarget?.type === 'procedure') deleteProcedure.mutate(deleteTarget.id)
-          setDeleteTarget(null)
+          patchUi({ deleteTarget: null })
         }}
       />
     </div>

@@ -2,7 +2,6 @@ import { api } from './api'
 import type {
   ApiResponse,
   TacheAnnuelle,
-  TacheDefinition,
   CycleAnnuelSummary,
 } from '@/types'
 
@@ -58,12 +57,6 @@ export function updateTache(
   return api.put<ApiResponse<TacheAnnuelle>>(
     `/cycle-annuel/${id}`,
     data
-  )
-}
-
-export function getDefinitions() {
-  return api.get<ApiResponse<TacheDefinition[]>>(
-    '/cycle-annuel/definitions'
   )
 }
 

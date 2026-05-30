@@ -1,166 +1,19 @@
 import { type ReactNode, useMemo, useState, useCallback } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Collapsible } from 'radix-ui'
+import { useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useCoproprietes } from '@/hooks/useCoproprietes'
-import { cn } from '@/lib/utils'
-import { NotificationBell } from './NotificationBell'
-import { GlobalSearch } from './GlobalSearch'
 import { NavigationTour } from './NavigationTour'
 import { KoeSupportWidget } from './KoeSupportWidget'
+import { Sidebar } from './Sidebar'
+import { TopBar } from './TopBar'
+import {
+  isItemActive,
+  navigationSections,
+  coproprietaireNavigationSections,
+} from './navigation'
 import { canAccessRoute, isCoproprietaire } from '@/utils/roleAccess'
 import { useEventStream } from '@/hooks/useEventStream'
-import {
-  Building2,
-  LayoutDashboard,
-  UserCircle,
-  Users,
-  Receipt,
-  Calendar,
-  Wrench,
-  FolderOpen,
-  FileText,
-  Landmark,
-  UsersRound,
-  Handshake,
-  Shield,
-  Scale,
-  Calculator,
-  HardHat,
-  BookOpen,
-  ClipboardList,
-  Stamp,
-  FileDown,
-  LogOut,
-  Menu,
-  X,
-  Moon,
-  Sun,
-  ChevronDown,
-  ChevronRight,
-  ChevronsUpDown,
-  CircleHelp,
-  CreditCard,
-  PiggyBank,
-  MessageSquare,
-  LifeBuoy,
-  type LucideIcon,
-} from 'lucide-react'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-
-interface NavItem {
-  name: string
-  href: string
-  icon: LucideIcon
-}
-
-interface NavSection {
-  key: string
-  label: string
-  collapsible: boolean
-  items: NavItem[]
-}
-
-const navigationSections: NavSection[] = [
-  {
-    key: 'overview',
-    label: 'Vue d\'ensemble',
-    collapsible: false,
-    items: [
-      { name: 'Tableau de bord', href: '/dashboard', icon: LayoutDashboard },
-      { name: 'Espace copropriétaire', href: '/extranet', icon: UserCircle },
-      { name: 'Copropriétés', href: '/coproprietes', icon: Building2 },
-      { name: 'Copropriétaires', href: '/coproprietaires', icon: Users },
-    ],
-  },
-  {
-    key: 'gestion',
-    label: 'Gestion',
-    collapsible: true,
-    items: [
-      { name: 'Charges', href: '/charges', icon: Receipt },
-      { name: 'Assemblées', href: '/assemblees', icon: Calendar },
-      { name: 'Conseil syndical', href: '/conseil-syndical', icon: UsersRound },
-      { name: 'Messagerie', href: '/tickets', icon: MessageSquare },
-      { name: 'Fiche synthétique', href: '/fiche-synthetique', icon: FileText },
-    ],
-  },
-  {
-    key: 'technique',
-    label: 'Technique',
-    collapsible: true,
-    items: [
-      { name: 'Travaux', href: '/travaux', icon: Wrench },
-      { name: 'Contrats', href: '/contrats', icon: Handshake },
-      { name: 'Employés', href: '/employes', icon: HardHat },
-    ],
-  },
-  {
-    key: 'finances',
-    label: 'Finances',
-    collapsible: true,
-    items: [
-      { name: 'Comptabilite', href: '/comptabilite-reglementaire', icon: Calculator },
-      { name: 'Comptes bancaires', href: '/comptes-bancaires', icon: Landmark },
-      { name: 'Assurances', href: '/assurances', icon: Shield },
-      { name: 'Contentieux', href: '/contentieux', icon: Scale },
-    ],
-  },
-  {
-    key: 'administration',
-    label: 'Administration',
-    collapsible: true,
-    items: [
-      { name: 'Documents', href: '/documents', icon: FolderOpen },
-      { name: 'Règlement', href: '/reglements', icon: BookOpen },
-      { name: 'Immatriculation', href: '/immatriculation', icon: ClipboardList },
-      { name: 'Contrat syndic', href: '/contrats-syndic', icon: Stamp },
-      { name: 'Gestion utilisateurs', href: '/gestion-utilisateurs', icon: Users },
-      { name: 'Exports', href: '/exports', icon: FileDown },
-    ],
-  },
-]
-
-const coproprietaireNavigationSections: NavSection[] = [
-  {
-    key: 'mon-espace',
-    label: 'Mon espace',
-    collapsible: false,
-    items: [
-      { name: 'Tableau de bord', href: '/extranet', icon: LayoutDashboard },
-    ],
-  },
-  {
-    key: 'finances',
-    label: 'Finances',
-    collapsible: true,
-    items: [
-      { name: 'Mon compte', href: '/extranet/compte', icon: CreditCard },
-      { name: 'Mes charges', href: '/extranet/charges', icon: Receipt },
-      { name: 'Appels de fonds', href: '/extranet/appels-fonds', icon: ClipboardList },
-      { name: 'Fonds travaux', href: '/extranet/fonds-travaux', icon: PiggyBank },
-    ],
-  },
-  {
-    key: 'copropriete',
-    label: 'Copropriété',
-    collapsible: true,
-    items: [
-      { name: 'Documents', href: '/extranet/documents', icon: FolderOpen },
-      { name: 'Conseil syndical', href: '/extranet/conseil-syndical', icon: UsersRound },
-    ],
-  },
-]
 
 const SIDEBAR_STORAGE_KEY = 'sidebar-sections'
 
@@ -170,17 +23,20 @@ interface MainLayoutProps {
 
 export function MainLayout({ children }: MainLayoutProps) {
   const location = useLocation()
-  const navigate = useNavigate()
   const { user, logout } = useAuthStore()
   const { selectedCoproprieteId, setSelectedCoproprieteId } = useCoproprieteStore()
   const { data: coproprietes } = useCoproprietes()
 
   useEventStream()
 
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [tourRunning, setTourRunning] = useState(false)
+  const [ui, setUi] = useState<{ sidebarOpen: boolean; tourRunning: boolean }>({
+    sidebarOpen: false,
+    tourRunning: false,
+  })
+  const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
+  const { sidebarOpen, tourRunning } = ui
   const [koeOpenSignal, setKoeOpenSignal] = useState(0)
-  const [isDark, setIsDark] = useState(
+  const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains('dark')
   )
 
@@ -207,27 +63,20 @@ export function MainLayout({ children }: MainLayoutProps) {
     const baseSections = isCoproprietaire(role)
       ? coproprietaireNavigationSections
       : navigationSections
-    return baseSections
-      .map(section => ({
-        ...section,
-        items: section.items.filter(item =>
-          canAccessRoute(role, item.href)
-        ),
-      }))
-      .filter(section => section.items.length > 0)
+    return baseSections.flatMap(section => {
+      const items = section.items.filter(item =>
+        canAccessRoute(role, item.href)
+      )
+      return items.length > 0 ? [{ ...section, items }] : []
+    })
   }, [user?.role])
-
-  const isItemActive = (href: string) =>
-    href === '/' || href === '/extranet'
-      ? pathname === href
-      : pathname.startsWith(href)
 
   // Auto-expand section containing active route
   const effectiveSectionState = { ...sectionState }
   for (const section of filteredSections) {
     if (
       section.collapsible &&
-      section.items.some(item => isItemActive(item.href))
+      section.items.some(item => isItemActive(pathname, item.href))
     ) {
       effectiveSectionState[section.key] = true
     }
@@ -246,264 +95,55 @@ export function MainLayout({ children }: MainLayoutProps) {
   }
 
   const startTour = useCallback(() => {
-    setSidebarOpen(false)
-    setTourRunning(true)
+    patchUi({ sidebarOpen: false })
+    patchUi({ tourRunning: true })
   }, [])
 
   const onTourFinish = useCallback(() => {
-    setTourRunning(false)
+    patchUi({ tourRunning: false })
   }, [])
 
-  const renderNavItem = (item: NavItem) => {
-    const active = isItemActive(item.href)
-    return (
-      <Link
-        key={item.name}
-        to={item.href}
-        onClick={() => setSidebarOpen(false)}
-        className={cn(
-          'flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
-          active
-            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-            : 'text-stone-600 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-700'
-        )}
-      >
-        <item.icon className="h-4 w-4" />
-        {item.name}
-      </Link>
-    )
-  }
-
-  const renderSection = (section: NavSection) => {
-    if (!section.collapsible) {
-      return (
-        <div key={section.key} className="space-y-0.5">
-          <div className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-stone-400 dark:text-stone-500">
-            {section.label}
-          </div>
-          {section.items.map(renderNavItem)}
-        </div>
-      )
-    }
-
-    const isOpen = effectiveSectionState[section.key] ?? true
-
-    return (
-      <Collapsible.Root
-        key={section.key}
-        open={isOpen}
-        onOpenChange={() => toggleSection(section.key)}
-        data-tour={`section-${section.key}`}
-      >
-        <Collapsible.Trigger className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-stone-400 transition-colors hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300">
-          {section.label}
-          <ChevronRight
-            className={cn(
-              'h-3.5 w-3.5 transition-transform duration-200',
-              isOpen && 'rotate-90'
-            )}
-          />
-        </Collapsible.Trigger>
-        <Collapsible.Content
-          className="overflow-hidden data-[state=closed]:animate-[collapsible-up_150ms_ease-out] data-[state=open]:animate-[collapsible-down_150ms_ease-out]"
-        >
-          <div className="space-y-0.5 pt-0.5">
-            {section.items.map(renderNavItem)}
-          </div>
-        </Collapsible.Content>
-      </Collapsible.Root>
-    )
-  }
+  const closeSidebar = () => patchUi({ sidebarOpen: false })
 
   return (
     <div className="flex h-screen bg-[#FAF8F5] dark:bg-stone-950">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div
+        <button
+          type="button"
+          aria-label="Fermer le menu"
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
+          onClick={() => patchUi({ sidebarOpen: false })}
         />
       )}
 
       {/* Sidebar */}
-      <aside
-        data-tour="sidebar"
-        className={cn(
-          'fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white shadow-lg transition-transform dark:bg-stone-900 lg:static lg:translate-x-0',
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        )}
-      >
-        {/* Logo */}
-        <div className="flex h-16 items-center gap-3 border-b border-stone-200 px-6 dark:border-stone-700">
-          <img src="/logo.svg" alt="CoproPilot" className="h-8 w-8 rounded-lg" />
-          <span className="text-lg font-bold text-stone-900 dark:text-white">CoproPilot</span>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="ml-auto lg:hidden"
-            aria-label="Fermer le menu"
-          >
-            <X className="h-5 w-5 text-stone-500" />
-          </button>
-        </div>
-
-        {/* Vue d'ensemble */}
-        <div data-tour="section-overview" className="border-b border-stone-200 px-4 pt-4 pb-3 dark:border-stone-700">
-          {renderSection(filteredSections[0])}
-        </div>
-
-
-        {/* Navigation */}
-        <nav className="flex-1 space-y-4 overflow-y-auto p-4">
-          {filteredSections.slice(1).map(renderSection)}
-        </nav>
-
-        {/* User menu */}
-        <div data-tour="user-profile" className="border-t border-stone-200 p-2 dark:border-stone-700">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex w-full items-center gap-2 rounded-lg p-2 text-left transition-colors hover:bg-stone-100 data-[state=open]:bg-stone-100 dark:hover:bg-stone-800 dark:data-[state=open]:bg-stone-800">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarFallback className="rounded-lg">
-                    {(user?.firstname?.[0] ?? '').toUpperCase()}
-                    {(user?.lastname?.[0] ?? '').toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium text-stone-900 dark:text-white">
-                    {user?.firstname} {user?.lastname}
-                  </span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    {user?.email}
-                  </span>
-                </div>
-                <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              side="right"
-              align="end"
-              className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-              sideOffset={4}
-            >
-              <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarFallback className="rounded-lg">
-                      {(user?.firstname?.[0] ?? '').toUpperCase()}
-                      {(user?.lastname?.[0] ?? '').toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">
-                      {user?.firstname} {user?.lastname}
-                    </span>
-                    <span className="truncate text-xs text-muted-foreground">
-                      {user?.email}
-                    </span>
-                  </div>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem
-                  onClick={() => {
-                    navigate(isCoproprietaire(user?.role) ? '/extranet/profil' : '/profil')
-                    setSidebarOpen(false)
-                  }}
-                >
-                  <UserCircle />
-                  Mon profil
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    navigate('/donnees-personnelles')
-                    setSidebarOpen(false)
-                  }}
-                >
-                  <Shield className="h-4 w-4" />
-                  Mes données personnelles
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={toggleTheme}>
-                  {isDark ? <Sun /> : <Moon />}
-                  {isDark ? 'Mode clair' : 'Mode sombre'}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={startTour}>
-                  <CircleHelp />
-                  Aide
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setKoeOpenSignal(s => s + 1)
-                    setSidebarOpen(false)
-                  }}
-                >
-                  <LifeBuoy />
-                  Support & retours
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={logout}
-              >
-                <LogOut />
-                Déconnexion
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <div className="px-2 py-1.5 text-center text-[10px] text-muted-foreground">
-                v{__APP_VERSION__} · {new Date(__BUILD_DATE__).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })}
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </aside>
+      <Sidebar
+        sidebarOpen={sidebarOpen}
+        filteredSections={filteredSections}
+        pathname={pathname}
+        effectiveSectionState={effectiveSectionState}
+        user={user}
+        isDark={isDark}
+        onCloseSidebar={closeSidebar}
+        onToggleSection={toggleSection}
+        onToggleTheme={toggleTheme}
+        onStartTour={startTour}
+        onOpenKoe={() => setKoeOpenSignal(s => s + 1)}
+        onLogout={logout}
+      />
 
       {/* Main content */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top bar */}
-        <header className="flex h-16 items-center gap-3 border-b border-stone-200 bg-white px-4 dark:border-stone-700 dark:bg-stone-900">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800 lg:hidden"
-            aria-label="Ouvrir le menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-          {!isCoproprietaire(user?.role) && (
-            <div data-tour="copropriete-selector" className="relative shrink-0">
-              <Building2 className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400 dark:text-stone-500" />
-              <select
-                value={selectedCoproprieteId ?? ''}
-                onChange={(e) => {
-                  const value = e.target.value
-                  if (value) {
-                    const id = parseInt(value)
-                    setSelectedCoproprieteId(id)
-                    const detailMatch = pathname.match(/^\/coproprietes\/\d+/)
-                    if (detailMatch) {
-                      navigate(`/coproprietes/${id}`)
-                    }
-                  } else {
-                    setSelectedCoproprieteId(undefined)
-                  }
-                }}
-                className="appearance-none rounded-lg border border-stone-200 bg-stone-50 py-2 pl-8 pr-8 text-sm font-medium text-stone-900 transition-colors hover:bg-stone-100 focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 focus:outline-none dark:border-stone-600 dark:bg-stone-800 dark:text-white dark:hover:bg-stone-700 dark:focus:bg-stone-800 dark:focus:border-emerald-500"
-              >
-                <option value="" className="dark:bg-stone-800 dark:text-white">Toutes les copropriétés</option>
-                {coproprietes?.map((c) => (
-                  <option key={c.id} value={c.id} className="dark:bg-stone-800 dark:text-white">{c.nom}</option>
-                ))}
-              </select>
-              <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400 dark:text-stone-500" />
-            </div>
-          )}
-          <div data-tour="global-search" className="min-w-0 flex-1">
-            <GlobalSearch />
-          </div>
-          <div data-tour="notifications" className="shrink-0">
-            <NotificationBell />
-          </div>
-        </header>
+        <TopBar
+          pathname={pathname}
+          userRole={user?.role}
+          selectedCoproprieteId={selectedCoproprieteId}
+          coproprietes={coproprietes}
+          onOpenSidebar={() => patchUi({ sidebarOpen: true })}
+          onSelectCopropriete={setSelectedCoproprieteId}
+        />
 
         {/* Page content */}
         <main className="flex-1 overflow-y-auto p-6">

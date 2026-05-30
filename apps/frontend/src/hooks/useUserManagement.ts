@@ -23,7 +23,9 @@ export function useResetUserPassword() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useSetUserPassword() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- password reset does not change any cached query
   return useMutation({
     mutationFn: ({
       userId,
@@ -71,7 +73,9 @@ export function useBulkCreateUsers() {
   })
 }
 
+// react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export function useSetInitialPassword() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- password change does not change any cached query
   return useMutation({
     mutationFn: (newPassword: string) =>
       userManagementApi.setInitialPassword(newPassword),

@@ -32,7 +32,7 @@ export default function CoproprietairesPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+        <div className="size-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
       </div>
     )
   }
@@ -47,11 +47,11 @@ export default function CoproprietairesPage() {
             {coproprietaires?.length || 0} copropriétaire{(coproprietaires?.length || 0) > 1 ? 's' : ''} enregistré{(coproprietaires?.length || 0) > 1 ? 's' : ''}
           </p>
         </div>
-        <button
+        <button type="button"
           onClick={() => setShowCreate(true)}
           className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="size-4" />
           Nouveau copropriétaire
         </button>
       </div>
@@ -59,6 +59,7 @@ export default function CoproprietairesPage() {
       {/* Search */}
       <div>
         <input
+          aria-label="Rechercher un copropriétaire"
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -70,16 +71,16 @@ export default function CoproprietairesPage() {
       {/* List */}
       {(!filtered || filtered.length === 0) ? (
         <div className="flex flex-col items-center py-16">
-          <Users className="h-12 w-12 text-stone-300 dark:text-stone-600" />
+          <Users className="size-12 text-stone-300 dark:text-stone-600" />
           <p className="mt-4 text-lg text-stone-500 dark:text-stone-400">
             {search ? 'Aucun résultat' : 'Aucun copropriétaire enregistré'}
           </p>
           {!search && (
-            <button
+            <button type="button"
               onClick={() => setShowCreate(true)}
               className="mt-4 flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm text-white hover:bg-emerald-800"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Ajouter un copropriétaire
             </button>
           )}
@@ -93,7 +94,7 @@ export default function CoproprietairesPage() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                  <div className="flex size-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
                     <span className="text-sm font-bold">
                       {copro.prenom[0]}{copro.nom[0]}
                     </span>
@@ -105,21 +106,21 @@ export default function CoproprietairesPage() {
                   </div>
                 </div>
                 <div className="flex gap-1">
-                  <button
+                  <button type="button"
                     onClick={() => setEditingCopro(copro)}
                     className="rounded p-1 text-stone-400 hover:text-emerald-700"
                     title="Modifier"
                     aria-label="Modifier"
                   >
-                    <Pencil className="h-4 w-4" />
+                    <Pencil className="size-4" />
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => handleDelete(copro.id)}
                     className="rounded p-1 text-stone-400 hover:text-red-600"
                     title="Supprimer"
                     aria-label="Supprimer"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="size-4" />
                   </button>
                 </div>
               </div>
@@ -127,13 +128,13 @@ export default function CoproprietairesPage() {
               <div className="mt-3 space-y-1">
                 {copro.email && (
                   <div className="flex items-center gap-2 text-sm text-stone-500 dark:text-stone-400">
-                    <Mail className="h-3.5 w-3.5" />
+                    <Mail className="size-3.5" />
                     <span className="truncate">{copro.email}</span>
                   </div>
                 )}
                 {copro.telephone && (
                   <div className="flex items-center gap-2 text-sm text-stone-500 dark:text-stone-400">
-                    <Phone className="h-3.5 w-3.5" />
+                    <Phone className="size-3.5" />
                     <span>{copro.telephone}</span>
                   </div>
                 )}

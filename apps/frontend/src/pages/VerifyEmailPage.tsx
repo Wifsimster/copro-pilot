@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useReducer, useEffect } from 'react'
 import {
   Building2,
   ArrowLeft,
@@ -15,11 +15,32 @@ const PLAN_LABELS: Record<string, string> = {
   entreprise: 'Entreprise',
 }
 
+interface VerifyState {
+  status: 'loading' | 'success' | 'error'
+  error: string
+}
+
+type VerifyAction =
+  | { type: 'success' }
+  | { type: 'error'; error: string }
+
+function verifyReducer(_state: VerifyState, action: VerifyAction): VerifyState {
+  switch (action.type) {
+    case 'success':
+      return { status: 'success', error: '' }
+    case 'error':
+      return { status: 'error', error: action.error }
+    default:
+      return _state
+  }
+}
+
 export default function VerifyEmailPage() {
-  const [status, setStatus] = useState<
-    'loading' | 'success' | 'error'
-  >('loading')
-  const [error, setError] = useState('')
+  const [state, dispatch] = useReducer(verifyReducer, {
+    status: 'loading',
+    error: '',
+  })
+  const { status, error } = state
 
   const pendingPlan = sessionStorage.getItem('pending_plan') || ''
   const hasPendingPlan = pendingPlan in PLAN_LABELS
@@ -29,8 +50,10 @@ export default function VerifyEmailPage() {
 
   useEffect(() => {
     if (!token) {
-      setStatus('error')
-      setError('Lien de vérification invalide ou manquant')
+      dispatch({
+        type: 'error',
+        error: 'Lien de vérification invalide ou manquant',
+      })
       return
     }
 
@@ -38,20 +61,20 @@ export default function VerifyEmailPage() {
       .verifyEmail({ query: { token } })
       .then(result => {
         if (result.error) {
-          setStatus('error')
-          setError(
-            result.error.message ||
-              'La vérification a échoué'
-          )
+          dispatch({
+            type: 'error',
+            error: result.error.message || 'La vérification a échoué',
+          })
         } else {
-          setStatus('success')
+          dispatch({ type: 'success' })
         }
       })
       .catch(() => {
-        setStatus('error')
-        setError(
-          'Erreur lors de la vérification. Le lien est peut-être expiré.'
-        )
+        dispatch({
+          type: 'error',
+          error:
+            'Erreur lors de la vérification. Le lien est peut-être expiré.',
+        })
       })
   }, [token])
 
@@ -73,7 +96,7 @@ export default function VerifyEmailPage() {
               <>
                 <Loader2 className="size-10 animate-spin text-primary" />
                 <p className="text-sm text-muted-foreground">
-                  Vérification de votre adresse email...
+                  Vérification de votre adresse email…
                 </p>
               </>
             )}

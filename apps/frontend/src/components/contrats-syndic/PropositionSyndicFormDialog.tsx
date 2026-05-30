@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import {  } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -56,7 +56,7 @@ export function PropositionSyndicFormDialog({
 }: PropositionSyndicFormDialogProps) {
   const form = useForm<PropositionSyndicFormData>({
     resolver: zodResolver(propositionSyndicSchema),
-    defaultValues: {
+    values: {
       syndic_nom: defaultValues?.syndic_nom || '',
       date_reception: defaultValues?.date_reception || new Date().toISOString().slice(0, 10),
       montant_propose: defaultValues?.montant_propose || 0,
@@ -67,20 +67,7 @@ export function PropositionSyndicFormDialog({
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        syndic_nom: defaultValues?.syndic_nom || '',
-        date_reception: defaultValues?.date_reception || new Date().toISOString().slice(0, 10),
-        montant_propose: defaultValues?.montant_propose || 0,
-        prestations_proposees: defaultValues?.prestations_proposees || '',
-        document_url: defaultValues?.document_url || '',
-        retenue: defaultValues?.retenue ? 'oui' : 'non',
-        notes: defaultValues?.notes || '',
-      })
-    }
-  }, [open, defaultValues, form])
-
+  
   const handleFormSubmit = async (data: PropositionSyndicFormData) => {
     await onSubmit({
       ...data,

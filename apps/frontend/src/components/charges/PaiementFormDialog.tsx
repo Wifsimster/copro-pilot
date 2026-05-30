@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -51,38 +51,41 @@ export function PaiementFormDialog({
   coproprietaires, appelsFonds,
   onSubmit, isLoading, defaultValues, title = 'Nouveau paiement',
 }: Props) {
-  const [selectedCoproId, setSelectedCoproId] = useState<number>(0)
-  const [selectedAppelId, setSelectedAppelId] = useState<number | null>(null)
+  const [selectedCoproId, setSelectedCoproId] = useState<number>(
+    defaultValues?.coproprietaire_id || coproprietaireId || 0
+  )
+  const [selectedAppelId, setSelectedAppelId] = useState<number | null>(
+    defaultValues?.appel_fonds_id || appelFondsId || null
+  )
   const [coproError, setCoproError] = useState('')
 
   const showCoproSelect = !coproprietaireId && !!coproprietaires
   const showAppelSelect = !appelFondsId && !!appelsFonds
 
+  // Sync the form to the incoming props without an effect: react-hook-form
+  // resets the fields automatically whenever `values` changes (deep compare).
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
+    values: {
       montant: defaultValues?.montant || 0,
-      date_paiement: defaultValues?.date_paiement || new Date().toISOString().split('T')[0],
+      date_paiement:
+        defaultValues?.date_paiement || new Date().toISOString().split('T')[0],
       mode: (defaultValues?.mode as FormData['mode']) || 'virement',
       reference: defaultValues?.reference || '',
       notes: defaultValues?.notes || '',
     },
   })
 
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        montant: defaultValues?.montant || 0,
-        date_paiement: defaultValues?.date_paiement || new Date().toISOString().split('T')[0],
-        mode: (defaultValues?.mode as FormData['mode']) || 'virement',
-        reference: defaultValues?.reference || '',
-        notes: defaultValues?.notes || '',
-      })
+  // Selection state is local UI state; reset it when the dialog closes so the
+  // next opening starts from the props again (event handler, not an effect).
+  const handleOpenChange = (next: boolean) => {
+    if (!next) {
       setSelectedCoproId(defaultValues?.coproprietaire_id || coproprietaireId || 0)
       setSelectedAppelId(defaultValues?.appel_fonds_id || appelFondsId || null)
       setCoproError('')
     }
-  }, [open, defaultValues, coproprietaireId, appelFondsId, form.reset])
+    onOpenChange(next)
+  }
 
   const onFormSubmit = async (data: FormData) => {
     const finalCoproId = coproprietaireId || selectedCoproId
@@ -104,7 +107,7 @@ export function PaiementFormDialog({
   return (
     <FormDialog
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={handleOpenChange}
       title={title}
       description="Enregistrez un paiement. Les champs marques d'un * sont obligatoires."
       form={form}
@@ -116,12 +119,12 @@ export function PaiementFormDialog({
         <FormSection icon={Users} label="Attribution">
           {showCoproSelect && (
             <div className="grid gap-2">
-              <label className="text-sm font-medium">Coproprietaire *</label>
+              <span className="text-sm font-medium">Coproprietaire *</span>
               <Select
                 value={selectedCoproId ? String(selectedCoproId) : ''}
                 onValueChange={(val) => { setSelectedCoproId(parseInt(val)); setCoproError('') }}
               >
-                <SelectTrigger>
+                <SelectTrigger aria-label="Coproprietaire">
                   <SelectValue placeholder="Selectionner un coproprietaire..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -140,19 +143,19 @@ export function PaiementFormDialog({
 
           {showAppelSelect && (
             <div className="grid gap-2">
-              <label className="text-sm font-medium">Appel de fonds</label>
+              <span className="text-sm font-medium">Appel de fonds</span>
               <Select
                 value={selectedAppelId ? String(selectedAppelId) : 'none'}
                 onValueChange={(val) => setSelectedAppelId(val === 'none' ? null : parseInt(val))}
               >
-                <SelectTrigger>
+                <SelectTrigger aria-label="Appel de fonds">
                   <SelectValue placeholder="Aucun (paiement libre)" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="none">Aucun (paiement libre)</SelectItem>
                   {appelsFonds!.map((a) => (
                     <SelectItem key={a.id} value={String(a.id)}>
-                      T{a.trimestre} {a.annee} — {Number(a.montant_total).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
+                      T{a.trimestre} {a.annee} - {Number(a.montant_total).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -248,7 +248,7 @@ export default function VsTraditionnelsPage() {
           <p className="text-center text-sm text-stone-500 dark:text-stone-400 mb-10 max-w-2xl mx-auto">
             Les colonnes « logiciels traditionnels » et « Excel / papier »
             reflètent ce qu’on retrouve typiquement sur le marché français
-            en 2026. Tous les éditeurs ne se valent pas — vérifiez avec
+            en 2026. Tous les éditeurs ne se valent pas - vérifiez avec
             votre outil actuel.
           </p>
 
@@ -259,13 +259,13 @@ export default function VsTraditionnelsPage() {
                   <th className="py-4 pl-6 pr-4 text-left text-sm font-medium text-stone-400 dark:text-stone-500 w-2/5">
                     Fonctionnalité
                   </th>
-                  <th className="py-4 px-4 text-center">
+                  <th className="p-4 text-center">
                     <span className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-700 dark:text-emerald-400">
                       <span className="size-2 rounded-full bg-emerald-500" />
                       CoproPilot
                     </span>
                   </th>
-                  <th className="py-4 px-4 text-center text-sm font-medium text-stone-400 dark:text-stone-500">
+                  <th className="p-4 text-center text-sm font-medium text-stone-400 dark:text-stone-500">
                     Logiciels traditionnels
                   </th>
                   <th className="py-4 pr-6 pl-4 text-center text-sm font-medium text-stone-400 dark:text-stone-500">

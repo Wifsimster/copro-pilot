@@ -109,6 +109,7 @@ export function useDeletePresence() {
 }
 
 export function useGenererPv() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- PDF download, no server cache to invalidate
   return useMutation({
     mutationFn: async (agId: number) => {
       const blob = await assembleesApi.genererPv(agId)

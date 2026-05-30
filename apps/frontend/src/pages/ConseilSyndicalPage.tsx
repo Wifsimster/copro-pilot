@@ -21,6 +21,11 @@ const ROLE_COLORS: Record<string, string> = {
   suppleant: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
 }
 
+const isMandatExpired = (dateStr: string | null | undefined) => {
+  if (!dateStr) return false
+  return new Date(dateStr).getTime() < Date.now()
+}
+
 export default function ConseilSyndicalPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
 
@@ -35,11 +40,6 @@ export default function ConseilSyndicalPage() {
   const createMembre = useCreateMembreConseil()
   const updateMembre = useUpdateMembreConseil()
   const deleteMembre = useDeleteMembreConseil()
-
-  const isMandatExpired = (dateStr: string | null | undefined) => {
-    if (!dateStr) return false
-    return new Date(dateStr).getTime() < Date.now()
-  }
 
   return (
     <div className="space-y-6">
@@ -56,22 +56,22 @@ export default function ConseilSyndicalPage() {
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Membres du conseil syndical</h2>
-            <button
+            <button type="button"
               onClick={() => setShowDialog(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Nouveau membre
             </button>
           </div>
 
           {loadingMembres ? (
             <div className="flex justify-center py-8">
-              <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+              <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
             </div>
           ) : !membres || membres.length === 0 ? (
             <div className="flex flex-col items-center py-12">
-              <UsersRound className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <UsersRound className="size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun membre enregistre</p>
             </div>
           ) : (
@@ -84,7 +84,7 @@ export default function ConseilSyndicalPage() {
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date d'election</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Fin de mandat</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Notes</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -93,7 +93,7 @@ export default function ConseilSyndicalPage() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           {membre.role === 'president' && (
-                            <Crown className="h-4 w-4 text-emerald-600" />
+                            <Crown className="size-4 text-emerald-600" />
                           )}
                           <div>
                             <div className="font-medium text-stone-900 dark:text-white">
@@ -127,19 +127,19 @@ export default function ConseilSyndicalPage() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex gap-1">
-                          <button
+                          <button type="button"
                             onClick={() => { setEditingMembre(membre); setShowDialog(true) }}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="size-4" />
                           </button>
-                          <button
+                          <button type="button"
                             onClick={() => setDeleteId(membre.id)}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="size-4" />
                           </button>
                         </div>
                       </td>
