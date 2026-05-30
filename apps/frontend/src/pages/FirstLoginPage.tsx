@@ -1,23 +1,11 @@
 import { useState } from 'react'
-import {
-  Building2,
-  ArrowLeft,
-  Loader2,
-  Mail,
-  KeyRound,
-  Lock,
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Building2, ArrowLeft } from 'lucide-react'
 import { authClient } from '@/lib/auth-client'
-import { OTPInput } from '@/components/auth/OTPInput'
-import {
-  PasswordInput,
-  PasswordStrength,
-} from '@/components/auth/PasswordInput'
 import { validatePassword } from '@/utils/passwordValidation'
 import { userManagementApi } from '@/api/userManagement'
+import { FirstLoginEmailStep } from '@/components/auth/FirstLoginEmailStep'
+import { FirstLoginOtpStep } from '@/components/auth/FirstLoginOtpStep'
+import { FirstLoginPasswordStep } from '@/components/auth/FirstLoginPasswordStep'
 
 type Step = 'email' | 'otp' | 'password'
 
@@ -122,6 +110,14 @@ export default function FirstLoginPage() {
     }
   }
 
+  const handleResendOTP = () => {
+    patchUi({ otp: '' })
+    patchUi({ error: '' })
+    handleSendOTP(
+      new Event('submit') as unknown as React.FormEvent
+    )
+  }
+
   const stepIndicator = (
     <div className="flex items-center justify-center gap-2 mb-6">
       {(['email', 'otp', 'password'] as Step[]).map(
@@ -182,192 +178,40 @@ export default function FirstLoginPage() {
 
           {/* Step 1: Email */}
           {step === 'email' && (
-            <form
+            <FirstLoginEmailStep
+              email={email}
+              error={error}
+              isLoading={isLoading}
+              onEmailChange={value => patchUi({ email: value })}
               onSubmit={handleSendOTP}
-              className="space-y-4"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <Mail className="size-5 text-primary" />
-                <h2 className="text-lg font-semibold">
-                  Votre adresse email
-                </h2>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Saisissez l&apos;adresse email communiquée par
-                votre syndic. Un code de vérification vous sera
-                envoyé.
-              </p>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Adresse email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={e => patchUi({ email: e.target.value })}
-                  placeholder="vous@exemple.com"
-                  required
-                  autoComplete="email"
-                  autoFocus
-                />
-              </div>
-
-              {error && (
-                <p className="text-sm text-destructive">
-                  {error}
-                </p>
-              )}
-
-              <Button
-                type="submit"
-                className="w-full h-10"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin" />
-                    Envoi…
-                  </>
-                ) : (
-                  'Envoyer le code'
-                )}
-              </Button>
-            </form>
+            />
           )}
 
           {/* Step 2: OTP */}
           {step === 'otp' && (
-            <form
+            <FirstLoginOtpStep
+              email={email}
+              otp={otp}
+              error={error}
+              isLoading={isLoading}
+              onOtpChange={value => patchUi({ otp: value })}
               onSubmit={handleVerifyOTP}
-              className="space-y-4"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <KeyRound className="size-5 text-primary" />
-                <h2 className="text-lg font-semibold">
-                  Code de vérification
-                </h2>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Un code à 6 chiffres a été envoyé à{' '}
-                <strong>{email}</strong>. Il est valable 15
-                minutes.
-              </p>
-
-              <OTPInput
-                value={otp}
-                onChange={v => patchUi({ otp: v })}
-                disabled={isLoading}
-              />
-
-              {error && (
-                <p className="text-sm text-destructive text-center">
-                  {error}
-                </p>
-              )}
-
-              <Button
-                type="submit"
-                className="w-full h-10"
-                disabled={isLoading || otp.length < 6}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin" />
-                    Vérification…
-                  </>
-                ) : (
-                  'Vérifier'
-                )}
-              </Button>
-
-              <button
-                type="button"
-                className="w-full text-sm text-primary hover:underline"
-                onClick={() => {
-                  patchUi({ otp: '' })
-                  patchUi({ error: '' })
-                  handleSendOTP(
-                    new Event('submit') as unknown as React.FormEvent
-                  )
-                }}
-                disabled={isLoading}
-              >
-                Renvoyer le code
-              </button>
-            </form>
+              onResend={handleResendOTP}
+            />
           )}
 
           {/* Step 3: Set Password */}
           {step === 'password' && (
-            <form
+            <FirstLoginPasswordStep
+              email={email}
+              password={password}
+              confirm={confirm}
+              error={error}
+              isLoading={isLoading}
+              onPasswordChange={value => patchUi({ password: value })}
+              onConfirmChange={value => patchUi({ confirm: value })}
               onSubmit={handleSetPassword}
-              className="space-y-4"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <Lock className="size-5 text-primary" />
-                <h2 className="text-lg font-semibold">
-                  Définir votre mot de passe
-                </h2>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Choisissez un mot de passe sécurisé d&apos;au
-                moins 12 caractères pour accéder à votre
-                espace.
-              </p>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Mot de passe</Label>
-                <PasswordInput
-                  id="password"
-                  value={password}
-                  onChange={e => patchUi({ password: e.target.value })}
-                  minLength={12}
-                  autoComplete="new-password"
-                />
-                <PasswordStrength
-                  password={password}
-                  email={email}
-                  showErrors
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirm">Confirmer</Label>
-                <PasswordInput
-                  id="confirm"
-                  value={confirm}
-                  onChange={e => patchUi({ confirm: e.target.value })}
-                  minLength={12}
-                  autoComplete="new-password"
-                />
-                {confirm && password !== confirm && (
-                  <p className="text-xs text-destructive">
-                    Les mots de passe ne correspondent pas
-                  </p>
-                )}
-              </div>
-
-              {error && (
-                <p className="text-sm text-destructive">
-                  {error}
-                </p>
-              )}
-
-              <Button
-                type="submit"
-                className="w-full h-10"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin" />
-                    Enregistrement…
-                  </>
-                ) : (
-                  'Valider et accéder à mon espace'
-                )}
-              </Button>
-            </form>
+            />
           )}
 
           <div className="text-center">

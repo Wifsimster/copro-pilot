@@ -5,56 +5,12 @@ import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useIncidentsByCopropriete, useCreateIncident, useUpdateIncident, useDeleteIncident } from '@/hooks/useIncidents'
 import { useInterventionsByCopropriete, useCreateIntervention, useUpdateIntervention, useDeleteIntervention } from '@/hooks/useInterventions'
 import { useCarnetEntretienByCopropriete, useCreateCarnetEntretien, useUpdateCarnetEntretien, useDeleteCarnetEntretien } from '@/hooks/useCarnetEntretien'
-import { IncidentFormDialog } from '@/components/incidents/IncidentFormDialog'
-import { InterventionFormDialog } from '@/components/incidents/InterventionFormDialog'
-import { CarnetEntretienFormDialog } from '@/components/incidents/CarnetEntretienFormDialog'
+import { IncidentsTab } from '@/components/incidents/IncidentsTab'
+import { InterventionsTab } from '@/components/incidents/InterventionsTab'
+import { CarnetEntretienTab } from '@/components/incidents/CarnetEntretienTab'
 import type { Incident, Intervention, CarnetEntretien } from '@/types'
 import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected'
-import { Plus, Trash2, Pencil, AlertTriangle, Hammer, BookOpen } from 'lucide-react'
-
-const URGENCE_LABELS: Record<string, string> = {
-  faible: 'Faible',
-  moyenne: 'Moyenne',
-  haute: 'Haute',
-  critique: 'Critique',
-}
-
-const URGENCE_COLORS: Record<string, string> = {
-  faible: 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300',
-  moyenne: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-  haute: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
-  critique: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-}
-
-const STATUT_INCIDENT_LABELS: Record<string, string> = {
-  ouvert: 'Ouvert',
-  en_cours: 'En cours',
-  resolu: 'Resolu',
-  ferme: 'Ferme',
-}
-
-const STATUT_INCIDENT_COLORS: Record<string, string> = {
-  ouvert: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
-  en_cours: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-  resolu: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  ferme: 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300',
-}
-
-const STATUT_INTERVENTION_LABELS: Record<string, string> = {
-  en_attente: 'En attente',
-  planifiee: 'Planifiee',
-  en_cours: 'En cours',
-  terminee: 'Terminee',
-  annulee: 'Annulee',
-}
-
-const STATUT_INTERVENTION_COLORS: Record<string, string> = {
-  en_attente: 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300',
-  planifiee: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
-  en_cours: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-  terminee: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  annulee: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-}
+import { AlertTriangle, Hammer, BookOpen } from 'lucide-react'
 
 type Tab = 'incidents' | 'interventions' | 'carnet'
 
@@ -138,299 +94,77 @@ export default function TravauxPage() {
 
           {/* Incidents tab */}
           {activeTab === 'incidents' && (
-            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
-              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
-                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Incidents</h2>
-                <button type="button"
-                  onClick={() => patchUi({ showIncidentDialog: true })}
-                  className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
-                >
-                  <Plus className="size-4" />
-                  Signaler un incident
-                </button>
-              </div>
-
-              {loadingIncidents ? (
-                <div className="flex justify-center py-8">
-                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
-                </div>
-              ) : !incidents || incidents.length === 0 ? (
-                <div className="flex flex-col items-center py-12">
-                  <AlertTriangle className="size-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun incident signale</p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Titre</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Categorie</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Urgence</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {incidents.map((incident: Incident) => (
-                        <tr key={incident.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
-                          <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">{incident.titre}</td>
-                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{incident.categorie || '—'}</td>
-                          <td className="px-4 py-3">
-                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${URGENCE_COLORS[incident.urgence]}`}>
-                              {URGENCE_LABELS[incident.urgence]}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUT_INCIDENT_COLORS[incident.statut]}`}>
-                              {STATUT_INCIDENT_LABELS[incident.statut]}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
-                            {new Date(incident.date_signalement).toLocaleDateString('fr-FR')}
-                          </td>
-                          <td className="px-4 py-3">
-                            <div className="flex gap-1">
-                              <button type="button"
-                                onClick={() => { patchUi({ editingIncident: incident }); patchUi({ showIncidentDialog: true }) }}
-                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
-                                aria-label="Modifier"
-                              >
-                                <Pencil className="size-4" />
-                              </button>
-                              <button type="button"
-                                onClick={() => patchUi({ deleteTarget: { type: 'incident', id: incident.id } })}
-                                className="rounded p-1 text-stone-400 hover:text-red-600"
-                                aria-label="Supprimer"
-                              >
-                                <Trash2 className="size-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-
-              <IncidentFormDialog
-                open={showIncidentDialog}
-                onOpenChange={(open) => { patchUi({ showIncidentDialog: open }); if (!open) patchUi({ editingIncident: null }) }}
-                coproprieteId={selectedCoproId}
-                defaultValues={editingIncident || undefined}
-                title={editingIncident ? 'Modifier l\'incident' : 'Signaler un incident'}
-                onSubmit={async (data) => {
-                  if (editingIncident) {
-                    await updateIncident.mutateAsync({ id: editingIncident.id, data })
-                  } else {
-                    await createIncident.mutateAsync(data)
-                  }
-                  patchUi({ showIncidentDialog: false })
-                  patchUi({ editingIncident: null })
-                }}
-                isLoading={editingIncident ? updateIncident.isPending : createIncident.isPending}
-              />
-            </div>
+            <IncidentsTab
+              coproprieteId={selectedCoproId}
+              incidents={incidents}
+              loading={loadingIncidents}
+              showDialog={showIncidentDialog}
+              editing={editingIncident}
+              onCreate={() => patchUi({ showIncidentDialog: true })}
+              onEdit={(incident) => { patchUi({ editingIncident: incident }); patchUi({ showIncidentDialog: true }) }}
+              onDelete={(id) => patchUi({ deleteTarget: { type: 'incident', id } })}
+              onDialogOpenChange={(open) => { patchUi({ showIncidentDialog: open }); if (!open) patchUi({ editingIncident: null }) }}
+              onSubmit={async (data) => {
+                if (editingIncident) {
+                  await updateIncident.mutateAsync({ id: editingIncident.id, data })
+                } else {
+                  await createIncident.mutateAsync(data)
+                }
+                patchUi({ showIncidentDialog: false })
+                patchUi({ editingIncident: null })
+              }}
+              isSubmitting={editingIncident ? updateIncident.isPending : createIncident.isPending}
+            />
           )}
 
           {/* Interventions tab */}
           {activeTab === 'interventions' && (
-            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
-              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
-                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Interventions</h2>
-                <button type="button"
-                  onClick={() => patchUi({ showInterventionDialog: true })}
-                  className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
-                >
-                  <Plus className="size-4" />
-                  Nouvelle intervention
-                </button>
-              </div>
-
-              {loadingInterventions ? (
-                <div className="flex justify-center py-8">
-                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
-                </div>
-              ) : !interventions || interventions.length === 0 ? (
-                <div className="flex flex-col items-center py-12">
-                  <Hammer className="size-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune intervention enregistree</p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Description</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Prestataire</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Devis</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Facture</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {interventions.map((inter: Intervention) => (
-                        <tr key={inter.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
-                          <td className="max-w-xs truncate px-4 py-3 font-medium text-stone-900 dark:text-white">
-                            {inter.description || '—'}
-                          </td>
-                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{inter.prestataire || '—'}</td>
-                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
-                            {inter.montant_devis
-                              ? Number(inter.montant_devis).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
-                              : '—'}
-                          </td>
-                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
-                            {inter.montant_facture
-                              ? Number(inter.montant_facture).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
-                              : '—'}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUT_INTERVENTION_COLORS[inter.statut]}`}>
-                              {STATUT_INTERVENTION_LABELS[inter.statut]}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3">
-                            <div className="flex gap-1">
-                              <button type="button"
-                                onClick={() => { patchUi({ editingIntervention: inter }); patchUi({ showInterventionDialog: true }) }}
-                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
-                                aria-label="Modifier"
-                              >
-                                <Pencil className="size-4" />
-                              </button>
-                              <button type="button"
-                                onClick={() => patchUi({ deleteTarget: { type: 'intervention', id: inter.id } })}
-                                className="rounded p-1 text-stone-400 hover:text-red-600"
-                                aria-label="Supprimer"
-                              >
-                                <Trash2 className="size-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-
-              <InterventionFormDialog
-                open={showInterventionDialog}
-                onOpenChange={(open) => { patchUi({ showInterventionDialog: open }); if (!open) patchUi({ editingIntervention: null }) }}
-                coproprieteId={selectedCoproId}
-                defaultValues={editingIntervention || undefined}
-                title={editingIntervention ? 'Modifier l\'intervention' : 'Nouvelle intervention'}
-                onSubmit={async (data) => {
-                  if (editingIntervention) {
-                    await updateIntervention.mutateAsync({ id: editingIntervention.id, data })
-                  } else {
-                    await createIntervention.mutateAsync(data)
-                  }
-                  patchUi({ showInterventionDialog: false })
-                  patchUi({ editingIntervention: null })
-                }}
-                isLoading={editingIntervention ? updateIntervention.isPending : createIntervention.isPending}
-              />
-            </div>
+            <InterventionsTab
+              coproprieteId={selectedCoproId}
+              interventions={interventions}
+              loading={loadingInterventions}
+              showDialog={showInterventionDialog}
+              editing={editingIntervention}
+              onCreate={() => patchUi({ showInterventionDialog: true })}
+              onEdit={(inter) => { patchUi({ editingIntervention: inter }); patchUi({ showInterventionDialog: true }) }}
+              onDelete={(id) => patchUi({ deleteTarget: { type: 'intervention', id } })}
+              onDialogOpenChange={(open) => { patchUi({ showInterventionDialog: open }); if (!open) patchUi({ editingIntervention: null }) }}
+              onSubmit={async (data) => {
+                if (editingIntervention) {
+                  await updateIntervention.mutateAsync({ id: editingIntervention.id, data })
+                } else {
+                  await createIntervention.mutateAsync(data)
+                }
+                patchUi({ showInterventionDialog: false })
+                patchUi({ editingIntervention: null })
+              }}
+              isSubmitting={editingIntervention ? updateIntervention.isPending : createIntervention.isPending}
+            />
           )}
 
           {/* Carnet d'entretien tab */}
           {activeTab === 'carnet' && (
-            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
-              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
-                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Carnet d'entretien</h2>
-                <button type="button"
-                  onClick={() => patchUi({ showCarnetDialog: true })}
-                  className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
-                >
-                  <Plus className="size-4" />
-                  Nouvelle entree
-                </button>
-              </div>
-
-              {loadingCarnet ? (
-                <div className="flex justify-center py-8">
-                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
-                </div>
-              ) : !carnetEntretien || carnetEntretien.length === 0 ? (
-                <div className="flex flex-col items-center py-12">
-                  <BookOpen className="size-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune entree dans le carnet</p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Titre</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Categorie</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Prestataire</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {carnetEntretien.map((entree: CarnetEntretien) => (
-                        <tr key={entree.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
-                          <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">{entree.titre}</td>
-                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{entree.categorie || '—'}</td>
-                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{entree.prestataire || '—'}</td>
-                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
-                            {entree.montant
-                              ? Number(entree.montant).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
-                              : '—'}
-                          </td>
-                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">
-                            {new Date(entree.date_realisation).toLocaleDateString('fr-FR')}
-                          </td>
-                          <td className="px-4 py-3">
-                            <div className="flex gap-1">
-                              <button type="button"
-                                onClick={() => { patchUi({ editingCarnet: entree }); patchUi({ showCarnetDialog: true }) }}
-                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
-                                aria-label="Modifier"
-                              >
-                                <Pencil className="size-4" />
-                              </button>
-                              <button type="button"
-                                onClick={() => patchUi({ deleteTarget: { type: 'carnet', id: entree.id } })}
-                                className="rounded p-1 text-stone-400 hover:text-red-600"
-                                aria-label="Supprimer"
-                              >
-                                <Trash2 className="size-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-
-              <CarnetEntretienFormDialog
-                open={showCarnetDialog}
-                onOpenChange={(open) => { patchUi({ showCarnetDialog: open }); if (!open) patchUi({ editingCarnet: null }) }}
-                coproprieteId={selectedCoproId}
-                defaultValues={editingCarnet || undefined}
-                title={editingCarnet ? 'Modifier l\'entree' : 'Nouvelle entree au carnet'}
-                onSubmit={async (data) => {
-                  if (editingCarnet) {
-                    await updateCarnet.mutateAsync({ id: editingCarnet.id, data })
-                  } else {
-                    await createCarnet.mutateAsync(data)
-                  }
-                  patchUi({ showCarnetDialog: false })
-                  patchUi({ editingCarnet: null })
-                }}
-                isLoading={editingCarnet ? updateCarnet.isPending : createCarnet.isPending}
-              />
-            </div>
+            <CarnetEntretienTab
+              coproprieteId={selectedCoproId}
+              carnetEntretien={carnetEntretien}
+              loading={loadingCarnet}
+              showDialog={showCarnetDialog}
+              editing={editingCarnet}
+              onCreate={() => patchUi({ showCarnetDialog: true })}
+              onEdit={(entree) => { patchUi({ editingCarnet: entree }); patchUi({ showCarnetDialog: true }) }}
+              onDelete={(id) => patchUi({ deleteTarget: { type: 'carnet', id } })}
+              onDialogOpenChange={(open) => { patchUi({ showCarnetDialog: open }); if (!open) patchUi({ editingCarnet: null }) }}
+              onSubmit={async (data) => {
+                if (editingCarnet) {
+                  await updateCarnet.mutateAsync({ id: editingCarnet.id, data })
+                } else {
+                  await createCarnet.mutateAsync(data)
+                }
+                patchUi({ showCarnetDialog: false })
+                patchUi({ editingCarnet: null })
+              }}
+              isSubmitting={editingCarnet ? updateCarnet.isPending : createCarnet.isPending}
+            />
           )}
         </>
       )}

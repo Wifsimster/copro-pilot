@@ -13,29 +13,12 @@ import {
   useUpdateMouvementBancaire,
   useDeleteMouvementBancaire,
 } from '@/hooks/useMouvementsBancaires'
-import { CompteBancaireFormDialog } from '@/components/comptes-bancaires/CompteBancaireFormDialog'
-import { MouvementBancaireFormDialog } from '@/components/comptes-bancaires/MouvementBancaireFormDialog'
+import { ComptesTabPanel } from '@/components/comptes-bancaires/ComptesTabPanel'
+import { MouvementsTabPanel } from '@/components/comptes-bancaires/MouvementsTabPanel'
 import type { CompteBancaire, MouvementBancaire } from '@/types'
-import { Landmark, Plus, Trash2, Pencil, ChevronDown, CreditCard, ArrowDownUp, CheckCircle, XCircle } from 'lucide-react'
+import { Landmark, CreditCard, ArrowDownUp } from 'lucide-react'
 import { ErrorAlert } from '@/components/layout/ErrorAlert'
 import { TabBar } from '@/components/layout/TabBar'
-
-const TYPE_COMPTE_LABELS: Record<string, string> = {
-  courant: 'Courant',
-  fonds_travaux: 'Fonds travaux',
-  emprunt: 'Emprunt',
-}
-
-const TYPE_COMPTE_COLORS: Record<string, string> = {
-  courant: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
-  fonds_travaux: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
-  emprunt: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
-}
-
-const TYPE_MOUVEMENT_COLORS: Record<string, string> = {
-  credit: 'text-green-600 dark:text-green-400',
-  debit: 'text-red-600 dark:text-red-400',
-}
 
 type Tab = 'comptes' | 'mouvements'
 
@@ -110,242 +93,56 @@ export default function ComptesBancairesPage() {
 
           {/* Comptes tab */}
           {activeTab === 'comptes' && (
-            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
-              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
-                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Comptes bancaires</h2>
-                <button type="button"
-                  onClick={() => patchUi({ showCompteDialog: true })}
-                  className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
-                >
-                  <Plus className="size-4" />
-                  Nouveau compte
-                </button>
-              </div>
-
-              {loadingComptes ? (
-                <div className="flex justify-center py-8">
-                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
-                </div>
-              ) : !comptes || comptes.length === 0 ? (
-                <div className="flex flex-col items-center py-12">
-                  <CreditCard className="size-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun compte bancaire enregistre</p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Banque</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">IBAN</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Type</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Solde</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {comptes.map((compte: CompteBancaire) => (
-                        <tr
-                          key={compte.id}
-                          className={`border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30 cursor-pointer ${
-                            selectedCompteId === compte.id ? 'bg-emerald-50 dark:bg-emerald-900/20' : ''
-                          }`}
-                          onClick={() => { patchUi({ selectedCompteId: compte.id }); patchUi({ activeTab: 'mouvements' }) }}
-                        >
-                          <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">{compte.banque}</td>
-                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300 font-mono text-xs">{compte.iban}</td>
-                          <td className="px-4 py-3">
-                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${TYPE_COMPTE_COLORS[compte.type]}`}>
-                              {TYPE_COMPTE_LABELS[compte.type]}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className={Number(compte.solde) >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>
-                              {Number(compte.solde).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3">
-                            {compte.actif ? (
-                              <span className="inline-flex items-center gap-1 text-green-600 dark:text-green-400">
-                                <CheckCircle className="size-3.5" /> Actif
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1 text-stone-400">
-                                <XCircle className="size-3.5" /> Inactif
-                              </span>
-                            )}
-                          </td>
-                          <td className="px-4 py-3">
-                            <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                              <button type="button"
-                                onClick={() => { patchUi({ editingCompte: compte }); patchUi({ showCompteDialog: true }) }}
-                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
-                                aria-label="Modifier"
-                              >
-                                <Pencil className="size-4" />
-                              </button>
-                              <button type="button"
-                                onClick={() => patchUi({ deleteTarget: { type: 'compte', id: compte.id } })}
-                                className="rounded p-1 text-stone-400 hover:text-red-600"
-                                aria-label="Supprimer"
-                              >
-                                <Trash2 className="size-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-
-              <CompteBancaireFormDialog
-                open={showCompteDialog}
-                onOpenChange={(open) => { patchUi({ showCompteDialog: open }); if (!open) patchUi({ editingCompte: null }) }}
-                coproprieteId={selectedCoproId}
-                defaultValues={editingCompte || undefined}
-                title={editingCompte ? 'Modifier le compte bancaire' : 'Nouveau compte bancaire'}
-                onSubmit={async (data) => {
-                  if (editingCompte) {
-                    await updateCompte.mutateAsync({ id: editingCompte.id, data })
-                  } else {
-                    await createCompte.mutateAsync(data)
-                  }
-                  patchUi({ showCompteDialog: false })
-                  patchUi({ editingCompte: null })
-                }}
-                isLoading={editingCompte ? updateCompte.isPending : createCompte.isPending}
-              />
-            </div>
+            <ComptesTabPanel
+              comptes={comptes}
+              loadingComptes={loadingComptes}
+              selectedCompteId={selectedCompteId}
+              selectedCoproId={selectedCoproId}
+              showCompteDialog={showCompteDialog}
+              editingCompte={editingCompte}
+              onNewCompte={() => patchUi({ showCompteDialog: true })}
+              onSelectCompte={(id) => { patchUi({ selectedCompteId: id }); patchUi({ activeTab: 'mouvements' }) }}
+              onEditCompte={(compte) => { patchUi({ editingCompte: compte }); patchUi({ showCompteDialog: true }) }}
+              onDeleteCompte={(id) => patchUi({ deleteTarget: { type: 'compte', id } })}
+              onCompteDialogOpenChange={(open) => { patchUi({ showCompteDialog: open }); if (!open) patchUi({ editingCompte: null }) }}
+              onCompteSubmit={async (data) => {
+                if (editingCompte) {
+                  await updateCompte.mutateAsync({ id: editingCompte.id, data })
+                } else {
+                  await createCompte.mutateAsync(data)
+                }
+                patchUi({ showCompteDialog: false })
+                patchUi({ editingCompte: null })
+              }}
+              compteSubmitLoading={editingCompte ? updateCompte.isPending : createCompte.isPending}
+            />
           )}
 
           {/* Mouvements tab */}
           {activeTab === 'mouvements' && (
-            <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
-              <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
-                <div className="flex items-center gap-4">
-                  <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Mouvements bancaires</h2>
-                  {/* Compte selector */}
-                  <div className="relative">
-                    <select
-                      value={selectedCompteId || ''}
-                      onChange={(e) => patchUi({ selectedCompteId: e.target.value ? parseInt(e.target.value) : undefined })}
-                      className="appearance-none rounded-lg border border-stone-300 bg-white px-3 py-1.5 pr-8 text-sm text-stone-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 dark:border-stone-600 dark:bg-stone-700 dark:text-white"
-                    >
-                      <option value="">Selectionner un compte…</option>
-                      {comptes?.map((c: CompteBancaire) => (
-                        <option key={c.id} value={c.id}>{c.banque} ({TYPE_COMPTE_LABELS[c.type]})</option>
-                      ))}
-                    </select>
-                    <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-3 -translate-y-1/2 text-stone-400" />
-                  </div>
-                </div>
-                {selectedCompteId && (
-                  <button type="button"
-                    onClick={() => patchUi({ showMouvementDialog: true })}
-                    className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
-                  >
-                    <Plus className="size-4" />
-                    Nouveau mouvement
-                  </button>
-                )}
-              </div>
-
-              {!selectedCompteId ? (
-                <div className="flex flex-col items-center py-12">
-                  <ArrowDownUp className="size-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Selectionnez un compte pour voir ses mouvements</p>
-                </div>
-              ) : loadingMouvements ? (
-                <div className="flex justify-center py-8">
-                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
-                </div>
-              ) : !mouvements || mouvements.length === 0 ? (
-                <div className="flex flex-col items-center py-12">
-                  <ArrowDownUp className="size-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun mouvement enregistre</p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-stone-200 text-left dark:border-stone-700">
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Libelle</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Categorie</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Reference</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Rapproche</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {mouvements.map((mouvement: MouvementBancaire) => (
-                        <tr key={mouvement.id} className="border-b border-stone-100 hover:bg-stone-50 dark:border-stone-700/50 dark:hover:bg-stone-800/30">
-                          <td className="px-4 py-3 text-stone-900 dark:text-white">
-                            {new Date(mouvement.date).toLocaleDateString('fr-FR')}
-                          </td>
-                          <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">{mouvement.libelle}</td>
-                          <td className={`px-4 py-3 font-medium ${TYPE_MOUVEMENT_COLORS[mouvement.type]}`}>
-                            {mouvement.type === 'credit' ? '+' : '-'}
-                            {Number(mouvement.montant).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
-                          </td>
-                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{mouvement.categorie || '\u2014'}</td>
-                          <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{mouvement.reference || '\u2014'}</td>
-                          <td className="px-4 py-3">
-                            {mouvement.rapproche ? (
-                              <CheckCircle className="size-4 text-green-500" />
-                            ) : (
-                              <XCircle className="size-4 text-stone-300 dark:text-stone-600" />
-                            )}
-                          </td>
-                          <td className="px-4 py-3">
-                            <div className="flex gap-1">
-                              <button type="button"
-                                onClick={() => { patchUi({ editingMouvement: mouvement }); patchUi({ showMouvementDialog: true }) }}
-                                className="rounded p-1 text-stone-400 hover:text-emerald-700"
-                                aria-label="Modifier"
-                              >
-                                <Pencil className="size-4" />
-                              </button>
-                              <button type="button"
-                                onClick={() => patchUi({ deleteTarget: { type: 'mouvement', id: mouvement.id } })}
-                                className="rounded p-1 text-stone-400 hover:text-red-600"
-                                aria-label="Supprimer"
-                              >
-                                <Trash2 className="size-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-
-              {selectedCompteId && (
-                <MouvementBancaireFormDialog
-                  open={showMouvementDialog}
-                  onOpenChange={(open) => { patchUi({ showMouvementDialog: open }); if (!open) patchUi({ editingMouvement: null }) }}
-                  compteId={selectedCompteId}
-                  defaultValues={editingMouvement || undefined}
-                  title={editingMouvement ? 'Modifier le mouvement' : 'Nouveau mouvement'}
-                  onSubmit={async (data) => {
-                    if (editingMouvement) {
-                      await updateMouvement.mutateAsync({ id: editingMouvement.id, data })
-                    } else {
-                      await createMouvement.mutateAsync(data)
-                    }
-                    patchUi({ showMouvementDialog: false })
-                    patchUi({ editingMouvement: null })
-                  }}
-                  isLoading={editingMouvement ? updateMouvement.isPending : createMouvement.isPending}
-                />
-              )}
-            </div>
+            <MouvementsTabPanel
+              comptes={comptes}
+              mouvements={mouvements}
+              loadingMouvements={loadingMouvements}
+              selectedCompteId={selectedCompteId}
+              showMouvementDialog={showMouvementDialog}
+              editingMouvement={editingMouvement}
+              onSelectCompteId={(id) => patchUi({ selectedCompteId: id })}
+              onNewMouvement={() => patchUi({ showMouvementDialog: true })}
+              onEditMouvement={(mouvement) => { patchUi({ editingMouvement: mouvement }); patchUi({ showMouvementDialog: true }) }}
+              onDeleteMouvement={(id) => patchUi({ deleteTarget: { type: 'mouvement', id } })}
+              onMouvementDialogOpenChange={(open) => { patchUi({ showMouvementDialog: open }); if (!open) patchUi({ editingMouvement: null }) }}
+              onMouvementSubmit={async (data) => {
+                if (editingMouvement) {
+                  await updateMouvement.mutateAsync({ id: editingMouvement.id, data })
+                } else {
+                  await createMouvement.mutateAsync(data)
+                }
+                patchUi({ showMouvementDialog: false })
+                patchUi({ editingMouvement: null })
+              }}
+              mouvementSubmitLoading={editingMouvement ? updateMouvement.isPending : createMouvement.isPending}
+            />
           )}
         </>
       )}
