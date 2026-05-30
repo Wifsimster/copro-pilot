@@ -84,7 +84,7 @@ export default function AssurancesPage() {
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
-          <Shield className="h-12 w-12 text-stone-400 dark:text-stone-500" />
+          <Shield className="size-12 text-stone-400 dark:text-stone-500" />
           <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
           <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
         </div>
@@ -105,7 +105,7 @@ export default function AssurancesPage() {
                     : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
                 }`}
               >
-                <tab.icon className="h-4 w-4" />
+                <tab.icon className="size-4" />
                 {tab.label}
               </button>
             ))}

@@ -93,7 +93,7 @@ export function AppUpdatePrompt() {
           disabled={reloading}
           className='text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 disabled:opacity-50'
         >
-          <X className='h-4 w-4' aria-hidden='true' />
+          <X className='size-4' aria-hidden='true' />
         </button>
       </div>
     </div>

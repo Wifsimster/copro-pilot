@@ -117,7 +117,7 @@ export default function TravauxPage() {
                     : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
                 }`}
               >
-                <tab.icon className="h-4 w-4" />
+                <tab.icon className="size-4" />
                 {tab.label}
               </button>
             ))}
@@ -132,18 +132,18 @@ export default function TravauxPage() {
                   onClick={() => setShowIncidentDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Signaler un incident
                 </button>
               </div>
 
               {loadingIncidents ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !incidents || incidents.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <AlertTriangle className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <AlertTriangle className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun incident signale</p>
                 </div>
               ) : (
@@ -184,14 +184,14 @@ export default function TravauxPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'incident', id: incident.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -231,18 +231,18 @@ export default function TravauxPage() {
                   onClick={() => setShowInterventionDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouvelle intervention
                 </button>
               </div>
 
               {loadingInterventions ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !interventions || interventions.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <Hammer className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <Hammer className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune intervention enregistree</p>
                 </div>
               ) : (
@@ -287,14 +287,14 @@ export default function TravauxPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'intervention', id: inter.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -334,18 +334,18 @@ export default function TravauxPage() {
                   onClick={() => setShowCarnetDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouvelle entree
                 </button>
               </div>
 
               {loadingCarnet ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !carnetEntretien || carnetEntretien.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <BookOpen className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <BookOpen className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune entree dans le carnet</p>
                 </div>
               ) : (
@@ -382,14 +382,14 @@ export default function TravauxPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'carnet', id: entree.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>

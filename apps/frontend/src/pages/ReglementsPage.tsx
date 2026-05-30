@@ -186,14 +186,14 @@ export default function ReglementsPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'reglement', id: reglement.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>
@@ -249,7 +249,7 @@ export default function ReglementsPage() {
                     onClick={() => setShowArticleDialog(true)}
                     className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className="size-4" />
                     Nouvel article
                   </button>
                 )}
@@ -257,16 +257,16 @@ export default function ReglementsPage() {
 
               {!selectedReglementId ? (
                 <div className="flex flex-col items-center py-12">
-                  <BookOpen className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <BookOpen className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Selectionnez un reglement pour voir ses articles</p>
                 </div>
               ) : loadingArticles ? (
                 <div className="flex justify-center py-8">
-                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                  <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
                 </div>
               ) : !articles || articles.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
-                  <ListOrdered className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                  <ListOrdered className="size-10 text-stone-300 dark:text-stone-600" />
                   <p className="mt-3 text-stone-500 dark:text-stone-400">Aucun article enregistre</p>
                 </div>
               ) : (
@@ -299,14 +299,14 @@ export default function ReglementsPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'article', id: article.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>

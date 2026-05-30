@@ -196,12 +196,12 @@ export function HeroSection() {
     >
       {/* Decorative gradient orbs */}
       <div
-        className="absolute top-20 -left-40 w-96 h-96
+        className="absolute top-20 -left-40 size-96
           bg-emerald-200/20 dark:bg-emerald-900/10
           rounded-full blur-3xl pointer-events-none"
       />
       <div
-        className="absolute bottom-20 -right-40 w-96 h-96
+        className="absolute bottom-20 -right-40 size-96
           bg-amber-200/20 dark:bg-amber-900/10
           rounded-full blur-3xl pointer-events-none"
       />

@@ -362,7 +362,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button type="button" className="flex w-full items-center gap-2 rounded-lg p-2 text-left transition-colors hover:bg-stone-100 data-[state=open]:bg-stone-100 dark:hover:bg-stone-800 dark:data-[state=open]:bg-stone-800">
-                <Avatar className="h-8 w-8 rounded-lg">
+                <Avatar className="size-8 rounded-lg">
                   <AvatarFallback className="rounded-lg">
                     {(user?.firstname?.[0] ?? '').toUpperCase()}
                     {(user?.lastname?.[0] ?? '').toUpperCase()}
@@ -387,7 +387,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             >
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                  <Avatar className="h-8 w-8 rounded-lg">
+                  <Avatar className="size-8 rounded-lg">
                     <AvatarFallback className="rounded-lg">
                       {(user?.firstname?.[0] ?? '').toUpperCase()}
                       {(user?.lastname?.[0] ?? '').toUpperCase()}
@@ -420,7 +420,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                     setSidebarOpen(false)
                   }}
                 >
-                  <Shield className="h-4 w-4" />
+                  <Shield className="size-4" />
                   Mes données personnelles
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={toggleTheme}>
@@ -467,7 +467,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800 lg:hidden"
             aria-label="Ouvrir le menu"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="size-5" />
           </button>
           {!isCoproprietaire(user?.role) && (
             <div data-tour="copropriete-selector" className="relative shrink-0">

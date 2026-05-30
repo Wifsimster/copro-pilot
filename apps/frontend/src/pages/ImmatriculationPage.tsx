@@ -144,7 +144,7 @@ export default function ImmatriculationPage() {
               {/* Syndic */}
               <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-center gap-2 mb-2">
-                  <Shield className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
+                  <Shield className="size-4 text-emerald-700 dark:text-emerald-400" />
                   <span className="text-xs font-medium text-stone-500 dark:text-stone-400">Syndic</span>
                 </div>
                 {complianceData.gouvernance ? (
@@ -159,7 +159,7 @@ export default function ImmatriculationPage() {
               {/* Impayes */}
               <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-center gap-2 mb-2">
-                  <AlertTriangle className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
+                  <AlertTriangle className="size-4 text-emerald-700 dark:text-emerald-400" />
                   <span className="text-xs font-medium text-stone-500 dark:text-stone-400">Impayes</span>
                 </div>
                 <p className={`text-sm font-medium ${
@@ -174,7 +174,7 @@ export default function ImmatriculationPage() {
               {/* Diagnostics */}
               <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-center gap-2 mb-2">
-                  <Stethoscope className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
+                  <Stethoscope className="size-4 text-emerald-700 dark:text-emerald-400" />
                   <span className="text-xs font-medium text-stone-500 dark:text-stone-400">Diagnostics</span>
                 </div>
                 {diagCounts ? (
@@ -193,7 +193,7 @@ export default function ImmatriculationPage() {
               {/* Derniere AG */}
               <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-center gap-2 mb-2">
-                  <Users2 className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
+                  <Users2 className="size-4 text-emerald-700 dark:text-emerald-400" />
                   <span className="text-xs font-medium text-stone-500 dark:text-stone-400">Derniere AG</span>
                 </div>
                 {complianceData.assemblee_generale ? (
@@ -208,7 +208,7 @@ export default function ImmatriculationPage() {
               {/* Procedures */}
               <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
                 <div className="flex items-center gap-2 mb-2">
-                  <Scale className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
+                  <Scale className="size-4 text-emerald-700 dark:text-emerald-400" />
                   <span className="text-xs font-medium text-stone-500 dark:text-stone-400">Procedures</span>
                 </div>
                 {complianceData.procedures && complianceData.procedures.nombre_actives > 0 ? (
@@ -232,14 +232,14 @@ export default function ImmatriculationPage() {
                   disabled={isPreparating}
                   className="flex items-center gap-2 rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50 dark:border-stone-600 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-700"
                 >
-                  <FileSearch className="h-4 w-4" />
+                  <FileSearch className="size-4" />
                   {isPreparating ? 'Preparation...' : 'Preparer declaration'}
                 </button>
                 <button type="button"
                   onClick={() => { setDonneesPreparees(null); setEditingDeclaration(null); setShowDialog(true) }}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                   Nouvelle declaration
                 </button>
               </div>
@@ -247,11 +247,11 @@ export default function ImmatriculationPage() {
 
             {isLoading ? (
               <div className="flex justify-center py-8">
-                <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
+                <div className="size-6 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent" />
               </div>
             ) : !declarations || declarations.length === 0 ? (
               <div className="flex flex-col items-center py-12">
-                <CalendarDays className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                <CalendarDays className="size-10 text-stone-300 dark:text-stone-600" />
                 <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune declaration enregistree</p>
               </div>
             ) : (
@@ -278,8 +278,8 @@ export default function ImmatriculationPage() {
                           <td className="px-4 py-3 text-stone-400">
                             {decl.donnees_declarees ? (
                               expandedRow === decl.id
-                                ? <ChevronDown className="h-4 w-4" />
-                                : <ChevronRight className="h-4 w-4" />
+                                ? <ChevronDown className="size-4" />
+                                : <ChevronRight className="size-4" />
                             ) : null}
                           </td>
                           <td className="px-4 py-3 font-medium text-stone-900 dark:text-white">{decl.annee}</td>
@@ -303,14 +303,14 @@ export default function ImmatriculationPage() {
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
-                                <Pencil className="h-4 w-4" />
+                                <Pencil className="size-4" />
                               </button>
                               <button type="button"
                                 onClick={() => setDeleteId(decl.id)}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="size-4" />
                               </button>
                             </div>
                           </td>

@@ -93,7 +93,7 @@ export default function ConseilSyndicalPage() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           {membre.role === 'president' && (
-                            <Crown className="h-4 w-4 text-emerald-600" />
+                            <Crown className="size-4 text-emerald-600" />
                           )}
                           <div>
                             <div className="font-medium text-stone-900 dark:text-white">
@@ -132,14 +132,14 @@ export default function ConseilSyndicalPage() {
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="size-4" />
                           </button>
                           <button type="button"
                             onClick={() => setDeleteId(membre.id)}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="size-4" />
                           </button>
                         </div>
                       </td>

@@ -274,7 +274,7 @@ export default function AssembleeDetailPage() {
               : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
           }`}
         >
-          <Vote className="h-4 w-4" />
+          <Vote className="size-4" />
           Resolutions
         </button>
         <button type="button"
@@ -285,7 +285,7 @@ export default function AssembleeDetailPage() {
               : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
           }`}
         >
-          <Users className="h-4 w-4" />
+          <Users className="size-4" />
           Presences
         </button>
         <button type="button"
@@ -296,7 +296,7 @@ export default function AssembleeDetailPage() {
               : 'text-stone-500 hover:text-stone-700 dark:text-stone-400'
           }`}
         >
-          <Mail className="h-4 w-4" />
+          <Mail className="size-4" />
           Convocations
           {convocations && convocations.length > 0 && (
             <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-xs text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
@@ -316,14 +316,14 @@ export default function AssembleeDetailPage() {
               disabled={createResolution.isPending}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800 disabled:opacity-50"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Ajouter
             </button>
           </div>
 
           {(!ag.resolutions || ag.resolutions.length === 0) ? (
             <div className="flex flex-col items-center py-12">
-              <FileText className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <FileText className="size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune resolution enregistree</p>
             </div>
           ) : (
@@ -377,14 +377,14 @@ export default function AssembleeDetailPage() {
                         className="rounded p-1 text-stone-400 hover:text-emerald-700"
                         aria-label="Modifier"
                       >
-                        <Pencil className="h-4 w-4" />
+                        <Pencil className="size-4" />
                       </button>
                       <button type="button"
                         onClick={() => setDeleteTarget({ type: 'resolution', id: res.id })}
                         className="rounded p-1 text-stone-400 hover:text-red-600"
                         aria-label="Supprimer"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="size-4" />
                       </button>
                     </div>
                   </div>
@@ -425,14 +425,14 @@ export default function AssembleeDetailPage() {
               onClick={() => setShowPresenceDialog(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Ajouter
             </button>
           </div>
 
           {(!ag.presences || ag.presences.length === 0) ? (
             <div className="flex flex-col items-center py-12">
-              <Users className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+              <Users className="size-10 text-stone-300 dark:text-stone-600" />
               <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune presence enregistree</p>
             </div>
           ) : (
@@ -475,14 +475,14 @@ export default function AssembleeDetailPage() {
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="size-4" />
                           </button>
                           <button type="button"
                             onClick={() => setDeleteTarget({ type: 'presence', id: p.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="size-4" />
                           </button>
                         </div>
                       </td>
@@ -521,14 +521,14 @@ export default function AssembleeDetailPage() {
                 onClick={() => setShowConvocationDialog(true)}
                 className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="size-4" />
                 Nouvelle convocation
               </button>
             </div>
 
             {(!convocations || convocations.length === 0) ? (
               <div className="flex flex-col items-center py-12">
-                <Mail className="h-10 w-10 text-stone-300 dark:text-stone-600" />
+                <Mail className="size-10 text-stone-300 dark:text-stone-600" />
                 <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune convocation creee</p>
                 <p className="text-xs text-stone-400 dark:text-stone-500">Creez une convocation pour envoyer aux coproprietaires</p>
               </div>
@@ -565,7 +565,7 @@ export default function AssembleeDetailPage() {
                                 className="flex items-center gap-1 rounded px-2 py-1 text-xs text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
                                 title="Generer les destinataires"
                               >
-                                <UserPlus className="h-3.5 w-3.5" />
+                                <UserPlus className="size-3.5" />
                                 Destinataires
                               </button>
                               <button type="button"
@@ -575,9 +575,9 @@ export default function AssembleeDetailPage() {
                                 title="Envoyer la convocation"
                               >
                                 {envoyerConvocation.isPending ? (
-                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                  <Loader2 className="size-3.5 animate-spin" />
                                 ) : (
-                                  <Send className="h-3.5 w-3.5" />
+                                  <Send className="size-3.5" />
                                 )}
                                 Envoyer
                               </button>
@@ -589,7 +589,7 @@ export default function AssembleeDetailPage() {
                             title="Voir les destinataires"
                             aria-label="Voir les destinataires"
                           >
-                            <Eye className="h-4 w-4" />
+                            <Eye className="size-4" />
                           </button>
                           {convoc.statut === 'brouillon' && (
                             <button type="button"
@@ -597,7 +597,7 @@ export default function AssembleeDetailPage() {
                               className="rounded p-1 text-stone-400 hover:text-emerald-700"
                               aria-label="Modifier"
                             >
-                              <Pencil className="h-4 w-4" />
+                              <Pencil className="size-4" />
                             </button>
                           )}
                           {convoc.statut === 'brouillon' && (
@@ -606,7 +606,7 @@ export default function AssembleeDetailPage() {
                               className="rounded p-1 text-stone-400 hover:text-red-600"
                               aria-label="Supprimer"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="size-4" />
                             </button>
                           )}
                         </div>
@@ -624,7 +624,7 @@ export default function AssembleeDetailPage() {
                         </h4>
                         {!expandedDestinataires ? (
                           <div className="flex items-center gap-2 py-2">
-                            <Loader2 className="h-4 w-4 animate-spin text-stone-400" />
+                            <Loader2 className="size-4 animate-spin text-stone-400" />
                             <span className="text-sm text-stone-400">Chargement...</span>
                           </div>
                         ) : expandedDestinataires.length === 0 ? (
