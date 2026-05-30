@@ -147,7 +147,7 @@ export default function ContentieuxPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Mode d'envoi</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -253,7 +253,7 @@ export default function ContentieuxPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Tribunal</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant reclame</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>

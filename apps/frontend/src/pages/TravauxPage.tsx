@@ -156,7 +156,7 @@ export default function TravauxPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Urgence</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -255,7 +255,7 @@ export default function TravauxPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Devis</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Facture</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -358,7 +358,7 @@ export default function TravauxPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Prestataire</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>

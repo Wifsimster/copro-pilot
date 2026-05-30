@@ -125,7 +125,7 @@ export default function ContratsPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant annuel</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Frequence</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -246,7 +246,7 @@ export default function ContratsPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">SIRET</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Contact</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Telephone</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>

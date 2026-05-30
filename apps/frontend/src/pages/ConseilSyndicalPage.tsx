@@ -84,7 +84,7 @@ export default function ConseilSyndicalPage() {
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date d'election</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Fin de mandat</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Notes</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                   </tr>
                 </thead>
                 <tbody>

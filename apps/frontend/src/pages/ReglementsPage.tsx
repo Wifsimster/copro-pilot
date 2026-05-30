@@ -153,7 +153,7 @@ export default function ReglementsPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Notaire</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Destination</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -278,7 +278,7 @@ export default function ReglementsPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Titre</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Categorie</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Ordre</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>

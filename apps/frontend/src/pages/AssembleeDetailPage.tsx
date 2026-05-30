@@ -444,7 +444,7 @@ export default function AssembleeDetailPage() {
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Represente par</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Tantiemes</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                   </tr>
                 </thead>
                 <tbody>

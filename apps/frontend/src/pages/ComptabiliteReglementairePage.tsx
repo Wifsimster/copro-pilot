@@ -161,6 +161,7 @@ function JournalTab({ exerciceId }: { exerciceId: number | undefined }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <input
+            aria-label="Filtrer par compte"
             type="text"
             value={filterCompte}
             onChange={(e) => setFilterCompte(e.target.value)}

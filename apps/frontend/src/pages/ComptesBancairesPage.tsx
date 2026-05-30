@@ -129,7 +129,7 @@ export default function ComptesBancairesPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Type</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Solde</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -266,7 +266,7 @@ export default function ComptesBancairesPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Categorie</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Reference</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Rapproche</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>

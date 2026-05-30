@@ -145,7 +145,7 @@ export default function ChargesPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Annee</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant total</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -238,7 +238,7 @@ export default function ChargesPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Emission</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Echeance</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -337,7 +337,7 @@ export default function ChargesPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Mode</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Reference</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -437,7 +437,7 @@ export default function ChargesPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Annee</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Cotisation annuelle</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Solde</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>

@@ -155,6 +155,7 @@ export function ComparisonSection() {
                   dark:border-stone-800"
               >
                 <th
+                  aria-label="Fonctionnalité"
                   className="py-4 pl-6 pr-4 text-left text-sm
                     font-medium text-stone-400
                     dark:text-stone-500 w-1/4"

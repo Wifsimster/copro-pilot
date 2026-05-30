@@ -202,6 +202,7 @@ export function DocumentFormDialog({
                 ou cliquez pour parcourir (max 20 Mo)
               </p>
               <input
+                aria-label="Choisir un fichier"
                 id="file-input"
                 type="file"
                 onChange={handleFileSelect}

@@ -64,6 +64,7 @@ export default function CoproprietesPage() {
       {coproprietes && coproprietes.length > 0 && (
         <div>
           <input
+            aria-label="Rechercher une copropriété"
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}

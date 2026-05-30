@@ -127,7 +127,7 @@ export default function ContratsSyndicPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Periode du mandat</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Forfait annuel</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -235,7 +235,7 @@ export default function ContratsSyndicPage() {
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date de reception</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant propose</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Retenue</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
                     </thead>
                     <tbody>

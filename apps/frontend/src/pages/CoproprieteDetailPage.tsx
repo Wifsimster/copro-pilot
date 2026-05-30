@@ -268,7 +268,7 @@ export default function CoproprieteDetailPage() {
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Etage</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Tantiemes</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Proprietaire</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -339,7 +339,7 @@ export default function CoproprieteDetailPage() {
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Nom</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Categorie</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Description</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -409,7 +409,7 @@ export default function CoproprieteDetailPage() {
                   <tr className="border-b border-stone-200 text-left dark:border-stone-700">
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Nom</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Description</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -492,7 +492,7 @@ export default function CoproprieteDetailPage() {
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Telephone</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Entree</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Sortie</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -579,7 +579,7 @@ export default function CoproprieteDetailPage() {
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Type</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Ancien proprietaire</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Nouveau proprietaire</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -653,7 +653,7 @@ export default function CoproprieteDetailPage() {
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Realisation</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Validite</th>
                     <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
-                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                    <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                   </tr>
                 </thead>
                 <tbody>

@@ -259,12 +259,12 @@ export default function ImmatriculationPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-stone-200 text-left dark:border-stone-700">
-                      <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400 w-8"></th>
+                      <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400 w-8" aria-label="Actions"></th>
                       <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Annee</th>
                       <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date de declaration</th>
                       <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
                       <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Notes</th>
-                      <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400"></th>
+                      <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                     </tr>
                   </thead>
                   <tbody>

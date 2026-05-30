@@ -137,6 +137,7 @@ export default function DocumentsPage() {
               <div className="relative flex-1 max-w-xs">
                 <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <input
+                  aria-label="Rechercher un document"
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
