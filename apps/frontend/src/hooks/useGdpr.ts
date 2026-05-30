@@ -42,6 +42,7 @@ export function useRevokeConsents() {
 }
 
 export function useRequestErasure() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- erasure is processed asynchronously; no cached data changes here
   return useMutation({
     mutationFn: (confirmation: string) =>
       gdprApi.requestErasure(confirmation),

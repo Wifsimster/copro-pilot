@@ -1,5 +1,6 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { extranetPaymentsApi } from '@/api/extranetPayments'
+import { EXTRANET_KEY } from '@/hooks/useExtranet'
 
 interface CreateCheckoutInput {
   amount: number
@@ -12,6 +13,7 @@ interface CreateCheckoutInput {
  * success.
  */
 export function useCreateCheckoutSession() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- redirects to Stripe Checkout; no local cache to update
   return useMutation({
     mutationFn: async ({ amount, description }: CreateCheckoutInput) => {
       const res = await extranetPaymentsApi.createCheckout(
@@ -34,10 +36,15 @@ export function useCreateCheckoutSession() {
  * gives us a faster UX when the user lands back on the app.
  */
 export function useConfirmPayment() {
+  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (sessionId: string) => {
       const res = await extranetPaymentsApi.confirmPayment(sessionId)
       return res.data
+    },
+    onSuccess: () => {
+      // Refresh balances, charges and appels de fonds after a payment.
+      queryClient.invalidateQueries({ queryKey: EXTRANET_KEY })
     },
   })
 }

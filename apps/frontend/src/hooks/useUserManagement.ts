@@ -24,6 +24,7 @@ export function useResetUserPassword() {
 }
 
 export function useSetUserPassword() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- password reset does not change any cached query
   return useMutation({
     mutationFn: ({
       userId,
@@ -72,6 +73,7 @@ export function useBulkCreateUsers() {
 }
 
 export function useSetInitialPassword() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- password change does not change any cached query
   return useMutation({
     mutationFn: (newPassword: string) =>
       userManagementApi.setInitialPassword(newPassword),

@@ -15,6 +15,7 @@ interface CheckoutArgs {
 }
 
 export function useCheckout() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- redirects to Stripe Checkout; no local cache to update
   return useMutation({
     mutationFn: ({ plan, cadence = 'monthly' }: CheckoutArgs) =>
       stripeApi.createCheckoutSession(plan, cadence),
@@ -26,6 +27,7 @@ export function useCheckout() {
 }
 
 export function usePortalSession() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- redirects to the Stripe customer portal; no local cache to update
   return useMutation({
     mutationFn: () => stripeApi.createPortalSession(),
     onSuccess: data => {
