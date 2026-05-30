@@ -152,7 +152,7 @@ export function PaiementFormDialog({
                   <SelectItem value="none">Aucun (paiement libre)</SelectItem>
                   {appelsFonds!.map((a) => (
                     <SelectItem key={a.id} value={String(a.id)}>
-                      T{a.trimestre} {a.annee} — {Number(a.montant_total).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
+                      T{a.trimestre} {a.annee} - {Number(a.montant_total).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
                     </SelectItem>
                   ))}
                 </SelectContent>

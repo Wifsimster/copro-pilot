@@ -220,7 +220,7 @@ export default function FirstLoginPage() {
                 {isLoading ? (
                   <>
                     <Loader2 className="size-4 animate-spin" />
-                    Envoi...
+                    Envoi…
                   </>
                 ) : (
                   'Envoyer le code'
@@ -267,7 +267,7 @@ export default function FirstLoginPage() {
                 {isLoading ? (
                   <>
                     <Loader2 className="size-4 animate-spin" />
-                    Vérification...
+                    Vérification…
                   </>
                 ) : (
                   'Vérifier'
@@ -355,7 +355,7 @@ export default function FirstLoginPage() {
                 {isLoading ? (
                   <>
                     <Loader2 className="size-4 animate-spin" />
-                    Enregistrement...
+                    Enregistrement…
                   </>
                 ) : (
                   'Valider et accéder à mon espace'

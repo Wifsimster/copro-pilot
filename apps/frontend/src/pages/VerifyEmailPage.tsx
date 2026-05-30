@@ -73,7 +73,7 @@ export default function VerifyEmailPage() {
               <>
                 <Loader2 className="size-10 animate-spin text-primary" />
                 <p className="text-sm text-muted-foreground">
-                  Vérification de votre adresse email...
+                  Vérification de votre adresse email…
                 </p>
               </>
             )}

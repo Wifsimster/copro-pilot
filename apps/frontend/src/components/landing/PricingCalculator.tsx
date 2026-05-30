@@ -231,7 +231,7 @@ export function PricingCalculator() {
         >
           Soit{' '}
           <strong>{perLotPrice} €/lot/mois</strong>{' '}
-          (moyenne 30 lots/copro) — les logiciels traditionnels
+          (moyenne 30 lots/copro) - les logiciels traditionnels
           facturent 3 à 8 €/lot/mois
         </p>
       </div>

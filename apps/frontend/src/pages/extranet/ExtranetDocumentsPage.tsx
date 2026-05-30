@@ -105,7 +105,7 @@ export default function ExtranetDocumentsPage() {
                   <div>
                     <p className="text-sm font-medium">{d.type}</p>
                     <p className="text-xs text-muted-foreground">
-                      {d.organisme} —{' '}
+                      {d.organisme} -{' '}
                       {new Date(
                         d.date_realisation
                       ).toLocaleDateString('fr-FR')}
@@ -140,7 +140,7 @@ export default function ExtranetDocumentsPage() {
                       {a.compagnie}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {a.type} — Police{' '}
+                      {a.type} - Police{' '}
                       {a.numero_police ?? '—'}
                     </p>
                   </div>

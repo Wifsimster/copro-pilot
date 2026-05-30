@@ -195,7 +195,7 @@ export function DeclarationFormDialog({
               <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
                 <h4 className="font-medium text-stone-900 dark:text-white">Identification</h4>
                 <p className="mt-1 text-stone-600 dark:text-stone-400">
-                  {donnees.identification.nom} — {donnees.identification.adresse}, {donnees.identification.code_postal} {donnees.identification.ville}
+                  {donnees.identification.nom} - {donnees.identification.adresse}, {donnees.identification.code_postal} {donnees.identification.ville}
                 </p>
                 {donnees.identification.numero_immatriculation && (
                   <p className="text-stone-600 dark:text-stone-400">
@@ -220,7 +220,7 @@ export function DeclarationFormDialog({
 
               {donnees.gouvernance && (
                 <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
-                  <h4 className="font-medium text-stone-900 dark:text-white">Gouvernance — Syndic</h4>
+                  <h4 className="font-medium text-stone-900 dark:text-white">Gouvernance - Syndic</h4>
                   <p className="mt-1 text-stone-600 dark:text-stone-400">
                     {donnees.gouvernance.syndic_nom}
                   </p>
@@ -254,7 +254,7 @@ export function DeclarationFormDialog({
               <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
                 <h4 className="font-medium text-stone-900 dark:text-white">Lots</h4>
                 <p className="mt-1 text-stone-600 dark:text-stone-400">
-                  {donnees.lots.total} lot(s) — {donnees.lots.total_tantiemes} tantiemes — {donnees.lots.nombre_coproprietaires} coproprietaire(s)
+                  {donnees.lots.total} lot(s) - {donnees.lots.total_tantiemes} tantiemes - {donnees.lots.nombre_coproprietaires} coproprietaire(s)
                 </p>
                 {donnees.lots.par_type.length > 0 && (
                   <p className="text-stone-500 dark:text-stone-500">
@@ -348,7 +348,7 @@ export function DeclarationFormDialog({
                 <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm dark:border-stone-700 dark:bg-stone-800/50">
                   <h4 className="font-medium text-stone-900 dark:text-white">Derniere assemblee generale</h4>
                   <p className="mt-1 text-stone-600 dark:text-stone-400">
-                    {new Date(donnees.assemblee_generale.derniere_ag_date).toLocaleDateString('fr-FR')} — {donnees.assemblee_generale.derniere_ag_type === 'ordinaire' ? 'Ordinaire' : 'Extraordinaire'}
+                    {new Date(donnees.assemblee_generale.derniere_ag_date).toLocaleDateString('fr-FR')} - {donnees.assemblee_generale.derniere_ag_type === 'ordinaire' ? 'Ordinaire' : 'Extraordinaire'}
                   </p>
                 </div>
               ) : (

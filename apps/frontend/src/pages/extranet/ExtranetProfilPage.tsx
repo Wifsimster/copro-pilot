@@ -83,7 +83,7 @@ export default function ExtranetProfilPage() {
                       Lot {lot.numero}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {lot.type} —{' '}
+                      {lot.type} -{' '}
                       {lot.surface
                         ? `${lot.surface} m²`
                         : 'Surface non renseignee'}

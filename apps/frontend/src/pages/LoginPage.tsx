@@ -299,7 +299,7 @@ export default function LoginPage() {
                       {isLoading ? (
                         <>
                           <Loader2 className="size-4 animate-spin" />
-                          Connexion...
+                          Connexion…
                         </>
                       ) : (
                         'Se connecter'
@@ -488,7 +488,7 @@ export default function LoginPage() {
                           {isLoading ? (
                             <>
                               <Loader2 className="size-4 animate-spin" />
-                              Inscription...
+                              Inscription…
                             </>
                           ) : (
                             "S'inscrire"

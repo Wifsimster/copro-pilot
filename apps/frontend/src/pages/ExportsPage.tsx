@@ -104,7 +104,7 @@ export default function ExportsPage() {
                     <option value="">Selectionner un budget</option>
                     {budgets?.map((b: BudgetPrevisionnel) => (
                       <option key={b.id} value={b.id}>
-                        Budget {b.annee} — {Number(b.montant_total).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
+                        Budget {b.annee} - {Number(b.montant_total).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
                       </option>
                     ))}
                   </select>
@@ -165,7 +165,7 @@ export default function ExportsPage() {
                     <option value="">Selectionner une AG</option>
                     {assemblees?.map((ag: AssembleeGenerale) => (
                       <option key={ag.id} value={ag.id}>
-                        AG du {new Date(ag.date).toLocaleDateString('fr-FR')} — {ag.type === 'ordinaire' ? 'Ordinaire' : 'Extraordinaire'}
+                        AG du {new Date(ag.date).toLocaleDateString('fr-FR')} - {ag.type === 'ordinaire' ? 'Ordinaire' : 'Extraordinaire'}
                       </option>
                     ))}
                   </select>
@@ -334,7 +334,7 @@ export default function ExportsPage() {
                     <option value="">Selectionner un budget</option>
                     {budgets?.map((b: BudgetPrevisionnel) => (
                       <option key={b.id} value={b.id}>
-                        Budget {b.annee} — {Number(b.montant_total).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
+                        Budget {b.annee} - {Number(b.montant_total).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}
                       </option>
                     ))}
                   </select>

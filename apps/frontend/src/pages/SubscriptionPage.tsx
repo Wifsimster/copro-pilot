@@ -282,7 +282,7 @@ export default function SubscriptionPage() {
               className="bg-green-600 hover:bg-green-700 text-white"
             >
               <CreditCard className="size-4" />
-              Passer au plan Pro — {formatPrice('pro', cadence)}
+              Passer au plan Pro - {formatPrice('pro', cadence)}
             </Button>
           )}
 

@@ -29,7 +29,7 @@ export default function ExtranetLayout() {
           <h1 className="text-2xl font-bold">
             Espace coproprietaire
           </h1>
-          <p className="text-muted-foreground">Chargement...</p>
+          <p className="text-muted-foreground">Chargement…</p>
         </div>
         <div className="animate-pulse space-y-4">
           {Array.from({ length: 4 }).map((_, i) => (

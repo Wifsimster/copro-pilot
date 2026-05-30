@@ -197,7 +197,7 @@ export default function ExtranetDashboardPage() {
             icon={Calendar}
             label="Prochaine assemblee"
             value={`AG ${nextAG.type}`}
-            sublabel={`${new Date(nextAG.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}${nextAG.heure ? ` a ${nextAG.heure}` : ''}${nextAG.lieu ? ` — ${nextAG.lieu}` : ''}`}
+            sublabel={`${new Date(nextAG.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}${nextAG.heure ? ` a ${nextAG.heure}` : ''}${nextAG.lieu ? ` - ${nextAG.lieu}` : ''}`}
             badge={{
               text: nextAG.statut,
               className:
@@ -263,7 +263,7 @@ export default function ExtranetDashboardPage() {
                     {new Date(
                       incident.date_signalement
                     ).toLocaleDateString('fr-FR')}{' '}
-                    — {incident.copropriete_nom}
+                    - {incident.copropriete_nom}
                   </p>
                 </div>
                 <span className="text-xs font-medium text-muted-foreground">

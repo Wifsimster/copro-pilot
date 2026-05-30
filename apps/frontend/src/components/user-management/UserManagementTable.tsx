@@ -107,7 +107,7 @@ export function UserManagementTable({
                       {(!user.coproprietes ||
                         user.coproprietes.length === 0) && (
                         <span className="text-xs text-muted-foreground">
-                          —
+                          -
                         </span>
                       )}
                     </div>

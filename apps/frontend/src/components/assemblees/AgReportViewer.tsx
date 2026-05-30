@@ -58,7 +58,7 @@ function Annexe1Table({ data }: { data: AgReportPack['annexe1'] }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Annexe 1 — Etat financier</CardTitle>
+        <CardTitle>Annexe 1 - Etat financier</CardTitle>
         <CardDescription>
           Comparaison budget previsionnel vs realise par poste de
           depenses
@@ -151,7 +151,7 @@ function Annexe2Table({ data }: { data: AgReportPack['annexe2'] }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Annexe 2 — Situation de tresorerie</CardTitle>
+        <CardTitle>Annexe 2 - Situation de tresorerie</CardTitle>
         <CardDescription>
           Soldes des comptes bancaires et suivi des appels de fonds
         </CardDescription>
@@ -231,7 +231,7 @@ function Annexe3Table({ data }: { data: AgReportPack['annexe3'] }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Annexe 3 — Soldes des coproprietaires</CardTitle>
+        <CardTitle>Annexe 3 - Soldes des coproprietaires</CardTitle>
         <CardDescription>
           Situation individuelle de chaque coproprietaire (appeles
           vs payes)
@@ -310,7 +310,7 @@ function Annexe4Table({ data }: { data: AgReportPack['annexe4'] }) {
     <Card>
       <CardHeader>
         <CardTitle>
-          Annexe 4 — Etat des dettes fournisseurs
+          Annexe 4 - Etat des dettes fournisseurs
         </CardTitle>
         <CardDescription>
           Contrats actifs et montants dus aux prestataires
@@ -373,7 +373,7 @@ function Annexe5Table({ data }: { data: AgReportPack['annexe5'] }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Annexe 5 — Fonds travaux (loi ALUR)</CardTitle>
+        <CardTitle>Annexe 5 - Fonds travaux (loi ALUR)</CardTitle>
         <CardDescription>
           Situation du fonds de travaux obligatoire et mouvements de
           l'exercice

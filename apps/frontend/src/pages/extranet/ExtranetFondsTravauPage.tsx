@@ -29,7 +29,7 @@ export default function ExtranetFondsTravauPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium">
-                    Lot {f.lot_numero} — {f.copropriete_nom}
+                    Lot {f.lot_numero} - {f.copropriete_nom}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {f.tantiemes} tantiemes

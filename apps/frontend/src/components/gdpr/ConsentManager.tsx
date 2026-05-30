@@ -56,7 +56,7 @@ export function ConsentManager() {
     return (
       <Card>
         <CardContent className="p-6">
-          <p className="text-muted-foreground">Chargement...</p>
+          <p className="text-muted-foreground">Chargement…</p>
         </CardContent>
       </Card>
     )

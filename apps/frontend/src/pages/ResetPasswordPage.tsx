@@ -159,7 +159,7 @@ export default function ResetPasswordPage() {
                   {isLoading ? (
                     <>
                       <Loader2 className="size-4 animate-spin" />
-                      Réinitialisation...
+                      Réinitialisation…
                     </>
                   ) : (
                     'Réinitialiser le mot de passe'

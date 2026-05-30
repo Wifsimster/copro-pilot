@@ -208,7 +208,7 @@ function PricingCard({
                   dark:text-emerald-400 font-medium"
               >
                 Soit {Math.round(tier.price.yearly / 12)} €/mois
-                — économisez{' '}
+                - économisez{' '}
                 {Math.round(
                   (1 - tier.price.yearly / (tier.price.monthly * 12))
                     * 100
@@ -350,7 +350,7 @@ export function PricingSection() {
           className="text-center text-sm text-amber-600
             dark:text-amber-400 font-semibold mb-8"
         >
-          Soit à partir de 0,38 €/lot/mois — jusqu'à 10x
+          Soit à partir de 0,38 €/lot/mois - jusqu'à 10x
           moins cher que les logiciels traditionnels
         </motion.p>
 

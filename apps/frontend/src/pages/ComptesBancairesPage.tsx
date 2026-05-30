@@ -222,7 +222,7 @@ export default function ComptesBancairesPage() {
                       onChange={(e) => setSelectedCompteId(e.target.value ? parseInt(e.target.value) : undefined)}
                       className="appearance-none rounded-lg border border-stone-300 bg-white px-3 py-1.5 pr-8 text-sm text-stone-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 dark:border-stone-600 dark:bg-stone-700 dark:text-white"
                     >
-                      <option value="">Selectionner un compte...</option>
+                      <option value="">Selectionner un compte…</option>
                       {comptes?.map((c: CompteBancaire) => (
                         <option key={c.id} value={c.id}>{c.banque} ({TYPE_COMPTE_LABELS[c.type]})</option>
                       ))}

@@ -132,7 +132,7 @@ export function MutationFormDialog({ open, onOpenChange, lotId, onSubmit, isLoad
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="0">— Aucun —</SelectItem>
+                    <SelectItem value="0">- Aucun -</SelectItem>
                     {coproprietaires?.map((c) => (
                       <SelectItem key={c.id} value={String(c.id)}>{c.prenom} {c.nom}</SelectItem>
                     ))}
@@ -155,7 +155,7 @@ export function MutationFormDialog({ open, onOpenChange, lotId, onSubmit, isLoad
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="0">— Selectionner —</SelectItem>
+                    <SelectItem value="0">- Selectionner -</SelectItem>
                     {coproprietaires?.map((c) => (
                       <SelectItem key={c.id} value={String(c.id)}>{c.prenom} {c.nom}</SelectItem>
                     ))}

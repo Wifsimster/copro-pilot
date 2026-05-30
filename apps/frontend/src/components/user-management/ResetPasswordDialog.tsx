@@ -116,7 +116,7 @@ export function ResetPasswordDialog({
                 {isLoading ? (
                   <>
                     <Loader2 className="size-4 animate-spin" />
-                    Envoi...
+                    Envoi…
                   </>
                 ) : (
                   'Envoyer le lien'

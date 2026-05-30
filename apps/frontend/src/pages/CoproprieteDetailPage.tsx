@@ -455,9 +455,9 @@ export default function CoproprieteDetailPage() {
                 onChange={(e) => setSelectedLotId(e.target.value ? parseInt(e.target.value) : undefined)}
                 className="flex-1 rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm dark:border-stone-600 dark:bg-stone-800 dark:text-white"
               >
-                <option value="">Selectionner un lot...</option>
+                <option value="">Selectionner un lot…</option>
                 {lots?.map((l: LotWithProprietaire) => (
-                  <option key={l.id} value={l.id}>Lot {l.numero} — {TYPE_LABELS[l.type] || l.type}</option>
+                  <option key={l.id} value={l.id}>Lot {l.numero} - {TYPE_LABELS[l.type] || l.type}</option>
                 ))}
               </select>
               {selectedLotId && (
@@ -552,9 +552,9 @@ export default function CoproprieteDetailPage() {
                 onChange={(e) => setSelectedLotId(e.target.value ? parseInt(e.target.value) : undefined)}
                 className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm dark:border-stone-600 dark:bg-stone-800 dark:text-white"
               >
-                <option value="">Selectionner un lot...</option>
+                <option value="">Selectionner un lot…</option>
                 {lots?.map((l: LotWithProprietaire) => (
-                  <option key={l.id} value={l.id}>Lot {l.numero} — {TYPE_LABELS[l.type] || l.type}</option>
+                  <option key={l.id} value={l.id}>Lot {l.numero} - {TYPE_LABELS[l.type] || l.type}</option>
                 ))}
               </select>
             </div>

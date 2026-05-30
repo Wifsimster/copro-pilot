@@ -625,7 +625,7 @@ export default function AssembleeDetailPage() {
                         {!expandedDestinataires ? (
                           <div className="flex items-center gap-2 py-2">
                             <Loader2 className="size-4 animate-spin text-stone-400" />
-                            <span className="text-sm text-stone-400">Chargement...</span>
+                            <span className="text-sm text-stone-400">Chargement…</span>
                           </div>
                         ) : expandedDestinataires.length === 0 ? (
                           <p className="text-sm text-stone-400 dark:text-stone-500">

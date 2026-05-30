@@ -175,7 +175,7 @@ export function SinistreFormDialog({
                     <SelectItem value="">Aucune</SelectItem>
                     {assurances.map((a) => (
                       <SelectItem key={a.id} value={String(a.id)}>
-                        {a.compagnie} — {a.numero_police || 'N/A'}
+                        {a.compagnie} - {a.numero_police || 'N/A'}
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -142,7 +142,7 @@ export function GlobalSearch() {
         className="flex w-full max-w-md items-center gap-2 rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-sm text-stone-500 transition-colors hover:bg-stone-100 dark:border-stone-600 dark:bg-stone-700 dark:text-stone-400 dark:hover:bg-stone-700"
       >
         <Search className="size-4 shrink-0" />
-        <span className="flex-1 text-left">Rechercher...</span>
+        <span className="flex-1 text-left">Rechercher…</span>
         <kbd className="pointer-events-none hidden h-5 shrink-0 select-none items-center gap-1 rounded border border-stone-300 bg-white px-1.5 font-mono text-[10px] font-medium text-stone-500 dark:border-stone-500 dark:bg-stone-600 dark:text-stone-300 sm:flex">
           <span className="text-xs">⌘</span>K
         </kbd>

@@ -410,7 +410,7 @@ function AnnexesTab({ coproprieteId, annee }: { coproprieteId: number; annee: nu
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Annexes reglementaires a presenter en Assemblee Generale (decret du 14 mars 2005) — Exercice {year}
+        Annexes reglementaires a presenter en Assemblee Generale (decret du 14 mars 2005) - Exercice {year}
       </p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {ANNEXES.map(({ num, title, desc }) => (
@@ -437,7 +437,7 @@ function AnnexesTab({ coproprieteId, annee }: { coproprieteId: number; annee: nu
       {/* Annexe detail */}
       {selectedAnnexe && annexeData[selectedAnnexe] && (
         <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="mb-3 text-sm font-semibold">{ANNEXES[selectedAnnexe - 1].title} — {year}</h3>
+          <h3 className="mb-3 text-sm font-semibold">{ANNEXES[selectedAnnexe - 1].title} - {year}</h3>
           <pre className="max-h-96 overflow-auto rounded bg-muted p-3 text-xs">
             {JSON.stringify(annexeData[selectedAnnexe], null, 2)}
           </pre>

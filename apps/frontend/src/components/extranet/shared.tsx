@@ -60,7 +60,7 @@ export function DocRow({
       <div>
         <p className="text-sm font-medium">{nom}</p>
         <p className="text-xs text-muted-foreground">
-          {fichierNom} — {categorie}
+          {fichierNom} - {categorie}
         </p>
       </div>
       <a
