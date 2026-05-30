@@ -108,7 +108,7 @@ export default function ExportsPage() {
                       </option>
                     ))}
                   </select>
-                  <button
+                  <button type="button"
                     onClick={() => handleExport(exportBudgetPdf, selectedBudgetPdf, 'Budget previsionnel')}
                     disabled={selectedBudgetPdf === '' || exportBudgetPdf.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
@@ -169,7 +169,7 @@ export default function ExportsPage() {
                       </option>
                     ))}
                   </select>
-                  <button
+                  <button type="button"
                     onClick={() => handleExport(exportFeuillePresencePdf, selectedAgPdf, 'Feuille de presence')}
                     disabled={selectedAgPdf === '' || exportFeuillePresencePdf.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
@@ -198,7 +198,7 @@ export default function ExportsPage() {
                   </div>
                 </div>
                 <div className="mt-4">
-                  <button
+                  <button type="button"
                     onClick={() => handleExportCopro(exportCarnetEntretienPdf, 'Carnet d\'entretien')}
                     disabled={exportCarnetEntretienPdf.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
@@ -227,7 +227,7 @@ export default function ExportsPage() {
                   </div>
                 </div>
                 <div className="mt-4">
-                  <button
+                  <button type="button"
                     onClick={() => handleExportCopro(exportEtatImpayesPdf, 'Etat des impayes PDF')}
                     disabled={exportEtatImpayesPdf.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
@@ -265,7 +265,7 @@ export default function ExportsPage() {
                   </div>
                 </div>
                 <div className="mt-4">
-                  <button
+                  <button type="button"
                     onClick={() => {
                       exportCoproprietairesExcel.mutate(selectedCoproId)
                       toast.success('Export "Liste des coproprietaires" lance')
@@ -297,7 +297,7 @@ export default function ExportsPage() {
                   </div>
                 </div>
                 <div className="mt-4">
-                  <button
+                  <button type="button"
                     onClick={() => handleExportCopro(exportBalanceComptesExcel, 'Balance des comptes')}
                     disabled={exportBalanceComptesExcel.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
@@ -338,7 +338,7 @@ export default function ExportsPage() {
                       </option>
                     ))}
                   </select>
-                  <button
+                  <button type="button"
                     onClick={() => handleExport(exportEtatChargesExcel, selectedBudgetExcel, 'Etat des charges')}
                     disabled={selectedBudgetExcel === '' || exportEtatChargesExcel.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
@@ -367,7 +367,7 @@ export default function ExportsPage() {
                   </div>
                 </div>
                 <div className="mt-4">
-                  <button
+                  <button type="button"
                     onClick={() => handleExportCopro(exportEtatImpayesExcel, 'Etat des impayes Excel')}
                     disabled={exportEtatImpayesExcel.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"

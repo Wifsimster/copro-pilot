@@ -44,7 +44,7 @@ function NotificationItem({
   onNavigate: (n: Notification) => void
 }) {
   return (
-    <button
+    <button type="button"
       onClick={() => onNavigate(notification)}
       className={cn(
         'flex w-full items-start gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-stone-50 dark:hover:bg-stone-800',
@@ -111,7 +111,7 @@ export function NotificationBell() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button
+        <button type="button"
           className="relative rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800"
           title="Notifications"
           aria-label="Notifications"
@@ -130,7 +130,7 @@ export function NotificationBell() {
             Notifications
           </h3>
           {!!unreadCount && unreadCount > 0 && (
-            <button
+            <button type="button"
               onClick={handleMarkAllAsRead}
               className="flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
             >
@@ -157,7 +157,7 @@ export function NotificationBell() {
           )}
         </div>
         <div className="border-t border-stone-200 dark:border-stone-700">
-          <button
+          <button type="button"
             onClick={() => {
               navigate('/notifications')
               setOpen(false)

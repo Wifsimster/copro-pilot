@@ -75,7 +75,7 @@ function FaqAccordionItem({
       className="border-b border-stone-200/60
         dark:border-stone-800 last:border-b-0"
     >
-      <button
+      <button type="button"
         onClick={onToggle}
         className="flex w-full items-center justify-between
           py-5 text-left group"

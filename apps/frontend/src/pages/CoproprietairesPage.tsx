@@ -47,7 +47,7 @@ export default function CoproprietairesPage() {
             {coproprietaires?.length || 0} copropriétaire{(coproprietaires?.length || 0) > 1 ? 's' : ''} enregistré{(coproprietaires?.length || 0) > 1 ? 's' : ''}
           </p>
         </div>
-        <button
+        <button type="button"
           onClick={() => setShowCreate(true)}
           className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800"
         >
@@ -75,7 +75,7 @@ export default function CoproprietairesPage() {
             {search ? 'Aucun résultat' : 'Aucun copropriétaire enregistré'}
           </p>
           {!search && (
-            <button
+            <button type="button"
               onClick={() => setShowCreate(true)}
               className="mt-4 flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm text-white hover:bg-emerald-800"
             >
@@ -105,7 +105,7 @@ export default function CoproprietairesPage() {
                   </div>
                 </div>
                 <div className="flex gap-1">
-                  <button
+                  <button type="button"
                     onClick={() => setEditingCopro(copro)}
                     className="rounded p-1 text-stone-400 hover:text-emerald-700"
                     title="Modifier"
@@ -113,7 +113,7 @@ export default function CoproprietairesPage() {
                   >
                     <Pencil className="size-4" />
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => handleDelete(copro.id)}
                     className="rounded p-1 text-stone-400 hover:text-red-600"
                     title="Supprimer"

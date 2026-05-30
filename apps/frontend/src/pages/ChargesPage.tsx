@@ -119,7 +119,7 @@ export default function ChargesPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Budgets previsionnels</h2>
-                <button
+                <button type="button"
                   onClick={() => setShowBudgetDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -162,14 +162,14 @@ export default function ChargesPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
+                              <button type="button"
                                 onClick={() => { setEditingBudget(budget); setShowBudgetDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'budget', id: budget.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
@@ -210,7 +210,7 @@ export default function ChargesPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Appels de fonds</h2>
-                <button
+                <button type="button"
                   onClick={() => setShowAppelDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -261,14 +261,14 @@ export default function ChargesPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
+                              <button type="button"
                                 onClick={() => { setEditingAppel(appel); setShowAppelDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'appel', id: appel.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
@@ -309,7 +309,7 @@ export default function ChargesPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Paiements</h2>
-                <button
+                <button type="button"
                   onClick={() => setShowPaiementDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -360,14 +360,14 @@ export default function ChargesPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
+                              <button type="button"
                                 onClick={() => { setEditingPaiement(paiement); setShowPaiementDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'paiement', id: paiement.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
@@ -411,7 +411,7 @@ export default function ChargesPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Fonds travaux</h2>
-                <button
+                <button type="button"
                   onClick={() => setShowFondsDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -454,14 +454,14 @@ export default function ChargesPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
+                              <button type="button"
                                 onClick={() => { setEditingFonds(fonds); setShowFondsDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'fonds', id: fonds.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"

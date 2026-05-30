@@ -51,7 +51,7 @@ export default function CoproprietesPage() {
             {coproprietes?.length || 0} copropriété{(coproprietes?.length || 0) > 1 ? 's' : ''} gérée{(coproprietes?.length || 0) > 1 ? 's' : ''}
           </p>
         </div>
-        <button
+        <button type="button"
           onClick={() => setShowCreate(true)}
           className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800"
         >
@@ -83,7 +83,7 @@ export default function CoproprietesPage() {
             {search ? 'Essayez un autre terme de recherche.' : 'Commencez par créer votre première copropriété.'}
           </p>
           {!search && (
-            <button
+            <button type="button"
               onClick={() => setShowCreate(true)}
               className="mt-4 flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm text-white hover:bg-emerald-800"
             >
@@ -120,14 +120,14 @@ export default function CoproprietesPage() {
                   >
                     <Eye className="size-4" />
                   </Link>
-                  <button
+                  <button type="button"
                     onClick={() => setEditingCopro(copro)}
                     className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-emerald-700 dark:hover:bg-stone-800"
                     aria-label="Modifier"
                   >
                     <Pencil className="size-4" />
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => handleDelete(copro.id)}
                     className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-red-600 dark:hover:bg-stone-800"
                     aria-label="Supprimer"

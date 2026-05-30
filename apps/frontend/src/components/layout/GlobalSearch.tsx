@@ -137,7 +137,7 @@ export function GlobalSearch() {
 
   return (
     <>
-      <button
+      <button type="button"
         onClick={() => setOpen(true)}
         className="flex w-full max-w-md items-center gap-2 rounded-lg border border-stone-200 bg-stone-50 px-3 py-1.5 text-sm text-stone-500 transition-colors hover:bg-stone-100 dark:border-stone-600 dark:bg-stone-700 dark:text-stone-400 dark:hover:bg-stone-700"
       >

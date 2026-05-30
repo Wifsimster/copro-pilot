@@ -158,7 +158,7 @@ export default function DocumentsPage() {
                 <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
               </div>
             </div>
-            <button
+            <button type="button"
               onClick={() => setShowCreateDialog(true)}
               className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
@@ -231,7 +231,7 @@ export default function DocumentsPage() {
                     </div>
                     <div className="flex shrink-0 items-center gap-1">
                       {isPreviewable(doc.mime_type) && (
-                        <button
+                        <button type="button"
                           onClick={() => setPreviewDoc(doc)}
                           className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                           title="Previsualiser"
@@ -248,7 +248,7 @@ export default function DocumentsPage() {
                       >
                         <Download className="size-4" />
                       </a>
-                      <button
+                      <button type="button"
                         onClick={() => setEditingDoc(doc)}
                         className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                         title="Modifier"
@@ -256,7 +256,7 @@ export default function DocumentsPage() {
                       >
                         <Pencil className="size-4" />
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => { if (confirm('Supprimer ce document ?')) deleteDocument.mutate(doc.id) }}
                         className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
                         title="Supprimer"
@@ -291,7 +291,7 @@ export default function DocumentsPage() {
                 >
                   <Download className="size-4" />
                 </a>
-                <button
+                <button type="button"
                   onClick={() => setPreviewDoc(null)}
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
                   aria-label="Fermer"

@@ -59,7 +59,7 @@ export default function AssembleesPage() {
       ) : (
         <div>
           <div className="mb-4 flex justify-end">
-            <button
+            <button type="button"
               onClick={() => setShowDialog(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800"
             >
@@ -107,14 +107,14 @@ export default function AssembleesPage() {
                       >
                         <Eye className="size-4" />
                       </Link>
-                      <button
+                      <button type="button"
                         onClick={() => setEditingAG(ag)}
                         className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-emerald-700 dark:hover:bg-stone-800"
                         aria-label="Modifier"
                       >
                         <Pencil className="size-4" />
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => setDeleteId(ag.id)}
                         className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-red-600 dark:hover:bg-stone-800"
                         aria-label="Supprimer"

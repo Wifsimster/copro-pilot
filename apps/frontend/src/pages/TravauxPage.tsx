@@ -108,7 +108,7 @@ export default function TravauxPage() {
               { key: 'interventions' as Tab, label: 'Interventions', icon: Hammer },
               { key: 'carnet' as Tab, label: "Carnet d'entretien", icon: BookOpen },
             ]).map((tab) => (
-              <button
+              <button type="button"
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
@@ -128,7 +128,7 @@ export default function TravauxPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Incidents</h2>
-                <button
+                <button type="button"
                   onClick={() => setShowIncidentDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -179,14 +179,14 @@ export default function TravauxPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
+                              <button type="button"
                                 onClick={() => { setEditingIncident(incident); setShowIncidentDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'incident', id: incident.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
@@ -227,7 +227,7 @@ export default function TravauxPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Interventions</h2>
-                <button
+                <button type="button"
                   onClick={() => setShowInterventionDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -282,14 +282,14 @@ export default function TravauxPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
+                              <button type="button"
                                 onClick={() => { setEditingIntervention(inter); setShowInterventionDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'intervention', id: inter.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
@@ -330,7 +330,7 @@ export default function TravauxPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Carnet d'entretien</h2>
-                <button
+                <button type="button"
                   onClick={() => setShowCarnetDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -377,14 +377,14 @@ export default function TravauxPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
+                              <button type="button"
                                 onClick={() => { setEditingCarnet(entree); setShowCarnetDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'carnet', id: entree.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"

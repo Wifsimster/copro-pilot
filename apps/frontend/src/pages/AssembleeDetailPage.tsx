@@ -198,7 +198,7 @@ export default function AssembleeDetailPage() {
           </p>
         </div>
         {ag.statut === 'terminee' && agId && (
-          <button
+          <button type="button"
             onClick={() => genererPv.mutate(agId)}
             disabled={genererPv.isPending}
             className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-50"
@@ -266,7 +266,7 @@ export default function AssembleeDetailPage() {
 
       {/* Tabs */}
       <div className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
-        <button
+        <button type="button"
           onClick={() => setActiveTab('resolutions')}
           className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
             activeTab === 'resolutions'
@@ -277,7 +277,7 @@ export default function AssembleeDetailPage() {
           <Vote className="h-4 w-4" />
           Resolutions
         </button>
-        <button
+        <button type="button"
           onClick={() => setActiveTab('presences')}
           className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
             activeTab === 'presences'
@@ -288,7 +288,7 @@ export default function AssembleeDetailPage() {
           <Users className="h-4 w-4" />
           Presences
         </button>
-        <button
+        <button type="button"
           onClick={() => setActiveTab('convocations')}
           className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
             activeTab === 'convocations'
@@ -311,7 +311,7 @@ export default function AssembleeDetailPage() {
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Resolutions</h2>
-            <button
+            <button type="button"
               onClick={() => setShowResolutionDialog(true)}
               disabled={createResolution.isPending}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800 disabled:opacity-50"
@@ -358,13 +358,13 @@ export default function AssembleeDetailPage() {
                     <div className="flex gap-1">
                       {!res.resultat && (
                         <div className="flex gap-1">
-                          <button
+                          <button type="button"
                             onClick={() => handleSetResultat(res.id, 'adoptee')}
                             className="rounded px-2 py-1 text-xs text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
                           >
                             Adopter
                           </button>
-                          <button
+                          <button type="button"
                             onClick={() => handleSetResultat(res.id, 'rejetee')}
                             className="rounded px-2 py-1 text-xs text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                           >
@@ -372,14 +372,14 @@ export default function AssembleeDetailPage() {
                           </button>
                         </div>
                       )}
-                      <button
+                      <button type="button"
                         onClick={() => setEditingResolution(res)}
                         className="rounded p-1 text-stone-400 hover:text-emerald-700"
                         aria-label="Modifier"
                       >
                         <Pencil className="h-4 w-4" />
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => setDeleteTarget({ type: 'resolution', id: res.id })}
                         className="rounded p-1 text-stone-400 hover:text-red-600"
                         aria-label="Supprimer"
@@ -421,7 +421,7 @@ export default function AssembleeDetailPage() {
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Feuille de presence</h2>
-            <button
+            <button type="button"
               onClick={() => setShowPresenceDialog(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
@@ -470,14 +470,14 @@ export default function AssembleeDetailPage() {
                       <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{p.tantiemes}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-1">
-                          <button
+                          <button type="button"
                             onClick={() => setEditingPresence(p)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
-                          <button
+                          <button type="button"
                             onClick={() => setDeleteTarget({ type: 'presence', id: p.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
@@ -517,7 +517,7 @@ export default function AssembleeDetailPage() {
           <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
             <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
               <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Convocations</h2>
-              <button
+              <button type="button"
                 onClick={() => setShowConvocationDialog(true)}
                 className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
               >
@@ -559,7 +559,7 @@ export default function AssembleeDetailPage() {
                         <div className="flex gap-1">
                           {convoc.statut === 'brouillon' && (
                             <>
-                              <button
+                              <button type="button"
                                 onClick={() => genererDestinataires.mutate(convoc.id)}
                                 disabled={genererDestinataires.isPending}
                                 className="flex items-center gap-1 rounded px-2 py-1 text-xs text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
@@ -568,7 +568,7 @@ export default function AssembleeDetailPage() {
                                 <UserPlus className="h-3.5 w-3.5" />
                                 Destinataires
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => handleEnvoyer(convoc.id)}
                                 disabled={envoyerConvocation.isPending}
                                 className="flex items-center gap-1 rounded px-2 py-1 text-xs text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
@@ -583,7 +583,7 @@ export default function AssembleeDetailPage() {
                               </button>
                             </>
                           )}
-                          <button
+                          <button type="button"
                             onClick={() => setExpandedConvocation(expandedConvocation === convoc.id ? null : convoc.id)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             title="Voir les destinataires"
@@ -592,7 +592,7 @@ export default function AssembleeDetailPage() {
                             <Eye className="h-4 w-4" />
                           </button>
                           {convoc.statut === 'brouillon' && (
-                            <button
+                            <button type="button"
                               onClick={() => setEditingConvocation(convoc)}
                               className="rounded p-1 text-stone-400 hover:text-emerald-700"
                               aria-label="Modifier"
@@ -601,7 +601,7 @@ export default function AssembleeDetailPage() {
                             </button>
                           )}
                           {convoc.statut === 'brouillon' && (
-                            <button
+                            <button type="button"
                               onClick={() => setDeleteTarget({ type: 'convocation', id: convoc.id })}
                               className="rounded p-1 text-stone-400 hover:text-red-600"
                               aria-label="Supprimer"

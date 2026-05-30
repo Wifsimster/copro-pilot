@@ -106,7 +106,7 @@ export default function ReglementsPage() {
               { key: 'reglements' as Tab, label: 'Reglements', icon: FileText },
               { key: 'articles' as Tab, label: 'Articles', icon: ListOrdered },
             ]).map((tab) => (
-              <button
+              <button type="button"
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
@@ -126,7 +126,7 @@ export default function ReglementsPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Reglements</h2>
-                <button
+                <button type="button"
                   onClick={() => setShowReglementDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -181,14 +181,14 @@ export default function ReglementsPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
+                              <button type="button"
                                 onClick={() => { setEditingReglement(reglement); setShowReglementDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'reglement', id: reglement.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
@@ -245,7 +245,7 @@ export default function ReglementsPage() {
                   )}
                 </div>
                 {selectedReglementId && (
-                  <button
+                  <button type="button"
                     onClick={() => setShowArticleDialog(true)}
                     className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                   >
@@ -294,14 +294,14 @@ export default function ReglementsPage() {
                           <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{article.ordre}</td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
+                              <button type="button"
                                 onClick={() => { setEditingArticle(article); setShowArticleDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'article', id: article.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"

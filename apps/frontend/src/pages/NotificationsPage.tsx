@@ -67,7 +67,7 @@ export default function NotificationsPage() {
           </div>
         </div>
         {unreadCount > 0 && (
-          <button
+          <button type="button"
             onClick={() => markAllAsRead.mutate()}
             className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800"
           >
@@ -80,7 +80,7 @@ export default function NotificationsPage() {
       {/* Filters */}
       <div className="flex items-center gap-2">
         <Filter className="size-4 text-stone-400" />
-        <button
+        <button type="button"
           onClick={() => setFilterType('all')}
           className={cn(
             'rounded-full px-3 py-1 text-xs font-medium transition-colors',
@@ -92,7 +92,7 @@ export default function NotificationsPage() {
           Toutes
         </button>
         {allTypes.map((type) => (
-          <button
+          <button type="button"
             key={type}
             onClick={() => setFilterType(type)}
             className={cn(
@@ -161,7 +161,7 @@ export default function NotificationsPage() {
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
                   {notification.lien && (
-                    <button
+                    <button type="button"
                       onClick={() => navigate(notification.lien!)}
                       className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-stone-600 dark:hover:bg-stone-800 dark:hover:text-stone-300"
                       title="Voir"
@@ -171,7 +171,7 @@ export default function NotificationsPage() {
                     </button>
                   )}
                   {!notification.lu && (
-                    <button
+                    <button type="button"
                       onClick={() => markAsRead.mutate(notification.id)}
                       className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-green-600 dark:hover:bg-stone-800 dark:hover:text-green-400"
                       title="Marquer comme lue"
@@ -180,7 +180,7 @@ export default function NotificationsPage() {
                       <Check className="size-4" />
                     </button>
                   )}
-                  <button
+                  <button type="button"
                     onClick={() => deleteNotification.mutate(notification.id)}
                     className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-100 hover:text-red-600 dark:hover:bg-stone-800 dark:hover:text-red-400"
                     title="Supprimer"

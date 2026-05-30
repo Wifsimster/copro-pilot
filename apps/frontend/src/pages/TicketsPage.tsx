@@ -217,7 +217,7 @@ export default function TicketsPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3">
-          <button
+          <button type="button"
             onClick={() => setSelectedTicketId(null)}
             className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800"
             aria-label="Retour"
@@ -248,7 +248,7 @@ export default function TicketsPage() {
           </div>
           {selectedTicket && (
             <div className="flex gap-2">
-              <button
+              <button type="button"
                 onClick={() => {
                   setEditingTicket(selectedTicket)
                   setShowEditDialog(true)
@@ -258,7 +258,7 @@ export default function TicketsPage() {
                 <Pencil className="size-4" />
                 Modifier
               </button>
-              <button
+              <button type="button"
                 onClick={() => setDeleteId(selectedTicket.id)}
                 className="flex items-center gap-2 rounded-lg border border-red-200 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
               >
@@ -475,7 +475,7 @@ export default function TicketsPage() {
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Tickets</h2>
-            <button
+            <button type="button"
               onClick={() => {
                 createForm.reset()
                 setShowCreateDialog(true)
@@ -550,7 +550,7 @@ export default function TicketsPage() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                          <button
+                          <button type="button"
                             onClick={() => {
                               setEditingTicket(ticket)
                               setShowEditDialog(true)
@@ -560,7 +560,7 @@ export default function TicketsPage() {
                           >
                             <Pencil className="size-4" />
                           </button>
-                          <button
+                          <button type="button"
                             onClick={() => setDeleteId(ticket.id)}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"

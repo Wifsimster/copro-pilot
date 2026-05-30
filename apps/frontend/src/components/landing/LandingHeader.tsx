@@ -65,7 +65,7 @@ export function LandingHeader() {
 
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map(link => (
-              <button
+              <button type="button"
                 key={link.href}
                 onClick={() => scrollTo(link.href)}
                 className="text-sm font-medium text-stone-500
@@ -102,7 +102,7 @@ export function LandingHeader() {
             </Button>
           </div>
 
-          <button
+          <button type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
             className="md:hidden p-2 text-stone-600
               dark:text-stone-400"
@@ -121,7 +121,7 @@ export function LandingHeader() {
             dark:bg-stone-950 pb-4"
           >
             {navLinks.map(link => (
-              <button
+              <button type="button"
                 key={link.href}
                 onClick={() => scrollTo(link.href)}
                 className="block w-full text-left px-4 py-3

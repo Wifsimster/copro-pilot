@@ -180,7 +180,7 @@ export default function CoproprieteDetailPage() {
         </div>
         <div className="flex items-center gap-2">
           {(userRole === 'syndic' || userRole === 'admin') && (
-            <button
+            <button type="button"
               onClick={() => setShowBulkCreate(true)}
               className="flex items-center gap-2 rounded-lg border border-stone-300 px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800"
             >
@@ -188,7 +188,7 @@ export default function CoproprieteDetailPage() {
               Créer les comptes extranet
             </button>
           )}
-          <button
+          <button type="button"
             onClick={() => setShowEditCopro(true)}
             className="flex items-center gap-2 rounded-lg border border-stone-300 px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800"
           >
@@ -220,7 +220,7 @@ export default function CoproprieteDetailPage() {
       {/* Tabs */}
       <div className="flex flex-wrap gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
         {tabs.map((tab) => (
-          <button
+          <button type="button"
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
@@ -243,7 +243,7 @@ export default function CoproprieteDetailPage() {
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Lots</h2>
-            <button
+            <button type="button"
               onClick={() => setShowCreateLot(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
@@ -287,14 +287,14 @@ export default function CoproprieteDetailPage() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
-                          <button
+                          <button type="button"
                             onClick={() => setEditingLot(lot)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
                             <Pencil className="size-4" />
                           </button>
-                          <button
+                          <button type="button"
                             onClick={() => handleDeleteLot(lot.id)}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
@@ -317,7 +317,7 @@ export default function CoproprieteDetailPage() {
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Parties communes</h2>
-            <button
+            <button type="button"
               onClick={() => setShowCreatePC(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
@@ -358,14 +358,14 @@ export default function CoproprieteDetailPage() {
                       <td className="max-w-xs truncate px-4 py-3 text-stone-600 dark:text-stone-300">{pc.description || '—'}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
-                          <button
+                          <button type="button"
                             onClick={() => setEditingPC(pc)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
                             <Pencil className="size-4" />
                           </button>
-                          <button
+                          <button type="button"
                             onClick={() => setDeleteTarget({ type: 'pc', id: pc.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
@@ -388,7 +388,7 @@ export default function CoproprieteDetailPage() {
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Cles de repartition</h2>
-            <button
+            <button type="button"
               onClick={() => setShowCreateCle(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
@@ -419,14 +419,14 @@ export default function CoproprieteDetailPage() {
                       <td className="max-w-xs truncate px-4 py-3 text-stone-600 dark:text-stone-300">{cle.description || '—'}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
-                          <button
+                          <button type="button"
                             onClick={() => setEditingCle(cle)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
                             <Pencil className="size-4" />
                           </button>
-                          <button
+                          <button type="button"
                             onClick={() => setDeleteTarget({ type: 'cle', id: cle.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
@@ -461,7 +461,7 @@ export default function CoproprieteDetailPage() {
                 ))}
               </select>
               {selectedLotId && (
-                <button
+                <button type="button"
                   onClick={() => setShowCreateLocataire(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -505,14 +505,14 @@ export default function CoproprieteDetailPage() {
                       <td className="px-4 py-3 text-stone-600 dark:text-stone-300">{loc.date_sortie ? new Date(loc.date_sortie).toLocaleDateString('fr-FR') : '—'}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
-                          <button
+                          <button type="button"
                             onClick={() => setEditingLocataire(loc)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
                             <Pencil className="size-4" />
                           </button>
-                          <button
+                          <button type="button"
                             onClick={() => setDeleteTarget({ type: 'locataire', id: loc.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
@@ -537,7 +537,7 @@ export default function CoproprieteDetailPage() {
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Mutations par lot</h2>
               {selectedLotId && (
-                <button
+                <button type="button"
                   onClick={() => setShowCreateMutation(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -599,14 +599,14 @@ export default function CoproprieteDetailPage() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
-                          <button
+                          <button type="button"
                             onClick={() => setEditingMutation(m)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
                             <Pencil className="size-4" />
                           </button>
-                          <button
+                          <button type="button"
                             onClick={() => setDeleteTarget({ type: 'mutation', id: m.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
@@ -629,7 +629,7 @@ export default function CoproprieteDetailPage() {
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
           <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
             <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Diagnostics techniques</h2>
-            <button
+            <button type="button"
               onClick={() => setShowCreateDiagnostic(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
             >
@@ -676,14 +676,14 @@ export default function CoproprieteDetailPage() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
-                          <button
+                          <button type="button"
                             onClick={() => setEditingDiagnostic(diag)}
                             className="rounded p-1 text-stone-400 hover:text-emerald-700"
                             aria-label="Modifier"
                           >
                             <Pencil className="size-4" />
                           </button>
-                          <button
+                          <button type="button"
                             onClick={() => setDeleteTarget({ type: 'diagnostic', id: diag.id })}
                             className="rounded p-1 text-stone-400 hover:text-red-600"
                             aria-label="Supprimer"
@@ -710,7 +710,7 @@ export default function CoproprieteDetailPage() {
               <p className="mt-3 text-stone-500 dark:text-stone-400">
                 Aucun cycle annuel initialise pour {currentYear}
               </p>
-              <button
+              <button type="button"
                 onClick={() => initCycle.mutate({ coproprieteId: coproprieteId!, annee: currentYear })}
                 disabled={initCycle.isPending}
                 className="mt-4 rounded-lg bg-emerald-700 px-4 py-2 text-sm text-white hover:bg-emerald-800 disabled:opacity-50"

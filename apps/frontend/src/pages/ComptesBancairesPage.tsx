@@ -101,7 +101,7 @@ export default function ComptesBancairesPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Comptes bancaires</h2>
-                <button
+                <button type="button"
                   onClick={() => setShowCompteDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -166,14 +166,14 @@ export default function ComptesBancairesPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                              <button
+                              <button type="button"
                                 onClick={() => { setEditingCompte(compte); setShowCompteDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'compte', id: compte.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
@@ -231,7 +231,7 @@ export default function ComptesBancairesPage() {
                   </div>
                 </div>
                 {selectedCompteId && (
-                  <button
+                  <button type="button"
                     onClick={() => setShowMouvementDialog(true)}
                     className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                   >
@@ -291,14 +291,14 @@ export default function ComptesBancairesPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
+                              <button type="button"
                                 onClick={() => { setEditingMouvement(mouvement); setShowMouvementDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'mouvement', id: mouvement.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"

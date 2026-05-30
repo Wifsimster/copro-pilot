@@ -337,7 +337,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         <div className="flex h-16 items-center gap-3 border-b border-stone-200 px-6 dark:border-stone-700">
           <img src="/logo.svg" alt="CoproPilot" className="size-8 rounded-lg" />
           <span className="text-lg font-bold text-stone-900 dark:text-white">CoproPilot</span>
-          <button
+          <button type="button"
             onClick={() => setSidebarOpen(false)}
             className="ml-auto lg:hidden"
             aria-label="Fermer le menu"
@@ -361,7 +361,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         <div data-tour="user-profile" className="border-t border-stone-200 p-2 dark:border-stone-700">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex w-full items-center gap-2 rounded-lg p-2 text-left transition-colors hover:bg-stone-100 data-[state=open]:bg-stone-100 dark:hover:bg-stone-800 dark:data-[state=open]:bg-stone-800">
+              <button type="button" className="flex w-full items-center gap-2 rounded-lg p-2 text-left transition-colors hover:bg-stone-100 data-[state=open]:bg-stone-100 dark:hover:bg-stone-800 dark:data-[state=open]:bg-stone-800">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarFallback className="rounded-lg">
                     {(user?.firstname?.[0] ?? '').toUpperCase()}
@@ -462,7 +462,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top bar */}
         <header className="flex h-16 items-center gap-3 border-b border-stone-200 bg-white px-4 dark:border-stone-700 dark:bg-stone-900">
-          <button
+          <button type="button"
             onClick={() => setSidebarOpen(true)}
             className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800 lg:hidden"
             aria-label="Ouvrir le menu"

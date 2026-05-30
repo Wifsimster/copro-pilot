@@ -48,7 +48,7 @@ export function CycleAnnuelChecklist({
           Cycle annuel de conformite
         </h3>
         {onRefresh && (
-          <button
+          <button type="button"
             onClick={onRefresh}
             disabled={isRefreshing}
             className="flex items-center gap-1.5 rounded-lg border border-stone-300 px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50 disabled:opacity-50 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800"

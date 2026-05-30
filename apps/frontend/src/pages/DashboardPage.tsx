@@ -283,7 +283,7 @@ function AlertsBanner({
       transition={{ duration: 0.3 }}
     >
       <Card className="overflow-hidden border-red-200 py-0 dark:border-red-800/40">
-        <button
+        <button type="button"
           onClick={() => setExpanded(!expanded)}
           className="flex w-full items-center justify-between bg-red-50 px-4 py-3 text-left dark:bg-red-950/20"
         >

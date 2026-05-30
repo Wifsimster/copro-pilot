@@ -227,7 +227,7 @@ export default function ImmatriculationPage() {
             <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
               <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Declarations annuelles</h2>
               <div className="flex gap-2">
-                <button
+                <button type="button"
                   onClick={handlePreparer}
                   disabled={isPreparating}
                   className="flex items-center gap-2 rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50 dark:border-stone-600 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-700"
@@ -235,7 +235,7 @@ export default function ImmatriculationPage() {
                   <FileSearch className="h-4 w-4" />
                   {isPreparating ? 'Preparation...' : 'Preparer declaration'}
                 </button>
-                <button
+                <button type="button"
                   onClick={() => { setDonneesPreparees(null); setEditingDeclaration(null); setShowDialog(true) }}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -298,14 +298,14 @@ export default function ImmatriculationPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                              <button
+                              <button type="button"
                                 onClick={() => { setDonneesPreparees(null); setEditingDeclaration(decl); setShowDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteId(decl.id)}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"

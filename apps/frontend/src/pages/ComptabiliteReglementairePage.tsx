@@ -103,7 +103,7 @@ export default function ComptabiliteReglementairePage() {
           {/* Tabs */}
           <div className="flex gap-1 rounded-lg border border-border bg-muted/50 p-1">
             {TAB_CONFIG.map(({ key, label, icon: Icon }) => (
-              <button
+              <button type="button"
                 key={key}
                 onClick={() => setTab(key)}
                 className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
@@ -152,7 +152,7 @@ function JournalTab({ exerciceId }: { exerciceId: number | undefined }) {
           />
         </div>
         {exerciceId && (
-          <button
+          <button type="button"
             onClick={() => { if (confirm('Regenerer les ecritures automatiques ? Les ecritures existantes seront remplacees.')) generer.mutate(exerciceId) }}
             disabled={generer.isPending}
             className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
@@ -245,7 +245,7 @@ function GrandLivreTab({ exerciceId }: { exerciceId: number | undefined }) {
             const compteEcritures = ecritures.filter((e) => e.compte_code === t.compte_code)
             return (
               <div key={t.compte_code} className="rounded-lg border border-border">
-                <button
+                <button type="button"
                   onClick={() => setExpandedCompte(isExpanded ? null : t.compte_code)}
                   className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-accent/30"
                 >
@@ -414,7 +414,7 @@ function AnnexesTab({ coproprieteId, annee }: { coproprieteId: number; annee: nu
       </p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {ANNEXES.map(({ num, title, desc }) => (
-          <button
+          <button type="button"
             key={num}
             onClick={() => setSelectedAnnexe(selectedAnnexe === num ? null : num)}
             className={`rounded-lg border p-4 text-left transition-colors ${
@@ -478,7 +478,7 @@ function ExercicesTab({ coproprieteId, exercices, loadingExercices }: { copropri
             </p>
           </div>
           {!planComptable?.length && (
-            <button
+            <button type="button"
               onClick={() => initPlan.mutate(coproprieteId)}
               disabled={initPlan.isPending}
               className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
@@ -509,7 +509,7 @@ function ExercicesTab({ coproprieteId, exercices, loadingExercices }: { copropri
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold">Exercices comptables</h3>
-          <button
+          <button type="button"
             onClick={handleCreateExercice}
             disabled={createExercice.isPending}
             className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
@@ -552,7 +552,7 @@ function ExercicesTab({ coproprieteId, exercices, loadingExercices }: { copropri
                   </p>
                 </div>
                 {ex.statut === 'ouvert' && (
-                  <button
+                  <button type="button"
                     onClick={() => { if (confirm(`Cloturer l'exercice ${ex.annee} ? Cette action est irreversible.`)) clotureExercice.mutate(ex.id) }}
                     disabled={clotureExercice.isPending}
                     className="flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50"

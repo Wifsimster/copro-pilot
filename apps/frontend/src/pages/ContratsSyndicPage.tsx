@@ -80,7 +80,7 @@ export default function ContratsSyndicPage() {
               { key: 'contrats' as Tab, label: 'Contrats de syndic', icon: FileSignature },
               { key: 'propositions' as Tab, label: 'Mise en concurrence', icon: Users },
             ]).map((tab) => (
-              <button
+              <button type="button"
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
@@ -100,7 +100,7 @@ export default function ContratsSyndicPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Contrats de syndic</h2>
-                <button
+                <button type="button"
                   onClick={() => setShowContratDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -160,14 +160,14 @@ export default function ContratsSyndicPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
+                              <button type="button"
                                 onClick={() => { setEditingContrat(contrat); setShowContratDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'contrat', id: contrat.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
@@ -208,7 +208,7 @@ export default function ContratsSyndicPage() {
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Propositions de syndic</h2>
-                <button
+                <button type="button"
                   onClick={() => setShowPropositionDialog(true)}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
@@ -266,14 +266,14 @@ export default function ContratsSyndicPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
-                              <button
+                              <button type="button"
                                 onClick={() => { setEditingProposition(proposition); setShowPropositionDialog(true) }}
                                 className="rounded p-1 text-stone-400 hover:text-emerald-700"
                                 aria-label="Modifier"
                               >
                                 <Pencil className="size-4" />
                               </button>
-                              <button
+                              <button type="button"
                                 onClick={() => setDeleteTarget({ type: 'proposition', id: proposition.id })}
                                 className="rounded p-1 text-stone-400 hover:text-red-600"
                                 aria-label="Supprimer"
