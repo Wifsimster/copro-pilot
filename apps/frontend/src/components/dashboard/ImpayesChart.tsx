@@ -1,3 +1,4 @@
+// react-doctor-disable-next-line react-doctor/prefer-dynamic-import -- already lazy-loaded by its only consumer (DashboardPage)
 import {
   BarChart,
   Bar,
