@@ -157,10 +157,7 @@ function DashboardMockup() {
         initial={{ opacity: 0, x: 20, y: -10 }}
         animate={{ opacity: 1, x: 0, y: 0 }}
         transition={{ delay: 1, duration: 0.5 }}
-        className="absolute -top-3 -right-4 sm:-right-8"
-        style={{
-          animation: 'float 4s ease-in-out infinite',
-        }}
+        className="animate-float absolute -top-3 -right-4 sm:-right-8"
       >
         <div
           className="flex items-center gap-2 rounded-xl

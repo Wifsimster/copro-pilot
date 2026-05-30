@@ -160,6 +160,11 @@
     }
 }
 
+/* Ambient floating decoration (long, looping animation kept in CSS) */
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
 /* Landing page — dot grid texture */
 .landing-dots {
     background-image: radial-gradient(
