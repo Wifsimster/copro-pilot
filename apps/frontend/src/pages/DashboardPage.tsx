@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { LazyMotion, domAnimation, m } from 'motion/react'
 import { useSyndicDashboard } from '@/hooks/useStats'
@@ -36,10 +36,20 @@ import {
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ErrorAlert } from '@/components/layout/ErrorAlert'
-import ImpayesChart from '@/components/dashboard/ImpayesChart'
-import IncidentsChart from '@/components/dashboard/IncidentsChart'
+// The two recharts-backed charts are loaded lazily so recharts lands in its
+// own chunk rather than the dashboard's initial bundle.
+const ImpayesChart = lazy(() => import('@/components/dashboard/ImpayesChart'))
+const IncidentsChart = lazy(
+  () => import('@/components/dashboard/IncidentsChart')
+)
 import RecouvrementGauge from '@/components/dashboard/RecouvrementGauge'
 import EcheancesCard from '@/components/dashboard/EcheancesCard'
+
+// Stable empty defaults so lazily-rendered charts keep referential equality
+// across renders when the API has not returned data yet.
+const EMPTY_IMPAYES: never[] = []
+const EMPTY_INCIDENTS: Record<string, number> = {}
+const CHART_FALLBACK = <div className="h-64 animate-pulse rounded-xl bg-muted" />
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -625,7 +635,11 @@ export default function DashboardPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: 0.2 }}
               >
-                <ImpayesChart data={dashboard.impayes_evolution ?? []} />
+                <Suspense fallback={CHART_FALLBACK}>
+                  <ImpayesChart
+                    data={dashboard.impayes_evolution ?? EMPTY_IMPAYES}
+                  />
+                </Suspense>
               </m.div>
               <m.div
                 className="lg:col-span-1"
@@ -645,7 +659,11 @@ export default function DashboardPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: 0.25 }}
               >
-                <IncidentsChart data={dashboard.incidents_par_statut ?? {}} />
+                <Suspense fallback={CHART_FALLBACK}>
+                  <IncidentsChart
+                    data={dashboard.incidents_par_statut ?? EMPTY_INCIDENTS}
+                  />
+                </Suspense>
               </m.div>
               <m.div
                 className="lg:col-span-2"
