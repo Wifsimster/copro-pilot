@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useReducer } from 'react'
 import { Download, Monitor, Share, Smartphone, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -48,10 +48,40 @@ function detectPlatform(): Platform {
   return 'desktop'
 }
 
+interface PromptState {
+  deferredPrompt: BeforeInstallPromptEvent | null
+  visible: boolean
+}
+
+type PromptAction =
+  | { type: 'available'; prompt: BeforeInstallPromptEvent }
+  | { type: 'show' }
+  | { type: 'hide' }
+  | { type: 'reset' }
+
+function promptReducer(state: PromptState, action: PromptAction): PromptState {
+  switch (action.type) {
+    case 'available':
+      return { deferredPrompt: action.prompt, visible: true }
+    case 'show':
+      return { ...state, visible: true }
+    case 'hide':
+      return { ...state, visible: false }
+    case 'reset':
+      return { deferredPrompt: null, visible: false }
+    default:
+      return state
+  }
+}
+
 export function PwaInstallPrompt() {
-  const [deferredPrompt, setDeferredPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null)
-  const [visible, setVisible] = useState(false)
+  // deferredPrompt and visibility change together; a reducer coordinates them
+  // with a single dispatch so the effect has no cascading setState calls.
+  const [state, dispatch] = useReducer(promptReducer, {
+    deferredPrompt: null,
+    visible: false,
+  })
+  const { deferredPrompt, visible } = state
   const platform = useMemo<Platform>(detectPlatform, [])
 
   useEffect(() => {
@@ -60,13 +90,14 @@ export function PwaInstallPrompt() {
 
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault()
-      setDeferredPrompt(event as BeforeInstallPromptEvent)
-      setVisible(true)
+      dispatch({
+        type: 'available',
+        prompt: event as BeforeInstallPromptEvent,
+      })
     }
 
     const handleAppInstalled = () => {
-      setDeferredPrompt(null)
-      setVisible(false)
+      dispatch({ type: 'reset' })
     }
 
     window.addEventListener(
@@ -79,7 +110,7 @@ export function PwaInstallPrompt() {
     // after a short delay so the prompt is not intrusive on first paint.
     let timer: ReturnType<typeof setTimeout> | undefined
     if (platform === 'ios-safari') {
-      timer = setTimeout(() => setVisible(true), SHOW_DELAY_MS)
+      timer = setTimeout(() => dispatch({ type: 'show' }), SHOW_DELAY_MS)
     }
 
     return () => {
@@ -100,8 +131,7 @@ export function PwaInstallPrompt() {
     } catch {
       // ignore
     } finally {
-      setDeferredPrompt(null)
-      setVisible(false)
+      dispatch({ type: 'reset' })
     }
   }
 
@@ -111,7 +141,7 @@ export function PwaInstallPrompt() {
     } catch {
       // ignore
     }
-    setVisible(false)
+    dispatch({ type: 'hide' })
   }
 
   if (!visible) return null

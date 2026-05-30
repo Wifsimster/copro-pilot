@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useReducer, useEffect } from 'react'
 import {
   Building2,
   ArrowLeft,
@@ -15,11 +15,31 @@ const PLAN_LABELS: Record<string, string> = {
   entreprise: 'Entreprise',
 }
 
+interface VerifyState {
+  status: 'loading' | 'success' | 'error'
+  error: string
+}
+
+type VerifyAction =
+  | { type: 'success' }
+  | { type: 'error'; error: string }
+
+function verifyReducer(_state: VerifyState, action: VerifyAction): VerifyState {
+  switch (action.type) {
+    case 'success':
+      return { status: 'success', error: '' }
+    case 'error':
+      return { status: 'error', error: action.error }
+    default:
+      return _state
+  }
+}
+
 export default function VerifyEmailPage() {
-  const [state, setState] = useState<{
-    status: 'loading' | 'success' | 'error'
-    error: string
-  }>({ status: 'loading', error: '' })
+  const [state, dispatch] = useReducer(verifyReducer, {
+    status: 'loading',
+    error: '',
+  })
   const { status, error } = state
 
   const pendingPlan = sessionStorage.getItem('pending_plan') || ''
@@ -30,8 +50,8 @@ export default function VerifyEmailPage() {
 
   useEffect(() => {
     if (!token) {
-      setState({
-        status: 'error',
+      dispatch({
+        type: 'error',
         error: 'Lien de vérification invalide ou manquant',
       })
       return
@@ -41,17 +61,17 @@ export default function VerifyEmailPage() {
       .verifyEmail({ query: { token } })
       .then(result => {
         if (result.error) {
-          setState({
-            status: 'error',
+          dispatch({
+            type: 'error',
             error: result.error.message || 'La vérification a échoué',
           })
         } else {
-          setState({ status: 'success', error: '' })
+          dispatch({ type: 'success' })
         }
       })
       .catch(() => {
-        setState({
-          status: 'error',
+        dispatch({
+          type: 'error',
           error:
             'Erreur lors de la vérification. Le lien est peut-être expiré.',
         })
