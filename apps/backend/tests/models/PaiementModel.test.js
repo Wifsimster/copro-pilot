@@ -2,7 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 /**
  * Unit tests for PaiementModel.getSoldeCoproprietaire.
- * Verifies the solde calculation: total_paye - total_du.
+ * Verifies the solde calculation: total_du - total_paye.
+ * Convention: a positive solde means the copropriétaire owes money
+ * (débiteur), matching the export services and the extranet frontend.
  */
 
 let dbCallIndex = 0
@@ -79,7 +81,7 @@ describe('PaiementModel.getSoldeCoproprietaire', () => {
     expect(result).toEqual({
       total_du: 3000,
       total_paye: 2000,
-      solde: -1000, // 2000 - 3000
+      solde: 1000, // 3000 - 2000 => débiteur owes 1000
     })
 
     // Verify correct tables were queried
@@ -87,7 +89,7 @@ describe('PaiementModel.getSoldeCoproprietaire', () => {
     expect(mockKnex).toHaveBeenCalledWith('paiements')
   })
 
-  it('returns negative solde when no payments exist', async () => {
+  it('returns positive solde when no payments exist (full debtor)', async () => {
     // Dues exist but no payments (sum returns null)
     dbCallResults = [
       [{ total: '5000' }],
@@ -99,11 +101,11 @@ describe('PaiementModel.getSoldeCoproprietaire', () => {
     expect(result).toEqual({
       total_du: 5000,
       total_paye: 0,
-      solde: -5000, // 0 - 5000
+      solde: 5000, // 5000 - 0 => owes the full amount
     })
   })
 
-  it('returns positive solde when no dues exist', async () => {
+  it('returns negative solde when no dues exist (credit)', async () => {
     // No dues (sum returns null) but payments exist
     dbCallResults = [
       [{ total: null }],
@@ -115,7 +117,7 @@ describe('PaiementModel.getSoldeCoproprietaire', () => {
     expect(result).toEqual({
       total_du: 0,
       total_paye: 1500,
-      solde: 1500, // 1500 - 0
+      solde: -1500, // 0 - 1500 => credit balance
     })
   })
 
