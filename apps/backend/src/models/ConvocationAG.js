@@ -146,16 +146,28 @@ export class ConvocationAGModel {
         const ag = await db('assemblees_generales').where('id', agId).first()
         if (!ag) return { valide: false, message: 'AG non trouvée' }
 
-        const agDate = new Date(ag.date)
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        const diffDays = Math.ceil((agDate - today) / (1000 * 60 * 60 * 24))
+        // Compare calendar dates in a timezone-independent way. `ag.date`
+        // may come back as a Date (local midnight) or a 'YYYY-MM-DD' string;
+        // both are normalized to a UTC-midnight epoch for the same calendar
+        // day, and so is "today", so the difference is always whole days.
+        const MS_PER_DAY = 24 * 60 * 60 * 1000
+        const toCalendarUtc = value => {
+            if (value instanceof Date) {
+                return Date.UTC(value.getFullYear(), value.getMonth(), value.getDate())
+            }
+            const [y, m, d] = String(value).slice(0, 10).split('-').map(Number)
+            return Date.UTC(y, m - 1, d)
+        }
+        const now = new Date()
+        const agUtc = toCalendarUtc(ag.date)
+        const todayUtc = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
+        const diffDays = Math.round((agUtc - todayUtc) / MS_PER_DAY)
 
         return {
             valide: diffDays >= 21,
             jours_restants: diffDays,
             date_ag: ag.date,
-            date_limite_envoi: new Date(agDate.getTime() - 21 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            date_limite_envoi: new Date(agUtc - 21 * MS_PER_DAY).toISOString().split('T')[0],
             message: diffDays >= 21
                 ? `Délai respecté (${diffDays} jours avant l'AG)`
                 : diffDays > 0

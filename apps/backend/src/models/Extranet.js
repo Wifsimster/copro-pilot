@@ -110,7 +110,9 @@ export class ExtranetModel {
     return {
       total_du: parseFloat(totalDu?.total || 0),
       total_paye: parseFloat(totalPaye?.total || 0),
-      solde: parseFloat(totalPaye?.total || 0) - parseFloat(totalDu?.total || 0),
+      // Positive solde = débiteur (owes money), matching the extranet
+      // frontend (isDebiteur = solde > 0) and the export services.
+      solde: parseFloat(totalDu?.total || 0) - parseFloat(totalPaye?.total || 0),
     }
   }
 
@@ -238,7 +240,9 @@ export class ExtranetModel {
         ...copro,
         total_du: parseFloat(totalDu?.total || 0),
         total_paye: parseFloat(totalPaye?.total || 0),
-        solde: parseFloat(totalPaye?.total || 0) - parseFloat(totalDu?.total || 0),
+        // Positive solde = débiteur (owes money), matching the conseil
+        // syndical view (solde > 0 → red) and the export services.
+        solde: parseFloat(totalDu?.total || 0) - parseFloat(totalPaye?.total || 0),
       })
     }
 

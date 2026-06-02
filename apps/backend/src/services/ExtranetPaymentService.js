@@ -3,6 +3,16 @@ import { paiementService } from './PaiementService.js'
 import knexDatabase from '../config/knex-database.js'
 import logger from '../logger.js'
 
+/**
+ * Build an Error carrying an HTTP status so the controller can map known
+ * business failures to the right 4xx code instead of a blanket 500.
+ */
+function httpError(status, message) {
+  const err = new Error(message)
+  err.status = status
+  return err
+}
+
 class ExtranetPaymentService {
   /**
    * Create a Stripe Checkout Session for a copropriétaire to pay
@@ -73,7 +83,7 @@ class ExtranetPaymentService {
    * Handle a successful Stripe checkout session: verify the payment
    * and record the paiement in database.
    */
-  async handlePaymentSuccess(sessionId) {
+  async handlePaymentSuccess(sessionId, expectedCoproprietaireId = null) {
     try {
       const stripe = getStripe()
       if (!stripe) {
@@ -83,19 +93,19 @@ class ExtranetPaymentService {
       const session = await stripe.checkout.sessions.retrieve(sessionId)
 
       if (!session) {
-        throw new Error('Session Stripe introuvable')
+        throw httpError(404, 'Session Stripe introuvable')
       }
 
       if (session.payment_status !== 'paid') {
         logger.warn(
           `[ExtranetPaymentService] Payment not completed for session ${sessionId} (status=${session.payment_status})`
         )
-        throw new Error('Le paiement n\'est pas confirmé')
+        throw httpError(402, 'Le paiement n\'est pas confirmé')
       }
 
       const metadataType = session.metadata?.type
       if (metadataType !== 'coproprietaire_payment') {
-        throw new Error('Type de session Stripe invalide')
+        throw httpError(400, 'Type de session Stripe invalide')
       }
 
       const coproprietaireId = parseInt(
@@ -103,7 +113,22 @@ class ExtranetPaymentService {
         10
       )
       if (!coproprietaireId) {
-        throw new Error('coproprietaireId manquant dans la session')
+        throw httpError(400, 'coproprietaireId manquant dans la session')
+      }
+
+      // Broken-access-control guard: the session id is supplied by the
+      // client, so a paiement must only ever be recorded against the
+      // authenticated copropriétaire who owns the session — never against
+      // whoever the (untrusted) session metadata points to.
+      if (
+        expectedCoproprietaireId != null &&
+        coproprietaireId !== Number(expectedCoproprietaireId)
+      ) {
+        logger.warn(
+          `[ExtranetPaymentService] Session ${sessionId} coproprietaire mismatch ` +
+            `(session=${coproprietaireId}, caller=${expectedCoproprietaireId})`
+        )
+        throw httpError(403, 'Cette session de paiement ne vous appartient pas')
       }
 
       // Idempotency: if a paiement already exists for this session

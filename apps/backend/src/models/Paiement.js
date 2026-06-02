@@ -116,7 +116,10 @@ export class PaiementModel {
         return {
             total_du: parseFloat(totalDu?.total || 0),
             total_paye: parseFloat(totalPaye?.total || 0),
-            solde: parseFloat(totalPaye?.total || 0) - parseFloat(totalDu?.total || 0),
+            // Positive solde = the copropriétaire owes money (débiteur).
+            // This convention is shared by the export services and the
+            // extranet frontend (isDebiteur = solde > 0).
+            solde: parseFloat(totalDu?.total || 0) - parseFloat(totalPaye?.total || 0),
         }
     }
 }
