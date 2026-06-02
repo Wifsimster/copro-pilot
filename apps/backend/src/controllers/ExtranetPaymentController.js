@@ -68,8 +68,22 @@ export class ExtranetPaymentController {
           .json({ error: 'session_id manquant' })
       }
 
-      const paiement =
-        await extranetPaymentService.handlePaymentSuccess(sessionId)
+      // Bind the confirmation to the authenticated copropriétaire so a
+      // paiement can only be recorded against the caller's own account,
+      // never against whoever the (client-supplied) Stripe session points to.
+      const coproprietaire = await ExtranetModel.getCoproprietaireByUserId(
+        req.user.id
+      )
+      if (!coproprietaire) {
+        return res
+          .status(403)
+          .json({ error: 'Accès réservé aux copropriétaires' })
+      }
+
+      const paiement = await extranetPaymentService.handlePaymentSuccess(
+        sessionId,
+        coproprietaire.id
+      )
 
       res.json({
         data: {
@@ -82,8 +96,8 @@ export class ExtranetPaymentController {
         `[ExtranetPaymentController] Confirm payment error: ${error.message}`
       )
       res
-        .status(500)
-        .json({ error: 'Impossible de confirmer le paiement' })
+        .status(error.status || 500)
+        .json({ error: error.status ? error.message : 'Impossible de confirmer le paiement' })
     }
   }
 }
