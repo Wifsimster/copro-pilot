@@ -5,11 +5,20 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { DocumentController } from '../controllers/DocumentController.js'
 import { requireAuth } from '../middleware/auth.js'
-import { requireAdminForDelete } from '../middleware/authorization.js'
+import {
+  requireAdminForDelete,
+  requireStaff,
+} from '../middleware/authorization.js'
 import { validate } from '../middleware/validate.js'
 import { documentCreateSchema } from '../schemas/index.js'
 
 const router = Router()
+
+// Documents are managed by syndic staff. Copropriétaires access the
+// documents shared with them through the /api/extranet routes instead;
+// the generic management routes are not scoped per copropriété and must
+// therefore stay staff-only.
+router.use(requireAuth(), requireStaff)
 
 // Resolve uploads directory relative to backend root
 const uploadsDir = path.join(
