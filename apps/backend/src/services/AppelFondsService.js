@@ -160,16 +160,29 @@ class AppelFondsService {
                         })
                         .returning('*')
 
-                    for (const lot of lots) {
-                        const montantLot =
-                            (quarterAmount * parseInt(lot.tantiemes, 10)) /
-                            totalTantiemes
+                    // Distribute the quarter amount across lots by tantiemes.
+                    // Per-lot rounding to the cent would let the sum of lines
+                    // drift from quarterAmount (centime leak); the last lot
+                    // absorbs the rounding remainder so the lines always sum
+                    // back to exactly quarterAmount.
+                    let allocated = 0
+                    for (let i = 0; i < lots.length; i++) {
+                        const lot = lots[i]
+                        const isLast = i === lots.length - 1
+                        const montantLot = isLast
+                            ? Math.round((quarterAmount - allocated) * 100) / 100
+                            : Math.round(
+                                  ((quarterAmount * parseInt(lot.tantiemes, 10)) /
+                                      totalTantiemes) *
+                                      100
+                              ) / 100
+                        allocated += montantLot
                         await trx('appels_fonds_lignes')
                             .insert({
                                 appel_fonds_id: appel.id,
                                 lot_id: lot.id,
                                 coproprietaire_id: lot.coproprietaire_id,
-                                montant: Math.round(montantLot * 100) / 100,
+                                montant: montantLot,
                             })
                     }
 
