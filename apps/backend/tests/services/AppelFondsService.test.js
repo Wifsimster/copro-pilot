@@ -316,3 +316,53 @@ describe('AppelFondsService.generateFromBudget', () => {
     ).rejects.toThrow('Aucun tantieme configure')
   })
 })
+
+// ─── createLigne cross-copropriété guard ─────────────────────────────
+
+describe('AppelFondsService.createLigne', () => {
+  it('throws COPROPRIETE_MISMATCH when lot and appel belong to different copropriétés', async () => {
+    const appel = buildAppelFonds({ id: 1, copropriete_id: 10 })
+    const lot = buildLot({ id: 2, copropriete_id: 99 })
+
+    // Service calls Promise.all([appel.first(), lot.first()]) — order is
+    // stable because Promise.all preserves input order, and each thenable
+    // resolves with the next dbCallResults entry.
+    dbCallResults = [appel, lot]
+
+    await expect(
+      appelFondsService.createLigne({
+        appel_fonds_id: 1,
+        lot_id: 2,
+        montant: 100,
+      })
+    ).rejects.toMatchObject({
+      code: 'COPROPRIETE_MISMATCH',
+    })
+  })
+
+  it('throws APPEL_NOT_FOUND when the appel does not exist', async () => {
+    const lot = buildLot({ id: 2, copropriete_id: 10 })
+    dbCallResults = [undefined, lot]
+
+    await expect(
+      appelFondsService.createLigne({
+        appel_fonds_id: 999,
+        lot_id: 2,
+        montant: 100,
+      })
+    ).rejects.toMatchObject({ code: 'APPEL_NOT_FOUND' })
+  })
+
+  it('throws LOT_NOT_FOUND when the lot does not exist', async () => {
+    const appel = buildAppelFonds({ id: 1, copropriete_id: 10 })
+    dbCallResults = [appel, undefined]
+
+    await expect(
+      appelFondsService.createLigne({
+        appel_fonds_id: 1,
+        lot_id: 999,
+        montant: 100,
+      })
+    ).rejects.toMatchObject({ code: 'LOT_NOT_FOUND' })
+  })
+})

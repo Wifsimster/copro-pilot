@@ -34,9 +34,20 @@ export class AppelFondsModel {
 
     static async update(id, data) {
         const db = getDb()
+        // copropriete_id is immutable: changing it via PUT would re-parent
+        // the appel (and every paiement/ligne under it) into another
+        // copropriété. budget_id is also frozen so the link to the source
+        // budget cannot be silently rewritten.
+        const allowedFields = [
+            'trimestre', 'annee', 'montant_total',
+            'date_emission', 'date_echeance', 'statut',
+        ]
+        const sanitized = Object.fromEntries(
+            Object.entries(data).filter(([key]) => allowedFields.includes(key))
+        )
         const [result] = await db('appels_fonds')
             .where('id', id)
-            .update({ ...data, updated_at: db.fn.now() })
+            .update({ ...sanitized, updated_at: db.fn.now() })
             .returning('*')
         return result
     }
@@ -76,9 +87,16 @@ export class AppelFondsModel {
 
     static async updateLigne(id, data) {
         const db = getDb()
+        // appel_fonds_id and lot_id are immutable: a line is tied to a
+        // specific (appel × lot) pair. Allowing them to be rewritten via PUT
+        // would re-attribute a montant to a different lot or appel.
+        const allowedFields = ['coproprietaire_id', 'montant']
+        const sanitized = Object.fromEntries(
+            Object.entries(data).filter(([key]) => allowedFields.includes(key))
+        )
         const [result] = await db('appels_fonds_lignes')
             .where('id', id)
-            .update({ ...data, updated_at: db.fn.now() })
+            .update({ ...sanitized, updated_at: db.fn.now() })
             .returning('*')
         return result
     }
