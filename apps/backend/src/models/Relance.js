@@ -48,10 +48,20 @@ export class RelanceModel {
 
     static async update(id, data) {
         const db = getDb()
+        // copropriete_id and coproprietaire_id are immutable: changing them
+        // via PUT would re-target a relance at a different debtor (and a
+        // different copropriété), breaking recouvrement traceability.
+        const allowedFields = [
+            'type', 'date_relance', 'montant_du',
+            'mode_envoi', 'statut', 'notes',
+        ]
+        const sanitized = Object.fromEntries(
+            Object.entries(data).filter(([key]) => allowedFields.includes(key))
+        )
         const [result] = await db('relances')
             .where('id', id)
             .update({
-                ...data,
+                ...sanitized,
                 updated_at: db.fn.now(),
             })
             .returning('*')

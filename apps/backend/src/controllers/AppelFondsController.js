@@ -84,6 +84,12 @@ export class AppelFondsController {
             res.status(201).json({ data: result, message: 'Ligne d\'appel créée avec succès' })
         } catch (error) {
             logger.error(`[AppelFondsController] Error creating ligne: ${error.message}`)
+            if (error.code === 'APPEL_NOT_FOUND' || error.code === 'LOT_NOT_FOUND') {
+                return res.status(404).json({ error: error.message })
+            }
+            if (error.code === 'COPROPRIETE_MISMATCH') {
+                return res.status(409).json({ error: error.message })
+            }
             res.status(500).json({ error: 'Impossible de créer la ligne d\'appel' })
         }
     }

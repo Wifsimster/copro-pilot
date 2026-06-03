@@ -72,6 +72,38 @@ class AppelFondsService {
 
     async createLigne(data) {
         try {
+            // Ensure the appel and the lot belong to the same copropriété
+            // before persisting the line. Without this check, a caller can
+            // attach a lot from copropriété A to an appel de fonds from
+            // copropriété B and silently bill the wrong owners.
+            const db = knexDatabase.getKnex()
+            const [appel, lot] = await Promise.all([
+                db('appels_fonds')
+                    .select('id', 'copropriete_id')
+                    .where('id', data.appel_fonds_id)
+                    .first(),
+                db('lots')
+                    .select('id', 'copropriete_id', 'coproprietaire_id')
+                    .where('id', data.lot_id)
+                    .first(),
+            ])
+            if (!appel) {
+                const err = new Error('Appel de fonds non trouvé')
+                err.code = 'APPEL_NOT_FOUND'
+                throw err
+            }
+            if (!lot) {
+                const err = new Error('Lot non trouvé')
+                err.code = 'LOT_NOT_FOUND'
+                throw err
+            }
+            if (appel.copropriete_id !== lot.copropriete_id) {
+                const err = new Error(
+                    'Le lot et l\'appel de fonds doivent appartenir à la même copropriété'
+                )
+                err.code = 'COPROPRIETE_MISMATCH'
+                throw err
+            }
             const result = await AppelFondsModel.createLigne(data)
             logger.info(`[AppelFondsService] Ligne d'appel créée (ID: ${result.id})`)
             return result

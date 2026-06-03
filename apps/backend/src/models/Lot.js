@@ -68,10 +68,20 @@ export class LotModel {
 
     static async update(id, data) {
         const db = getDb()
+        // copropriete_id is immutable: changing it via PUT /lots/:id would
+        // move a lot across copropriétés, breaking ownership of every linked
+        // appel de fonds, paiement and charge.
+        const allowedFields = [
+            'coproprietaire_id', 'numero', 'type', 'surface',
+            'etage', 'tantiemes', 'description',
+        ]
+        const sanitized = Object.fromEntries(
+            Object.entries(data).filter(([key]) => allowedFields.includes(key))
+        )
         const [result] = await db('lots')
             .where('id', id)
             .update({
-                ...data,
+                ...sanitized,
                 updated_at: db.fn.now(),
             })
             .returning('*')

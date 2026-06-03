@@ -32,9 +32,18 @@ export class BudgetModel {
 
     static async update(id, data) {
         const db = getDb()
+        // copropriete_id is immutable: changing it via PUT would move the
+        // budget (and every appel de fonds generated from it) into another
+        // copropriété.
+        const allowedFields = [
+            'annee', 'montant_total', 'statut', 'date_vote', 'notes',
+        ]
+        const sanitized = Object.fromEntries(
+            Object.entries(data).filter(([key]) => allowedFields.includes(key))
+        )
         const [result] = await db('budgets_previsionnels')
             .where('id', id)
-            .update({ ...data, updated_at: db.fn.now() })
+            .update({ ...sanitized, updated_at: db.fn.now() })
             .returning('*')
         return result
     }
@@ -71,9 +80,18 @@ export class BudgetModel {
 
     static async updatePoste(id, data) {
         const db = getDb()
+        // budget_id is immutable: changing it would move a poste de dépense
+        // onto a different budget (potentially in another copropriété).
+        const allowedFields = [
+            'nom', 'categorie', 'montant_prevu', 'montant_reel',
+            'cle_repartition_id',
+        ]
+        const sanitized = Object.fromEntries(
+            Object.entries(data).filter(([key]) => allowedFields.includes(key))
+        )
         const [result] = await db('postes_depenses')
             .where('id', id)
-            .update({ ...data, updated_at: db.fn.now() })
+            .update({ ...sanitized, updated_at: db.fn.now() })
             .returning('*')
         return result
     }
