@@ -57,9 +57,9 @@ const featureGroups: FeatureGroup[] = [
     title: 'Gérez les incidents de A à Z',
     subtitle: 'Maintenance & suivi',
     icon: Wrench,
-    accentColor: 'text-orange-600 dark:text-orange-400',
-    iconBg: 'bg-orange-50 dark:bg-orange-950/40',
-    borderAccent: 'group-hover:border-t-orange-400',
+    accentColor: 'text-emerald-700 dark:text-emerald-400',
+    iconBg: 'bg-emerald-50 dark:bg-emerald-950/40',
+    borderAccent: 'group-hover:border-t-emerald-400',
     bullets: [
       {
         icon: FileText,

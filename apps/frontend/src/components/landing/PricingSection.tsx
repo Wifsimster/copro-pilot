@@ -34,7 +34,7 @@ const tiers: PricingTier[] = [
       'Données hébergées en France',
     ],
     cta: {
-      label: 'Commencer gratuitement',
+      label: 'Créer mon compte gratuit',
       href: '/login',
     },
   },
@@ -55,7 +55,7 @@ const tiers: PricingTier[] = [
       'Comptabilité réglementaire',
     ],
     cta: {
-      label: 'Essai gratuit',
+      label: "Démarrer l'essai gratuit",
       href: '/login?plan=essentiel',
     },
   },
@@ -78,7 +78,7 @@ const tiers: PricingTier[] = [
       'Cash flow prévisionnel',
     ],
     cta: {
-      label: 'Essai gratuit',
+      label: "Démarrer l'essai gratuit",
       href: '/login?plan=pro',
     },
     badge: 'Populaire',
@@ -103,7 +103,7 @@ const tiers: PricingTier[] = [
       'Migration assistée',
     ],
     cta: {
-      label: 'Essai gratuit',
+      label: "Démarrer l'essai gratuit",
       href: '/login?plan=entreprise',
     },
   },
@@ -350,8 +350,8 @@ export function PricingSection() {
           className="text-center text-sm text-amber-600
             dark:text-amber-400 font-semibold mb-8"
         >
-          Soit à partir de 0,38 €/lot/mois - jusqu'à 10x
-          moins cher que les logiciels traditionnels
+          Soit à partir de 0,38 €/lot/mois - 10x moins cher
+          que les logiciels traditionnels
         </m.p>
 
         <m.div

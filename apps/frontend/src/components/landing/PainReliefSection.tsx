@@ -13,9 +13,9 @@ const painPoints = [
     pain: 'Votre syndic coûte trop cher ?',
     relief: 'CoproPilot démarre à 0 € et reste 10x moins cher'
       + ' que les solutions traditionnelles.',
-    accent: 'border-l-red-400 dark:border-l-red-500',
-    iconColor: 'text-red-500 dark:text-red-400',
-    iconBg: 'bg-red-50 dark:bg-red-950/30',
+    accent: 'border-l-amber-400 dark:border-l-amber-500',
+    iconColor: 'text-amber-500 dark:text-amber-400',
+    iconBg: 'bg-amber-50 dark:bg-amber-950/30',
   },
   {
     icon: FileSpreadsheet,
@@ -31,9 +31,9 @@ const painPoints = [
     pain: 'Logiciels complexes faits pour les gros cabinets ?',
     relief: 'Conçu pour être simple, même sans formation.'
       + ' Opérationnel en 5 minutes.',
-    accent: 'border-l-orange-400 dark:border-l-orange-500',
-    iconColor: 'text-orange-500 dark:text-orange-400',
-    iconBg: 'bg-orange-50 dark:bg-orange-950/30',
+    accent: 'border-l-amber-400 dark:border-l-amber-500',
+    iconColor: 'text-amber-500 dark:text-amber-400',
+    iconBg: 'bg-amber-50 dark:bg-amber-950/30',
   },
 ]
 

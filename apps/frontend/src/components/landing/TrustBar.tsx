@@ -6,7 +6,7 @@ const trustItems = [
   { icon: Shield, label: 'Conforme RGPD' },
   { icon: MapPin, label: 'Hébergé en France' },
   { icon: Code2, label: 'Code auditable' },
-  { icon: Headphones, label: 'Support réactif' },
+  { icon: Headphones, label: 'Réponse sous 24 h' },
 ]
 
 export function TrustBar() {

@@ -66,7 +66,7 @@ export function FinalCTA() {
               shadow-lg shadow-emerald-600/30 group"
           >
             <a href="/login">
-              Commencer gratuitement
+              Créer mon compte gratuit
               <ArrowRight
                 className="size-4 ml-2 transition-transform
                   group-hover:translate-x-1"

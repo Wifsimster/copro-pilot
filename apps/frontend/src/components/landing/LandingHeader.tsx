@@ -97,7 +97,7 @@ export function LandingHeader() {
                 text-white rounded-lg"
               asChild
             >
-              <a href="/login">Essai gratuit</a>
+              <a href="/login">Créer mon compte</a>
             </Button>
           </div>
 
@@ -140,7 +140,7 @@ export function LandingHeader() {
                   hover:bg-emerald-800 text-white"
                 asChild
               >
-                <a href="/login">Essai gratuit</a>
+                <a href="/login">Créer mon compte</a>
               </Button>
             </div>
           </div>
