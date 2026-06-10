@@ -11,6 +11,13 @@ export function LandingFooter() {
       <div
         className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
       >
+        <p
+          className="font-display text-center text-lg
+            text-stone-300 mb-6"
+        >
+          La gestion de copropriété, simple et 10&times;
+          moins chère.
+        </p>
         <div
           className="flex flex-col sm:flex-row items-center
             justify-between gap-4"

@@ -6,4 +6,5 @@ export const SITE_URL = (
   import.meta.env.VITE_SITE_URL || 'https://copropilot.fr'
 ).replace(/\/$/, '')
 
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/logo.svg`
+// 1200x630 raster — social platforms do not render SVG og:images
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/og.png`

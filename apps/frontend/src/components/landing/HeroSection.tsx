@@ -179,11 +179,6 @@ function DashboardMockup() {
   )
 }
 
-function scrollToSection(id: string) {
-  const el = document.getElementById(id)
-  if (el) el.scrollIntoView({ behavior: 'smooth' })
-}
-
 export function HeroSection() {
   return (
     <section
@@ -305,23 +300,12 @@ export function HeroSection() {
                   dark:shadow-emerald-600/20 group"
               >
                 <a href="/login">
-                  Essayer gratuitement
+                  Créer mon compte gratuit
                   <ArrowRight
                     className="size-4 ml-2 transition-transform
                       group-hover:translate-x-1"
                   />
                 </a>
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="text-base h-12 rounded-xl
-                  border-stone-300 dark:border-stone-700
-                  text-stone-700 dark:text-stone-300
-                  hover:bg-stone-100 dark:hover:bg-stone-800"
-                onClick={() => scrollToSection('tarifs')}
-              >
-                Voir les tarifs
               </Button>
             </m.div>
 
