@@ -37,9 +37,7 @@ function isOverdue(dateStr: string): boolean {
   return new Date(dateStr).getTime() < Date.now()
 }
 
-export default function EcheancesCard({
-  echeances,
-}: EcheancesCardProps) {
+export default function EcheancesCard({ echeances }: EcheancesCardProps) {
   const sorted = useMemo(
     () =>
       echeances
@@ -83,10 +81,7 @@ export default function EcheancesCard({
         {sorted.map(e => {
           const overdue = isOverdue(e.date_echeance)
           return (
-            <div
-              key={e.id}
-              className="flex items-center gap-3 px-4 py-3"
-            >
+            <div key={e.id} className="flex items-center gap-3 px-4 py-3">
               <div
                 className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${
                   overdue
@@ -105,9 +100,7 @@ export default function EcheancesCard({
                   }`}
                 >
                   T{e.trimestre} {e.annee}
-                  {e.copropriete_nom
-                    ? ` — ${e.copropriete_nom}`
-                    : ''}
+                  {e.copropriete_nom ? ` — ${e.copropriete_nom}` : ''}
                 </p>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <span>{formatDate(e.date_echeance)}</span>
@@ -123,9 +116,7 @@ export default function EcheancesCard({
               </div>
               <span
                 className={`shrink-0 text-sm font-semibold ${
-                  overdue
-                    ? 'text-red-600 dark:text-red-400'
-                    : 'text-foreground'
+                  overdue ? 'text-red-600 dark:text-red-400' : 'text-foreground'
                 }`}
               >
                 {formatEur(e.montant_total)}
