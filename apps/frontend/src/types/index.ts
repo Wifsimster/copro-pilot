@@ -1258,7 +1258,7 @@ export interface DomainEvent {
 
 export interface ComplianceCheck {
   name: string
-  status: 'ok' | 'warning' | 'error'
+  status: 'pass' | 'fail' | 'warning'
   details: string
 }
 

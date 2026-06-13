@@ -5,8 +5,11 @@ interface ComplianceCardProps {
   coproprieteId: number
 }
 
+// Keyed by the backend compliance contract (LoiAlurComplianceService emits
+// `pass` / `fail`). `warning` is kept as a tolerated extra state. Lookups fall
+// back to FALLBACK_STATUS so an unexpected status can never crash the card.
 const STATUS_CONFIG = {
-  ok: {
+  pass: {
     icon: CheckCircle,
     color: 'text-green-600 dark:text-green-400',
     bg: 'bg-green-50 dark:bg-green-900/20',
@@ -16,12 +19,14 @@ const STATUS_CONFIG = {
     color: 'text-amber-600 dark:text-amber-400',
     bg: 'bg-amber-50 dark:bg-amber-900/20',
   },
-  error: {
+  fail: {
     icon: XCircle,
     color: 'text-red-600 dark:text-red-400',
     bg: 'bg-red-50 dark:bg-red-900/20',
   },
 } as const
+
+const FALLBACK_STATUS = STATUS_CONFIG.warning
 
 export function ComplianceCard({ coproprieteId }: ComplianceCardProps) {
   const { data: report, isLoading } = useCompliance(coproprieteId)
@@ -74,8 +79,8 @@ export function ComplianceCard({ coproprieteId }: ComplianceCardProps) {
         </span>
       </div>
       <div className="divide-y divide-stone-100 dark:divide-stone-700/50">
-        {report.checks.map((check) => {
-          const config = STATUS_CONFIG[check.status]
+        {report.checks.map(check => {
+          const config = STATUS_CONFIG[check.status] ?? FALLBACK_STATUS
           const Icon = config.icon
           return (
             <div
