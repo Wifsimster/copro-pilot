@@ -64,6 +64,9 @@ test-results/
 playwright-report/
 blob-report/
 
+# Symlinked frontend bundle staged for backend SPA serving during E2E
+/frontend-dist
+
 # Playwright
 e2e/.auth/
 

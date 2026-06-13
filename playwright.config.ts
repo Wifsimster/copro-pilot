@@ -6,9 +6,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI
-    ? [['github'], ['html', { open: 'never' }]]
-    : 'html',
+  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'html',
   timeout: 30_000,
   expect: { timeout: 10_000 },
 
@@ -21,7 +19,23 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        // Allow pointing at a pre-installed Chromium when Playwright's own
+        // browser download is unavailable (restricted networks / CI mirrors).
+        ...(process.env.E2E_CHROMIUM_PATH
+          ? {
+              launchOptions: {
+                executablePath: process.env.E2E_CHROMIUM_PATH,
+                args: [
+                  '--no-sandbox',
+                  '--disable-gpu',
+                  '--disable-dev-shm-usage',
+                ],
+              },
+            }
+          : {}),
+      },
       testMatch: /tests\/.+\.spec\.ts/,
     },
   ],
