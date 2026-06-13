@@ -31,9 +31,7 @@ function getColor(pct: number): {
   }
 }
 
-export default function RecouvrementGauge({
-  value,
-}: RecouvrementGaugeProps) {
+export default function RecouvrementGauge({ value }: RecouvrementGaugeProps) {
   const pct = Math.min(100, Math.max(0, value))
   const colors = useMemo(() => getColor(pct), [pct])
 
@@ -53,11 +51,7 @@ export default function RecouvrementGauge({
       </div>
       <CardContent className="flex flex-col items-center justify-center pt-4 pb-4">
         <div className="relative">
-          <svg
-            width={size}
-            height={size}
-            className="-rotate-90"
-          >
+          <svg width={size} height={size} className="-rotate-90">
             {/* Background track */}
             <circle
               cx={size / 2}
@@ -82,9 +76,7 @@ export default function RecouvrementGauge({
           </svg>
           {/* Center label */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <span
-              className={`text-2xl font-bold ${colors.text}`}
-            >
+            <span className={`text-2xl font-bold ${colors.text}`}>
               {pct.toFixed(0)}%
             </span>
           </div>

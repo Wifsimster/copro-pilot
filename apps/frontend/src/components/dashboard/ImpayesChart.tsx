@@ -44,9 +44,7 @@ function CustomTooltip({
   )
 }
 
-export default function ImpayesChart({
-  data,
-}: ImpayesChartProps) {
+export default function ImpayesChart({ data }: ImpayesChartProps) {
   if (!data || data.length === 0) {
     return (
       <Card className="py-0">
@@ -70,9 +68,7 @@ export default function ImpayesChart({
         <h2 className="text-lg font-semibold text-foreground">
           Evolution des impayes
         </h2>
-        <p className="text-xs text-muted-foreground">
-          6 derniers mois
-        </p>
+        <p className="text-xs text-muted-foreground">6 derniers mois</p>
       </div>
       <CardContent className="pt-4 pb-4">
         <ResponsiveContainer width="100%" height={220}>

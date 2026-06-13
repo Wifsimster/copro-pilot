@@ -2,11 +2,13 @@ import rateLimit from 'express-rate-limit'
 
 /**
  * General API rate limiter
- * 200 requests per 15 minutes per IP
+ * 200 requests per 15 minutes per IP in production. Outside production the cap
+ * is raised so that local development and the E2E suite — which drive many
+ * requests from a single IP — are not throttled.
  */
 export const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200,
+  max: process.env.NODE_ENV === 'production' ? 200 : 10000,
   standardHeaders: true,
   legacyHeaders: false,
   message: {

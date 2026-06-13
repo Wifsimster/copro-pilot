@@ -42,9 +42,9 @@ test.describe('Smoke tests', () => {
     })
     await page.goto('/charges')
     await page.reload()
-    await expect(
-      page.getByRole('tab', { name: 'Budgets' })
-    ).toBeVisible({ timeout: 10_000 })
+    await expect(page.getByRole('tab', { name: 'Budgets' })).toBeVisible({
+      timeout: 10_000,
+    })
   })
 
   test('travaux page loads', async ({ page }) => {
@@ -59,9 +59,9 @@ test.describe('Smoke tests', () => {
     })
     await page.goto('/travaux')
     await page.reload()
-    await expect(
-      page.getByRole('button', { name: 'Incidents' })
-    ).toBeVisible({ timeout: 10_000 })
+    await expect(page.getByRole('button', { name: 'Incidents' })).toBeVisible({
+      timeout: 10_000,
+    })
   })
 
   test('sidebar navigation works', async ({ page }) => {

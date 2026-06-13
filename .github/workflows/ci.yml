@@ -114,8 +114,20 @@ jobs:
       - name: Stage frontend bundle for backend SPA serving
         run: ln -s "$GITHUB_WORKSPACE/apps/frontend/dist" "$GITHUB_WORKSPACE/frontend-dist"
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+      # Playwright's browser CDN is unreachable from restricted-egress runners
+      # (it hangs until the job times out). Try the normal install briefly, then
+      # fall back to a Chromium binary delivered over the npm registry and point
+      # Playwright at it via E2E_CHROMIUM_PATH (read by playwright.config.ts).
+      - name: Install Playwright browser (npm-delivered fallback)
+        run: |
+          if timeout 180 npx playwright install --with-deps chromium; then
+            echo "Using Playwright-managed Chromium"
+          else
+            echo "Playwright CDN unreachable — falling back to npm-delivered Chromium"
+            npx playwright install-deps chromium || sudo npx playwright install-deps chromium || true
+            npm install --no-save @sparticuz/chromium@latest
+            echo "E2E_CHROMIUM_PATH=$(node scripts/e2e-chromium-path.mjs)" >> "$GITHUB_ENV"
+          fi
 
       - name: Start backend (serves API + SPA on 3001)
         run: node --env-file=apps/backend/.env apps/backend/src/index.js > backend.log 2>&1 &

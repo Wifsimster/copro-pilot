@@ -33,17 +33,12 @@ const STATUS_LABELS: Record<string, string> = {
   ferme: 'Ferme',
 }
 
-function CustomTooltip({
-  active,
-  payload,
-}: TooltipProps<ValueType, NameType>) {
+function CustomTooltip({ active, payload }: TooltipProps<ValueType, NameType>) {
   if (!active || !payload?.length) return null
   const entry = payload[0]
   return (
     <div className="rounded-lg border bg-background px-3 py-2 text-sm shadow-sm">
-      <p className="font-medium text-foreground">
-        {entry.name}
-      </p>
+      <p className="font-medium text-foreground">{entry.name}</p>
       <p style={{ color: entry.payload?.fill }}>
         {entry.value} incident{Number(entry.value) > 1 ? 's' : ''}
       </p>
@@ -51,9 +46,7 @@ function CustomTooltip({
   )
 }
 
-export default function IncidentsChart({
-  data,
-}: IncidentsChartProps) {
+export default function IncidentsChart({ data }: IncidentsChartProps) {
   const chartData = useMemo(() => {
     if (!data) return []
     return Object.entries(data).flatMap(([statut, count]) =>
@@ -78,9 +71,7 @@ export default function IncidentsChart({
           </h2>
         </div>
         <CardContent className="flex h-52 items-center justify-center">
-          <p className="text-sm text-muted-foreground">
-            Aucun incident
-          </p>
+          <p className="text-sm text-muted-foreground">Aucun incident</p>
         </CardContent>
       </Card>
     )
@@ -107,7 +98,7 @@ export default function IncidentsChart({
               paddingAngle={3}
               strokeWidth={0}
             >
-              {chartData.map((entry) => (
+              {chartData.map(entry => (
                 <Cell key={entry.name} fill={entry.fill} />
               ))}
             </Pie>
