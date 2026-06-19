@@ -20,7 +20,10 @@ function keys(email) {
  * Middleware that intercepts POST /api/auth/sign-in/email
  * to enforce account lockout after repeated failed logins.
  *
- * Must be mounted BEFORE the Better Auth handler.
+ * Must be mounted AFTER express.json() so req.body is populated.
+ * Better Auth's adapter (better-call) then reuses the parsed body,
+ * avoiding the "body locked" error that Undici throws when the
+ * request stream has already been consumed.
  */
 export function accountLockout(req, res, next) {
   // Only intercept email sign-in attempts
@@ -31,87 +34,57 @@ export function accountLockout(req, res, next) {
     return next()
   }
 
-  // We need to parse the body ourselves since express.json()
-  // hasn't run yet at this point in the middleware chain.
-  let body = ''
-  req.on('data', (chunk) => {
-    body += chunk.toString()
-    // Prevent abuse via large bodies
-    if (body.length > 10_000) {
-      body = ''
-      req.destroy()
-    }
-  })
+  const email = req.body?.email
+  if (!email || typeof email !== 'string') {
+    return next()
+  }
 
-  req.on('end', () => {
-    // Hand the already-consumed body to Better Auth. better-call's
-    // toNodeHandler checks `req.body` first and only re-reads the
-    // raw stream when it's undefined — assigning the raw string is
-    // enough to keep auth working without trying to replay the stream
-    // (which fails with "body disturbed or locked" once consumed).
-    req.body = body
+  const k = keys(email)
 
-    let email
-    try {
-      const parsed = JSON.parse(body)
-      email = parsed.email
-    } catch {
-      return next()
-    }
+  // Check if account is currently locked out
+  const lockedUntil = cache.get(k.locked)
+  if (lockedUntil) {
+    const retryAfter = Math.ceil((lockedUntil - Date.now()) / 1000)
+    logger.warn(`Account lockout: blocked login attempt for ${email}`, {
+      email,
+      retryAfter,
+    })
+    res.set('Retry-After', String(Math.max(retryAfter, 1)))
+    return res.status(429).json({
+      error: 'Compte temporairement verrouille',
+      message: `Trop de tentatives de connexion echouees. Reessayez dans ${Math.ceil(retryAfter / 60)} minute(s).`,
+    })
+  }
 
-    if (!email) {
-      return next()
-    }
+  // Intercept the response to count failures / reset on success
+  const originalEnd = res.end
 
-    const k = keys(email)
+  res.end = function (chunk, ...args) {
+    if (res.statusCode >= 400) {
+      const attempts = (cache.get(k.attempts) || 0) + 1
+      cache.set(k.attempts, attempts, LOCKOUT_WINDOW_SEC)
 
-    // Check if account is currently locked out
-    const lockedUntil = cache.get(k.locked)
-    if (lockedUntil) {
-      const retryAfter = Math.ceil((lockedUntil - Date.now()) / 1000)
-      logger.warn(`Account lockout: blocked login attempt for ${email}`, {
-        email,
-        retryAfter,
-      })
-      res.set('Retry-After', String(Math.max(retryAfter, 1)))
-      return res.status(429).json({
-        error: 'Compte temporairement verrouille',
-        message: `Trop de tentatives de connexion echouees. Reessayez dans ${Math.ceil(retryAfter / 60)} minute(s).`,
-      })
-    }
+      logger.info(
+        `Failed login attempt ${attempts}/${MAX_ATTEMPTS} for ${email}`,
+        { email, attempts }
+      )
 
-    // Intercept the response to check for login failure
-    const originalEnd = res.end
-
-    res.end = function (chunk, ...args) {
-      // Check if login failed (non-2xx status)
-      if (res.statusCode >= 400) {
-        const attempts = (cache.get(k.attempts) || 0) + 1
-        cache.set(k.attempts, attempts, LOCKOUT_WINDOW_SEC)
-
-        logger.info(`Failed login attempt ${attempts}/${MAX_ATTEMPTS} for ${email}`, {
-          email,
-          attempts,
-        })
-
-        if (attempts >= MAX_ATTEMPTS) {
-          const lockUntil = Date.now() + LOCKOUT_DURATION_SEC * 1000
-          cache.set(k.locked, lockUntil, LOCKOUT_DURATION_SEC)
-          cache.del(k.attempts)
-          logger.warn(`Account locked out: ${email} after ${attempts} failed attempts`, {
-            email,
-            lockUntil: new Date(lockUntil).toISOString(),
-          })
-        }
-      } else {
-        // Successful login — reset the counter
+      if (attempts >= MAX_ATTEMPTS) {
+        const lockUntil = Date.now() + LOCKOUT_DURATION_SEC * 1000
+        cache.set(k.locked, lockUntil, LOCKOUT_DURATION_SEC)
         cache.del(k.attempts)
-        cache.del(k.locked)
+        logger.warn(
+          `Account locked out: ${email} after ${attempts} failed attempts`,
+          { email, lockUntil: new Date(lockUntil).toISOString() }
+        )
       }
-
-      return originalEnd.apply(res, [chunk, ...args])
+    } else {
+      cache.del(k.attempts)
+      cache.del(k.locked)
     }
 
-    next()
-  })
+    return originalEnd.apply(res, [chunk, ...args])
+  }
+
+  next()
 }
