@@ -56,6 +56,13 @@ export function LandingFooter() {
               Sécurité
             </a>
             <a
+              href="/mentions-legales"
+              className="text-sm text-stone-500
+                hover:text-stone-300 transition-colors"
+            >
+              Mentions légales
+            </a>
+            <a
               href="/politique-confidentialite"
               className="text-sm text-stone-500
                 hover:text-stone-300 transition-colors"
