@@ -89,7 +89,7 @@ export default function CoproprietesPage() {
               className="mt-4 flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm text-white hover:bg-emerald-800"
             >
               <Plus className="size-4" />
-              Creer une copropriete
+              Créer une copropriété
             </button>
           )}
         </div>
@@ -161,7 +161,7 @@ export default function CoproprietesPage() {
         open={showCreate || !!editingCopro}
         onOpenChange={(open) => { if (!open) { setShowCreate(false); setEditingCopro(null) } }}
         defaultValues={editingCopro || undefined}
-        title={editingCopro ? 'Modifier la copropriete' : 'Nouvelle copropriete'}
+        title={editingCopro ? 'Modifier la copropriété' : 'Nouvelle copropriété'}
         onSubmit={async (data) => {
           if (editingCopro) {
             await updateMutation.mutateAsync({ id: editingCopro.id, data })

@@ -37,7 +37,7 @@ interface Props {
   title?: string
 }
 
-export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading, defaultValues, title = 'Nouvelle entree au carnet' }: Props) {
+export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, onSubmit, isLoading, defaultValues, title = 'Nouvelle entrée au carnet' }: Props) {
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
     values: {
@@ -68,7 +68,7 @@ export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, o
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Ajoutez une entree au carnet d'entretien. Les champs marques d'un * sont obligatoires."
+      description="Ajoutez une entrée au carnet d'entretien. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={onFormSubmit}
       isLoading={isLoading}
@@ -82,7 +82,7 @@ export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, o
             <FormItem>
               <FormLabel>Titre *</FormLabel>
               <FormControl>
-                <Input placeholder="Ravalement facade..." {...field} />
+                <Input placeholder="Ravalement façade..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -96,7 +96,7 @@ export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, o
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea rows={3} placeholder="Details..." {...field} />
+                <Textarea rows={3} placeholder="Détails..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -122,7 +122,7 @@ export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, o
             name="categorie"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Categorie</FormLabel>
+                <FormLabel>Catégorie</FormLabel>
                 <FormControl>
                   <Input placeholder="Toiture, Plomberie..." {...field} />
                 </FormControl>
@@ -133,7 +133,7 @@ export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, o
         </div>
       </FormSection>
 
-      <FormSection icon={Banknote} label="Cout et date">
+      <FormSection icon={Banknote} label="Coût et date">
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -153,7 +153,7 @@ export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, o
             name="date_realisation"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date de realisation *</FormLabel>
+                <FormLabel>Date de réalisation *</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>

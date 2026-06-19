@@ -54,7 +54,7 @@ export function ReglementFormDialog({
   onSubmit,
   isLoading,
   defaultValues,
-  title = 'Nouveau reglement',
+  title = 'Nouveau règlement',
 }: ReglementFormDialogProps) {
   const form = useForm<ReglementFormData>({
     resolver: zodResolver(reglementSchema),
@@ -93,20 +93,20 @@ export function ReglementFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations du reglement de copropriete. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations du règlement de copropriété. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
       size="lg"
     >
-      <FormSection icon={BookOpen} label="Informations generales">
+      <FormSection icon={BookOpen} label="Informations générales">
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="date_etablissement"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date d'etablissement *</FormLabel>
+                <FormLabel>Date d'établissement *</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>
@@ -119,7 +119,7 @@ export function ReglementFormDialog({
             name="date_derniere_modification"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Derniere modification</FormLabel>
+                <FormLabel>Dernière modification</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>
@@ -190,7 +190,7 @@ export function ReglementFormDialog({
             <FormItem>
               <FormLabel>Conditions de travaux</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="Conditions pour la realisation de travaux..." {...field} />
+                <Textarea rows={2} placeholder="Conditions pour la réalisation de travaux..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -204,7 +204,7 @@ export function ReglementFormDialog({
             <FormItem>
               <FormLabel>Composition du conseil syndical</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="Composition et regles du conseil syndical..." {...field} />
+                <Textarea rows={2} placeholder="Composition et règles du conseil syndical..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -216,9 +216,9 @@ export function ReglementFormDialog({
           name="modalites_convocation_ag"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Modalites de convocation AG</FormLabel>
+              <FormLabel>Modalités de convocation AG</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="Modalites de convocation des assemblees generales..." {...field} />
+                <Textarea rows={2} placeholder="Modalités de convocation des assemblées générales..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -248,7 +248,7 @@ export function ReglementFormDialog({
             <FormItem>
               <FormLabel>Notes</FormLabel>
               <FormControl>
-                <Textarea rows={3} placeholder="Notes complementaires..." {...field} />
+                <Textarea rows={3} placeholder="Notes complémentaires..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

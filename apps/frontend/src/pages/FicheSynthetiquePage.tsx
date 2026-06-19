@@ -28,11 +28,11 @@ const TYPE_CHAUFFAGE_LABELS: Record<string, string> = {
 
 const ENERGIE_LABELS: Record<string, string> = {
   gaz: 'Gaz',
-  electricite: 'Electricite',
+  electricite: 'Électricité',
   fioul: 'Fioul',
   bois: 'Bois',
-  pompe_chaleur: 'Pompe a chaleur',
-  reseau_chaleur: 'Reseau de chaleur',
+  pompe_chaleur: 'Pompe à chaleur',
+  reseau_chaleur: 'Réseau de chaleur',
   autre: 'Autre',
 }
 
@@ -43,7 +43,7 @@ const DIAGNOSTIC_LABELS: Record<string, string> = {
   dtg: 'DTG',
   ppt: 'PPT',
   gaz: 'Gaz',
-  electricite: 'Electricite',
+  electricite: 'Électricité',
   autre: 'Autre',
 }
 
@@ -55,14 +55,14 @@ const STATUT_DIAGNOSTIC_STYLES: Record<string, string> = {
 
 const STATUT_DIAGNOSTIC_LABELS: Record<string, string> = {
   valide: 'Valide',
-  expire: 'Expire',
-  a_renouveler: 'A renouveler',
+  expire: 'Expiré',
+  a_renouveler: 'À renouveler',
 }
 
 const STATUT_BUDGET_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
-  vote: 'Vote',
-  approuve: 'Approuve',
+  vote: 'Voté',
+  approuve: 'Approuvé',
 }
 
 function InfoRow({ label, value }: { label: string; value: string | number | null | undefined }) {
@@ -94,9 +94,9 @@ export default function FicheSynthetiquePage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Fiche synthetique</h1>
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Fiche synthétique</h1>
         <p className="text-stone-500 dark:text-stone-400">
-          Document reglementaire (decret du 28 juin 2016)
+          Document réglementaire (décret du 28 juin 2016)
         </p>
       </div>
 
@@ -109,7 +109,7 @@ export default function FicheSynthetiquePage() {
       ) : !fiche ? (
         <div className="flex flex-col items-center py-16">
           <AlertTriangle className="size-12 text-orange-400" />
-          <p className="mt-4 text-stone-500 dark:text-stone-400">Impossible de charger la fiche synthetique</p>
+          <p className="mt-4 text-stone-500 dark:text-stone-400">Impossible de charger la fiche synthétique</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -118,23 +118,23 @@ export default function FicheSynthetiquePage() {
             <InfoRow label="Nom" value={fiche.identification.nom} />
             <InfoRow label="Adresse" value={`${fiche.identification.adresse}, ${fiche.identification.code_postal} ${fiche.identification.ville}`} />
             <InfoRow label="N° immatriculation" value={fiche.identification.numero_immatriculation} />
-            <InfoRow label="Date de creation" value={fiche.identification.date_creation ? new Date(fiche.identification.date_creation).toLocaleDateString('fr-FR') : null} />
-            <InfoRow label="Nombre de batiments" value={fiche.identification.nombre_batiments} />
+            <InfoRow label="Date de création" value={fiche.identification.date_creation ? new Date(fiche.identification.date_creation).toLocaleDateString('fr-FR') : null} />
+            <InfoRow label="Nombre de bâtiments" value={fiche.identification.nombre_batiments} />
             <InfoRow label="Nombre d'ascenseurs" value={fiche.identification.nombre_ascenseurs} />
-            <InfoRow label="Periode de construction" value={fiche.identification.periode_construction} />
+            <InfoRow label="Période de construction" value={fiche.identification.periode_construction} />
           </SectionCard>
 
           {/* Chauffage */}
           <SectionCard title="Chauffage" icon={Thermometer}>
             <InfoRow label="Type de chauffage" value={fiche.identification.type_chauffage ? TYPE_CHAUFFAGE_LABELS[fiche.identification.type_chauffage] || fiche.identification.type_chauffage : null} />
-            <InfoRow label="Energie utilisee" value={fiche.identification.energie_chauffage ? ENERGIE_LABELS[fiche.identification.energie_chauffage] || fiche.identification.energie_chauffage : null} />
+            <InfoRow label="Énergie utilisée" value={fiche.identification.energie_chauffage ? ENERGIE_LABELS[fiche.identification.energie_chauffage] || fiche.identification.energie_chauffage : null} />
           </SectionCard>
 
           {/* Lots */}
-          <SectionCard title="Repartition des lots" icon={Home}>
+          <SectionCard title="Répartition des lots" icon={Home}>
             <InfoRow label="Nombre total de lots" value={fiche.lots.total} />
-            <InfoRow label="Total tantiemes" value={fiche.lots.total_tantiemes} />
-            <InfoRow label="Nombre de coproprietaires" value={fiche.lots.nombre_coproprietaires} />
+            <InfoRow label="Total tantièmes" value={fiche.lots.total_tantiemes} />
+            <InfoRow label="Nombre de copropriétaires" value={fiche.lots.nombre_coproprietaires} />
             {fiche.lots.par_type.length > 0 && (
               <div className="mt-3 space-y-1">
                 <p className="text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider">Par type</p>
@@ -149,33 +149,33 @@ export default function FicheSynthetiquePage() {
           </SectionCard>
 
           {/* Coproprietaires */}
-          <SectionCard title="Coproprietaires" icon={Users}>
-            <InfoRow label="Nombre de coproprietaires" value={fiche.lots.nombre_coproprietaires} />
+          <SectionCard title="Copropriétaires" icon={Users}>
+            <InfoRow label="Nombre de copropriétaires" value={fiche.lots.nombre_coproprietaires} />
           </SectionCard>
 
           {/* Finances */}
-          <SectionCard title="Donnees financieres" icon={Receipt}>
+          <SectionCard title="Données financières" icon={Receipt}>
             {fiche.finances.budget_previsionnel ? (
               <>
-                <InfoRow label={`Budget previsionnel ${fiche.finances.budget_previsionnel.annee}`} value={`${fiche.finances.budget_previsionnel.montant_total.toLocaleString('fr-FR')} EUR`} />
+                <InfoRow label={`Budget prévisionnel ${fiche.finances.budget_previsionnel.annee}`} value={`${fiche.finances.budget_previsionnel.montant_total.toLocaleString('fr-FR')} EUR`} />
                 <InfoRow label="Statut du budget" value={STATUT_BUDGET_LABELS[fiche.finances.budget_previsionnel.statut] || fiche.finances.budget_previsionnel.statut} />
               </>
             ) : (
-              <p className="text-sm text-stone-500 dark:text-stone-400 py-2">Aucun budget previsionnel</p>
+              <p className="text-sm text-stone-500 dark:text-stone-400 py-2">Aucun budget prévisionnel</p>
             )}
-            <InfoRow label="Impayes" value={`${fiche.finances.impayes.toLocaleString('fr-FR')} EUR`} />
+            <InfoRow label="Impayés" value={`${fiche.finances.impayes.toLocaleString('fr-FR')} EUR`} />
             <InfoRow label="Fonds travaux" value={`${fiche.finances.fonds_travaux.toLocaleString('fr-FR')} EUR`} />
 
             {fiche.finances.postes_depenses.length > 0 && (
               <div className="mt-4">
-                <p className="text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-2">Postes de depenses</p>
+                <p className="text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-2">Postes de dépenses</p>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-stone-200 dark:border-stone-700">
                         <th className="py-2 text-left font-medium text-stone-500 dark:text-stone-400">Poste</th>
-                        <th className="py-2 text-right font-medium text-stone-500 dark:text-stone-400">Prevu</th>
-                        <th className="py-2 text-right font-medium text-stone-500 dark:text-stone-400">Reel</th>
+                        <th className="py-2 text-right font-medium text-stone-500 dark:text-stone-400">Prévu</th>
+                        <th className="py-2 text-right font-medium text-stone-500 dark:text-stone-400">Réel</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -196,7 +196,7 @@ export default function FicheSynthetiquePage() {
           {/* Diagnostics */}
           <SectionCard title="Diagnostics techniques" icon={ClipboardCheck}>
             {fiche.diagnostics.length === 0 ? (
-              <p className="text-sm text-stone-500 dark:text-stone-400 py-2">Aucun diagnostic enregistre</p>
+              <p className="text-sm text-stone-500 dark:text-stone-400 py-2">Aucun diagnostic enregistré</p>
             ) : (
               <div className="space-y-2">
                 {fiche.diagnostics.map((d) => (
@@ -219,7 +219,7 @@ export default function FicheSynthetiquePage() {
           </SectionCard>
 
           {/* Contentieux & AG */}
-          <SectionCard title="Contentieux & Assemblees" icon={AlertTriangle}>
+          <SectionCard title="Contentieux & Assemblées" icon={AlertTriangle}>
             <InfoRow label="Incidents en cours" value={fiche.contentieux.incidents_en_cours} />
             {fiche.prochaine_ag ? (
               <>
@@ -227,7 +227,7 @@ export default function FicheSynthetiquePage() {
                 <InfoRow label="Type" value={fiche.prochaine_ag.type === 'ordinaire' ? 'Ordinaire' : 'Extraordinaire'} />
               </>
             ) : (
-              <InfoRow label="Prochaine AG" value="Aucune planifiee" />
+              <InfoRow label="Prochaine AG" value="Aucune planifiée" />
             )}
           </SectionCard>
         </div>

@@ -84,7 +84,7 @@ export function MouvementBancaireFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Enregistrez un mouvement bancaire. Les champs marques d'un * sont obligatoires."
+      description="Enregistrez un mouvement bancaire. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -126,9 +126,9 @@ export function MouvementBancaireFormDialog({
             name="libelle"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Libelle *</FormLabel>
+                <FormLabel>Libellé *</FormLabel>
                 <FormControl>
-                  <Input placeholder="Libelle du mouvement" {...field} />
+                  <Input placeholder="Libellé du mouvement" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -169,7 +169,7 @@ export function MouvementBancaireFormDialog({
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Selectionner une categorie" />
+                      <SelectValue placeholder="Sélectionner une catégorie" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -212,9 +212,9 @@ export function MouvementBancaireFormDialog({
           name="reference"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Reference</FormLabel>
+              <FormLabel>Référence</FormLabel>
               <FormControl>
-                <Input placeholder="Reference du mouvement" {...field} />
+                <Input placeholder="Référence du mouvement" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

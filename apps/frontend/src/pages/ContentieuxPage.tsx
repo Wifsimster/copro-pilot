@@ -25,8 +25,8 @@ const TYPE_RELANCE_COLORS: Record<string, string> = {
 
 const STATUT_RELANCE_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
-  envoyee: 'Envoyee',
-  accusee_reception: 'Accusee reception',
+  envoyee: 'Envoyée',
+  accusee_reception: 'Accusée réception',
   sans_effet: 'Sans effet',
 }
 
@@ -38,11 +38,11 @@ const STATUT_RELANCE_COLORS: Record<string, string> = {
 }
 
 const STATUT_PROCEDURE_LABELS: Record<string, string> = {
-  en_preparation: 'En preparation',
+  en_preparation: 'En préparation',
   en_cours: 'En cours',
-  audience_fixee: 'Audience fixee',
-  juge: 'Juge',
-  execute: 'Execute',
+  audience_fixee: 'Audience fixée',
+  juge: 'Jugé',
+  execute: 'Exécuté',
   clos: 'Clos',
 }
 
@@ -100,7 +100,7 @@ export default function ContentieuxPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Contentieux & Recouvrement</h1>
-          <p className="text-stone-500 dark:text-stone-400">Suivi des relances et procedures de recouvrement des impayes</p>
+          <p className="text-stone-500 dark:text-stone-400">Suivi des relances et procédures de recouvrement des impayés</p>
         </div>
       </div>
 
@@ -109,8 +109,8 @@ export default function ContentieuxPage() {
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
           <Scale className="size-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
+          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriété sélectionnée</h3>
+          <p className="mt-2 text-stone-500 dark:text-stone-400">Sélectionnez une copropriété dans le menu latéral.</p>
         </div>
       ) : (
         <>
@@ -145,16 +145,16 @@ export default function ContentieuxPage() {
               ) : !relances || relances.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <Mail className="size-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune relance enregistree</p>
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune relance enregistrée</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-stone-200 text-left dark:border-stone-700">
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Coproprietaire</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Copropriétaire</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Type</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant du</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant dû</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Mode d'envoi</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Date</th>
@@ -235,13 +235,13 @@ export default function ContentieuxPage() {
           {activeTab === 'procedures' && (
             <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
               <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
-                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Procedures</h2>
+                <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Procédures</h2>
                 <button type="button"
                   onClick={() => patchUi({ showProcedureDialog: true })}
                   className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
                 >
                   <Plus className="size-4" />
-                  Nouvelle procedure
+                  Nouvelle procédure
                 </button>
               </div>
 
@@ -252,17 +252,17 @@ export default function ContentieuxPage() {
               ) : !procedures || procedures.length === 0 ? (
                 <div className="flex flex-col items-center py-12">
                   <Scale className="size-10 text-stone-300 dark:text-stone-600" />
-                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune procedure enregistree</p>
+                  <p className="mt-3 text-stone-500 dark:text-stone-400">Aucune procédure enregistrée</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-stone-200 text-left dark:border-stone-700">
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Coproprietaire</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Copropriétaire</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Avocat</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Tribunal</th>
-                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant reclame</th>
+                        <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Montant réclamé</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400">Statut</th>
                         <th className="px-4 py-3 font-medium text-stone-500 dark:text-stone-400" aria-label="Actions"></th>
                       </tr>
@@ -317,7 +317,7 @@ export default function ContentieuxPage() {
                 onOpenChange={(open) => { patchUi({ showProcedureDialog: open }); if (!open) patchUi({ editingProcedure: null }) }}
                 coproprieteId={selectedCoproId}
                 defaultValues={editingProcedure || undefined}
-                title={editingProcedure ? 'Modifier la procedure' : 'Nouvelle procedure'}
+                title={editingProcedure ? 'Modifier la procédure' : 'Nouvelle procédure'}
                 onSubmit={async (data) => {
                   if (editingProcedure) {
                     await updateProcedure.mutateAsync({ id: editingProcedure.id, data })

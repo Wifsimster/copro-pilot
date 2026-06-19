@@ -73,12 +73,12 @@ export default function DashboardPage() {
       action: () => navigate('/assemblees'),
     },
     {
-      label: 'Ajouter une copropriete',
+      label: 'Ajouter une copropriété',
       icon: Plus,
       action: () => navigate('/coproprietes'),
     },
     {
-      label: 'Gerer les charges',
+      label: 'Gérer les charges',
       icon: Receipt,
       action: () => navigate('/charges'),
     },

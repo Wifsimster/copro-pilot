@@ -25,7 +25,7 @@ import type { ContratSyndic } from '@/types'
 
 const contratSyndicSchema = z.object({
   syndic_nom: z.string().min(1, 'Le nom du syndic est obligatoire'),
-  date_debut: z.string().min(1, 'La date de debut est obligatoire'),
+  date_debut: z.string().min(1, 'La date de début est obligatoire'),
   date_fin: z.string().min(1, 'La date de fin est obligatoire'),
   remuneration_forfait: z.coerce.number().optional(),
   prestations_incluses: z.string().optional(),
@@ -93,7 +93,7 @@ export function ContratSyndicFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Definissez les informations du contrat de syndic. Les champs marques d'un * sont obligatoires."
+      description="Définissez les informations du contrat de syndic. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -129,8 +129,8 @@ export function ContratSyndicFormDialog({
                   <SelectContent>
                     <SelectItem value="en_cours">En cours</SelectItem>
                     <SelectItem value="en_attente">En attente</SelectItem>
-                    <SelectItem value="expire">Expire</SelectItem>
-                    <SelectItem value="resilie">Resilie</SelectItem>
+                    <SelectItem value="expire">Expiré</SelectItem>
+                    <SelectItem value="resilie">Résilié</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -140,14 +140,14 @@ export function ContratSyndicFormDialog({
         </div>
       </FormSection>
 
-      <FormSection icon={CalendarDays} label="Duree du mandat">
+      <FormSection icon={CalendarDays} label="Durée du mandat">
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="date_debut"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date de debut *</FormLabel>
+                <FormLabel>Date de début *</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>
@@ -171,7 +171,7 @@ export function ContratSyndicFormDialog({
         </div>
       </FormSection>
 
-      <FormSection icon={Euro} label="Remuneration">
+      <FormSection icon={Euro} label="Rémunération">
         <FormField
           control={form.control}
           name="remuneration_forfait"
@@ -203,7 +203,7 @@ export function ContratSyndicFormDialog({
           name="prestations_particulieres"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Prestations particulieres (hors forfait)</FormLabel>
+              <FormLabel>Prestations particulières (hors forfait)</FormLabel>
               <FormControl>
                 <Textarea rows={3} placeholder="Travaux exceptionnels, contentieux..." {...field} />
               </FormControl>

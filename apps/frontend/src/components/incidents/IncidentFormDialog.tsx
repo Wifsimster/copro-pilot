@@ -85,7 +85,7 @@ export function IncidentFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Decrivez l'incident rencontre. Les champs marques d'un * sont obligatoires."
+      description="Décrivez l'incident rencontré. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -99,7 +99,7 @@ export function IncidentFormDialog({
             <FormItem>
               <FormLabel>Titre *</FormLabel>
               <FormControl>
-                <Input placeholder="Fuite d'eau au 3e etage..." {...field} />
+                <Input placeholder="Fuite d'eau au 3e étage..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -113,7 +113,7 @@ export function IncidentFormDialog({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea rows={3} placeholder="Details de l'incident..." {...field} />
+                <Textarea rows={3} placeholder="Détails de l'incident..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -128,9 +128,9 @@ export function IncidentFormDialog({
             name="categorie"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Categorie</FormLabel>
+                <FormLabel>Catégorie</FormLabel>
                 <FormControl>
-                  <Input placeholder="Plomberie, Electricite..." {...field} />
+                  <Input placeholder="Plomberie, Électricité..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -177,8 +177,8 @@ export function IncidentFormDialog({
                   <SelectContent>
                     <SelectItem value="ouvert">Ouvert</SelectItem>
                     <SelectItem value="en_cours">En cours</SelectItem>
-                    <SelectItem value="resolu">Resolu</SelectItem>
-                    <SelectItem value="ferme">Ferme</SelectItem>
+                    <SelectItem value="resolu">Résolu</SelectItem>
+                    <SelectItem value="ferme">Fermé</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

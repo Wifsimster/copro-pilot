@@ -16,7 +16,7 @@ import { DeclarationDonneesPreview } from '@/components/immatriculation/Declarat
 import type { DeclarationRegistre, DonneesDeclarees } from '@/types'
 
 const declarationSchema = z.object({
-  annee: z.coerce.number().min(2000, 'Annee invalide').max(2100, 'Annee invalide'),
+  annee: z.coerce.number().min(2000, 'Année invalide').max(2100, 'Année invalide'),
   date_declaration: z.string().optional(),
   statut: z.enum(['brouillon', 'soumis', 'valide']),
   notes: z.string().optional(),
@@ -42,7 +42,7 @@ export function DeclarationFormDialog({
   onSubmit,
   isLoading,
   defaultValues,
-  title = 'Nouvelle declaration',
+  title = 'Nouvelle déclaration',
   donneesPreparees,
 }: DeclarationFormDialogProps) {
   const form = useForm<DeclarationFormData>({
@@ -74,7 +74,7 @@ export function DeclarationFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations de la declaration annuelle au registre national."
+      description="Renseignez les informations de la déclaration annuelle au registre national."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -91,7 +91,7 @@ export function DeclarationFormDialog({
           <FormItem>
             <FormLabel>Notes</FormLabel>
             <FormControl>
-              <Textarea rows={3} placeholder="Informations complementaires..." {...field} />
+              <Textarea rows={3} placeholder="Informations complémentaires..." {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

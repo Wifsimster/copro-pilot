@@ -67,7 +67,7 @@ export function LocataireFormDialog({ open, onOpenChange, lotId, onSubmit, isLoa
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations du locataire. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations du locataire. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={onFormSubmit}
       isLoading={isLoading}

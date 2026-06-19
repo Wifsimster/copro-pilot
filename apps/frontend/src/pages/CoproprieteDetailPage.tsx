@@ -113,9 +113,9 @@ export default function CoproprieteDetailPage() {
   if (!copropriete) {
     return (
       <div className="text-center py-12">
-        <p className="text-stone-500 dark:text-stone-400">Copropriete non trouvee</p>
+        <p className="text-stone-500 dark:text-stone-400">Copropriété non trouvée</p>
         <Link to="/coproprietes" className="mt-4 inline-block text-emerald-700 hover:underline">
-          Retour aux coproprietes
+          Retour aux copropriétés
         </Link>
       </div>
     )
@@ -128,7 +128,7 @@ export default function CoproprieteDetailPage() {
   const tabs = [
     { id: 'lots' as Tab, label: 'Lots', icon: Home, count: lots?.length || 0 },
     { id: 'parties-communes' as Tab, label: 'Parties communes', icon: DoorOpen, count: partiesCommunes?.length || 0 },
-    { id: 'cles-repartition' as Tab, label: 'Cles de repartition', icon: Key, count: clesRepartition?.length || 0 },
+    { id: 'cles-repartition' as Tab, label: 'Clés de répartition', icon: Key, count: clesRepartition?.length || 0 },
     { id: 'locataires' as Tab, label: 'Locataires', icon: UserCheck },
     { id: 'mutations' as Tab, label: 'Mutations', icon: ArrowRightLeft },
     { id: 'diagnostics' as Tab, label: 'Diagnostics', icon: ClipboardCheck, count: diagnostics?.length || 0 },
@@ -183,11 +183,11 @@ export default function CoproprieteDetailPage() {
           <p className="text-2xl font-bold text-stone-900 dark:text-white">{copropriete.nombre_lots}</p>
         </div>
         <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
-          <p className="text-sm text-stone-500 dark:text-stone-400">Coproprietaires</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400">Copropriétaires</p>
           <p className="text-2xl font-bold text-stone-900 dark:text-white">{copropriete.nombre_coproprietaires}</p>
         </div>
         <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
-          <p className="text-sm text-stone-500 dark:text-stone-400">Total tantiemes</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400">Total tantièmes</p>
           <p className="text-2xl font-bold text-stone-900 dark:text-white">{copropriete.total_tantiemes}</p>
         </div>
       </div>

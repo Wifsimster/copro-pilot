@@ -87,7 +87,7 @@ export function CompteBancaireFormDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations du compte bancaire. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations du compte bancaire. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={handleFormSubmit}
       isLoading={isLoading}
@@ -169,9 +169,9 @@ export function CompteBancaireFormDialog({
             name="libelle"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Libelle</FormLabel>
+                <FormLabel>Libellé</FormLabel>
                 <FormControl>
-                  <Input placeholder="Libelle du compte" {...field} />
+                  <Input placeholder="Libellé du compte" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

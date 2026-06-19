@@ -65,7 +65,7 @@ export function CycleAnnuelChecklist({
         <div className="flex flex-col items-center py-8">
           <Circle className="size-8 text-stone-300 dark:text-stone-600" />
           <p className="mt-2 text-sm text-stone-500 dark:text-stone-400">
-            Aucun cycle initialise pour cette annee
+            Aucun cycle initialisé pour cette année
           </p>
         </div>
       ) : (

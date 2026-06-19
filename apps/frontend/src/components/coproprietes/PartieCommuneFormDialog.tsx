@@ -62,7 +62,7 @@ export function PartieCommuneFormDialog({ open, onOpenChange, coproprieteId, onS
       open={open}
       onOpenChange={onOpenChange}
       title={title}
-      description="Renseignez les informations de la partie commune. Les champs marques d'un * sont obligatoires."
+      description="Renseignez les informations de la partie commune. Les champs marqués d'un * sont obligatoires."
       form={form}
       onSubmit={onFormSubmit}
       isLoading={isLoading}
@@ -77,7 +77,7 @@ export function PartieCommuneFormDialog({ open, onOpenChange, coproprieteId, onS
               <FormItem>
                 <FormLabel>Nom *</FormLabel>
                 <FormControl>
-                  <Input placeholder="Hall d'entree, Jardin..." {...field} />
+                  <Input placeholder="Hall d'entrée, Jardin..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -88,7 +88,7 @@ export function PartieCommuneFormDialog({ open, onOpenChange, coproprieteId, onS
             name="categorie"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Categorie *</FormLabel>
+                <FormLabel>Catégorie *</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -96,8 +96,8 @@ export function PartieCommuneFormDialog({ open, onOpenChange, coproprieteId, onS
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="generales">Generales</SelectItem>
-                    <SelectItem value="speciales">Speciales</SelectItem>
+                    <SelectItem value="generales">Générales</SelectItem>
+                    <SelectItem value="speciales">Spéciales</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -107,7 +107,7 @@ export function PartieCommuneFormDialog({ open, onOpenChange, coproprieteId, onS
         </div>
       </FormSection>
 
-      <FormSection icon={FileText} label="Details">
+      <FormSection icon={FileText} label="Détails">
         <FormField
           control={form.control}
           name="description"

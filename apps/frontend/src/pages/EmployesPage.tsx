@@ -16,7 +16,7 @@ import { HardHat, Plus, Trash2, Pencil, Home } from 'lucide-react'
 const TYPE_CONTRAT_LABELS: Record<string, string> = {
   cdi: 'CDI',
   cdd: 'CDD',
-  interim: 'Interim',
+  interim: 'Intérim',
   saisonnier: 'Saisonnier',
 }
 
@@ -106,16 +106,16 @@ export default function EmployesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Employes du syndicat</h1>
-          <p className="text-stone-500 dark:text-stone-400">Gestion du personnel de la copropriete</p>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-white">Employés du syndicat</h1>
+          <p className="text-stone-500 dark:text-stone-400">Gestion du personnel de la copropriété</p>
         </div>
       </div>
 
       {!selectedCoproId ? (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-stone-300 p-12 dark:border-stone-600">
           <HardHat className="size-12 text-stone-400 dark:text-stone-500" />
-          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriete selectionnee</h3>
-          <p className="mt-2 text-stone-500 dark:text-stone-400">Selectionnez une copropriete dans le menu lateral.</p>
+          <h3 className="mt-4 text-lg font-medium text-stone-900 dark:text-white">Aucune copropriété sélectionnée</h3>
+          <p className="mt-2 text-stone-500 dark:text-stone-400">Sélectionnez une copropriété dans le menu latéral.</p>
         </div>
       ) : (
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
@@ -164,7 +164,7 @@ export default function EmployesPage() {
             onOpenChange={(open) => { setShowDialog(open); if (!open) setEditingEmploye(null) }}
             coproprieteId={selectedCoproId}
             defaultValues={editingEmploye || undefined}
-            title={editingEmploye ? 'Modifier l\'employe' : 'Nouvel employe'}
+            title={editingEmploye ? 'Modifier l\'employé' : 'Nouvel employé'}
             onSubmit={async (data) => {
               if (editingEmploye) {
                 await updateEmploye.mutateAsync({ id: editingEmploye.id, data })

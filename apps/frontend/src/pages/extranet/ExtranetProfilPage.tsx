@@ -69,7 +69,7 @@ export default function ExtranetProfilPage() {
           </div>
           {profil.lots.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              Aucun lot enregistre.
+              Aucun lot enregistré.
             </p>
           ) : (
             <div className="space-y-2">

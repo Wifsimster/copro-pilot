@@ -48,7 +48,7 @@ const CATEGORIES: { value: CategorieDocument; label: string }[] = [
   { value: 'contrat', label: 'Contrat' },
   { value: 'facture', label: 'Facture' },
   { value: 'devis', label: 'Devis' },
-  { value: 'reglement', label: 'Reglement' },
+  { value: 'reglement', label: 'Règlement' },
   { value: 'assurance', label: 'Assurance' },
   { value: 'diagnostic', label: 'Diagnostic' },
   { value: 'courrier', label: 'Courrier' },
@@ -56,7 +56,7 @@ const CATEGORIES: { value: CategorieDocument; label: string }[] = [
 ]
 
 const ENTITE_TYPES: { value: EntiteType; label: string }[] = [
-  { value: 'ag', label: 'Assemblee Generale' },
+  { value: 'ag', label: 'Assemblée Générale' },
   { value: 'intervention', label: 'Intervention' },
   { value: 'budget', label: 'Budget' },
   { value: 'contrat', label: 'Contrat' },
@@ -154,11 +154,11 @@ export function DocumentFormDialog({
       title={title}
       description={isEditing
         ? 'Modifiez les informations du document.'
-        : 'Deposez un fichier ou remplissez les informations du document.'}
+        : 'Déposez un fichier ou remplissez les informations du document.'}
       form={form}
       onSubmit={onFormSubmit}
       isLoading={isLoading}
-      submitLabel={isEditing ? 'Modifier' : 'Telecharger'}
+      submitLabel={isEditing ? 'Modifier' : 'Télécharger'}
       size="lg"
     >
       {/* File upload zone */}
@@ -237,7 +237,7 @@ export function DocumentFormDialog({
           name="categorie"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Categorie</FormLabel>
+              <FormLabel>Catégorie</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -261,7 +261,7 @@ export function DocumentFormDialog({
             name="entite_type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Entite liee</FormLabel>
+                <FormLabel>Entité liée</FormLabel>
                 <Select
                   onValueChange={(val) => field.onChange(val === '_none' ? '' : val)}
                   value={field.value || '_none'}
@@ -288,7 +288,7 @@ export function DocumentFormDialog({
               name="entite_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>ID entite</FormLabel>
+                  <FormLabel>ID entité</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="ID" {...field} />
                   </FormControl>
