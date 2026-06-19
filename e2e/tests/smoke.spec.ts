@@ -17,7 +17,7 @@ test.describe('Smoke tests', () => {
 
   test('dashboard loads with greeting and metrics', async ({ page }) => {
     await expect(page.locator('h1')).toContainText(/Bonjour|Bonsoir/)
-    await expect(page.getByText('Copropriétés')).toBeVisible()
+    await expect(page.getByText('Copropriétés').first()).toBeVisible()
   })
 
   test('copropriétés page lists properties', async ({ page }) => {
