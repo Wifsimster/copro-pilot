@@ -8,8 +8,24 @@ import {
 import { SubscriptionModel } from '../models/Subscription.js'
 import { getUserUsage } from '../middleware/requireQuota.js'
 import { extranetPaymentService } from './ExtranetPaymentService.js'
+import { analyticsService } from './AnalyticsService.js'
 import knexDatabase from '../config/knex-database.js'
 import logger from '../logger.js'
+
+/**
+ * Map Stripe's subscription cancellation_details.reason to a funnel churn
+ * cause. 'payment_failure' → involuntary; an explicit request → voluntary.
+ */
+function mapChurnCause(reason) {
+  switch (reason) {
+    case 'payment_failure':
+      return 'payment_failed'
+    case 'cancellation_requested':
+      return 'voluntary'
+    default:
+      return 'other'
+  }
+}
 
 class StripeService {
   /**
@@ -192,6 +208,7 @@ class StripeService {
       logger.info(
         `[StripeService] Checkout completed: user ${userId} → plan ${plan} (${cadence})`
       )
+      analyticsService.recordConversion(userId, plan)
       return subscription
     } catch (error) {
       logger.error(
@@ -316,6 +333,11 @@ class StripeService {
 
       logger.info(
         `[StripeService] Subscription deleted for user ${subscription.user_id}`
+      )
+      analyticsService.recordChurn(
+        subscription.user_id,
+        subscription.plan,
+        mapChurnCause(stripeSubscription.cancellation_details?.reason)
       )
     } catch (error) {
       logger.error(
