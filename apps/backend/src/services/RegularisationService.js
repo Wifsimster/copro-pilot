@@ -1,5 +1,6 @@
 import { RegularisationModel } from '../models/Regularisation.js'
 import { LotModel } from '../models/Lot.js'
+import knexDatabase from '../config/knex-database.js'
 import logger from '../logger.js'
 
 const CENT = 100
@@ -82,6 +83,29 @@ export function computeRegularisation(lots, totalChargesReelles, totalProvisions
   }
 }
 
+/**
+ * Build the complementary appel de fonds from a régularisation's per-lot
+ * soldes. A lot's line = −solde : a débiteur (solde < 0) is called for the
+ * shortfall (positive), a créditeur (solde > 0) is credited (negative). The
+ * total nets to −solde_global (positive = net call, negative = net refund).
+ * `coproByLot` maps lot_id → coproprietaire_id (Map or plain object).
+ */
+export function buildRegularisationAppel(regularisation, coproByLot) {
+  const lookup = lotId =>
+    coproByLot instanceof Map
+      ? (coproByLot.get(lotId) ?? null)
+      : (coproByLot?.[lotId] ?? null)
+
+  const lignes = (regularisation.lignes || []).map(l => ({
+    lot_id: l.lot_id,
+    coproprietaire_id: lookup(l.lot_id),
+    montant: Math.round(-Number(l.solde) * 100) / 100,
+  }))
+  const montant_total =
+    Math.round(lignes.reduce((s, l) => s + l.montant, 0) * 100) / 100
+  return { montant_total, lignes }
+}
+
 class RegularisationService {
   async getAllByCopropriete(coproprieteId) {
     return RegularisationModel.getAllByCopropriete(coproprieteId)
@@ -120,6 +144,57 @@ class RegularisationService {
       )
       throw error
     }
+  }
+
+  /**
+   * Generate the complementary appel de fonds (débiteurs called, créditeurs
+   * credited) from a saved régularisation, and mark the régularisation validée.
+   * Idempotent: refuses if an appel already exists for this régularisation.
+   */
+  async genererAppel(regularisationId) {
+    const db = knexDatabase.getKnex()
+    const reg = await RegularisationModel.getById(regularisationId)
+    if (!reg) throw new Error('Régularisation introuvable')
+
+    const existing = await db('appels_fonds')
+      .where('regularisation_id', regularisationId)
+      .first()
+    if (existing) {
+      throw new Error(
+        'Un appel de régularisation existe déjà pour cette régularisation.'
+      )
+    }
+
+    const lots = await LotModel.getAllByCopropriete(reg.copropriete_id)
+    const coproByLot = new Map(lots.map(l => [l.id, l.coproprietaire_id]))
+    const { montant_total, lignes } = buildRegularisationAppel(reg, coproByLot)
+
+    return db.transaction(async trx => {
+      const [appel] = await trx('appels_fonds')
+        .insert({
+          copropriete_id: reg.copropriete_id,
+          regularisation_id: reg.id,
+          trimestre: 4,
+          annee: reg.annee,
+          montant_total,
+          date_emission: `${reg.annee}-12-01`,
+          date_echeance: `${reg.annee + 1}-01-31`,
+          statut: 'brouillon',
+        })
+        .returning('*')
+
+      if (lignes.length) {
+        await trx('appels_fonds_lignes').insert(
+          lignes.map(l => ({ ...l, appel_fonds_id: appel.id }))
+        )
+      }
+
+      await trx('regularisations')
+        .where('id', reg.id)
+        .update({ statut: 'validee', updated_at: trx.fn.now() })
+
+      return appel
+    })
   }
 }
 

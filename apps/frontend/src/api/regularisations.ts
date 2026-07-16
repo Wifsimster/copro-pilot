@@ -20,4 +20,7 @@ export const regularisationsApi = {
 
   create: (data: CreateRegularisationInput) =>
     api.post<ApiResponse<Regularisation>>('/regularisations', data),
+
+  genererAppel: (id: number) =>
+    api.post<ApiResponse<unknown>>(`/regularisations/${id}/generer-appel`),
 }

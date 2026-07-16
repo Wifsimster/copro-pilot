@@ -53,4 +53,25 @@ export class RegularisationController {
         .json({ error: error.message })
     }
   }
+
+  /**
+   * POST /api/regularisations/:id/generer-appel — generate the complementary
+   * appel de fonds (débiteurs called, créditeurs credited) and mark validée.
+   */
+  static async genererAppel(req, res) {
+    try {
+      const data = await regularisationService.genererAppel(
+        Number(req.params.id)
+      )
+      res.status(201).json({ data })
+    } catch (error) {
+      logger.error(
+        `[RegularisationController] Error generating appel: ${error.message}`
+      )
+      const clientFault = /introuvable|existe déjà/.test(error.message)
+      res
+        .status(clientFault ? (/introuvable/.test(error.message) ? 404 : 409) : 500)
+        .json({ error: error.message })
+    }
+  }
 }
