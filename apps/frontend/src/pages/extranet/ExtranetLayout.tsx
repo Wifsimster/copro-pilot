@@ -113,7 +113,7 @@ export default function ExtranetLayout() {
       <footer className="pt-4 text-center text-xs text-muted-foreground">
         Propulsé par{' '}
         <a
-          href="#/"
+          href="/"
           className="font-medium text-foreground/70 hover:text-foreground"
         >
           CoproPilot

@@ -62,7 +62,7 @@ docker compose -f compose.local.yml up -d
 - Composants UI : shadcn/ui (Radix + Tailwind) dans `components/ui/`
 - Composants feature dans `components/<feature>/`
 - Types dans `types/index.ts`
-- Routing via `react-router-dom` v7 (`createHashRouter`)
+- Routing via `react-router-dom` v7 (`createBrowserRouter`)
 
 ### Style de code
 
