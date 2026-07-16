@@ -102,7 +102,7 @@ export default function MentionsLegalesPage() {
             sur vos donnees personnelles. Pour en savoir plus,
             consultez notre{' '}
             <a
-              href="/#/politique-confidentialite"
+              href="/politique-confidentialite"
               className="text-emerald-700 hover:underline"
             >
               politique de confidentialite

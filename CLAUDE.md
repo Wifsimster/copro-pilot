@@ -107,7 +107,7 @@ copro-pilot/
 │       │   │   └── utils.ts        # cn() (clsx + tailwind-merge)
 │       │   ├── pages/              # ~30 pages (PascalCase + suffixe Page)
 │       │   ├── routes/
-│       │   │   ├── index.tsx       # HashRouter config (react-router-dom v7)
+│       │   │   ├── index.tsx       # createBrowserRouter config (react-router-dom v7)
 │       │   │   └── ProtectedRoute.tsx
 │       │   ├── store/
 │       │   │   ├── authStore.ts    # Zustand auth state
@@ -287,7 +287,7 @@ Fichiers clés :
 - API calls dans `api/` : fonctions fetch typées, base wrapper dans `api/api.ts`
 - Types dans `types/index.ts` — ajouter les types pour chaque nouvelle entité
 - State management : **Zustand** pour l'auth et la sélection de copropriété, **React Query** pour les données serveur
-- Routing : `react-router-dom` v7 avec `createHashRouter` (URLs avec `#`)
+- Routing : `react-router-dom` v7 avec `createBrowserRouter` (URLs propres, sans `#`) — le backend sert `index.html` en fallback SPA
 - Validation formulaires : **React Hook Form** + **Zod**
 - Path alias : `@/*` → `./src/*`
 - TypeScript strict mode activé (`noUnusedLocals`, `noUnusedParameters`)
@@ -444,7 +444,7 @@ Pour ajouter une nouvelle entité/fonctionnalité :
 - Les migrations s'exécutent automatiquement au démarrage du serveur
 - En production, le backend sert les fichiers statiques du frontend depuis `/frontend-dist`
 - L'authentification utilise Better Auth (email/mot de passe) avec verrouillage après 5 échecs
-- Le frontend utilise un `HashRouter` (URLs avec `#`)
+- Le frontend utilise `createBrowserRouter` (URLs propres) ; le backend sert `index.html` en fallback pour toute route GET non-API
 - API versionnée : toutes les routes sont exposées à la fois sous `/api` et `/api/v1` (alias)
 - L'endpoint `/metrics` (Prometheus) est exposé **hors** du préfixe `/api`, authentification optionnelle via `METRICS_AUTH_TOKEN`
 - Toutes les routes POST/PUT doivent valider leur payload via un schéma Zod déclaré dans `src/schemas/index.js`

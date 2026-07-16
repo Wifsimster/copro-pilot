@@ -114,7 +114,7 @@ export function PlanUpgradeWall({
       </CardHeader>
       <CardContent>
         <Button asChild>
-          <a href={`#/subscription?plan=${requiredPlan}`}>
+          <a href={`/subscription?plan=${requiredPlan}`}>
             Voir le plan {planLabel}
           </a>
         </Button>

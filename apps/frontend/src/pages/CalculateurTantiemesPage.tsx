@@ -133,7 +133,7 @@ export default function CalculateurTantiemesPage() {
             tableur.
           </p>
           <Button asChild className="mt-4">
-            <a href="#/login">
+            <a href="/login">
               Créer un compte gratuit
               <ArrowRight className="size-4" />
             </a>

@@ -65,7 +65,7 @@ describe('PlanGuard', () => {
     expect(screen.getByText('Incluse dans le plan Pro')).toBeInTheDocument()
     expect(screen.getByText(/Le temps réel/)).toBeInTheDocument()
     const cta = screen.getByRole('link', { name: /Voir le plan Pro/ })
-    expect(cta).toHaveAttribute('href', '#/subscription?plan=pro')
+    expect(cta).toHaveAttribute('href', '/subscription?plan=pro')
   })
 
   it('does not flash the wall while loading', () => {

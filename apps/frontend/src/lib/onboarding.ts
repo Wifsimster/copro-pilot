@@ -16,31 +16,31 @@ export const PREMIERE_AG_STEPS: OnboardingStep[] = [
     key: 'copropriete',
     title: 'Créer votre copropriété',
     description: 'Renseignez la copropriété et ses lots.',
-    href: '#/coproprietes',
+    href: '/coproprietes',
   },
   {
     key: 'convocation',
     title: 'Préparer la convocation',
     description: "Date, lieu et modalités de l'assemblée générale.",
-    href: '#/assemblees',
+    href: '/assemblees',
   },
   {
     key: 'ordre_du_jour',
     title: "Rédiger l'ordre du jour",
     description: 'Ajoutez les résolutions à soumettre au vote.',
-    href: '#/assemblees',
+    href: '/assemblees',
   },
   {
     key: 'presences',
     title: 'Enregistrer présences et procurations',
     description: 'Le jour de l’AG, pointez les présents et pouvoirs.',
-    href: '#/assemblees',
+    href: '/assemblees',
   },
   {
     key: 'pv',
     title: 'Générer le procès-verbal',
     description: 'Éditez et diffusez le PV après le vote.',
-    href: '#/assemblees',
+    href: '/assemblees',
   },
 ]
 
