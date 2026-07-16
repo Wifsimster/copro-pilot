@@ -11,11 +11,12 @@ import { AppelsFondsTab } from '@/components/charges/AppelsFondsTab'
 import { PaiementsTab } from '@/components/charges/PaiementsTab'
 import { FondsTravauxTab } from '@/components/charges/FondsTravauxTab'
 import type { BudgetPrevisionnel, AppelFonds, FondsTravaux, Paiement } from '@/types'
-import { Receipt, FileText, Banknote, PiggyBank, CreditCard } from 'lucide-react'
+import { Receipt, FileText, Banknote, PiggyBank, CreditCard, Calculator } from 'lucide-react'
+import { RegularisationTab } from '@/components/charges/RegularisationTab'
 import { ErrorAlert } from '@/components/layout/ErrorAlert'
 import { TabBar } from '@/components/layout/TabBar'
 
-type Tab = 'budgets' | 'appels' | 'paiements' | 'fonds-travaux'
+type Tab = 'budgets' | 'appels' | 'paiements' | 'fonds-travaux' | 'regularisation'
 
 export default function ChargesPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
@@ -92,6 +93,7 @@ export default function ChargesPage() {
               { key: 'appels', label: 'Appels de fonds', icon: Banknote },
               { key: 'paiements', label: 'Paiements', icon: CreditCard },
               { key: 'fonds-travaux', label: 'Fonds travaux', icon: PiggyBank },
+              { key: 'regularisation', label: 'Régularisation', icon: Calculator },
             ]}
             activeTab={activeTab}
             onTabChange={(key) => patchUi({ activeTab: key as Tab })}
@@ -196,6 +198,11 @@ export default function ChargesPage() {
               }}
               isSubmitting={editingFonds ? updateFonds.isPending : createFonds.isPending}
             />
+          )}
+
+          {/* Régularisation tab */}
+          {activeTab === 'regularisation' && (
+            <RegularisationTab coproprieteId={selectedCoproId} />
           )}
         </>
       )}
