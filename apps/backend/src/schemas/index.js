@@ -97,3 +97,11 @@ export const balanceImportSchema = z.object({
     )
     .min(1),
 })
+
+export const regularisationSchema = z.object({
+  copropriete_id: z.number().int().positive(),
+  annee: z.number().int().min(2000).max(2100),
+  charges_reelles: z.number().nonnegative(),
+  provisions: z.number().nonnegative(),
+  statut: z.enum(['brouillon', 'validee']).optional(),
+})

@@ -207,6 +207,33 @@ export interface AppelFondsLigne {
   updated_at: string
 }
 
+export interface RegularisationLigne {
+  id: number
+  regularisation_id: number
+  lot_id: number
+  lot_numero?: string
+  tantiemes: number
+  quote_part: number
+  provisions: number
+  solde: number
+  sens: 'crediteur' | 'debiteur' | 'equilibre'
+}
+
+export interface Regularisation {
+  id: number
+  copropriete_id: number
+  annee: number
+  total_charges_reelles: number
+  total_provisions: number
+  solde_global: number
+  total_remboursements: number
+  total_complements: number
+  statut: 'brouillon' | 'validee'
+  lignes?: RegularisationLigne[]
+  created_at: string
+  updated_at: string
+}
+
 export type ModePaiement = 'virement' | 'cheque' | 'prelevement' | 'especes' | 'autre'
 
 export interface Paiement {
