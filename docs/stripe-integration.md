@@ -103,14 +103,31 @@ En mode **self-hosted** (`LICENSING_MODE=self-hosted`), ces middlewares sont dé
 | `STRIPE_SECRET_KEY` | Clé secrète Stripe |
 | `STRIPE_PUBLISHABLE_KEY` | Clé publique Stripe (frontend) |
 | `STRIPE_WEBHOOK_SECRET` | Secret de vérification des webhooks |
-| `STRIPE_PRICE_ESSENTIEL` | ID du prix mensuel Essentiel |
-| `STRIPE_PRICE_PRO` | ID du prix mensuel Pro |
-| `STRIPE_PRICE_ENTREPRISE` | ID du prix mensuel Entreprise |
+| `STRIPE_PRICE_ESSENTIEL_MONTHLY` / `_YEARLY` | IDs des prix Essentiel (mensuel / annuel) |
+| `STRIPE_PRICE_PRO_MONTHLY` / `_YEARLY` | IDs des prix Pro (mensuel / annuel) |
+| `STRIPE_PRICE_ENTREPRISE_MONTHLY` / `_YEARLY` | IDs des prix Entreprise (mensuel / annuel) |
 | `STRIPE_PRICE_PRO_EXTRA_COPRO` | ID du prix dépassement copropriétés (Pro) |
 | `STRIPE_PRICE_PRO_EXTRA_USER` | ID du prix dépassement utilisateurs (Pro) |
 | `STRIPE_PRICE_ENTREPRISE_EXTRA_COPRO` | ID du prix dépassement copropriétés (Entreprise) |
 | `STRIPE_PRICE_ENTREPRISE_EXTRA_USER` | ID du prix dépassement utilisateurs (Entreprise) |
 | `LICENSING_MODE` | `cloud` (quotas actifs) ou `self-hosted` (quotas désactivés) |
+
+### Grille tarifaire 2026-07 — migration des prix Stripe
+
+Le 16 juillet 2026, les prix du compte Stripe (9 € / 29 € / 99 €, créés en avril 2026) ont été réalignés sur la grille commerciale affichée par la landing page (19 € / 49 € / 149 €, annuel 144 € / 375 € / 1 140 €). De nouveaux prix ont été créés (les `lookup_key` canoniques `copropilot_<plan>_<cadence>` ont été transférés dessus, et ils sont désormais `default_price` de leurs produits) :
+
+| Plan / cadence | Nouveau price ID | Montant TTC |
+|---|---|---|
+| Essentiel mensuel | `price_1Ttkz9K2G0vOIqPaNfAIZJ8b` | 19 € |
+| Essentiel annuel | `price_1Ttl2ZK2G0vOIqPaDy6j3AVU` | 144 € |
+| Pro mensuel | `price_1Ttl2dK2G0vOIqPa7gEGoiab` | 49 € |
+| Pro annuel | `price_1Ttl2gK2G0vOIqPa2b1HvwOi` | 375 € |
+| Entreprise mensuel | `price_1Ttl2kK2G0vOIqPa8UzQPlWy` | 149 € |
+| Entreprise annuel | `price_1Ttl2nK2G0vOIqPa2YKP3O9f` | 1 140 € |
+
+Les prix de dépassement (extra copro / extra utilisateur) sont inchangés et déjà corrects.
+
+**Action requise au déploiement :** mettre à jour les variables `STRIPE_PRICE_*_MONTHLY` / `_YEARLY` de l'environnement de production avec les IDs ci-dessus, puis archiver les anciens prix (`copropilot_*` créés en avril 2026, désormais sans `lookup_key`) dans le dashboard Stripe. Les anciens prix restent actifs tant que les variables ne sont pas à jour afin de ne pas casser le checkout (aucun abonnement actif n'existait au moment de la migration).
 
 ---
 

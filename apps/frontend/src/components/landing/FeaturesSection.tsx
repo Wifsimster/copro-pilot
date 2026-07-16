@@ -81,15 +81,15 @@ const featureGroups: FeatureGroup[] = [
     bullets: [
       {
         icon: ArrowLeftRight,
-        text: 'Réconciliation bancaire intelligente',
+        text: 'Suivi des comptes et mouvements bancaires',
       },
       {
         icon: Calculator,
-        text: 'Régularisation post-AG en 1 clic',
+        text: "Appels de fonds et relances d'impayés",
       },
       {
         icon: BarChart3,
-        text: 'Prévisions de trésorerie à 30, 60 et 90 jours',
+        text: 'Journal, grand livre, balance et annexes',
       },
     ],
   },

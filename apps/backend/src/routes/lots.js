@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { LotController } from '../controllers/LotController.js'
 import { requireAuth } from '../middleware/auth.js'
 import { requireAdminForDelete } from '../middleware/authorization.js'
+import { requireLotQuota } from '../middleware/requireQuota.js'
 import { validate } from '../middleware/validate.js'
 import { lotSchema } from '../schemas/index.js'
 
@@ -10,7 +11,7 @@ const router = Router()
 router.get('/copropriete/:coproprieteId', requireAuth(), LotController.getAllByCopropriete)
 router.get('/:id', requireAuth(), LotController.getById)
 router.get('/:id/cles-repartition', requireAuth(), LotController.getClesRepartition)
-router.post('/', requireAuth(), validate(lotSchema), LotController.create)
+router.post('/', requireAuth(), requireLotQuota(), validate(lotSchema), LotController.create)
 router.put('/:id', requireAuth(), validate(lotSchema), LotController.update)
 router.delete('/:id', requireAuth(), requireAdminForDelete, LotController.delete)
 

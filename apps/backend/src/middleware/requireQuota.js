@@ -61,6 +61,50 @@ export const requireCoproprieteQuota = () => {
 }
 
 /**
+ * Middleware to enforce lot quota on creation routes.
+ * Must be used AFTER requireAuth().
+ *
+ * In self-hosted mode, this middleware is a no-op.
+ */
+export const requireLotQuota = () => {
+  return async (req, res, next) => {
+    if (process.env.LICENSING_MODE === 'self-hosted') {
+      return next()
+    }
+
+    try {
+      const db = getDb()
+      const userPlan = req.user?.plan || 'gratuit'
+      const quota = PLAN_QUOTAS[userPlan]
+
+      if (!quota || quota.lots === null || quota.lots === undefined) {
+        return next()
+      }
+
+      const [{ count }] = await db('lots').count('id as count')
+      const currentCount = parseInt(count, 10)
+
+      if (currentCount >= quota.lots) {
+        return res.status(403).json({
+          error: 'Quota de lots atteint',
+          message: `Votre plan ${userPlan} est limité à ${quota.lots} lots. Passez au plan supérieur pour gérer des lots illimités.`,
+          current_count: currentCount,
+          limit: quota.lots,
+          current_plan: userPlan,
+        })
+      }
+
+      next()
+    } catch (error) {
+      logger.error(
+        `[requireQuota] Error checking lot quota: ${error.message}`
+      )
+      next()
+    }
+  }
+}
+
+/**
  * Get usage stats for a given user (coproprietes + users created).
  */
 export async function getUserUsage(userId, userPlan) {
