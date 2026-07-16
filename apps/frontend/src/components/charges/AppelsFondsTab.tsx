@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { AppelFondsFormDialog } from '@/components/charges/AppelFondsFormDialog'
+import { AppelFondsWizard } from '@/components/charges/AppelFondsWizard'
 import type { AppelFonds } from '@/types'
-import { Plus, Trash2, Pencil, Banknote } from 'lucide-react'
+import { Plus, Trash2, Pencil, Banknote, Wand2 } from 'lucide-react'
 
 const STATUT_APPEL_LABELS: Record<string, string> = {
   brouillon: 'Brouillon',
@@ -41,17 +43,27 @@ export function AppelsFondsTab({
   onSubmit,
   isSubmitting,
 }: AppelsFondsTabProps) {
+  const [wizardOpen, setWizardOpen] = useState(false)
   return (
     <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
       <div className="flex items-center justify-between border-b border-stone-200 p-4 dark:border-stone-700">
         <h2 className="text-lg font-semibold text-stone-900 dark:text-white">Appels de fonds</h2>
-        <button type="button"
-          onClick={onCreate}
-          className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
-        >
-          <Plus className="size-4" />
-          Nouvel appel
-        </button>
+        <div className="flex items-center gap-2">
+          <button type="button"
+            onClick={() => setWizardOpen(true)}
+            className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-800"
+          >
+            <Wand2 className="size-4" />
+            Créer (guidé)
+          </button>
+          <button type="button"
+            onClick={onCreate}
+            className="flex items-center gap-2 rounded-lg border border-stone-300 px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-700"
+          >
+            <Plus className="size-4" />
+            Formulaire
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -127,6 +139,13 @@ export function AppelsFondsTab({
         title={editing ? 'Modifier l\'appel de fonds' : 'Nouvel appel de fonds'}
         onSubmit={onSubmit}
         isLoading={isSubmitting}
+      />
+
+      <AppelFondsWizard
+        open={wizardOpen}
+        onOpenChange={setWizardOpen}
+        coproprieteId={coproprieteId}
+        existing={appels || []}
       />
     </div>
   )
