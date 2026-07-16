@@ -47,6 +47,7 @@ const VsTraditionnelsPage = lazy(() => import('@/pages/VsTraditionnelsPage'))
 const CalculateurTantiemesPage = lazy(
   () => import('@/pages/CalculateurTantiemesPage')
 )
+const ResolutionAgPage = lazy(() => import('@/pages/ResolutionAgPage'))
 const SecuritePage = lazy(() => import('@/pages/SecuritePage'))
 const MentionsLegalesPage = lazy(
   () => import('@/pages/MentionsLegalesPage')
@@ -128,6 +129,14 @@ export const router = createBrowserRouter([
     element: (
       <Suspense fallback={<PageLoader />}>
         <CalculateurTantiemesPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/outils/resolution-ag',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <ResolutionAgPage />
       </Suspense>
     ),
   },
