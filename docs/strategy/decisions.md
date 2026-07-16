@@ -39,11 +39,10 @@ Les entretiens étant hors de portée (D0), **la validation se fait par le compo
 
 **Fait nouveau (veille web 07/2026)** : Vilogi propose son offre syndic bénévole **à partir de 10 € HT/mois (~120 €/an)**, extranet et modules inclus ([logiciels.pro](https://www.logiciels.pro/vilogi/)) ; LogicielSyndic est à **99 €/an** ; Matera à **~10-15 €/lot/mois** (1 500-2 500 €/an pour 20 lots, [Matera](https://matera.eu/fr/syndic-tarifs)). **CoproPilot Essentiel à 228 €/an est ~2× le prix des logiciels bénévoles concurrents, sans différenciateur livré.**
 
-**Décision :**
-- **Prix de lancement Essentiel : 12 €/mois (144 €/an)** tant qu'aucun différenciateur livré (LRE intégrée) ne justifie 19 €. On se place dans la bande des logiciels bénévoles, pas 2× au-dessus. Remontée à 19 € **conditionnée** à la livraison de la LRE + compta simplifiée.
-- **Gratuit** conservé comme fer de lance (personne d'autre n'offre un cloud gratuit crédible — avantage périssable, à exploiter vite).
+**Décision (révisée — voir D7) : maintenir la grille publiée (19 €/mois, 144 €/an en annuel).** Le différenciateur n'est ni le prix ni le nombre de features, mais **l'expérience** : une application moderne, responsive et **guidée par les workflows** face à des outils legacy (Vilogi, LogicielSyndic) qui alignent des fonctionnalités. Cette expérience *est déjà livrée* et justifie un premium sur les logiciels bénévoles — on ne s'aligne pas par le bas sur les 120 €/an de Vilogi.
+- **Gratuit** conservé comme fer de lance et dé-risqueur d'essai (personne d'autre n'offre un cloud gratuit crédible — avantage périssable, à exploiter vite).
 - Pro (49 €) / Entreprise (149 €) : inchangés mais **non commercialisés** tant que P3 est fermé (D1).
-- *Implémentation* : à porter en suivant (Stripe + landing) ; aucun abonnement actif n'existe, le risque est nul.
+- *Conséquence* : **pas de changement de prix live à faire** — la grille production actuelle (19/49/149) est conservée. L'ancienne piste « prix de lancement 144 €/an » est abandonnée : baisser le prix reviendrait à concéder que la valeur est équivalente à celle de Vilogi, ce qui est faux.
 
 ## D4 — Sizing SAM : chiffré depuis les données publiques (issue #160)
 
@@ -67,18 +66,33 @@ Devis humains exclus (D0) ; la veille web tient lieu de référence (à rafraîc
 
 | Concurrent | Prix public | Source | Lecture |
 |---|---|---|---|
-| **Vilogi** (bénévole) | ~10 € HT/mois (~120 €/an), tout inclus | [logiciels.pro](https://www.logiciels.pro/vilogi/) | **Concurrent n°1** : moins cher ET plus complet (compta, banque, LRE) |
+| **Vilogi** (bénévole) | ~10 € HT/mois (~120 €/an), tout inclus | [logiciels.pro](https://www.logiciels.pro/vilogi/) | Riche en fonctionnalités **mais application legacy** (UX datée, pas de guidage). Concurrent de référence sur le prix/features — **pas sur l'expérience** |
 | **LogicielSyndic** | 99 €/an (≤ 50 lots) | docs | ancre prix psychologique |
 | **Matera** | ~10-15 €/lot/mois ; ~250 €/lot/an (Syndic Local) | [Matera](https://matera.eu/fr/syndic-tarifs) | autre catégorie (plateforme + experts) |
 | **Septeo** | devis only | — | marché pro, hors scope (D1) |
 
-**Conséquence** : la carte de positionnement est figée ; les pages `/vs/` (#136) ne citeront que ces prix publics sourcés, jamais un devis inventé. Le vrai combat est **Vilogi** → différenciation sur **UX moderne + gratuit + transparence**, pas sur le prix (on ne peut pas gagner la guerre des prix sous 120 €).
+**Conséquence** : la carte de positionnement est figée ; les pages `/vs/` (#136) ne citeront que ces prix publics sourcés, jamais un devis inventé. **On ne combat pas Vilogi sur son terrain** (prix ni parité fonctionnelle — imbattable sous 120 €, catalogue mûr). On le combat sur le sien de faiblesse : c'est une **application legacy**. Voir D7.
 
 ## D6 — Support & canaux : self-serve et product-led (issues #162, #163)
 
 - **Support des comptes gratuits : self-serve strict** (base de connaissances juridique = actif SEO, communauté). Aucun support humain sur le gratuit — non finançable et non autonome. *Acté.*
 - **Partenariats ARC/ANCC : optionnels, jamais une dépendance du plan.** On ne peut pas les engager de façon autonome ; on ne bâtit donc pas dessus. Le risque de désintermédiation devient sans objet puisqu'on ne dépend pas d'eux. *Acté.*
 - **Acquisition = product-led + SEO programmatique + contenu réglementaire daté + listings comparateurs + open-source.** Ce sont les seuls canaux qu'un produit autonome exécute sans humain. Priorité SEO : hubs « guide du syndic bénévole », calculateurs (déjà livrés, #135), pages réglementaires datées.
+
+## D7 — Positionnement : application moderne guidée par les workflows, pas un catalogue de features
+
+**Décision : la douve de CoproPilot est l'expérience, pas la parité fonctionnelle.**
+
+Les concurrents bénévoles (Vilogi, LogicielSyndic) sont des **applications legacy** : riches en fonctionnalités, mais des interfaces datées qui *alignent des écrans* et laissent le syndic seul face à la complexité. CoproPilot se différencie sur ce que ces outils ne peuvent pas rattraper vite :
+
+- **Application moderne et responsive** (mobile/desktop) — là où Vilogi est un full-web daté.
+- **Guidée par les workflows** : le produit *conduit* le syndic à travers ses actes (première AG, appel de fonds, clôture, reprise de gestion) au lieu de lui présenter des tableaux passifs. Un workflow qui vérifie les délais, les majorités et l'ordre des étapes.
+- **Lien direct avec la douleur n°1 (H1)** : le bénévole a peur de l'erreur qui engage sa responsabilité. **Un parcours guidé réduit ce risque — c'est la vraie valeur, pas le nombre de fonctionnalités.** « Vilogi vous donne des fonctions ; CoproPilot vous guide pour ne pas commettre l'erreur qui vous engage. »
+
+**Conséquences actées :**
+- **Message** : « la gestion de copropriété moderne et guidée », vs les outils qui « listent des fonctions ». Ne pas se comparer feature-à-feature (on perdrait contre Vilogi) ; se comparer sur l'expérience et le guidage.
+- **Prix** : cette expérience justifie le premium (D3 révisé — on garde 19 €, on ne descend pas à 144 €/an).
+- **Roadmap (dans le périmètre bootstrap D1)** : prioriser le **moteur de workflows guidés** — c'est le différenciateur, donc l'investissement produit n°1 après les fixes. Le pilier « workflows métier » de `disruptive-roadmap.md` remonte en priorité ; l'onboarding « première AG » (#125, livré) en est la première brique. Chaque acte clé (appel de fonds, régularisation, reprise, AG) doit devenir un workflow guidé, pas un formulaire.
 
 ## Récapitulatif des issues
 
@@ -87,10 +101,10 @@ Devis humains exclus (D0) ; la veille web tient lieu de référence (à rafraîc
 | #158 Financement | **Bootstrap strict, build pro gelé** (D1) |
 | #159 Validation terrain | **Remplacée par instrumentation + micro-sondages** ; H1 actée, RC-assurance abandonnée (D2) |
 | #160 SAM | **SAM ~35K / cœur ~12K / flux AG-panic ~1-1,5K/an** ; beachhead = bénévoles installés (D4) |
-| #161 Devis concurrents | **Veille web actée** (Vilogi n°1 à ~120 €) — pas de devis humains (D5) |
+| #161 Devis concurrents | **Veille web actée** ; Vilogi = référence prix/features **mais legacy** — on se différencie sur l'expérience, pas le prix (D5, D7) |
 | #162 Coût du gratuit | **Support self-serve strict** (D6) |
 | #163 ARC/ANCC | **Optionnel, non bloquant** ; acquisition product-led + SEO (D6) |
 
 ## Ce que ces décisions impliquent, concrètement, pour le produit
 
-Priorité d'ingénierie (autonome, finançable) : **(1)** appliquer le prix de lancement 144 €/an ; **(2)** finir les rangs 0-4 (reprise, compta simplifiée, régularisation, LRE) ; **(3)** SEO programmatique + base de connaissances self-serve ; **(4)** micro-sondages in-app. Tout le reste (socle pro, mobile, IA, partenariats) est **hors scope** tant que D0/D1 tiennent.
+Priorité d'ingénierie (autonome, finançable) : **(1)** finir les rangs 0-4 (reprise, compta simplifiée, régularisation, LRE) ; **(2)** le **moteur de workflows guidés** (D7) — le différenciateur face au legacy : transformer chaque acte clé (appel de fonds, régularisation, reprise, AG) en parcours guidé plutôt qu'en formulaire ; **(3)** SEO programmatique + base de connaissances self-serve ; **(4)** micro-sondages in-app. La grille de prix reste inchangée (D3 révisé). Tout le reste (socle pro, IA, partenariats) est **hors scope** tant que D0/D1 tiennent.
