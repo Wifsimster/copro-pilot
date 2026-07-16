@@ -56,6 +56,8 @@ import extranetRoutes from './extranet.js'
 import exportsRoutes from './exports.js'
 // Stats
 import statsRoutes from './stats.js'
+// Analytics (funnel — staff only)
+import analyticsRoutes from './analytics.js'
 // Cycle annuel (workflow)
 import cycleAnnuelRoutes from './cycle-annuel.js'
 // Global search
@@ -163,6 +165,9 @@ router.use('/exports', exportsRoutes)
 
 // Stats
 router.use('/stats', statsRoutes)
+
+// Analytics (funnel — staff only)
+router.use('/analytics', analyticsRoutes)
 
 // Cycle annuel (workflow)
 router.use('/cycle-annuel', cycleAnnuelRoutes)
