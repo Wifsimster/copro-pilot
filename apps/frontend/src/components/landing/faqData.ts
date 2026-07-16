@@ -35,10 +35,11 @@ export const faqs: FaqItem[] = [
     question:
       'Puis-je importer mes données existantes ?',
     answer:
-      "Oui, vous pouvez importer vos données depuis un fichier"
-      + " Excel. Pour les plans Entreprise, nous proposons une"
-      + " migration assistée depuis les logiciels traditionnels"
-      + " (POWIMO, Thetrawin, etc.).",
+      "Nous vous accompagnons pour la reprise de vos données"
+      + " (copropriétés, lots, soldes) lors de la mise en route."
+      + " Pour les plans Entreprise, cette reprise est prise en"
+      + " charge par notre équipe. L'import en autonomie depuis un"
+      + " fichier Excel est en cours de développement.",
   },
   {
     question: 'Que se passe-t-il si je dépasse 20 lots ?',
