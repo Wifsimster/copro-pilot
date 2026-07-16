@@ -18,6 +18,7 @@ Ces documents outillent les décisions et validations que les trois analyses app
 
 | Document | Rôle | Issue |
 |---|---|---|
+| [`decisions.md`](decisions.md) | **Journal de décisions actées** — tranche les issues #158-#163 sous la contrainte « produit autonome, aucun travail humain externe ». **Fait autorité** sur les hypothèses ouvertes des autres documents | #158-#163 |
 | [`financial-model.md`](financial-model.md) | P&L 3 ans, LTV/CAC, coût du gratuit, arbitrage **bootstrap vs levée** | #158, #162 |
 | [`interview-guide.md`](interview-guide.md) | Guide d'entretien terrain (screener, script, Van Westendorp, seuils) | #159 |
 | [`sam-sizing-model.md`](sam-sizing-model.md) | Méthodologie + template de sizing SAM bottom-up (RNIC) | #160, #161 |
