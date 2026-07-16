@@ -26,6 +26,7 @@ function layout(content) {
       ${content}
     </div>
     <div class="footer">
+      <p>Propulsé par CoproPilot</p>
       <p>&copy; ${new Date().getFullYear()} CoproPilot — Plateforme de gestion de copropriété</p>
       <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
     </div>

@@ -106,6 +106,19 @@ export default function ExtranetLayout() {
       )}
 
       <Outlet context={context} />
+
+      {/* Discreet brand badge — extranet is copropriétaire-facing, a low-cost
+          notoriety surface. Not shown on legal documents (convocations/PV),
+          which are generated separately as PDFs. */}
+      <footer className="pt-4 text-center text-xs text-muted-foreground">
+        Propulsé par{' '}
+        <a
+          href="#/"
+          className="font-medium text-foreground/70 hover:text-foreground"
+        >
+          CoproPilot
+        </a>
+      </footer>
     </div>
   )
 }
