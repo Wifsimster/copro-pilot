@@ -15,6 +15,7 @@ import { useAppelsFondsByCopropriete } from '@/hooks/useAppelsFonds'
 import {
   useRegularisationsByCopropriete,
   useCreateRegularisation,
+  useGenererAppelRegularisation,
 } from '@/hooks/useRegularisations'
 import { computeRegularisation } from '@/lib/regularisationCharges'
 
@@ -34,16 +35,26 @@ export function RegularisationTab({ coproprieteId }: RegularisationTabProps) {
   const { data: appels } = useAppelsFondsByCopropriete(coproprieteId)
   const { data: history } = useRegularisationsByCopropriete(coproprieteId)
   const createReg = useCreateRegularisation()
+  const genererAppel = useGenererAppelRegularisation()
   const [saved, setSaved] = useState(false)
+  const [savedId, setSavedId] = useState<number | null>(null)
+  const [appelGenerated, setAppelGenerated] = useState(false)
 
   async function save() {
-    await createReg.mutateAsync({
+    const res = await createReg.mutateAsync({
       copropriete_id: coproprieteId,
       annee,
       charges_reelles: parseFloat(chargesReelles) || 0,
       provisions: parseFloat(provisions) || 0,
     })
+    setSavedId(res.data.id)
     setSaved(true)
+  }
+
+  async function genererAppelRegularisation() {
+    if (!savedId) return
+    await genererAppel.mutateAsync(savedId)
+    setAppelGenerated(true)
   }
 
   const now = new Date()
@@ -281,6 +292,8 @@ export function RegularisationTab({ coproprieteId }: RegularisationTabProps) {
                 onClick={() => {
                   setStep(s => s - 1)
                   setSaved(false)
+                  setSavedId(null)
+                  setAppelGenerated(false)
                 }}
               >
                 <ArrowLeft className="size-4" /> Retour
@@ -297,9 +310,27 @@ export function RegularisationTab({ coproprieteId }: RegularisationTabProps) {
             )}
             {step === 3 &&
               (saved ? (
-                <span className="flex items-center gap-1 text-sm font-medium text-emerald-600">
-                  <Check className="size-4" /> Enregistrée
-                </span>
+                <>
+                  <span className="flex items-center gap-1 text-sm font-medium text-emerald-600">
+                    <Check className="size-4" /> Enregistrée
+                  </span>
+                  {appelGenerated ? (
+                    <span className="flex items-center gap-1 text-sm font-medium text-emerald-600">
+                      <Check className="size-4" /> Appel généré
+                    </span>
+                  ) : (
+                    <Button
+                      type="button"
+                      onClick={genererAppelRegularisation}
+                      disabled={genererAppel.isPending}
+                    >
+                      <Save className="size-4" />
+                      {genererAppel.isPending
+                        ? 'Génération…'
+                        : "Générer l'appel de régularisation"}
+                    </Button>
+                  )}
+                </>
               ) : (
                 <Button
                   type="button"

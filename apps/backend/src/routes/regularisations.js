@@ -2,7 +2,6 @@ import { Router } from 'express'
 import { RegularisationController } from '../controllers/RegularisationController.js'
 import { requireAuth } from '../middleware/auth.js'
 import { requirePlan } from '../middleware/requirePlan.js'
-import { requireAdminForDelete } from '../middleware/authorization.js'
 import { validate } from '../middleware/validate.js'
 import { regularisationSchema } from '../schemas/index.js'
 
@@ -27,6 +26,12 @@ router.post(
   requirePlan('essentiel'),
   validate(regularisationSchema),
   RegularisationController.create
+)
+router.post(
+  '/:id/generer-appel',
+  requireAuth(),
+  requirePlan('essentiel'),
+  RegularisationController.genererAppel
 )
 
 export default router

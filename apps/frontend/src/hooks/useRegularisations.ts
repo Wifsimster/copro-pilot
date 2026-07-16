@@ -30,3 +30,14 @@ export function useCreateRegularisation() {
     },
   })
 }
+
+export function useGenererAppelRegularisation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => regularisationsApi.genererAppel(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: REGULARISATIONS_QUERY_KEY })
+      queryClient.invalidateQueries({ queryKey: ['appels-fonds'] })
+    },
+  })
+}

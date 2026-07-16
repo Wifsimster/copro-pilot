@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { computeRegularisation } from '../../src/services/RegularisationService.js'
+import {
+  computeRegularisation,
+  buildRegularisationAppel,
+} from '../../src/services/RegularisationService.js'
 
 const lots = [
   { id: 1, tantiemes: 500 },
@@ -46,5 +49,46 @@ describe('computeRegularisation (server-side)', () => {
 
   it('rejects negative amounts', () => {
     expect(() => computeRegularisation(lots, -1, 100)).toThrow(/positifs/)
+  })
+})
+
+describe('buildRegularisationAppel', () => {
+  const reg = {
+    lignes: [
+      { lot_id: 1, solde: 1000 }, // créditeur → credited (négatif)
+      { lot_id: 2, solde: -600 }, // débiteur → called (positif)
+      { lot_id: 3, solde: -400 },
+    ],
+  }
+  const coproByLot = new Map([
+    [1, 11],
+    [2, 22],
+    [3, null],
+  ])
+
+  it('maps each lot line to −solde with its copropriétaire', () => {
+    const { montant_total, lignes } = buildRegularisationAppel(
+      reg,
+      coproByLot
+    )
+    expect(lignes).toEqual([
+      { lot_id: 1, coproprietaire_id: 11, montant: -1000 },
+      { lot_id: 2, coproprietaire_id: 22, montant: 600 },
+      { lot_id: 3, coproprietaire_id: null, montant: 400 },
+    ])
+    // net = −solde_global = −(1000−600−400) = 0 here
+    expect(montant_total).toBe(0)
+  })
+
+  it('accepts a plain-object lot→copro map', () => {
+    const { lignes } = buildRegularisationAppel(
+      { lignes: [{ lot_id: 5, solde: -250 }] },
+      { 5: 55 }
+    )
+    expect(lignes[0]).toEqual({
+      lot_id: 5,
+      coproprietaire_id: 55,
+      montant: 250,
+    })
   })
 })
