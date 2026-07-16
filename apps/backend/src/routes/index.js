@@ -62,6 +62,8 @@ import analyticsRoutes from './analytics.js'
 import repriseGestionRoutes from './reprise-gestion.js'
 // Comptabilité de trésorerie simplifiée
 import comptaTresorerieRoutes from './compta-tresorerie.js'
+// Régularisation des charges (clôture)
+import regularisationsRoutes from './regularisations.js'
 // Cycle annuel (workflow)
 import cycleAnnuelRoutes from './cycle-annuel.js'
 // Global search
@@ -178,6 +180,9 @@ router.use('/reprise-gestion', repriseGestionRoutes)
 
 // Comptabilité de trésorerie simplifiée
 router.use('/compta-tresorerie', comptaTresorerieRoutes)
+
+// Régularisation des charges (clôture)
+router.use('/regularisations', regularisationsRoutes)
 
 // Cycle annuel (workflow)
 router.use('/cycle-annuel', cycleAnnuelRoutes)

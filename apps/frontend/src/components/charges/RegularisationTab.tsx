@@ -6,10 +6,16 @@ import {
   AlertTriangle,
   TrendingUp,
   TrendingDown,
+  Check,
+  Save,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useLotsByCopropriete } from '@/hooks/useLots'
 import { useAppelsFondsByCopropriete } from '@/hooks/useAppelsFonds'
+import {
+  useRegularisationsByCopropriete,
+  useCreateRegularisation,
+} from '@/hooks/useRegularisations'
 import { computeRegularisation } from '@/lib/regularisationCharges'
 
 interface RegularisationTabProps {
@@ -26,6 +32,19 @@ export function RegularisationTab({ coproprieteId }: RegularisationTabProps) {
   const { data: lots, isLoading: loadingLots } =
     useLotsByCopropriete(coproprieteId)
   const { data: appels } = useAppelsFondsByCopropriete(coproprieteId)
+  const { data: history } = useRegularisationsByCopropriete(coproprieteId)
+  const createReg = useCreateRegularisation()
+  const [saved, setSaved] = useState(false)
+
+  async function save() {
+    await createReg.mutateAsync({
+      copropriete_id: coproprieteId,
+      annee,
+      charges_reelles: parseFloat(chargesReelles) || 0,
+      provisions: parseFloat(provisions) || 0,
+    })
+    setSaved(true)
+  }
 
   const now = new Date()
   const [step, setStep] = useState(0)
@@ -64,6 +83,8 @@ export function RegularisationTab({ coproprieteId }: RegularisationTabProps) {
       return null
     }
   }, [step, regLots, chargesReelles, provisions])
+
+  const alreadyExists = (history || []).some(h => h.annee === annee)
 
   const inputCls =
     'mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
@@ -247,12 +268,20 @@ export function RegularisationTab({ coproprieteId }: RegularisationTabProps) {
             )}
           </div>
 
-          <div className="mt-4 flex justify-end gap-2">
+          <div className="mt-4 flex items-center justify-end gap-2">
+            {step === 3 && alreadyExists && (
+              <span className="mr-auto text-xs text-amber-600">
+                Une régularisation existe déjà pour {annee}.
+              </span>
+            )}
             {step > 0 && (
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setStep(s => s - 1)}
+                onClick={() => {
+                  setStep(s => s - 1)
+                  setSaved(false)
+                }}
               >
                 <ArrowLeft className="size-4" /> Retour
               </Button>
@@ -266,7 +295,42 @@ export function RegularisationTab({ coproprieteId }: RegularisationTabProps) {
                 Continuer <ArrowRight className="size-4" />
               </Button>
             )}
+            {step === 3 &&
+              (saved ? (
+                <span className="flex items-center gap-1 text-sm font-medium text-emerald-600">
+                  <Check className="size-4" /> Enregistrée
+                </span>
+              ) : (
+                <Button
+                  type="button"
+                  onClick={save}
+                  disabled={!result || alreadyExists || createReg.isPending}
+                >
+                  <Save className="size-4" />
+                  {createReg.isPending
+                    ? 'Enregistrement…'
+                    : 'Enregistrer la régularisation'}
+                </Button>
+              ))}
           </div>
+
+          {history && history.length > 0 && (
+            <div className="mt-6 border-t pt-4">
+              <h3 className="mb-2 text-sm font-medium text-muted-foreground">
+                Régularisations enregistrées
+              </h3>
+              <ul className="space-y-1 text-sm">
+                {history.map(h => (
+                  <li key={h.id} className="flex justify-between">
+                    <span>Exercice {h.annee}</span>
+                    <span className="text-muted-foreground">
+                      solde {eur(Number(h.solde_global))}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </>
       )}
     </div>
