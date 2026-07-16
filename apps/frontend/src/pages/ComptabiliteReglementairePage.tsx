@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
+import { PlanGuard } from '@/components/subscription/PlanGuard'
 import {
   useExercices,
   useCreateExercice,
@@ -63,7 +64,7 @@ function formatEur(n: number | string | null | undefined): string {
   return val.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
 }
 
-export default function ComptabiliteReglementairePage() {
+function ComptabiliteReglementaireContent() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
   const [tab, setTab] = useState<Tab>('journal')
   const [selectedExerciceId, setSelectedExerciceId] = useState<number | undefined>()
@@ -577,5 +578,16 @@ function ExercicesTab({ coproprieteId, exercices, loadingExercices }: { copropri
         )}
       </div>
     </div>
+  )
+}
+
+export default function ComptabiliteReglementairePage() {
+  return (
+    <PlanGuard
+      requiredPlan="essentiel"
+      feature="La comptabilité réglementaire"
+    >
+      <ComptabiliteReglementaireContent />
+    </PlanGuard>
   )
 }
