@@ -1,16 +1,27 @@
-# Stratégie CoproPilot — série de trois documents
+# Stratégie CoproPilot
 
 **Date : 16 juillet 2026 — Documents de travail internes, confidentiels.**
 
-Cette série a été produite par un processus multi-agents : 7 rapports de recherche (inventaire produit et pricing extraits du dépôt, taille de marché, concurrence, personas/canaux et analogues open-core sourcés par recherche web), un rédacteur par document, puis une revue adverse (« devil's advocate ») par deux critiques indépendants — un investisseur early-stage sceptique et un opérateur métier (gestionnaire de copropriété / éditeur concurrent) — dont les objections retenues sont intégrées et archivées en fin de chaque document (section « Objections et réponses »).
+La série de base (documents 1 à 3) a été produite par un processus multi-agents : 7 rapports de recherche (inventaire produit et pricing extraits du dépôt, taille de marché, concurrence, personas/canaux et analogues open-core sourcés par recherche web), un rédacteur par document, puis une revue adverse (« devil's advocate ») par deux critiques indépendants — un investisseur early-stage sceptique et un opérateur métier (gestionnaire de copropriété / éditeur concurrent) — dont les objections retenues sont intégrées et archivées en fin de chaque document (section « Objections et réponses »). Ces trois documents ont ensuite été relus et leurs incohérences quantitatives corrigées (PR #157).
 
-## Les trois documents
+## Les trois documents d'analyse
 
 | # | Document | Question à laquelle il répond |
 |---|---|---|
 | 1 | [`analyse-marche.md`](analyse-marche.md) | **Marketing & marché** — quelle est la taille réelle du marché, qui sont les concurrents, quel positionnement et quel pricing ? |
 | 2 | [`product-market-fit.md`](product-market-fit.md) | **Product-market fit** — où en est le produit, quel beachhead, quelles hypothèses valider et avec quel protocole ? |
 | 3 | [`go-to-market.md`](go-to-market.md) | **Go-to-market** — quel plan d'exécution à 0-90 jours / 3-6 mois / 6-18 mois, quels canaux, quel funnel, quel budget ? |
+
+## Livrables d'exécution (issus de la revue)
+
+Ces documents outillent les décisions et validations que les trois analyses appellent mais ne peuvent trancher seules. **Les chiffres y sont des hypothèses [H] ou des cellules [À REMPLIR]** tant que les données réelles (funnel instrumenté, interviews, RNIC, devis) ne sont pas collectées.
+
+| Document | Rôle | Issue |
+|---|---|---|
+| [`financial-model.md`](financial-model.md) | P&L 3 ans, LTV/CAC, coût du gratuit, arbitrage **bootstrap vs levée** | #158, #162 |
+| [`interview-guide.md`](interview-guide.md) | Guide d'entretien terrain (screener, script, Van Westendorp, seuils) | #159 |
+| [`sam-sizing-model.md`](sam-sizing-model.md) | Méthodologie + template de sizing SAM bottom-up (RNIC) | #160, #161 |
+| [`outreach-and-partnerships.md`](outreach-and-partnerships.md) | Templates ARC/ANCC + demande de devis + plan anti-désintermédiation | #163, #161 |
 
 ## Chiffres de référence partagés (à date)
 
