@@ -49,6 +49,7 @@ const CalculateurTantiemesPage = lazy(
 )
 const ResolutionAgPage = lazy(() => import('@/pages/ResolutionAgPage'))
 const DemarragePage = lazy(() => import('@/pages/DemarragePage'))
+const RepriseGestionPage = lazy(() => import('@/pages/RepriseGestionPage'))
 const SecuritePage = lazy(() => import('@/pages/SecuritePage'))
 const MentionsLegalesPage = lazy(
   () => import('@/pages/MentionsLegalesPage')
@@ -202,6 +203,16 @@ export const router = createBrowserRouter([
           <RoleGuard allowedRoles={['user', 'syndic']}>
             <Suspense fallback={<PageLoader />}>
               <DemarragePage />
+            </Suspense>
+          </RoleGuard>
+        ),
+      },
+      {
+        path: '/reprise-gestion',
+        element: (
+          <RoleGuard allowedRoles={['user', 'syndic']}>
+            <Suspense fallback={<PageLoader />}>
+              <RepriseGestionPage />
             </Suspense>
           </RoleGuard>
         ),

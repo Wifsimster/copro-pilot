@@ -26,6 +26,20 @@ export default function DemarragePage() {
       </div>
 
       <OnboardingChecklist steps={PREMIERE_AG_STEPS} />
+
+      <div className="rounded-xl border border-dashed p-4 text-sm">
+        <p className="font-medium">Vous reprenez une copropriété en cours ?</p>
+        <p className="mt-1 text-muted-foreground">
+          L'assistant de reprise vous guide pour repartir de la balance du
+          syndic sortant sans perdre un solde.
+        </p>
+        <a
+          href="/reprise-gestion"
+          className="mt-2 inline-block font-medium text-emerald-600 hover:underline"
+        >
+          Lancer la reprise de gestion →
+        </a>
+      </div>
     </div>
   )
 }
