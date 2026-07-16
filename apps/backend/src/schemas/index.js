@@ -83,3 +83,17 @@ export const contratSchema = z.object({
   date_debut: z.string().min(1),
   montant_annuel: z.number().positive(),
 })
+
+export const balanceImportSchema = z.object({
+  copropriete_id: z.number().int().positive(),
+  lignes: z
+    .array(
+      z.object({
+        compte: z.string().min(1).max(20),
+        libelle: z.string().max(255).optional(),
+        debit: z.number().nonnegative().optional(),
+        credit: z.number().nonnegative().optional(),
+      })
+    )
+    .min(1),
+})

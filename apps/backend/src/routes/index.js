@@ -58,6 +58,8 @@ import exportsRoutes from './exports.js'
 import statsRoutes from './stats.js'
 // Analytics (funnel — staff only)
 import analyticsRoutes from './analytics.js'
+// Reprise de gestion (import balance)
+import repriseGestionRoutes from './reprise-gestion.js'
 // Cycle annuel (workflow)
 import cycleAnnuelRoutes from './cycle-annuel.js'
 // Global search
@@ -168,6 +170,9 @@ router.use('/stats', statsRoutes)
 
 // Analytics (funnel — staff only)
 router.use('/analytics', analyticsRoutes)
+
+// Reprise de gestion (import balance)
+router.use('/reprise-gestion', repriseGestionRoutes)
 
 // Cycle annuel (workflow)
 router.use('/cycle-annuel', cycleAnnuelRoutes)
