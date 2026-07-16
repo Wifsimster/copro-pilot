@@ -19,6 +19,10 @@ class ExtranetPaymentService {
    * their outstanding balance.
    */
   async createCheckoutSession(coproprietaireId, amount, description) {
+    // ⚠️ Maniement de fonds : ce flux encaisse sur le compte Stripe de la
+    // plateforme des sommes dues au syndicat (art. 18 loi 1965 / ACPR). Il est
+    // en cours de revue juridique — voir docs/compliance/payment-flow-legal-audit.md
+    // (issue #131) avant d'étendre l'encaissement extranet.
     try {
       const stripe = getStripe()
       if (!stripe) {
