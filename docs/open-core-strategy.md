@@ -36,10 +36,12 @@ Le terme "open-source" est un signal de confiance (transparence, auditabilité),
 | Tier | Prix | Cible | Inclus |
 |------|------|-------|--------|
 | **Community** (self-hosted) | Gratuit | Développeurs / tech-savvy | Tout le code AGPL, Docker deploy |
-| **Cloud Gratuit** | 0 € / mois | Syndics bénévoles | 1 copropriété, 20 lots, CRUD complet |
-| **Essentiel** | 19 € / mois | Bénévoles avancés | 1 copropriété, 50 lots, AG + docs + compta export |
-| **Pro** | 49 € / mois | Syndics pro (< 20 copros) | Multi-copropriété, workflows, bank reconciliation, SSE |
-| **Entreprise** | 99 €+ / mois | Syndics pro (20+ copros) | SSO, API, audit trail, SLA, migration assistée |
+| **Cloud Gratuit** | 0 € / mois | Syndics bénévoles | 1 copropriété, 20 lots, 3 utilisateurs, CRUD complet |
+| **Essentiel** | 19 € / mois (144 €/an) | Bénévoles avancés | 3 copropriétés, 5 utilisateurs, lots illimités, AG + PV, exports, compta réglementaire |
+| **Pro** | 49 € / mois (375 €/an) | Syndics pro (< 20 copros) | 20 copropriétés, 10 utilisateurs, cycle annuel guidé (workflows), SSE temps réel, dépassements +3 €/copro +5 €/utilisateur |
+| **Entreprise** | 149 € / mois (1 140 €/an) | Syndics pro (20+ copros) | 50 copropriétés, 25 utilisateurs, SSO, API, audit trail, SLA, migration assistée, dépassements +2 €/copro +4 €/utilisateur |
+
+> Grille alignée le 16 juillet 2026 sur la source de vérité commerciale (landing page + `PLAN_QUOTAS` backend), conformément à l'arbitrage de `docs/strategy/analyse-marche.md` (Entreprise confirmé à 149 €).
 
 ### Règle d'or
 > Ne jamais gater le CRUD de base — gater l'automatisation, le scale et la compliance.

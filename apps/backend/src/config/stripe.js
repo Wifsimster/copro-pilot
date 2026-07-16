@@ -119,21 +119,23 @@ export const OVERAGE_PRICE_MAP = {
 export const PLAN_HIERARCHY = ['gratuit', 'essentiel', 'pro', 'entreprise']
 
 /**
- * Plan quotas: copropriete and user limits per plan.
+ * Plan quotas: copropriete, user and lot limits per plan.
  * null = unlimited.
  */
 export const PLAN_QUOTAS = {
-  gratuit: { coproprietes: 1, users: 3 },
-  essentiel: { coproprietes: 3, users: 5 },
+  gratuit: { coproprietes: 1, users: 3, lots: 20 },
+  essentiel: { coproprietes: 3, users: 5, lots: null },
   pro: {
     coproprietes: 20,
     users: 10,
+    lots: null,
     extraCoproPrice: 3,
     extraUserPrice: 5,
   },
   entreprise: {
     coproprietes: 50,
     users: 25,
+    lots: null,
     extraCoproPrice: 2,
     extraUserPrice: 4,
   },

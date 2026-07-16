@@ -11,8 +11,8 @@ const painPoints = [
   {
     icon: Banknote,
     pain: 'Votre syndic coûte trop cher ?',
-    relief: 'CoproPilot démarre à 0 € et reste 10x moins cher'
-      + ' que les solutions traditionnelles.',
+    relief: 'CoproPilot démarre à 0 € : reprenez la gestion'
+      + ' en syndic bénévole et économisez les honoraires.',
     accent: 'border-l-amber-400 dark:border-l-amber-500',
     iconColor: 'text-amber-500 dark:text-amber-400',
     iconBg: 'bg-amber-50 dark:bg-amber-950/30',

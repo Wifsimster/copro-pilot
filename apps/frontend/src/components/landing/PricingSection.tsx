@@ -72,10 +72,8 @@ const tiers: PricingTier[] = [
     features: [
       'Lots illimités',
       'Tout du plan Essentiel',
-      'Réconciliation bancaire',
-      'Workflows automatisés',
+      'Cycle annuel guidé (workflows)',
       'Temps réel (SSE)',
-      'Cash flow prévisionnel',
     ],
     cta: {
       label: "Démarrer l'essai gratuit",
@@ -350,8 +348,7 @@ export function PricingSection() {
           className="text-center text-sm text-amber-600
             dark:text-amber-400 font-semibold mb-8"
         >
-          Soit à partir de 0,38 €/lot/mois - 10x moins cher
-          que les logiciels traditionnels
+          Soit à partir de 0,38 €/lot/mois
         </m.p>
 
         <m.div
