@@ -4,6 +4,20 @@ import logger from '../logger.js'
 
 const getDb = () => knexDatabase.getKnex()
 
+/*
+ * QUOTA SEMANTICS — read before "fixing" the unscoped counts below.
+ *
+ * `coproprietes` and `lots` have NO ownership/tenant column: the schema has
+ * no organization_id, no owner_id — the subscription/plan lives on the `user`
+ * table, but the business entities are not linked to a user. CoproPilot is
+ * therefore deployed **single-tenant per instance** (one syndic = one
+ * deployment/database), and the global row counts below ARE the tenant's
+ * counts. Scoping them "to the current user" is impossible without first
+ * introducing a tenancy model across every table — a large epic, not a patch.
+ *
+ * See docs/architecture-tenancy.md.
+ */
+
 /**
  * Middleware to enforce copropriete quota on creation routes.
  * Must be used AFTER requireAuth().
