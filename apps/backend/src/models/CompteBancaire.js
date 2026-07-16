@@ -44,6 +44,10 @@ export class CompteBancaireModel {
         solde: data.solde || 0,
         date_ouverture: data.date_ouverture || null,
         actif: data.actif !== undefined ? data.actif : true,
+        est_compte_separe:
+          data.est_compte_separe !== undefined
+            ? data.est_compte_separe
+            : true,
         notes: data.notes || null,
       })
       .returning('*')
@@ -75,5 +79,23 @@ export class CompteBancaireModel {
       .sum('solde as total')
       .first()
     return parseFloat(result?.total || 0)
+  }
+
+  /**
+   * Loi Hoguet / art. 18 : a copropriété must hold its funds on a dedicated
+   * separate account. Returns true when it has at least one active account
+   * flagged `est_compte_separe`.
+   */
+  static async hasSeparateAccount(coproprieteId) {
+    const db = getDb()
+    const row = await db('comptes_bancaires')
+      .where({
+        copropriete_id: coproprieteId,
+        actif: true,
+        est_compte_separe: true,
+      })
+      .count('id as count')
+      .first()
+    return parseInt(row?.count || 0, 10) > 0
   }
 }
