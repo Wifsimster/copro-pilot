@@ -60,6 +60,8 @@ import statsRoutes from './stats.js'
 import analyticsRoutes from './analytics.js'
 // Reprise de gestion (import balance)
 import repriseGestionRoutes from './reprise-gestion.js'
+// Comptabilité de trésorerie simplifiée
+import comptaTresorerieRoutes from './compta-tresorerie.js'
 // Cycle annuel (workflow)
 import cycleAnnuelRoutes from './cycle-annuel.js'
 // Global search
@@ -173,6 +175,9 @@ router.use('/analytics', analyticsRoutes)
 
 // Reprise de gestion (import balance)
 router.use('/reprise-gestion', repriseGestionRoutes)
+
+// Comptabilité de trésorerie simplifiée
+router.use('/compta-tresorerie', comptaTresorerieRoutes)
 
 // Cycle annuel (workflow)
 router.use('/cycle-annuel', cycleAnnuelRoutes)
