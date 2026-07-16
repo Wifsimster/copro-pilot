@@ -44,6 +44,9 @@ const PolitiqueConfidentialitePage = lazy(
   () => import('@/pages/PolitiqueConfidentialitePage')
 )
 const VsTraditionnelsPage = lazy(() => import('@/pages/VsTraditionnelsPage'))
+const CalculateurTantiemesPage = lazy(
+  () => import('@/pages/CalculateurTantiemesPage')
+)
 const SecuritePage = lazy(() => import('@/pages/SecuritePage'))
 const MentionsLegalesPage = lazy(
   () => import('@/pages/MentionsLegalesPage')
@@ -117,6 +120,14 @@ export const router = createBrowserRouter([
     element: (
       <Suspense fallback={<PageLoader />}>
         <SecuritePage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/calculateurs/repartition-tantiemes',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <CalculateurTantiemesPage />
       </Suspense>
     ),
   },
