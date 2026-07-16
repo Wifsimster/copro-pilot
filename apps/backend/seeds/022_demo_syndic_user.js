@@ -37,8 +37,21 @@ export async function seed(knex) {
     role: 'syndic',
     isAdmin: false,
     displayName: 'Marie Duval',
+    // Demo account showcases every feature → full Entreprise plan.
+    plan: 'entreprise',
     createdAt: now,
     updatedAt: now,
+  })
+
+  // Matching active subscription so the frontend (which reads the plan from
+  // /stripe/subscription, not user.plan) unlocks plan-gated features too.
+  await knex('subscriptions').insert({
+    id: randomUUID(),
+    user_id: userId,
+    plan: 'entreprise',
+    status: 'active',
+    copropriete_limit: 50,
+    user_limit: 25,
   })
 
   await knex('account').insert({
