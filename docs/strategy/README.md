@@ -20,7 +20,8 @@ Le chiffrage canonique du marché est celui d'`analyse-marche.md` §2.3 (constru
 - **SAM** : 30-50K copropriétés bénévoles actives digitalisables + 2-4K cabinets < 20 copros [hypothèse, chantier data à faire].
 - **Cœur beachhead** (PMF) : 15-40K copros bénévoles actives de 8-20 lots [hypothèse].
 - **SOM 3 ans, scénario central** : 300-700 comptes payants, 100-250 K€ ARR (organique pur) ; scénario haut ~500 K€ ARR conditionné au mur freemium réparé et à la distribution partenariale.
-- **Objectif M+18 (GTM)** : ~150 clients payants, ~4,5 K€ MRR en scénario central.
+- **Objectif M+18 (GTM)** : ~150 clients payants, **~3 600 € MRR** en scénario central (ARPU ~24 € sur un mix réaliste ~90 % Essentiel / 8 % Pro / 2 % Entreprise — le bénévole mono-copropriété est sur Essentiel, pas sur le plan multi-copro).
+- **Économie unitaire** : LTV brute ≈ 690 € (churn 3,5 %/mois, ARPU ~24 €) → LTV/CAC ~2:1 en régime, négatif à l'amorçage. Le **socle produit pro à construire (décret 2005-240, comptes séparés, LRE…) excède plausiblement 3 ans de revenu beachhead** — arbitrage bootstrap vs levée à trancher avant d'engager le build.
 - **Pricing** : Gratuit 0 € / Essentiel 19 € / Pro 49 € / Entreprise 149 €/mois — le 149 € est confirmé, `docs/open-core-strategy.md` (99 €) est à mettre à jour.
 
 ## Décisions bloquantes identifiées (consensus des trois documents)

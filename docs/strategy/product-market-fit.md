@@ -189,6 +189,10 @@ Un segment défini par son aversion au coût peut auto-héberger, et rien n'emp�
 
 Si une convocation générée est irrégulière et qu'une AG est annulée, la responsabilité de CoproPilot sera recherchée. Avant de faire de la peur juridique l'axe marketing central : revue par un avocat spécialisé copropriété des templates (convocations, PV, appels), CGU limitant explicitement la responsabilité (outil d'aide, pas de conseil juridique), assurance RC pro éditeur, et alignement du discours avec la conformité RGPD réelle (~55 %). Budget conseil juridique à provisionner au S2 [hypothèse : 10-15 K€].
 
+### 6.5 Le coût du socle vs le revenu qu'il finance — l'arbitrage de financement
+
+C'est le risque structurel dominant, et il conditionne la roadmap de ce document. Les rangs 0-4 du §5 (reprise de gestion, compta simplifiée, régularisation, LRE) plus, pour ouvrir P3, le **décret 2005-240 complet (2-3 trimestres auto-estimés)** et les comptes séparés, représentent ~4-6 trimestres-ingénieur en domaine régulé. Or l'économie beachhead génère un ARR de l'ordre de **100-250 K€ à 3 ans** (`analyse-marche.md` §2.3) sur un ARPU ~24 € et un churn ~3,5 %/mois (LTV brute ≈ 690 €). **Le socle pro coûte plausiblement plus cher à construire que trois ans de revenu beachhead.** Conséquence directe sur les go/no-go du §7 : ne pas engager le build pro (décret complet, comptes séparés, EBICS) tant que l'un des deux financements n'est pas explicitement acté — cash-flow du beachhead (trajectoire PME, on reste sur Essentiel) ou tour d'amorçage (mais alors le récit d'expansion venture doit être chiffré, travail demandé au doc 1/3 §2.3, non fait). Livrable préalable : P&L 3 ans intégrant le coût du build, pas seulement le CAC et le coût du gratuit.
+
 ---
 
 ## 7. Critères go/no-go d'expansion vers le segment professionnel (P3)
