@@ -20,9 +20,9 @@ L'utilisateur choisit un plan depuis la page Abonnement. Stripe gère le paiemen
 | Plan | Prix | Copropriétés | Utilisateurs | Dépassement |
 |------|------|-------------|-------------|-------------|
 | **Gratuit** | 0 €/mois | 1 | 3 | Non autorisé |
-| **Essentiel** | 9 €/mois | 3 | 5 | Non autorisé |
-| **Pro** | 29 €/mois | 20 | 10 | 3 €/copro, 5 €/user |
-| **Entreprise** | 99 €/mois | 50 | 25 | 2 €/copro, 4 €/user |
+| **Essentiel** | 19 €/mois | 3 | 5 | Non autorisé |
+| **Pro** | 49 €/mois | 20 | 10 | 3 €/copro, 5 €/user |
+| **Entreprise** | 149 €/mois | 50 | 25 | 2 €/copro, 4 €/user |
 
 - Les plans **Pro** et **Entreprise** autorisent le dépassement avec facturation à l'usage.
 - Le dépassement est reporté via l'API Stripe Billing Meters.
