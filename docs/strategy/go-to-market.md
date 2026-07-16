@@ -18,7 +18,7 @@ Le timing réglementaire reste notre meilleur argument : PPPT obligatoire pour l
 2. **Colmater la fuite de valeur Pro** : réconciliation bancaire, SSE temps réel et cash flow sont vendus dans le plan Pro à 49 € mais accessibles gratuitement dans le code (aucun `requirePlan`). Sans mur d'upgrade réel, pas de conversion.
 3. **Aligner les promesses marketing sur le produit** : « réconciliation bancaire intelligente », « import Excel » et « tâches auto-générées » sont revendiqués sans implémentation. **Ce fix est une porte bloquante avant toute présence publique (salon, campagne, lancement HN)** — pas un vœu. On ne grille pas sa réputation dans un milieu associatif où tout le monde se parle.
 
-**Objectif à 18 mois (scénario central, cohérent avec le funnel du §5)** : ~950 signups cloud/mois, **150 clients payants cumulés, ~4,5 K€ de MRR**. Scénario haut (conversion 6 %, ARPU tiré par P3) : ~11 K€ de MRR. Les 30 K€ évoqués dans les versions antérieures de ce document étaient arithmétiquement incompatibles avec notre propre grille tarifaire et sont abandonnés. Tous les coûts sont dimensionnés sur le scénario central ; la viabilité est vérifiée sur le scénario bas (§5).
+**Objectif à 18 mois (scénario central, cohérent avec le funnel du §5)** : ~950 signups cloud/mois, **150 clients payants cumulés, ~3 600 € de MRR**. Ce chiffre repose sur un **ARPU réaliste de ~24 €** (mix ~90 % Essentiel / 8 % Pro / 2 % Entreprise) : le cœur de cible étant le bénévole mono-copropriété, la quasi-totalité des payants est sur Essentiel — un mix « 60/35 » sur Pro serait incohérent avec notre propre thèse (un bénévole a *une* copropriété, il n'a pas besoin du plan multi-copro). Scénario haut (conversion 6 %, ARPU ~40 € tiré par une part P3 plus forte) : ~11 K€ de MRR — plafond crédible, pas objectif. Les 30 K€ (et le MRR à 4,5 K€ sur un ARPU de 30 € surestimé) des versions antérieures étaient arithmétiquement incompatibles avec le mix réel et sont abandonnés. Tous les coûts sont dimensionnés sur le scénario central ; la viabilité est vérifiée sur le scénario bas (§5).
 
 ---
 
@@ -136,12 +136,12 @@ Baseline quasi nulle (trials organiques 5-10/mois). Toutes les cibles sont des *
 | Visiteurs uniques /mois | landing + blog | 2 000 | 5 000 | 12 000 | 25 000 | SEO acté + salon + extranet |
 | Signups cloud /mois | compte créé | 60 | 160 | 450 | 950 | CVR blended ~3 % → 4 % (landing 8→12 %, contenu 1-2 %) |
 | Activation /mois | 1 copro + lots + copropriétaires + 1 action clé sous 14 j | 25 (40 %) | 70 (45 %) | 215 (48 %) | 475 (50 %) | Onboarding guidé + imports livrés |
-| Conversion payante | % des activés convertis sous 12 mois (2 vitesses : perso <90 j, vote AG 6-12 mois) | 3 % | 4 % | 4,5 % | 5 % | À rapprocher du benchmark signups→payant 3-5 % ([FirstPageSage](https://firstpagesage.com/seo-blog/saas-freemium-conversion-rates/)) : appliqué à une base *activée* déjà filtrée, notre hypothèse est ambitieuse, pas prudente |
+| Conversion payante | % des **activés** convertis sous 12 mois (2 vitesses : perso <90 j, vote AG 6-12 mois) | 3 % | 4 % | 4,5 % | 5 % | Base = *activés* (déjà filtrés), pas signups. Rapporté au **signup**, cela donne ~1,5-2,5 % (activation ~50 % × 3-5 %) — **cohérent avec le plafond « free→payant < 2 % tant que le mur n'est pas mesuré » de `analyse-marche.md` §7.3**. L'incertitude porte sur l'activation, pas sur ce taux |
 | Clients payants (cumul) | Essentiel+Pro+Entreprise | 3 | 12 | 55 | 150 | Churn 3,5 %/mois an 1, 3 % ensuite ; revenus P3 décalés à M+15 |
-| MRR | € | ~90 € | ~360 € | ~1 650 € | ~4 500 € | ARPU ~30 € (mix 60/35/5) [hypothèse] |
+| MRR | € | ~60 € | ~250 € | ~1 200 € | ~3 600 € | ARPU croissant ~20 € (an 1, quasi-tout Essentiel) → ~24 € à M+18 (arrivée P3) ; mix ~90/8/2 [hypothèse] |
 | Expansion | % MRR issu upgrades/overage | — | — | 8 % | 12 % | Overage Pro + upgrades |
 
-**Scénario bas (test de survie)** : conversion 1,5-2 % (si le gratuit couvre le besoin) → ~70 payants, ~2 K€ MRR à M+18. Le budget cash (§6) reste soutenable à ce niveau, mais ce scénario impose de resserrer le gratuit *pour les nouveaux comptes cloud uniquement* (jamais rétroactivement, cf. §2.3) et repousse tout recrutement. **Scénario haut** : conversion 6 %, ARPU 40 € tiré par P3 → ~11 K€ MRR. C'est le plafond crédible à 18 mois, pas l'objectif.
+**Scénario bas (test de survie)** : conversion 1,5-2 % des activés (si le gratuit couvre le besoin) → ~70 payants, **~1,7 K€ MRR** à M+18 (ARPU ~24 €). Le budget cash (§6) reste soutenable à ce niveau, mais ce scénario impose de resserrer le gratuit *pour les nouveaux comptes cloud uniquement* (jamais rétroactivement, cf. §2.3) et repousse tout recrutement. **Scénario haut** : conversion 6 %, ARPU ~40 € — mais attention, un ARPU de 40 € suppose une part Pro/Entreprise (donc P3) bien plus forte que ce qui est atteignable à M+18 (P3 démarre à M+15) → ~11 K€ MRR est un plafond théorique reposant sur *deux* leviers simultanés (conversion **et** mix), pas l'objectif.
 
 Churn cible : 3,5 %/mois en année 1 (dans la moyenne SMB 3-5 %, [Optifai](https://optif.ai/learn/questions/b2b-saas-churn-rate-benchmark/)), 2,5-3 % en année 2 une fois l'onboarding et les imports livrés. L'argument « une copropriété ne quitte pas sa gestion » est retiré : c'est l'utilisateur qui churne, pas l'immeuble. Mesure du churn **par cause** obligatoire (action §3.1 #8).
 
@@ -166,6 +166,19 @@ Budget 18 mois [hypothèses]. Deux changements de méthode : (1) la mise en conf
 **CAC fully loaded** : en valorisant 0,3 FTE founder, 1,5 FTE SEO cumulé, le CSM mi-temps et ~6 semaines-dev GTM, le coût complet 0-6 mois avoisine 60-80 k€ [hypothèse] pour ~12 payants — soit un CAC réel de plusieurs milliers d'euros en phase d'amorçage. C'est normal à ce stade (coûts fixes d'infrastructure GTM), mais on le dit honnêtement : **le payback unitaire ne devient sain qu'avec le volume (M+12+) et la part P3 dans le mix**. Le KPI 9 suit les deux mesures (cash-only et fully loaded).
 
 **Coût des comptes gratuits** : à M+18, ~90 % des comptes sont gratuits. Politique support self-serve only (§4.1), coût unitaire (hébergement, stockage, emails) chiffré à M+3, et re-dimensionnement du support : le **CSM mi-temps à M+6** fait onboarding des payants + nurturing AG, *pas* le support des gratuits. 1 **growth/contenu temps plein au mois 12** si le funnel M+6 est validé. L'ingénierie GTM (~6 semaines-dev au T1) est à protéger contre la pression feature.
+
+### 6.1 Économie unitaire et financement du build — la question qui décide de tout
+
+Deux calculs manquaient aux versions précédentes ; ils sont plus structurants que le budget GTM lui-même.
+
+**LTV unitaire, au churn assumé.** À un churn central de 3,5 %/mois (an 1) et un ARPU ~24 €, la durée de vie moyenne d'un client est ~29 mois et la **LTV brute ≈ 690 €** (≈ 480 € en marge après coûts de servir [hypothèse]). Même avec un CAC *cash* ramené sous 230 €, le ratio LTV/CAC est de l'ordre de **2:1 en régime — et négatif en phase d'amorçage** (CAC fully loaded « plusieurs milliers d'euros », §6). Conclusion honnête : à ce churn, **l'économie unitaire est structurellement mince, indépendamment du CAC**. Deux leviers seuls la redressent : (a) faire baisser le churn en rattachant le compte à la *copropriété* et non au bénévole (passation de mandat intégrée) ; (b) monter l'ARPU via P3 — ce qui ramène à la question du build.
+
+**Le trou stratégique : le build nécessaire dépasse le revenu qu'il génère à 3 ans.** Le §3 et les documents 1/3 et 2/3 exigent, pour ouvrir la vraie expansion d'ARPU (P3), un socle lourd : reprise de gestion, LRE hybride, **moteur comptable décret 2005-240 (2-3 trimestres auto-estimés)**, comptes séparés multi-comptes, remédiation RGPD. Soit ~4 à 6 trimestres-ingénieur en domaine régulé. Or le revenu central attendu est **~55 K€ d'ARR à M+18, 100-250 K€ à 3 ans** (`analyse-marche.md` §2.3). **Le coût de développement du socle pro excède plausiblement trois ans de revenu beachhead.** Ce n'est pas un détail de trésorerie : c'est *la* décision de financement, et elle doit être tranchée explicitement avant d'engager le build pro —
+
+- soit **bootstrap discipliné** : on reste sur le beachhead bénévole (Essentiel), on ne construit PAS le socle pro tant qu'il n'est pas financé par le cash-flow ou une demande entrante payante avérée (critères §7 du doc 2/3), et on assume une PME à 100-250 K€ d'ARR ;
+- soit **levée** : on finance le socle pro par un tour d'amorçage, mais alors le récit doit tenir un TAM et une trajectoire d'expansion chiffrés (ARPU cabinet, adjacences LRE/assurance/open banking) — travail explicitement demandé au doc 1/3 §2.3, non encore fait.
+
+Décision demandée à l'équipe : **choisir l'une des deux trajectoires avant tout démarrage du build pro, et ne pas laisser la roadmap produit engager des trimestres d'ingénierie régulée que le modèle de financement n'a pas validés.** Le P&L 3 ans (churn, coût du gratuit, coût du build, payback) est le livrable préalable, pas un jalon.
 
 ---
 
@@ -210,7 +223,7 @@ Revue hebdomadaire (1-5), mensuelle (6-10). Owner unique par KPI. Cibles aligné
 | 1 | Signups cloud /semaine | comptes créés | 40 | 220 | Marketing |
 | 2 | Taux d'activation 14 j | copro + lots + 1 action clé | 45 % | 50 % | Produit |
 | 3 | Conversion free→payant | % des activés, suivie en 2 cohortes : paiement perso (<90 j) et vote AG (6-12 mois) | 4 % | 5 % | Produit |
-| 4 | MRR / croissance MoM | € | 360 € | 4,5 k€ | CEO |
+| 4 | MRR / croissance MoM | € | 250 € | 3,6 k€ | CEO |
 | 5 | Churn logo mensuel **+ répartition par cause** | clients payants perdus | <4 % | <3 % | CSM |
 | 6 | Trials organiques /mois | signups source SEO | 20-30 (cible actée) | 80 | Sarah |
 | 7 | CVR landing→trial (landing seule, pas blended) | GA/GSC | ≥12 % (cible actée) | ≥12 % | Sarah |
@@ -224,7 +237,7 @@ Revue hebdomadaire (1-5), mensuelle (6-10). Owner unique par KPI. Cibles aligné
 
 Synthèse des critiques les plus fortes des deux revues (investisseur sceptique, opérateur métier) et des arbitrages retenus.
 
-**1. « L'objectif 30 K€ MRR / 120 payants est arithmétiquement impossible avec votre propre grille (ARPU implicite 250 €). »** Accepté sans réserve. Le résumé exécutif est réaligné sur le scénario central du funnel : 150 payants, ~4,5 K€ MRR à M+18, scénario haut ~11 K€. Un seul jeu de chiffres dans tout le document.
+**1. « L'objectif 30 K€ MRR / 120 payants est arithmétiquement impossible avec votre propre grille (ARPU implicite 250 €). »** Accepté sans réserve. Le résumé exécutif est réaligné sur le scénario central du funnel : 150 payants, **~3 600 € MRR** à M+18 (ARPU ~24 € sur un mix réaliste ~90/8/2 — le bénévole mono-copro est sur Essentiel, pas sur le plan multi-copro Pro), scénario haut ~11 K€ (conditionné à conversion **et** mix P3, plafond théorique). Une révision ultérieure a par ailleurs corrigé un ARPU intermédiaire de 30 € (mix 60/35/5) qui restait incohérent avec la thèse mono-copropriété. Un seul jeu de chiffres dans tout le document.
 
 **2. « La willingness-to-pay des bénévoles est postulée : LogicielSyndic ancre à 99 €/an, la dépense passe par un vote d'AG, et zéro client réel n'a été interviewé. »** Accepté. Interviews + Van Westendorp avant de figer la grille (action S4-S10), circuit de décision documenté, conversion modélisée à deux vitesses (perso / vote AG), kit « résolution AG prête à voter », et scénario bas 1,5-2 % vérifié soutenable en cash.
 
