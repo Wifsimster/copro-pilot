@@ -121,11 +121,15 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
             }
           } catch (err) {
             logger.error('Stripe checkout redirect failed:', err)
-            // Fall through to dashboard if Stripe fails
+            // Fall through to the app if Stripe fails
           }
         }
 
-        window.location.href = '/dashboard'
+        // No explicit redirect here: setAuth flips isAuthenticated, and the
+        // PublicRoute wrapping /login redirects to the correct landing page
+        // (/dashboard or /extranet) client-side. A hard window.location
+        // navigation would race that redirect and interrupt any navigation
+        // issued right after login.
       }
     } catch (error) {
       logger.error('Sign in failed:', error)
