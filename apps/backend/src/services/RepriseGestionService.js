@@ -7,8 +7,12 @@
  * lignes bien formées, doublons de comptes. Cette couche est pure (pas d'I/O)
  * pour être testable et réutilisable par l'endpoint et un futur import fichier.
  */
+import { ComptabiliteReglementaireModel } from '../models/ComptabiliteReglementaire.js'
+import logger from '../logger.js'
 
 const CENT = 100
+
+const REPRISE_ENTITE = 'reprise'
 
 function toCents(n) {
   return Math.round(Number(n) * CENT)
@@ -83,3 +87,86 @@ export function validateBalance(lines) {
     duplicateComptes: [...duplicateComptes],
   }
 }
+
+/**
+ * Build the à-nouveaux écritures ("report à nouveau") from a validated balance.
+ * One écriture per line carrying a non-zero débit or crédit; zero lines are
+ * skipped. Pure, so it can be unit-tested without a database.
+ */
+export function buildRepriseEcritures(lignes, { exerciceId, coproprieteId, dateEcriture }) {
+  return (lignes || [])
+    .filter(l => Number(l.debit || 0) !== 0 || Number(l.credit || 0) !== 0)
+    .map(l => ({
+      exercice_id: exerciceId,
+      copropriete_id: coproprieteId,
+      date_ecriture: dateEcriture,
+      libelle: 'Report à nouveau (reprise de gestion)',
+      compte_code: String(l.compte).trim(),
+      debit: Number(l.debit || 0),
+      credit: Number(l.credit || 0),
+      piece_ref: 'REPRISE',
+      entite_type: REPRISE_ENTITE,
+    }))
+}
+
+class RepriseGestionService {
+  /**
+   * Import a validated closing balance as the exercise's opening position
+   * (à-nouveaux). Refuses an unbalanced balance, finds or creates the exercise
+   * for the year, and is idempotent (refuses a second reprise import).
+   */
+  async importerBalance({ copropriete_id, annee, lignes }) {
+    const validation = validateBalance(lignes)
+    if (!validation.valid) {
+      const err = new Error(
+        'Balance déséquilibrée ou invalide — import refusé.'
+      )
+      err.code = 'INVALID_BALANCE'
+      err.validation = validation
+      throw err
+    }
+
+    // Find or create the exercise for the year.
+    const exercices =
+      await ComptabiliteReglementaireModel.getExercicesByCopropriete(
+        copropriete_id
+      )
+    let exercice = exercices.find(e => e.annee === annee)
+    if (!exercice) {
+      exercice = await ComptabiliteReglementaireModel.createExercice({
+        copropriete_id,
+        annee,
+        date_debut: `${annee}-01-01`,
+        date_fin: `${annee}-12-31`,
+        statut: 'ouvert',
+      })
+    }
+
+    // Idempotence: don't import a reprise twice into the same exercise.
+    const existing =
+      await ComptabiliteReglementaireModel.getEcrituresByExercice(exercice.id)
+    if (existing.some(e => e.entite_type === REPRISE_ENTITE)) {
+      const err = new Error(
+        'Une reprise a déjà été importée pour cet exercice.'
+      )
+      err.code = 'ALREADY_IMPORTED'
+      throw err
+    }
+
+    const ecritures = buildRepriseEcritures(lignes, {
+      exerciceId: exercice.id,
+      coproprieteId: copropriete_id,
+      dateEcriture: exercice.date_debut,
+    })
+    if (ecritures.length) {
+      await ComptabiliteReglementaireModel.createEcritures(ecritures)
+    }
+
+    logger.info(
+      `[RepriseGestionService] Imported ${ecritures.length} à-nouveaux for copro ${copropriete_id} exercice ${annee}`
+    )
+    return { exercice, ecritures_count: ecritures.length }
+  }
+}
+
+export const repriseGestionService = new RepriseGestionService()

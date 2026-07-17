@@ -10,7 +10,10 @@ import {
 import { Button } from '@/components/ui/button'
 import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
-import { useValiderBalance } from '@/hooks/useRepriseGestion'
+import {
+  useValiderBalance,
+  useImporterBalance,
+} from '@/hooks/useRepriseGestion'
 import type { BalanceValidation } from '@/api/reprise-gestion'
 import {
   PASSATION_CHECKLIST,
@@ -32,8 +35,11 @@ export default function RepriseGestionPage() {
   const [validation, setValidation] = useState<BalanceValidation | null>(null)
   const [totalTantiemes, setTotalTantiemes] = useState('')
   const [base, setBase] = useState<1000 | 10000>(10000)
+  const [annee, setAnnee] = useState(new Date().getFullYear())
+  const [imported, setImported] = useState<number | null>(null)
 
   const valider = useValiderBalance()
+  const importer = useImporterBalance()
 
   if (!coproprieteId) {
     return (
@@ -55,6 +61,15 @@ export default function RepriseGestionPage() {
   async function validateBalance() {
     const res = await valider.mutateAsync({ coproprieteId: coproprieteId!, lignes: parsed })
     setValidation(res.data)
+  }
+
+  async function importBalance() {
+    const res = await importer.mutateAsync({
+      coproprieteId: coproprieteId!,
+      annee,
+      lignes: parsed,
+    })
+    setImported(res.data.ecritures_count)
   }
 
   const canProceed =
@@ -245,13 +260,46 @@ export default function RepriseGestionPage() {
         )}
 
         {step === 3 && (
-          <div className="space-y-3 text-center">
+          <div className="space-y-4 text-center">
             <CircleCheck className="mx-auto size-10 text-emerald-500" />
             <p className="font-medium">Reprise vérifiée — prêt à démarrer.</p>
             <p className="text-sm text-muted-foreground">
-              Balance équilibrée et tantièmes cohérents. Vous pouvez saisir les
-              soldes copropriétaires et lancer votre premier exercice.
+              Balance équilibrée et tantièmes cohérents. Importez la balance
+              comme à-nouveaux de l'exercice pour démarrer votre comptabilité.
             </p>
+            {imported == null ? (
+              <div className="flex items-center justify-center gap-3">
+                <label className="text-sm">
+                  Exercice&nbsp;
+                  <input
+                    type="number"
+                    className="w-24 rounded-lg border border-input bg-background px-2 py-1 text-sm"
+                    value={annee}
+                    onChange={e => setAnnee(Number(e.target.value))}
+                  />
+                </label>
+                <Button
+                  type="button"
+                  onClick={importBalance}
+                  disabled={parsed.length === 0 || importer.isPending}
+                >
+                  {importer.isPending
+                    ? 'Import…'
+                    : 'Importer la balance en comptabilité'}
+                </Button>
+              </div>
+            ) : (
+              <p className="flex items-center justify-center gap-2 rounded-lg bg-emerald-50 p-3 text-sm font-medium text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400">
+                <Check className="size-4" /> {imported} à-nouveaux importés dans
+                l'exercice {annee}.
+              </p>
+            )}
+            {importer.isError && (
+              <p className="text-sm text-destructive">
+                {(importer.error as Error)?.message ||
+                  "Échec de l'import (une reprise existe peut-être déjà)."}
+              </p>
+            )}
           </div>
         )}
       </div>

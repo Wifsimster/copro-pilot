@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { validateBalance } from '../../src/services/RepriseGestionService.js'
+import {
+  validateBalance,
+  buildRepriseEcritures,
+} from '../../src/services/RepriseGestionService.js'
 
 describe('validateBalance', () => {
   it('accepts a balanced trial balance', () => {
@@ -58,5 +61,43 @@ describe('validateBalance', () => {
     const r = validateBalance([])
     expect(r.valid).toBe(false)
     expect(r.lineErrors[0].message).toBe('Balance vide')
+  })
+})
+
+describe('buildRepriseEcritures', () => {
+  const ctx = { exerciceId: 7, coproprieteId: 3, dateEcriture: '2026-01-01' }
+
+  it('maps non-zero lines to à-nouveaux écritures', () => {
+    const e = buildRepriseEcritures(
+      [
+        { compte: '512', libelle: 'Banque', debit: 1000, credit: 0 },
+        { compte: '450', libelle: 'Copro', debit: 0, credit: 1000 },
+      ],
+      ctx
+    )
+    expect(e).toHaveLength(2)
+    expect(e[0]).toMatchObject({
+      exercice_id: 7,
+      copropriete_id: 3,
+      date_ecriture: '2026-01-01',
+      compte_code: '512',
+      debit: 1000,
+      credit: 0,
+      piece_ref: 'REPRISE',
+      entite_type: 'reprise',
+      libelle: 'Report à nouveau (reprise de gestion)',
+    })
+  })
+
+  it('skips lines with no débit and no crédit', () => {
+    const e = buildRepriseEcritures(
+      [
+        { compte: '512', debit: 0, credit: 0 },
+        { compte: '606', debit: 500, credit: 0 },
+      ],
+      ctx
+    )
+    expect(e).toHaveLength(1)
+    expect(e[0].compte_code).toBe('606')
   })
 })

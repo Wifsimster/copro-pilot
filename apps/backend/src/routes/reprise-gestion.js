@@ -3,7 +3,10 @@ import { RepriseGestionController } from '../controllers/RepriseGestionControlle
 import { requireAuth } from '../middleware/auth.js'
 import { requirePlan } from '../middleware/requirePlan.js'
 import { validate } from '../middleware/validate.js'
-import { balanceImportSchema } from '../schemas/index.js'
+import {
+  balanceImportSchema,
+  balanceRepriseImportSchema,
+} from '../schemas/index.js'
 
 const router = Router()
 
@@ -14,6 +17,13 @@ router.post(
   requirePlan('essentiel'),
   validate(balanceImportSchema),
   RepriseGestionController.validerBalance
+)
+router.post(
+  '/importer-balance',
+  requireAuth(),
+  requirePlan('essentiel'),
+  validate(balanceRepriseImportSchema),
+  RepriseGestionController.importerBalance
 )
 
 export default router

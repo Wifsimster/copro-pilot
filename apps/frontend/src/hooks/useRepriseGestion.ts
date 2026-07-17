@@ -14,3 +14,18 @@ export function useValiderBalance() {
     }) => repriseGestionApi.validerBalance(coproprieteId, lignes),
   })
 }
+
+export function useImporterBalance() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- writes accounting écritures on another page; no local query to update here
+  return useMutation({
+    mutationFn: ({
+      coproprieteId,
+      annee,
+      lignes,
+    }: {
+      coproprieteId: number
+      annee: number
+      lignes: BalanceLine[]
+    }) => repriseGestionApi.importerBalance(coproprieteId, annee, lignes),
+  })
+}

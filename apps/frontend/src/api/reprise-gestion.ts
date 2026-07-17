@@ -8,10 +8,25 @@ export interface BalanceValidation {
   duplicateComptes: string[]
 }
 
+export interface RepriseImportResult {
+  exercice: { id: number; annee: number; date_debut: string }
+  ecritures_count: number
+}
+
 export const repriseGestionApi = {
   validerBalance: (coproprieteId: number, lignes: BalanceLine[]) =>
     api.post<{ data: BalanceValidation }>(
       '/reprise-gestion/valider-balance',
       { copropriete_id: coproprieteId, lignes }
+    ),
+
+  importerBalance: (
+    coproprieteId: number,
+    annee: number,
+    lignes: BalanceLine[]
+  ) =>
+    api.post<{ data: RepriseImportResult }>(
+      '/reprise-gestion/importer-balance',
+      { copropriete_id: coproprieteId, annee, lignes }
     ),
 }
