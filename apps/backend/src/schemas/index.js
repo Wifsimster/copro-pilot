@@ -98,6 +98,10 @@ export const balanceImportSchema = z.object({
     .min(1),
 })
 
+export const balanceRepriseImportSchema = balanceImportSchema.extend({
+  annee: z.number().int().min(2000).max(2100),
+})
+
 export const regularisationSchema = z.object({
   copropriete_id: z.number().int().positive(),
   annee: z.number().int().min(2000).max(2100),
