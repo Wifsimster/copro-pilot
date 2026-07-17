@@ -12,8 +12,17 @@ permissions:
   pull-requests: write
   packages: write
 
+# Serialize runs per ref. On main, pushes queue (cancel-in-progress: false) so
+# the release job never races another run's version-bump push and no deploy is
+# dropped. On pull requests, superseded runs are cancelled to save runner time.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
-  ci:
+  # Fast gate: lint + typecheck. Both `test` and `e2e` fan out from here, so a
+  # trivial lint failure fails fast without burning the slow e2e job.
+  lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -40,11 +49,44 @@ jobs:
       - name: TypeScript check
         run: npm run typecheck --workspace=copro-pilot-frontend
 
+  # Unit tests. Runs in parallel with e2e (both only need the lint gate).
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install --workspaces --include-workspace-root
+
       - name: Test backend
         run: npm test --workspace=@copro-pilot/backend -- --coverage
 
       - name: Test frontend
         run: npm test --workspace=copro-pilot-frontend -- --coverage
+
+  # Non-blocking performance audit. Kept off the release critical path: it is
+  # advisory (assertions are warn-level) and must not gate deploys.
+  lighthouse:
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install --workspaces --include-workspace-root
 
       - name: Build frontend
         run: npm run build --workspace=copro-pilot-frontend
@@ -59,7 +101,7 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
-    needs: ci
+    needs: lint
     timeout-minutes: 20
 
     env:
@@ -158,15 +200,22 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    needs: [ci, e2e]
+    needs: [test, e2e]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     outputs:
       new-release-published: ${{ steps.semantic.outputs.new_release_published }}
       new-release-version: ${{ steps.semantic.outputs.new_release_version }}
 
     steps:
+      # Check out the current tip of main rather than the (possibly stale) push
+      # SHA. If a later PR merged while this run's tests were still running,
+      # checking out the push SHA makes semantic-release report "local branch is
+      # behind the remote" and skip the release — silently dropping the deploy.
+      # From the tip, semantic-release releases every pending commit; the
+      # concurrency group above keeps two release jobs from racing.
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - uses: actions/setup-node@v4
