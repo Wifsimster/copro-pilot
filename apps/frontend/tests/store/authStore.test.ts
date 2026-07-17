@@ -132,7 +132,7 @@ describe('authStore', () => {
       expect(state.isLoading).toBe(false)
     })
 
-    it('redirects to dashboard on success', async () => {
+    it('does not hard-redirect on success (routing handles it)', async () => {
       mockSignInEmail.mockResolvedValue({
         data: {
           user: { id: 'usr-1', email: 'a@b.com', name: 'A B', role: 'user' },
@@ -141,7 +141,11 @@ describe('authStore', () => {
 
       await useAuthStore.getState().signIn('a@b.com', 'pass')
 
-      expect(window.location.href).toBe('/dashboard')
+      // signIn only sets auth state; PublicRoute redirects to the landing
+      // page client-side. A hard window.location navigation would race that
+      // redirect, so it must not happen here.
+      expect(window.location.href).toBe('')
+      expect(useAuthStore.getState().isAuthenticated).toBe(true)
     })
 
     it('throws on API error', async () => {
