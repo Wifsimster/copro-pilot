@@ -15,6 +15,21 @@ export function useValiderBalance() {
   })
 }
 
+export function useSaveSoldes() {
+  // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- one-off reprise write; no local query to update
+  return useMutation({
+    mutationFn: ({
+      coproprieteId,
+      annee,
+      soldes,
+    }: {
+      coproprieteId: number
+      annee: number
+      soldes: { coproprietaire_id: number; montant: number }[]
+    }) => repriseGestionApi.saveSoldes(coproprieteId, annee, soldes),
+  })
+}
+
 export function useImporterBalance() {
   // react-doctor-disable-next-line react-doctor/query-mutation-missing-invalidation -- writes accounting écritures on another page; no local query to update here
   return useMutation({

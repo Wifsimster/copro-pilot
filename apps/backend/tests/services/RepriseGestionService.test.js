@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   validateBalance,
   buildRepriseEcritures,
+  sumSoldes,
 } from '../../src/services/RepriseGestionService.js'
 
 describe('validateBalance', () => {
@@ -99,5 +100,17 @@ describe('buildRepriseEcritures', () => {
     )
     expect(e).toHaveLength(1)
     expect(e[0].compte_code).toBe('606')
+  })
+})
+
+describe('sumSoldes', () => {
+  it('sums signed opening balances cent-exactly', () => {
+    expect(
+      sumSoldes([{ montant: 100.1 }, { montant: 50.2 }, { montant: -30.3 }])
+    ).toBe(120)
+  })
+  it('handles an empty list', () => {
+    expect(sumSoldes([])).toBe(0)
+    expect(sumSoldes(undefined)).toBe(0)
   })
 })

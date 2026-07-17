@@ -49,4 +49,33 @@ export class RepriseGestionController {
       res.status(500).json({ error: "Impossible d'importer la balance" })
     }
   }
+
+  /** POST /api/reprise-gestion/soldes — upsert the per-owner opening balances. */
+  static async saveSoldes(req, res) {
+    try {
+      const data = await repriseGestionService.saveSoldes(req.body)
+      res.status(201).json({ data })
+    } catch (error) {
+      logger.error(
+        `[RepriseGestionController] Error saving soldes: ${error.message}`
+      )
+      res.status(500).json({ error: 'Impossible d\'enregistrer les soldes' })
+    }
+  }
+
+  /** GET /api/reprise-gestion/soldes/:coproprieteId/:annee */
+  static async getSoldes(req, res) {
+    try {
+      const data = await repriseGestionService.getSoldes(
+        Number(req.params.coproprieteId),
+        Number(req.params.annee)
+      )
+      res.json({ data })
+    } catch (error) {
+      logger.error(
+        `[RepriseGestionController] Error fetching soldes: ${error.message}`
+      )
+      res.status(500).json({ error: 'Erreur serveur' })
+    }
+  }
 }
