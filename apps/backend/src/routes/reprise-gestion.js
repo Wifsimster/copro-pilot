@@ -6,6 +6,7 @@ import { validate } from '../middleware/validate.js'
 import {
   balanceImportSchema,
   balanceRepriseImportSchema,
+  soldesInitiauxSchema,
 } from '../schemas/index.js'
 
 const router = Router()
@@ -24,6 +25,19 @@ router.post(
   requirePlan('essentiel'),
   validate(balanceRepriseImportSchema),
   RepriseGestionController.importerBalance
+)
+router.post(
+  '/soldes',
+  requireAuth(),
+  requirePlan('essentiel'),
+  validate(soldesInitiauxSchema),
+  RepriseGestionController.saveSoldes
+)
+router.get(
+  '/soldes/:coproprieteId/:annee',
+  requireAuth(),
+  requirePlan('essentiel'),
+  RepriseGestionController.getSoldes
 )
 
 export default router

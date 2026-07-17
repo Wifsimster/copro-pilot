@@ -29,4 +29,15 @@ export const repriseGestionApi = {
       '/reprise-gestion/importer-balance',
       { copropriete_id: coproprieteId, annee, lignes }
     ),
+
+  saveSoldes: (
+    coproprieteId: number,
+    annee: number,
+    soldes: { coproprietaire_id: number; montant: number }[]
+  ) =>
+    api.post<{ data: { total: number } }>('/reprise-gestion/soldes', {
+      copropriete_id: coproprieteId,
+      annee,
+      soldes,
+    }),
 }

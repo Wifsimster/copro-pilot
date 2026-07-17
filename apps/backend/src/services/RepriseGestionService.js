@@ -8,6 +8,7 @@
  * pour être testable et réutilisable par l'endpoint et un futur import fichier.
  */
 import { ComptabiliteReglementaireModel } from '../models/ComptabiliteReglementaire.js'
+import { SoldeInitialModel } from '../models/SoldeInitial.js'
 import logger from '../logger.js'
 
 const CENT = 100
@@ -109,6 +110,18 @@ export function buildRepriseEcritures(lignes, { exerciceId, coproprieteId, dateE
     }))
 }
 
+/**
+ * Sum of the per-owner opening balances (cent-exact). Used both for the UI's
+ * running total and the contradictory control against the 450 account.
+ */
+export function sumSoldes(soldes) {
+  const cents = (soldes || []).reduce(
+    (s, x) => s + Math.round(Number(x.montant || 0) * CENT),
+    0
+  )
+  return cents / CENT
+}
+
 class RepriseGestionService {
   /**
    * Import a validated closing balance as the exercise's opening position
@@ -166,6 +179,17 @@ class RepriseGestionService {
       `[RepriseGestionService] Imported ${ecritures.length} à-nouveaux for copro ${copropriete_id} exercice ${annee}`
     )
     return { exercice, ecritures_count: ecritures.length }
+  }
+
+  /** Persist (upsert) the per-owner opening balances for a copro/année. */
+  async saveSoldes({ copropriete_id, annee, soldes }) {
+    await SoldeInitialModel.bulkUpsert(copropriete_id, annee, soldes)
+    const saved = await SoldeInitialModel.getByCoproAnnee(copropriete_id, annee)
+    return { total: sumSoldes(saved), soldes: saved }
+  }
+
+  async getSoldes(coproprieteId, annee) {
+    return SoldeInitialModel.getByCoproAnnee(coproprieteId, annee)
   }
 }
 

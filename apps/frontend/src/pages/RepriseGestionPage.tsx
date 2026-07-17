@@ -10,9 +10,12 @@ import {
 import { Button } from '@/components/ui/button'
 import { NoCoproprieteSelected } from '@/components/layout/NoCoproprieteSelected'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
+import { useLotsByCopropriete } from '@/hooks/useLots'
+import { useCoproprietaires } from '@/hooks/useCoproprietaires'
 import {
   useValiderBalance,
   useImporterBalance,
+  useSaveSoldes,
 } from '@/hooks/useRepriseGestion'
 import type { BalanceValidation } from '@/api/reprise-gestion'
 import {
@@ -21,7 +24,7 @@ import {
   controleTantiemes,
 } from '@/lib/repriseGestion'
 
-const STEPS = ['Passation', 'Balance', 'Tantièmes', 'Prêt']
+const STEPS = ['Passation', 'Balance', 'Tantièmes', 'Soldes', 'Prêt']
 
 function eur(n: number) {
   return n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
@@ -37,9 +40,14 @@ export default function RepriseGestionPage() {
   const [base, setBase] = useState<1000 | 10000>(10000)
   const [annee, setAnnee] = useState(new Date().getFullYear())
   const [imported, setImported] = useState<number | null>(null)
+  const [soldes, setSoldes] = useState<Record<number, string>>({})
+  const [soldesSaved, setSoldesSaved] = useState(false)
 
   const valider = useValiderBalance()
   const importer = useImporterBalance()
+  const saveSoldes = useSaveSoldes()
+  const { data: lots } = useLotsByCopropriete(coproprieteId)
+  const { data: coproprietaires } = useCoproprietaires()
 
   if (!coproprieteId) {
     return (
@@ -72,11 +80,46 @@ export default function RepriseGestionPage() {
     setImported(res.data.ecritures_count)
   }
 
+  // Owners of this copropriété = distinct copropriétaires holding a lot here.
+  const ownerIds = Array.from(
+    new Set(
+      (lots || [])
+        .map(l => l.coproprietaire_id)
+        .filter((id): id is number => id != null)
+    )
+  )
+  const owners = ownerIds
+    .map(id => (coproprietaires || []).find(c => c.id === id))
+    .filter((c): c is NonNullable<typeof c> => c != null)
+
+  const soldesTotal =
+    Math.round(
+      owners.reduce((s, o) => s + (parseFloat(soldes[o.id] || '0') || 0), 0) *
+        100
+    ) / 100
+
+  async function saveSoldesFn() {
+    const payload = owners
+      .filter(o => soldes[o.id] !== undefined && soldes[o.id] !== '')
+      .map(o => ({
+        coproprietaire_id: o.id,
+        montant: parseFloat(soldes[o.id]) || 0,
+      }))
+    if (payload.length === 0) return
+    await saveSoldes.mutateAsync({
+      coproprieteId: coproprieteId!,
+      annee,
+      soldes: payload,
+    })
+    setSoldesSaved(true)
+  }
+
   const canProceed =
-    (step === 0) ||
+    step === 0 ||
     (step === 1 && validation?.valid === true) ||
     (step === 2 && tantiemesCtrl.ok) ||
-    step === 3
+    step === 3 || // Soldes step is optional
+    step === 4
 
   const inputCls =
     'mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
@@ -260,6 +303,69 @@ export default function RepriseGestionPage() {
         )}
 
         {step === 3 && (
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Saisissez le solde de départ de chaque copropriétaire (positif =
+              il doit au syndicat, négatif = le syndicat lui doit). Étape
+              facultative — un solde faux se conteste en AG.
+            </p>
+            {owners.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Aucun copropriétaire rattaché à un lot de cette copropriété.
+              </p>
+            ) : (
+              <>
+                <div className="max-h-72 space-y-2 overflow-y-auto">
+                  {owners.map(o => (
+                    <div
+                      key={o.id}
+                      className="flex items-center justify-between gap-3"
+                    >
+                      <span className="text-sm">
+                        {o.prenom} {o.nom}
+                      </span>
+                      <input
+                        type="number"
+                        step="0.01"
+                        className="w-36 rounded-lg border border-input bg-background px-2 py-1 text-right text-sm"
+                        value={soldes[o.id] ?? ''}
+                        onChange={e => {
+                          setSoldes(s => ({ ...s, [o.id]: e.target.value }))
+                          setSoldesSaved(false)
+                        }}
+                        placeholder="0,00"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between border-t pt-2 text-sm">
+                  <span className="font-medium">Total des soldes</span>
+                  <span className="font-semibold">{eur(soldesTotal)}</span>
+                </div>
+                <div className="flex justify-end">
+                  {soldesSaved ? (
+                    <span className="flex items-center gap-1 text-sm font-medium text-emerald-600">
+                      <Check className="size-4" /> Soldes enregistrés
+                    </span>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={saveSoldesFn}
+                      disabled={saveSoldes.isPending}
+                    >
+                      {saveSoldes.isPending
+                        ? 'Enregistrement…'
+                        : 'Enregistrer les soldes'}
+                    </Button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {step === 4 && (
           <div className="space-y-4 text-center">
             <CircleCheck className="mx-auto size-10 text-emerald-500" />
             <p className="font-medium">Reprise vérifiée — prêt à démarrer.</p>
@@ -314,7 +420,7 @@ export default function RepriseGestionPage() {
             <ArrowLeft className="size-4" /> Retour
           </Button>
         )}
-        {step < 3 && (
+        {step < 4 && (
           <Button
             type="button"
             onClick={() => setStep(s => s + 1)}
@@ -323,7 +429,7 @@ export default function RepriseGestionPage() {
             Continuer <ArrowRight className="size-4" />
           </Button>
         )}
-        {step === 3 && (
+        {step === 4 && (
           <Button asChild>
             <a href="/charges">
               <Check className="size-4" /> Aller aux charges
