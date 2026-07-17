@@ -1,4 +1,5 @@
 import logger from '../logger.js'
+import { Ar24LreProvider } from './lre/Ar24LreProvider.js'
 
 /**
  * Lettre Recommandée Électronique (LRE) — provider abstraction.
@@ -72,7 +73,21 @@ export class LreService {
 function resolveProvider() {
   const name = process.env.LRE_PROVIDER
   switch (name) {
-    // case 'ar24': return new Ar24LreProvider({ apiKey: process.env.LRE_API_KEY })
+    case 'ar24': {
+      const token = process.env.AR24_TOKEN
+      const privateKey = process.env.AR24_PRIVATE_KEY
+      if (!token || !privateKey) {
+        logger.warn(
+          '[LreService] LRE_PROVIDER=ar24 but AR24_TOKEN / AR24_PRIVATE_KEY missing — falling back to noop'
+        )
+        return new NoopLreProvider()
+      }
+      return new Ar24LreProvider({
+        token,
+        privateKey,
+        env: process.env.AR24_ENV || 'sandbox',
+      })
+    }
     case undefined:
     case '':
     case 'noop':
