@@ -18,6 +18,15 @@ Derrière la couche `LreService` (seam du #126) :
 - **Câblage** : `LRE_PROVIDER=ar24` active le provider si `AR24_TOKEN` et
   `AR24_PRIVATE_KEY` sont présents ; sinon retour automatique au `noop`
   (jamais d'envoi silencieux qui prétendrait à une LRE).
+- **Flux de convocation** : `ConvocationAGService.envoyerConvocation` appelle
+  `lreService.send()` pour les modes recommandés (`courrier_recommande`,
+  `les_deux`) et persiste le résultat provider par destinataire
+  (`lre_provider`, `lre_tracking_id`, `lre_proof_url`, `lre_statut` — migration
+  `20260717000001`). Tant que le provider est `noop`, ces colonnes portent
+  `not_configured` : la plomberie est prête, seul le renseignement des
+  credentials AR24 fait passer les envois en LRE réelle. Les règles pures
+  (éligibilité, payload, mapping) sont isolées et testées dans
+  `services/lre/convocationLre.js`.
 
 ## Activation
 
@@ -48,11 +57,14 @@ Postman** fournie par AR24 :
      n'est pas cadrée — en n'employant « AG conforme eIDAS » qu'une fois l'OTP
      géré.
 3. **Webhooks de statut** (accusé de réception / preuve) : à brancher pour
-   persister `trackingId`/`proofUrl` sur la convocation.
+   mettre à jour `lre_statut`/`lre_proof_url` du destinataire au fil du cycle
+   de vie (dépôt → AR signé). L'envoi initial persiste déjà
+   `trackingId`/`proofUrl` retournés par AR24.
 
 ## Prochaine étape produit
 
-Une fois les credentials sandbox obtenus : vérifier l'aller-retour réel,
-trancher l'OTP, puis brancher `lreService.send()` dans le flux de convocation et
-persister la preuve. Tant que ce n'est pas fait, ne pas afficher « AG conforme »
-(règle du #118).
+`lreService.send()` est déjà branché dans le flux de convocation (le résultat
+provider est persisté par destinataire). Reste, une fois les credentials
+sandbox obtenus : vérifier l'aller-retour réel, trancher l'OTP, brancher les
+webhooks de statut. Tant que la LRE n'est pas confirmée en live, ne pas
+afficher « AG conforme » (règle du #118).
