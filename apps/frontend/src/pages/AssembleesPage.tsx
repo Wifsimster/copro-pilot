@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { useCoproprieteStore } from '@/store/coproprieteStore'
 import { useAssembleesByCopropriete, useCreateAssemblee, useUpdateAssemblee, useDeleteAssemblee } from '@/hooks/useAssemblees'
 import { AssembleeFormDialog } from '@/components/assemblees/AssembleeFormDialog'
+import { AGBuilderWizard } from '@/components/assemblees/AGBuilderWizard'
 import { ConfirmDialog } from '@/components/layout/ConfirmDialog'
 import type { AssembleeGenerale } from '@/types'
-import { Calendar, Plus, Trash2, Pencil, Eye, MapPin, Clock } from 'lucide-react'
+import { Calendar, Plus, Trash2, Pencil, Eye, MapPin, Clock, Wand2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { ErrorAlert } from '@/components/layout/ErrorAlert'
 
@@ -32,6 +33,7 @@ const STATUT_COLORS: Record<string, string> = {
 export default function AssembleesPage() {
   const selectedCoproId = useCoproprieteStore((s) => s.selectedCoproprieteId)
   const [showDialog, setShowDialog] = useState(false)
+  const [showWizard, setShowWizard] = useState(false)
   const { data: assemblees, isLoading: loadingAGs, isError, error } = useAssembleesByCopropriete(selectedCoproId)
   const createAG = useCreateAssemblee()
   const updateAG = useUpdateAssemblee()
@@ -58,13 +60,20 @@ export default function AssembleesPage() {
         </div>
       ) : (
         <div>
-          <div className="mb-4 flex justify-end">
+          <div className="mb-4 flex justify-end gap-2">
             <button type="button"
-              onClick={() => setShowDialog(true)}
+              onClick={() => setShowWizard(true)}
               className="flex items-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800"
             >
+              <Wand2 className="size-4" />
+              Créer (guidé)
+            </button>
+            <button type="button"
+              onClick={() => setShowDialog(true)}
+              className="flex items-center gap-2 rounded-lg border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700 hover:bg-stone-50 dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-700"
+            >
               <Plus className="size-4" />
-              Nouvelle AG
+              Formulaire
             </button>
           </div>
 
@@ -142,6 +151,12 @@ export default function AssembleesPage() {
               ))}
             </div>
           )}
+
+          <AGBuilderWizard
+            open={showWizard}
+            onOpenChange={setShowWizard}
+            coproprieteId={selectedCoproId}
+          />
 
           <AssembleeFormDialog
             open={showDialog || !!editingAG}
