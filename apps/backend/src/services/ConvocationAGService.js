@@ -1,6 +1,12 @@
 import { ConvocationAGModel } from '../models/ConvocationAG.js'
 import { AssembleeGeneraleModel } from '../models/AssembleeGenerale.js'
 import { eventDispatchService } from './EventDispatchService.js'
+import { lreService } from './LreService.js'
+import {
+    modeUsesLre,
+    buildConvocationLrePayload,
+    toLreTracking,
+} from './lre/convocationLre.js'
 import logger from '../logger.js'
 
 class ConvocationAGService {
@@ -159,10 +165,18 @@ class ConvocationAGService {
 
             logger.info(`[ConvocationService] Convocation ${convocationId} envoyée (délai: ${delai.valide ? 'respecté' : 'NON respecté'})`)
 
-            // Dispatch AG convocation notifications
             const destinataires = await ConvocationAGModel.getDestinataires(convocationId)
+
+            // Dispatch AG convocation notifications
             eventDispatchService.notifyAGConvocation(convocation, destinataires).catch(err =>
                 logger.error(`[ConvocationService] EventDispatch error: ${err.message}`)
+            )
+
+            // Legally-recorded dispatch (LRE) for recommandé modes. Records the
+            // provider tracking/proof per recipient; the noop provider marks it
+            // not_configured so we never claim an LRE went out silently.
+            this.dispatchLre(convocation, destinataires).catch(err =>
+                logger.error(`[ConvocationService] LRE dispatch error: ${err.message}`)
             )
 
             return result
@@ -170,6 +184,43 @@ class ConvocationAGService {
             logger.error(`[ConvocationService] Error sending convocation ${convocationId}: ${error.message}`)
             throw error
         }
+    }
+
+    /**
+     * Send the convocation by LRE to every eligible recipient and persist the
+     * provider tracking/proof. No-op for non-recommandé modes. Recipients
+     * without an e-mail are skipped (an eIDAS LRE is e-mail based); each send
+     * is isolated so one failure doesn't abort the batch.
+     */
+    async dispatchLre(convocation, destinataires) {
+        if (!modeUsesLre(convocation.mode_envoi)) return { sent: 0, skipped: 0 }
+
+        let sent = 0
+        let skipped = 0
+        for (const destinataire of destinataires) {
+            const payload = buildConvocationLrePayload(convocation, destinataire)
+            if (!payload) {
+                skipped++
+                continue
+            }
+            try {
+                const result = await lreService.send(payload)
+                await ConvocationAGModel.updateDestinataire(
+                    destinataire.id,
+                    toLreTracking(result)
+                )
+                sent++
+            } catch (error) {
+                skipped++
+                logger.error(
+                    `[ConvocationService] LRE send failed for destinataire ${destinataire.id}: ${error.message}`
+                )
+            }
+        }
+        logger.info(
+            `[ConvocationService] LRE dispatch convocation ${convocation.id}: ${sent} envoyée(s), ${skipped} ignorée(s)${lreService.isConfigured() ? '' : ' (provider noop — non transmis)'}`
+        )
+        return { sent, skipped }
     }
 
     async verifierDelai(agId) {
