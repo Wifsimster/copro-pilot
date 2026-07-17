@@ -30,7 +30,12 @@ async function login(
   await page.locator('#signin-email').fill(creds.email)
   await page.locator('#signin-password').fill(creds.password)
   await page.getByRole('button', { name: 'Se connecter' }).click()
-  await expect(page).toHaveURL(expectedUrl, { timeout: 15_000 })
+  // Sign-in finishes with a hard navigation (window.location.href) to the
+  // landing page. Wait for that document to fully load before returning, so a
+  // page.goto() issued right after login isn't interrupted by the still
+  // in-flight reload (which otherwise flakes the test with retries disabled).
+  await page.waitForURL(expectedUrl, { timeout: 15_000 })
+  await page.waitForLoadState('load')
 }
 
 /** Log in as the demo syndic and land on the dashboard. */

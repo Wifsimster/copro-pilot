@@ -411,7 +411,8 @@ export class StatsModel {
       ),
 
       // --- METRICS ---
-      scoped(db('coproprietes').count('id as count').first()),
+      // coproprietes is scoped on its own primary key, not copropriete_id
+      scoped(db('coproprietes').count('id as count').first(), 'id'),
       scoped(
         db('incidents')
           .whereIn('statut', ['ouvert', 'en_cours'])
