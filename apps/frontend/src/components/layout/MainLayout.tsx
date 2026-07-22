@@ -106,7 +106,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   const closeSidebar = () => patchUi({ sidebarOpen: false })
 
   return (
-    <div className="flex h-screen bg-[#FAF8F5] dark:bg-stone-950">
+    <div className="flex h-screen bg-background">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <button

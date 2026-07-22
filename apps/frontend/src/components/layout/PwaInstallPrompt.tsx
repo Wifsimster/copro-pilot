@@ -167,22 +167,22 @@ export function PwaInstallPrompt() {
       aria-label='Installer CoproPilot'
       className='fixed bottom-4 left-4 right-4 z-[9998] m-0 w-auto border-0 bg-transparent p-0 sm:left-auto sm:right-4 sm:max-w-sm'
     >
-      <div className='bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-lg shadow-lg p-4 flex items-start gap-3'>
-        <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30'>
+      <div className='bg-card border border-border rounded-lg shadow-lg p-4 flex items-start gap-3'>
+        <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10'>
           <Icon
-            className='size-5 text-emerald-600 dark:text-emerald-400'
+            className='size-5 text-primary'
             aria-hidden='true'
           />
         </div>
         <div className='flex-1 min-w-0'>
-          <p className='text-sm font-medium text-stone-900 dark:text-stone-100'>
+          <p className='text-sm font-medium text-foreground'>
             {title}
           </p>
-          <p className='mt-1 text-xs text-stone-600 dark:text-stone-400'>
+          <p className='mt-1 text-xs text-muted-foreground'>
             {description}
           </p>
           {isIos && (
-            <p className='mt-2 flex items-center gap-1 text-xs text-stone-500 dark:text-stone-400'>
+            <p className='mt-2 flex items-center gap-1 text-xs text-muted-foreground'>
               <Share className='size-3.5' aria-hidden='true' />
               <span>Partager → Sur l'ecran d'accueil</span>
             </p>
@@ -193,7 +193,6 @@ export function PwaInstallPrompt() {
                 type='button'
                 size='sm'
                 onClick={handleInstall}
-                className='bg-emerald-600 hover:bg-emerald-700 text-white'
               >
                 <Download className='size-4 mr-1' aria-hidden='true' />
                 Installer
@@ -213,7 +212,7 @@ export function PwaInstallPrompt() {
           type='button'
           aria-label='Fermer'
           onClick={handleDismiss}
-          className='text-stone-400 hover:text-stone-600 dark:hover:text-stone-200'
+          className='text-muted-foreground hover:text-foreground'
         >
           <X className='size-4' aria-hidden='true' />
         </button>

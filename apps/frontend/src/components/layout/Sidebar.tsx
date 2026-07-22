@@ -67,25 +67,25 @@ export function Sidebar({
     <aside
       data-tour="sidebar"
       className={cn(
-        'fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white shadow-lg transition-transform dark:bg-stone-900 lg:static lg:translate-x-0',
+        'fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-card shadow-lg transition-transform lg:static lg:translate-x-0',
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       )}
     >
       {/* Logo */}
-      <div className="flex h-16 items-center gap-3 border-b border-stone-200 px-6 dark:border-stone-700">
+      <div className="flex h-16 items-center gap-3 border-b border-border px-6">
         <img src="/logo.svg" alt="CoproPilot" className="size-8 rounded-lg" />
-        <span className="text-lg font-bold text-stone-900 dark:text-white">CoproPilot</span>
+        <span className="text-lg font-bold text-foreground">CoproPilot</span>
         <button type="button"
           onClick={onCloseSidebar}
           className="ml-auto lg:hidden"
           aria-label="Fermer le menu"
         >
-          <X className="size-5 text-stone-500" />
+          <X className="size-5 text-muted-foreground" />
         </button>
       </div>
 
       {/* Vue d'ensemble */}
-      <div data-tour="section-overview" className="border-b border-stone-200 px-4 pt-4 pb-3 dark:border-stone-700">
+      <div data-tour="section-overview" className="border-b border-border px-4 pt-4 pb-3">
         <SectionView
           section={filteredSections[0]}
           pathname={pathname}
@@ -111,10 +111,10 @@ export function Sidebar({
       </nav>
 
       {/* User menu */}
-      <div data-tour="user-profile" className="border-t border-stone-200 p-2 dark:border-stone-700">
+      <div data-tour="user-profile" className="border-t border-border p-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button type="button" className="flex w-full items-center gap-2 rounded-lg p-2 text-left transition-colors hover:bg-stone-100 data-[state=open]:bg-stone-100 dark:hover:bg-stone-800 dark:data-[state=open]:bg-stone-800">
+            <button type="button" className="flex w-full items-center gap-2 rounded-lg p-2 text-left transition-colors hover:bg-accent data-[state=open]:bg-accent">
               <Avatar className="size-8 rounded-lg">
                 <AvatarFallback className="rounded-lg">
                   {(user?.firstname?.[0] ?? '').toUpperCase()}
@@ -122,7 +122,7 @@ export function Sidebar({
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium text-stone-900 dark:text-white">
+                <span className="truncate font-medium text-foreground">
                   {user?.firstname} {user?.lastname}
                 </span>
                 <span className="truncate text-xs text-muted-foreground">

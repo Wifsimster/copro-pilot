@@ -30,11 +30,11 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex min-h-screen items-center justify-center bg-stone-50 px-4 dark:bg-stone-950">
-          <div className="w-full max-w-md rounded-xl border border-stone-200 bg-white p-8 text-center shadow-sm dark:border-stone-800 dark:bg-stone-900">
-            <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+        <div className="flex min-h-screen items-center justify-center bg-background px-4">
+          <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 text-center shadow-sm">
+            <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-destructive/10">
               <svg
-                className="size-6 text-red-600 dark:text-red-400"
+                className="size-6 text-destructive"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
@@ -48,21 +48,21 @@ export class ErrorBoundary extends Component<Props, State> {
                 />
               </svg>
             </div>
-            <h2 className="mb-2 text-lg font-semibold text-stone-900 dark:text-white">
+            <h2 className="mb-2 text-lg font-semibold text-foreground">
               Une erreur est survenue
             </h2>
-            <p className="mb-6 text-sm text-stone-500 dark:text-stone-400">
+            <p className="mb-6 text-sm text-muted-foreground">
               L&apos;application a rencontre une erreur inattendue.
               Veuillez recharger la page pour continuer.
             </p>
             {this.state.error && (
-              <pre className="mb-6 max-h-24 overflow-auto rounded-lg bg-stone-100 p-3 text-left text-xs text-stone-600 dark:bg-stone-800 dark:text-stone-400">
+              <pre className="mb-6 max-h-24 overflow-auto rounded-lg bg-muted p-3 text-left text-xs text-muted-foreground">
                 {this.state.error.message}
               </pre>
             )}
             <button type="button"
               onClick={this.handleReload}
-              className="inline-flex items-center justify-center rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 dark:focus:ring-offset-stone-900"
+              className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
             >
               Recharger la page
             </button>
