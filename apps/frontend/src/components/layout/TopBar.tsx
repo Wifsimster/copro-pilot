@@ -29,17 +29,17 @@ export function TopBar({
   const navigate = useNavigate()
 
   return (
-    <header className="flex h-16 items-center gap-3 border-b border-stone-200 bg-white px-4 dark:border-stone-700 dark:bg-stone-900">
+    <header className="flex h-16 items-center gap-3 border-b border-border bg-card px-4">
       <button type="button"
         onClick={onOpenSidebar}
-        className="rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800 lg:hidden"
+        className="rounded-lg p-2 text-muted-foreground hover:bg-accent lg:hidden"
         aria-label="Ouvrir le menu"
       >
         <Menu className="size-5" />
       </button>
       {!isCoproprietaire(userRole) && (
         <div data-tour="copropriete-selector" className="relative shrink-0">
-          <Building2 className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-stone-400 dark:text-stone-500" />
+          <Building2 className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <select
             value={selectedCoproprieteId ?? ''}
             onChange={(e) => {
@@ -55,14 +55,14 @@ export function TopBar({
                 onSelectCopropriete(undefined)
               }
             }}
-            className="appearance-none rounded-lg border border-stone-200 bg-stone-50 py-2 pl-8 pr-8 text-sm font-medium text-stone-900 transition-colors hover:bg-stone-100 focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 focus:outline-none dark:border-stone-600 dark:bg-stone-800 dark:text-white dark:hover:bg-stone-700 dark:focus:bg-stone-800 dark:focus:border-emerald-500"
+            className="appearance-none rounded-lg border border-input bg-muted py-2 pl-8 pr-8 text-sm font-medium text-foreground transition-colors hover:bg-accent focus:border-ring focus:bg-card focus:ring-1 focus:ring-ring focus:outline-none"
           >
-            <option value="" className="dark:bg-stone-800 dark:text-white">Toutes les copropriétés</option>
+            <option value="">Toutes les copropriétés</option>
             {coproprietes?.map((c) => (
-              <option key={c.id} value={c.id} className="dark:bg-stone-800 dark:text-white">{c.nom}</option>
+              <option key={c.id} value={c.id}>{c.nom}</option>
             ))}
           </select>
-          <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-4 -translate-y-1/2 text-stone-400 dark:text-stone-500" />
+          <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         </div>
       )}
       <div data-tour="global-search" className="min-w-0 flex-1">

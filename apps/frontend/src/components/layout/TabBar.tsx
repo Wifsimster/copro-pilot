@@ -40,7 +40,7 @@ export function TabBar({ tabs, activeTab, onTabChange }: TabBarProps) {
 
   return (
     <div
-      className="flex gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800"
+      className="flex gap-1 rounded-lg bg-muted p-1"
       role="tablist"
     >
       {tabs.map((tab, index) => {
@@ -60,8 +60,8 @@ export function TabBar({ tabs, activeTab, onTabChange }: TabBarProps) {
             onKeyDown={(e) => handleKeyDown(e, index)}
             className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
               isActive
-                ? 'bg-white text-stone-900 shadow-sm dark:bg-stone-700 dark:text-white'
-                : 'text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white'
+                ? 'bg-card text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             {Icon && <Icon className="size-4" />}

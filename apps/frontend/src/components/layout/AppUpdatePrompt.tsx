@@ -51,18 +51,18 @@ export function AppUpdatePrompt() {
       aria-label='Mise a jour disponible'
       className='fixed bottom-4 left-4 right-4 z-[9999] m-0 w-auto border-0 bg-transparent p-0 md:left-auto md:right-4 md:max-w-sm'
     >
-      <div className='bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-lg shadow-lg p-4 flex items-start gap-3'>
-        <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30'>
+      <div className='bg-card border border-border rounded-lg shadow-lg p-4 flex items-start gap-3'>
+        <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10'>
           <RefreshCw
-            className='size-5 text-emerald-600 dark:text-emerald-400'
+            className='size-5 text-primary'
             aria-hidden='true'
           />
         </div>
         <div className='flex-1 min-w-0'>
-          <p className='text-sm font-medium text-stone-900 dark:text-stone-100'>
+          <p className='text-sm font-medium text-foreground'>
             Nouvelle version disponible
           </p>
-          <p className='mt-1 text-xs text-stone-600 dark:text-stone-400'>
+          <p className='mt-1 text-xs text-muted-foreground'>
             Rechargez l'application pour beneficier des dernieres ameliorations.
           </p>
           <div className='mt-3 flex items-center gap-2'>
@@ -71,7 +71,6 @@ export function AppUpdatePrompt() {
               size='sm'
               onClick={handleReload}
               disabled={reloading}
-              className='bg-emerald-600 hover:bg-emerald-700 text-white'
             >
               {reloading ? 'Rechargement...' : 'Recharger'}
             </Button>
@@ -91,7 +90,7 @@ export function AppUpdatePrompt() {
           aria-label='Fermer'
           onClick={handleDismiss}
           disabled={reloading}
-          className='text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 disabled:opacity-50'
+          className='text-muted-foreground hover:text-foreground disabled:opacity-50'
         >
           <X className='size-4' aria-hidden='true' />
         </button>

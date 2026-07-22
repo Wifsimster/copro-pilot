@@ -47,8 +47,8 @@ function NotificationItem({
     <button type="button"
       onClick={() => onNavigate(notification)}
       className={cn(
-        'flex w-full items-start gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-stone-50 dark:hover:bg-stone-800',
-        !notification.lu && 'bg-emerald-50/50 dark:bg-emerald-900/10'
+        'flex w-full items-start gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-accent',
+        !notification.lu && 'bg-primary/5'
       )}
     >
       <div className="flex-1 min-w-0">
@@ -62,23 +62,23 @@ function NotificationItem({
             {typeLabels[notification.type]}
           </span>
           {!notification.lu && (
-            <span className="size-2 rounded-full bg-emerald-500 shrink-0" />
+            <span className="size-2 rounded-full bg-primary shrink-0" />
           )}
         </div>
-        <p className="mt-1 text-sm font-medium text-stone-900 dark:text-white truncate">
+        <p className="mt-1 text-sm font-medium text-foreground truncate">
           {notification.titre}
         </p>
         {notification.message && (
-          <p className="mt-0.5 text-xs text-stone-500 dark:text-stone-400 line-clamp-2">
+          <p className="mt-0.5 text-xs text-muted-foreground line-clamp-2">
             {notification.message}
           </p>
         )}
-        <p className="mt-1 text-[11px] text-stone-400 dark:text-stone-500">
+        <p className="mt-1 text-[11px] text-muted-foreground">
           {formatTimeAgo(notification.created_at)}
         </p>
       </div>
       {notification.lien && (
-        <ExternalLink className="mt-1 size-3.5 shrink-0 text-stone-400" />
+        <ExternalLink className="mt-1 size-3.5 shrink-0 text-muted-foreground" />
       )}
     </button>
   )
@@ -112,27 +112,27 @@ export function NotificationBell() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button type="button"
-          className="relative rounded-lg p-2 text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800"
+          className="relative rounded-lg p-2 text-muted-foreground hover:bg-accent"
           title="Notifications"
           aria-label="Notifications"
         >
           <Bell className="size-5" />
           {!!unreadCount && unreadCount > 0 && (
-            <span className="absolute -right-0.5 -top-0.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+            <span className="absolute -right-0.5 -top-0.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground">
               {unreadCount > 99 ? '99+' : unreadCount}
             </span>
           )}
         </button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-96 p-0">
-        <div className="flex items-center justify-between border-b border-stone-200 px-4 py-3 dark:border-stone-700">
-          <h3 className="text-sm font-semibold text-stone-900 dark:text-white">
+        <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <h3 className="text-sm font-semibold text-foreground">
             Notifications
           </h3>
           {!!unreadCount && unreadCount > 0 && (
             <button type="button"
               onClick={handleMarkAllAsRead}
-              className="flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+              className="flex items-center gap-1 text-xs text-primary hover:text-primary/80"
             >
               <CheckCheck className="size-3.5" />
               Tout marquer comme lu
@@ -141,7 +141,7 @@ export function NotificationBell() {
         </div>
         <div className="max-h-[400px] overflow-y-auto">
           {recentNotifications.length === 0 ? (
-            <div className="px-4 py-8 text-center text-sm text-stone-500 dark:text-stone-400">
+            <div className="px-4 py-8 text-center text-sm text-muted-foreground">
               Aucune notification
             </div>
           ) : (
@@ -156,13 +156,13 @@ export function NotificationBell() {
             </div>
           )}
         </div>
-        <div className="border-t border-stone-200 dark:border-stone-700">
+        <div className="border-t border-border">
           <button type="button"
             onClick={() => {
               navigate('/notifications')
               setOpen(false)
             }}
-            className="flex w-full items-center justify-center gap-1 px-4 py-2.5 text-sm font-medium text-emerald-700 hover:bg-stone-50 dark:text-emerald-400 dark:hover:bg-stone-800"
+            className="flex w-full items-center justify-center gap-1 px-4 py-2.5 text-sm font-medium text-primary hover:bg-accent"
           >
             Voir toutes les notifications
           </button>
