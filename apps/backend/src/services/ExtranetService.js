@@ -62,6 +62,24 @@ class ExtranetService {
     }
   }
 
+  /**
+   * Document shared with the owner (same scope as getEspaceDocuments),
+   * or null when the user has no access to it.
+   */
+  async getSharedDocument(userId, documentId) {
+    const coproprietaire = await ExtranetModel.getCoproprietaireByUserId(userId)
+    if (!coproprietaire) return null
+    const coproprietes = await ExtranetModel.getCoproprietesByCoproprietaire(
+      coproprietaire.id
+    )
+    if (coproprietes.length === 0) return null
+    const document = await ExtranetModel.getSharedDocumentById(
+      coproprietes.map(c => c.id),
+      documentId
+    )
+    return document || null
+  }
+
   async getMonCompte(userId) {
     try {
       const coproprietaire = await ExtranetModel.getCoproprietaireByUserId(userId)

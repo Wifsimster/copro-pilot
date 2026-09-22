@@ -43,6 +43,15 @@ export class ExtranetModel {
       .orderBy('created_at', 'desc')
   }
 
+  static async getSharedDocumentById(coproprieteIds, documentId) {
+    const db = getDb()
+    return db('documents')
+      .where('id', documentId)
+      .whereIn('copropriete_id', coproprieteIds)
+      .whereIn('categorie', ['reglement', 'diagnostic', 'assurance', 'contrat'])
+      .first()
+  }
+
   static async getDerniersPVAG(coproprieteId, limit = 3) {
     const db = getDb()
     const ags = await db('assemblees_generales')

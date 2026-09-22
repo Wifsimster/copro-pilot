@@ -7,6 +7,8 @@ import { getAuth } from '../config/auth.js'
  */
 export const requireAuth = () => {
     return async (req, res, next) => {
+        // Already authenticated by an outer router (e.g. staffOnly guard)
+        if (req.user && req.session) return next()
         try {
             let auth
             try {

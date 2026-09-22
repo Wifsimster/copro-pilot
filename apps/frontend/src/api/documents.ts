@@ -50,6 +50,10 @@ export const documentsApi = {
   getDownloadUrl: (id: number) =>
     `${API_BASE_URL}/documents/${id}/download`,
 
+  /** Owner-scoped download used by the extranet */
+  getExtranetDownloadUrl: (id: number) =>
+    `${API_BASE_URL}/extranet/documents/${id}/download`,
+
   update: (id: number, data: Partial<Document>) =>
     api.put<ApiResponse<Document>>(`/documents/${id}`, data),
 

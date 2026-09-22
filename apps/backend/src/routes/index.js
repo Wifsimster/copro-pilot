@@ -1,4 +1,6 @@
 import { Router } from 'express'
+import { requireAuth } from '../middleware/auth.js'
+import { requireStaff } from '../middleware/authorization.js'
 import healthRoutes from './health.js'
 import coproprietesRoutes from './coproprietes.js'
 import coproprietairesRoutes from './coproprietaires.js'
@@ -94,71 +96,76 @@ import webVitalsRoutes from './web-vitals.js'
 
 const router = Router()
 
+// Management routes are reserved to syndic staff. Copropriétaires reach
+// their own data through /extranet, /votes, /procurations, /gdpr and
+// /notifications, which enforce per-owner checks.
+const staffOnly = [requireAuth(), requireStaff]
+
 // API routes — Module 1 & 2
 router.use('/health', healthRoutes)
-router.use('/coproprietes', coproprietesRoutes)
-router.use('/coproprietaires', coproprietairesRoutes)
-router.use('/lots', lotsRoutes)
-router.use('/parties-communes', partiesCommunesRoutes)
-router.use('/cles-repartition', clesRepartitionRoutes)
-router.use('/locataires', locatairesRoutes)
-router.use('/mutations', mutationsRoutes)
+router.use('/coproprietes', staffOnly, coproprietesRoutes)
+router.use('/coproprietaires', staffOnly, coproprietairesRoutes)
+router.use('/lots', staffOnly, lotsRoutes)
+router.use('/parties-communes', staffOnly, partiesCommunesRoutes)
+router.use('/cles-repartition', staffOnly, clesRepartitionRoutes)
+router.use('/locataires', staffOnly, locatairesRoutes)
+router.use('/mutations', staffOnly, mutationsRoutes)
 
 // Module 3 — Comptabilité & Charges
-router.use('/budgets', budgetsRoutes)
-router.use('/appels-fonds', appelsFondsRoutes)
-router.use('/paiements', paiementsRoutes)
-router.use('/fonds-travaux', fondsTravauxRoutes)
+router.use('/budgets', staffOnly, budgetsRoutes)
+router.use('/appels-fonds', staffOnly, appelsFondsRoutes)
+router.use('/paiements', staffOnly, paiementsRoutes)
+router.use('/fonds-travaux', staffOnly, fondsTravauxRoutes)
 
 // Comptabilité réglementaire (loi ALUR)
-router.use('/comptabilite', comptabiliteReglementaireRoutes)
+router.use('/comptabilite', staffOnly, comptabiliteReglementaireRoutes)
 
 // Comptes bancaires
-router.use('/comptes-bancaires', comptesBancairesRoutes)
-router.use('/mouvements-bancaires', mouvementsBancairesRoutes)
+router.use('/comptes-bancaires', staffOnly, comptesBancairesRoutes)
+router.use('/mouvements-bancaires', staffOnly, mouvementsBancairesRoutes)
 
 // Module 4 — Assemblées Générales
-router.use('/assemblees', assembleesRoutes)
-router.use('/convocations', convocationsRoutes)
+router.use('/assemblees', staffOnly, assembleesRoutes)
+router.use('/convocations', staffOnly, convocationsRoutes)
 
 // Module 5 — Travaux & Incidents
-router.use('/incidents', incidentsRoutes)
-router.use('/interventions', interventionsRoutes)
-router.use('/carnet-entretien', carnetEntretienRoutes)
+router.use('/incidents', staffOnly, incidentsRoutes)
+router.use('/interventions', staffOnly, interventionsRoutes)
+router.use('/carnet-entretien', staffOnly, carnetEntretienRoutes)
 
 // Module 6 — Documents
-router.use('/documents', documentsRoutes)
+router.use('/documents', staffOnly, documentsRoutes)
 
 // Diagnostics techniques
-router.use('/diagnostics', diagnosticsRoutes)
+router.use('/diagnostics', staffOnly, diagnosticsRoutes)
 
 // Conseil Syndical
-router.use('/conseil-syndical', conseilSyndicalRoutes)
+router.use('/conseil-syndical', staffOnly, conseilSyndicalRoutes)
 
 // Assurances & Sinistres
-router.use('/assurances', assurancesRoutes)
-router.use('/sinistres', sinistresRoutes)
+router.use('/assurances', staffOnly, assurancesRoutes)
+router.use('/sinistres', staffOnly, sinistresRoutes)
 
 // Contentieux & Recouvrement
-router.use('/relances', relancesRoutes)
-router.use('/procedures', proceduresRoutes)
+router.use('/relances', staffOnly, relancesRoutes)
+router.use('/procedures', staffOnly, proceduresRoutes)
 
 // Contrats & Prestataires
-router.use('/prestataires', prestatairesRoutes)
-router.use('/contrats', contratsRoutes)
+router.use('/prestataires', staffOnly, prestatairesRoutes)
+router.use('/contrats', staffOnly, contratsRoutes)
 
 // Employes du syndicat
-router.use('/employes-syndicat', employesSyndicatRoutes)
+router.use('/employes-syndicat', staffOnly, employesSyndicatRoutes)
 
 // Règlement de copropriété
-router.use('/reglements-copropriete', reglementsCoproprieteRoutes)
+router.use('/reglements-copropriete', staffOnly, reglementsCoproprieteRoutes)
 
 // Immatriculation / Registre national
-router.use('/declarations-registre', declarationsRegistreRoutes)
+router.use('/declarations-registre', staffOnly, declarationsRegistreRoutes)
 
 // Contrat de syndic & Mise en concurrence
-router.use('/contrats-syndic', contratsSyndicRoutes)
-router.use('/propositions-syndic', propositionsSyndicRoutes)
+router.use('/contrats-syndic', staffOnly, contratsSyndicRoutes)
+router.use('/propositions-syndic', staffOnly, propositionsSyndicRoutes)
 
 // Notifications
 router.use('/notifications', notificationsRoutes)
@@ -167,25 +174,25 @@ router.use('/notifications', notificationsRoutes)
 router.use('/extranet', extranetRoutes)
 
 // Exports (PDF & Excel)
-router.use('/exports', exportsRoutes)
+router.use('/exports', staffOnly, exportsRoutes)
 
 // Stats
-router.use('/stats', statsRoutes)
+router.use('/stats', staffOnly, statsRoutes)
 
 // Analytics (funnel — staff only)
-router.use('/analytics', analyticsRoutes)
+router.use('/analytics', staffOnly, analyticsRoutes)
 
 // Reprise de gestion (import balance)
-router.use('/reprise-gestion', repriseGestionRoutes)
+router.use('/reprise-gestion', staffOnly, repriseGestionRoutes)
 
 // Comptabilité de trésorerie simplifiée
-router.use('/compta-tresorerie', comptaTresorerieRoutes)
+router.use('/compta-tresorerie', staffOnly, comptaTresorerieRoutes)
 
 // Régularisation des charges (clôture)
-router.use('/regularisations', regularisationsRoutes)
+router.use('/regularisations', staffOnly, regularisationsRoutes)
 
 // Cycle annuel (workflow)
-router.use('/cycle-annuel', cycleAnnuelRoutes)
+router.use('/cycle-annuel', staffOnly, cycleAnnuelRoutes)
 
 // Global search
 router.use('/search', searchRoutes)
@@ -197,7 +204,7 @@ router.use('/gdpr', gdprRoutes)
 router.use('/user-management', userManagementRoutes)
 
 // Timeline (domain events)
-router.use('/timeline', timelineRoutes)
+router.use('/timeline', staffOnly, timelineRoutes)
 
 // SSE (Server-Sent Events)
 router.use('/sse', sseRoutes)
@@ -206,10 +213,10 @@ router.use('/sse', sseRoutes)
 router.use('/stripe', stripeRoutes)
 
 // Tickets (messagerie)
-router.use('/tickets', ticketsRoutes)
+router.use('/tickets', staffOnly, ticketsRoutes)
 
 // AG Reports (annexes financières décret 2005-240)
-router.use('/ag-reports', agReportsRoutes)
+router.use('/ag-reports', staffOnly, agReportsRoutes)
 
 // Audit log (tamper-proof hash chain verification)
 router.use('/audit', auditRoutes)
