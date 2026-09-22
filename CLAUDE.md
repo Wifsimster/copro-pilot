@@ -1,5 +1,9 @@
 # CLAUDE.md — CoproPilot
 
+## Style de communication
+
+Penser en vue d'ensemble, répondre en peu de mots. Pas de remplissage, pas de reformulation du contexte, pas de sur-explication.
+
 ## Présentation
 
 CoproPilot est une plateforme monorepo de gestion de copropriété pour syndics professionnels. Elle est composée d'un backend Express (API REST) et d'un frontend React (SPA), communiquant via une API REST sous le préfixe `/api`.
