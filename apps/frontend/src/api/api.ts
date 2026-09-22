@@ -12,6 +12,16 @@ export function getCsrfToken(): string | null {
   return match ? decodeURIComponent(match[1]) : null
 }
 
+/**
+ * The CSRF cookie is issued on the first non-auth GET. Right after login
+ * no such request may have happened yet: call this before a mutation
+ * issued from the login flow.
+ */
+export async function ensureCsrfToken(): Promise<void> {
+  if (getCsrfToken()) return
+  await fetch(`${API_BASE_URL}/`, { credentials: 'include' }).catch(() => {})
+}
+
 /** Headers for raw fetch() calls that bypass request() */
 export function csrfHeaders(): Record<string, string> {
   const token = getCsrfToken()
