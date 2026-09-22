@@ -37,11 +37,10 @@ const ENTITY_MAP = {
   '/gdpr': 'gdpr',
 }
 
-function getEntityType(path) {
-  for (const [prefix, entity] of Object.entries(ENTITY_MAP)) {
-    if (path.startsWith(prefix)) return entity
-  }
-  return 'unknown'
+export function getEntityType(path) {
+  // Match the first segment exactly ('/contrats-syndic' is not '/contrats')
+  const segment = `/${path.split('/')[1] ?? ''}`
+  return ENTITY_MAP[segment] ?? 'unknown'
 }
 
 function getAction(method) {
@@ -66,10 +65,16 @@ export const auditLogger = (req, res, next) => {
   const action = getAction(req.method)
   if (!action) return next()
 
+  // Capture the full path now: inside the route handler req.path has the
+  // router mount prefixes stripped (e.g. '/42' instead of '/lots/42').
+  const apiPath = (req.originalUrl || req.url || '')
+    .split('?')[0]
+    .replace(/^\/api(\/v1)?/, '')
+
   const originalJson = res.json
   res.json = function (body) {
     if (res.statusCode < 300) {
-      const entityType = getEntityType(req.path)
+      const entityType = getEntityType(apiPath)
       const entityId =
         req.params?.id || body?.data?.id || null
 
@@ -78,7 +83,7 @@ export const auditLogger = (req, res, next) => {
         action,
         entity_type: entityType,
         entity_id: entityId ? String(entityId) : null,
-        description: `${req.method} ${req.path}`,
+        description: `${req.method} ${apiPath}`,
         ip: req.ip,
       })
     }

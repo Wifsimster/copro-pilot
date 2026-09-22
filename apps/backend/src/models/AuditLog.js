@@ -33,22 +33,25 @@ function buildHashPayload(row) {
   })
 }
 
+// Arbitrary constant identifying the audit chain advisory lock
+const AUDIT_CHAIN_LOCK = 72_616_401
+
 export class AuditLogModel {
   /**
    * Append a new entry to the audit log.
    *
-   * Runs inside a SERIALIZABLE-ish transaction: we lock the
-   * most recent row FOR UPDATE so two concurrent inserts
-   * cannot both read the same `prev_hash` and corrupt the
-   * chain.
+   * Appends are serialized with a transaction-scoped advisory lock:
+   * row locks alone don't serialize under READ COMMITTED (a waiter
+   * re-reads the same "latest" row) and lock nothing on an empty table,
+   * so two concurrent inserts could share a prev_hash and fork the chain.
    */
   static async create(entry) {
     const db = getDb()
 
     return db.transaction(async trx => {
+      await trx.raw('SELECT pg_advisory_xact_lock(?)', [AUDIT_CHAIN_LOCK])
       const latest = await trx('audit_log')
         .orderBy('id', 'desc')
-        .forUpdate()
         .first('hash')
 
       const prevHash = latest?.hash || null
