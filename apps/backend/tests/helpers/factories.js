@@ -55,7 +55,7 @@ export function buildLot(overrides = {}) {
     numero: `A${String(id).padStart(3, '0')}`,
     type: 'appartement',
     etage: 1,
-    superficie: 50,
+    surface: 50,
     tantiemes: 100,
     created_at: '2025-01-01T00:00:00.000Z',
     updated_at: '2025-01-01T00:00:00.000Z',

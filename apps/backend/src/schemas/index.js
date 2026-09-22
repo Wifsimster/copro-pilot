@@ -27,17 +27,21 @@ export const lotSchema = z.object({
   copropriete_id: z.number().int().positive(),
   numero: z.string().min(1).max(50),
   type: z.string().min(1).max(100),
+  coproprietaire_id: z.number().int().positive().optional().nullable(),
   etage: z.number().int().optional().nullable(),
-  superficie: z.number().positive().optional().nullable(),
+  surface: z.number().positive().optional().nullable(),
   tantiemes: z.number().int().positive(),
+  description: z.string().optional().nullable(),
 })
 
 export const paiementSchema = z.object({
   coproprietaire_id: z.number().int().positive(),
+  appel_fonds_id: z.number().int().positive().optional().nullable(),
   montant: z.number().positive(),
   date_paiement: z.string().min(1),
   mode: z.string().min(1).max(50),
   reference: z.string().max(255).optional().nullable(),
+  notes: z.string().optional().nullable(),
 })
 
 export const budgetSchema = z.object({
