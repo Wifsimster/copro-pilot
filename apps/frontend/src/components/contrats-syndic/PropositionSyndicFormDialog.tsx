@@ -22,6 +22,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { PropositionSyndic } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const propositionSyndicSchema = z.object({
   syndic_nom: z.string().min(1, 'Le nom du syndic est obligatoire'),
@@ -58,7 +59,7 @@ export function PropositionSyndicFormDialog({
     resolver: zodResolver(propositionSyndicSchema),
     values: {
       syndic_nom: defaultValues?.syndic_nom || '',
-      date_reception: defaultValues?.date_reception || new Date().toISOString().slice(0, 10),
+      date_reception: defaultValues?.date_reception || toLocalIsoDate(),
       montant_propose: defaultValues?.montant_propose || 0,
       prestations_proposees: defaultValues?.prestations_proposees || '',
       document_url: defaultValues?.document_url || '',

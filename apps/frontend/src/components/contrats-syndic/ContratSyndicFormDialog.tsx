@@ -22,6 +22,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { ContratSyndic } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const contratSyndicSchema = z.object({
   syndic_nom: z.string().min(1, 'Le nom du syndic est obligatoire'),
@@ -61,7 +62,7 @@ export function ContratSyndicFormDialog({
     resolver: zodResolver(contratSyndicSchema),
     values: {
       syndic_nom: defaultValues?.syndic_nom || '',
-      date_debut: defaultValues?.date_debut || new Date().toISOString().slice(0, 10),
+      date_debut: defaultValues?.date_debut || toLocalIsoDate(),
       date_fin: defaultValues?.date_fin || '',
       remuneration_forfait: defaultValues?.remuneration_forfait || 0,
       prestations_incluses: defaultValues?.prestations_incluses || '',

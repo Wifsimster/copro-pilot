@@ -22,6 +22,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { Contrat, Prestataire } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const contratSchema = z.object({
   prestataire_id: z.coerce.number().min(1, 'Le prestataire est obligatoire'),
@@ -67,7 +68,7 @@ export function ContratFormDialog({
       prestataire_id: defaultValues?.prestataire_id || 0,
       objet: defaultValues?.objet || '',
       type: defaultValues?.type || '',
-      date_debut: defaultValues?.date_debut || new Date().toISOString().slice(0, 10),
+      date_debut: defaultValues?.date_debut || toLocalIsoDate(),
       date_fin: defaultValues?.date_fin || '',
       montant_annuel: defaultValues?.montant_annuel || 0,
       frequence_paiement: defaultValues?.frequence_paiement || 'annuel',

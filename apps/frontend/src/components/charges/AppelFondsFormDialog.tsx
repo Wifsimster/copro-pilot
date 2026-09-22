@@ -20,6 +20,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { AppelFonds } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const appelSchema = z.object({
   trimestre: z.coerce.number().min(1).max(4),
@@ -59,8 +60,8 @@ export function AppelFondsFormDialog({
       trimestre: defaultValues?.trimestre || defaultTrimestre,
       annee: defaultValues?.annee || now.getFullYear(),
       montant_total: defaultValues?.montant_total || 0,
-      date_emission: defaultValues?.date_emission || now.toISOString().split('T')[0],
-      date_echeance: defaultValues?.date_echeance || new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      date_emission: defaultValues?.date_emission || toLocalIsoDate(now),
+      date_echeance: defaultValues?.date_echeance || toLocalIsoDate(new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)),
     },
   })
 

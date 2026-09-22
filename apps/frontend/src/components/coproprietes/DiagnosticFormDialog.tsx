@@ -22,6 +22,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { Diagnostic } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const diagnosticSchema = z.object({
   type: z.enum(['dpe', 'amiante', 'plomb', 'dtg', 'ppt', 'gaz', 'electricite', 'autre']),
@@ -76,7 +77,7 @@ export function DiagnosticFormDialog({
     values: {
       type: defaultValues?.type || 'dpe',
       prestataire: defaultValues?.prestataire || '',
-      date_realisation: defaultValues?.date_realisation || new Date().toISOString().split('T')[0],
+      date_realisation: defaultValues?.date_realisation || toLocalIsoDate(),
       date_validite: defaultValues?.date_validite || '',
       statut: defaultValues?.statut || 'valide',
       document_url: defaultValues?.document_url || '',

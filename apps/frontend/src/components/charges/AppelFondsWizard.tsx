@@ -18,6 +18,7 @@ import {
   type WizardStep,
   type AppelFondsDraft,
 } from '@/lib/appelFondsWizard'
+import { toLocalIsoDate } from '@/utils/date'
 
 const STEP_TITLES: Record<WizardStep, string> = {
   periode: '1. Période',
@@ -38,10 +39,10 @@ interface AppelFondsWizardProps {
 }
 
 function today() {
-  return new Date().toISOString().split('T')[0]
+  return toLocalIsoDate()
 }
 function inDays(n: number) {
-  return new Date(Date.now() + n * 86400000).toISOString().split('T')[0]
+  return toLocalIsoDate(new Date(Date.now() + n * 86400000))
 }
 
 export function AppelFondsWizard({

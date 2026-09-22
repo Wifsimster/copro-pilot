@@ -26,6 +26,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { Incident } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const incidentSchema = z.object({
   titre: z.string().min(1, 'Le titre est obligatoire'),
@@ -65,7 +66,7 @@ export function IncidentFormDialog({
       categorie: defaultValues?.categorie || '',
       urgence: defaultValues?.urgence || 'moyenne',
       statut: defaultValues?.statut || 'ouvert',
-      date_signalement: defaultValues?.date_signalement || new Date().toISOString().split('T')[0],
+      date_signalement: defaultValues?.date_signalement || toLocalIsoDate(),
     },
   })
 

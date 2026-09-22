@@ -21,6 +21,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { Sinistre, Assurance, Incident } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const sinistreSchema = z.object({
   assurance_id: z.string().optional(),
@@ -71,7 +72,7 @@ export function SinistreFormDialog({
       assurance_id: defaultValues?.assurance_id ? String(defaultValues.assurance_id) : '',
       incident_id: defaultValues?.incident_id ? String(defaultValues.incident_id) : '',
       numero_sinistre: defaultValues?.numero_sinistre || '',
-      date_sinistre: defaultValues?.date_sinistre || new Date().toISOString().split('T')[0],
+      date_sinistre: defaultValues?.date_sinistre || toLocalIsoDate(),
       date_declaration: defaultValues?.date_declaration || '',
       description: defaultValues?.description || '',
       montant_estime: defaultValues?.montant_estime != null ? String(defaultValues.montant_estime) : '',

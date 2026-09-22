@@ -22,6 +22,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { Paiement } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const schema = z.object({
   montant: z.coerce.number().positive('Le montant doit être positif'),
@@ -69,7 +70,7 @@ export function PaiementFormDialog({
     values: {
       montant: defaultValues?.montant || 0,
       date_paiement:
-        defaultValues?.date_paiement || new Date().toISOString().split('T')[0],
+        defaultValues?.date_paiement || toLocalIsoDate(),
       mode: (defaultValues?.mode as FormData['mode']) || 'virement',
       reference: defaultValues?.reference || '',
       notes: defaultValues?.notes || '',

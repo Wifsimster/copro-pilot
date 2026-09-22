@@ -23,6 +23,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { EmployeSyndicat } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const employeSchema = z.object({
   nom: z.string().min(1, 'Le nom est obligatoire'),
@@ -65,7 +66,7 @@ export function EmployeFormDialog({
       prenom: defaultValues?.prenom || '',
       poste: defaultValues?.poste || '',
       type_contrat: defaultValues?.type_contrat || 'cdi',
-      date_embauche: defaultValues?.date_embauche || new Date().toISOString().split('T')[0],
+      date_embauche: defaultValues?.date_embauche || toLocalIsoDate(),
       date_fin: defaultValues?.date_fin || '',
       salaire_brut: defaultValues?.salaire_brut != null ? String(defaultValues.salaire_brut) : '',
       logement_fonction: defaultValues?.logement_fonction || false,

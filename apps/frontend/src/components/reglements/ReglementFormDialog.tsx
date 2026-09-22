@@ -21,6 +21,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { ReglementCopropriete } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const reglementSchema = z.object({
   date_etablissement: z.string().min(1, 'La date est obligatoire'),
@@ -59,7 +60,7 @@ export function ReglementFormDialog({
   const form = useForm<ReglementFormData>({
     resolver: zodResolver(reglementSchema),
     defaultValues: {
-      date_etablissement: defaultValues?.date_etablissement || new Date().toISOString().split('T')[0],
+      date_etablissement: defaultValues?.date_etablissement || toLocalIsoDate(),
       date_derniere_modification: defaultValues?.date_derniere_modification || '',
       notaire: defaultValues?.notaire || '',
       destination_immeuble: defaultValues?.destination_immeuble || 'habitation',

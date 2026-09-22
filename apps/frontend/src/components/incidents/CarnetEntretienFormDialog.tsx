@@ -15,6 +15,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { CarnetEntretien } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const schema = z.object({
   titre: z.string().min(1, 'Le titre est obligatoire'),
@@ -45,7 +46,7 @@ export function CarnetEntretienFormDialog({ open, onOpenChange, coproprieteId, o
       description: defaultValues?.description || '',
       prestataire: defaultValues?.prestataire || '',
       montant: defaultValues?.montant ?? '',
-      date_realisation: defaultValues?.date_realisation || new Date().toISOString().split('T')[0],
+      date_realisation: defaultValues?.date_realisation || toLocalIsoDate(),
       categorie: defaultValues?.categorie || '',
     },
   })
