@@ -6,10 +6,16 @@ interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined>
 }
 
-function getCsrfToken(): string | null {
+export function getCsrfToken(): string | null {
   if (typeof document === 'undefined') return null
   const match = document.cookie.match(/(?:^|;\s*)csrf-token=([^;]+)/)
   return match ? decodeURIComponent(match[1]) : null
+}
+
+/** Headers for raw fetch() calls that bypass request() */
+export function csrfHeaders(): Record<string, string> {
+  const token = getCsrfToken()
+  return token ? { 'X-CSRF-Token': token } : {}
 }
 
 async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {

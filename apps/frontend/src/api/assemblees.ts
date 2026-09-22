@@ -1,4 +1,4 @@
-import { api } from './api'
+import { api, csrfHeaders } from './api'
 import type { AssembleeGenerale, Resolution, PresenceAG, ApiResponse } from '@/types'
 
 export const assembleesApi = {
@@ -43,6 +43,7 @@ export const assembleesApi = {
     const response = await fetch(`${API_BASE_URL}/assemblees/${agId}/generer-pv`, {
       method: 'POST',
       credentials: 'include',
+      headers: csrfHeaders(),
     })
     if (!response.ok) {
       const errorBody = await response.json().catch(() => ({}))

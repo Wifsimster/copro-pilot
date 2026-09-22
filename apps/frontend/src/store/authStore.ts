@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { authClient } from '@/lib/auth-client'
 import { isAdmin as checkIsAdmin, canAccessRoute as checkCanAccessRoute } from '@/utils/roleAccess'
 import logger from '@/utils/logger'
+import { csrfHeaders } from '@/api/api'
 import type { User, UserRole } from '@/types'
 
 interface AuthState {
@@ -110,7 +111,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
           try {
             const checkoutRes = await fetch('/api/stripe/checkout-session', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json', ...csrfHeaders() },
               credentials: 'include',
               body: JSON.stringify({ plan: pendingPlan }),
             })
@@ -157,7 +158,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
           consentTypes.map(type =>
             fetch('/api/gdpr/consents', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json', ...csrfHeaders() },
               credentials: 'include',
               body: JSON.stringify({
                 consent_type: type,

@@ -1,4 +1,4 @@
-import { api } from './api'
+import { api, csrfHeaders } from './api'
 import type { Document, ApiResponse } from '@/types'
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || '/api'
@@ -35,6 +35,7 @@ export const documentsApi = {
     const response = await fetch(`${API_BASE_URL}/documents/upload`, {
       method: 'POST',
       credentials: 'include',
+      headers: csrfHeaders(),
       body: formData,
     })
 
