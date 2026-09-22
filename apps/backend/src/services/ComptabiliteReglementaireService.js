@@ -1,4 +1,7 @@
-import { ComptabiliteReglementaireModel } from '../models/ComptabiliteReglementaire.js'
+import {
+  ComptabiliteReglementaireModel,
+  paiementsOfCopropriete,
+} from '../models/ComptabiliteReglementaire.js'
 import logger from '../logger.js'
 
 const PLAN_COMPTABLE_STANDARD = [
@@ -12,6 +15,7 @@ const PLAN_COMPTABLE_STANDARD = [
   { code: '421', libelle: 'Personnel - Rémunérations dues', classe: 4, type: 'passif' },
   { code: '450', libelle: 'Copropriétaires - Provisions appelées', classe: 4, type: 'actif' },
   { code: '459', libelle: 'Copropriétaires - Créances douteuses', classe: 4, type: 'actif' },
+  { code: '471', libelle: "Compte d'attente", classe: 4, type: 'actif' },
   // Classe 5 - Trésorerie
   { code: '512', libelle: 'Banque - Compte courant', classe: 5, type: 'actif' },
   { code: '514', libelle: 'Banque - Fonds de travaux', classe: 5, type: 'actif' },
@@ -39,6 +43,21 @@ const PLAN_COMPTABLE_STANDARD = [
   { code: '761', libelle: 'Intérêts des placements', classe: 7, type: 'produit' },
   { code: '771', libelle: 'Subventions', classe: 7, type: 'produit' },
 ]
+
+const COMPTE_ATTENTE = '471'
+
+function httpError(status, message) {
+  const err = new Error(message)
+  err.status = status
+  return err
+}
+
+function assertExerciceOuvert(exercice) {
+  if (!exercice) throw httpError(404, 'Exercice non trouvé')
+  if (exercice.statut === 'cloture') {
+    throw httpError(409, 'Exercice clôturé : les écritures ne sont plus modifiables')
+  }
+}
 
 class ComptabiliteReglementaireService {
   // ─── Exercices ─────────────────────────────────────────────
@@ -200,7 +219,13 @@ class ComptabiliteReglementaireService {
 
   async createEcriture(data) {
     try {
-      const result = await ComptabiliteReglementaireModel.createEcriture(data)
+      const exercice = await ComptabiliteReglementaireModel.getExerciceById(data.exercice_id)
+      assertExerciceOuvert(exercice)
+      // The exercice decides which copropriété the entry belongs to
+      const result = await ComptabiliteReglementaireModel.createEcriture({
+        ...data,
+        copropriete_id: exercice.copropriete_id,
+      })
       logger.info(`[ComptaReglService] Écriture créée: ${result.libelle} (ID: ${result.id})`)
       return result
     } catch (error) {
@@ -211,6 +236,11 @@ class ComptabiliteReglementaireService {
 
   async deleteEcriture(id) {
     try {
+      const ecriture = await ComptabiliteReglementaireModel.getEcritureById(id)
+      if (!ecriture) throw httpError(404, 'Écriture non trouvée')
+      assertExerciceOuvert(
+        await ComptabiliteReglementaireModel.getExerciceById(ecriture.exercice_id)
+      )
       await ComptabiliteReglementaireModel.deleteEcriture(id)
       logger.info(`[ComptaReglService] Écriture supprimée (ID: ${id})`)
       return true
@@ -316,12 +346,14 @@ class ComptabiliteReglementaireService {
         })
       }
 
-      // 4. Generate ecritures from paiements (debit 512, credit 450)
+      // 4. Generate ecritures from paiements (debit 512, credit 450).
+      // Payments belong to the exercice they were cashed in, and include
+      // those not linked to an appel (e.g. extranet Stripe payments).
       const paiements = await db('paiements')
-        .join('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
+        .leftJoin('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
         .leftJoin('coproprietaires', 'paiements.coproprietaire_id', 'coproprietaires.id')
-        .where('appels_fonds.copropriete_id', copropriete_id)
-        .andWhere('appels_fonds.annee', annee)
+        .where(paiementsOfCopropriete(db, copropriete_id))
+        .whereBetween('paiements.date_paiement', [exercice.date_debut, exercice.date_fin])
         .select(
           'paiements.*',
           'coproprietaires.nom as copro_nom',
@@ -369,34 +401,31 @@ class ComptabiliteReglementaireService {
         .whereNull('mouvements_bancaires.paiement_id')
         .select('mouvements_bancaires.*')
 
+      // Unreconciled movements are balanced against 471 (compte d'attente)
+      // until they are allocated, so the balance stays in equilibrium.
       for (const mouvement of mouvements) {
-        if (mouvement.type === 'credit') {
-          ecritures.push({
-            exercice_id: exerciceId,
-            copropriete_id: copropriete_id,
-            date_ecriture: mouvement.date,
-            libelle: mouvement.libelle || 'Mouvement bancaire',
-            compte_code: '512',
-            debit: mouvement.montant,
-            credit: 0,
-            piece_ref: `MVT-${mouvement.id}`,
-            entite_type: 'mouvement_bancaire',
-            entite_id: mouvement.id,
-          })
-        } else {
-          ecritures.push({
-            exercice_id: exerciceId,
-            copropriete_id: copropriete_id,
-            date_ecriture: mouvement.date,
-            libelle: mouvement.libelle || 'Mouvement bancaire',
-            compte_code: '512',
-            debit: 0,
-            credit: mouvement.montant,
-            piece_ref: `MVT-${mouvement.id}`,
-            entite_type: 'mouvement_bancaire',
-            entite_id: mouvement.id,
-          })
+        const common = {
+          exercice_id: exerciceId,
+          copropriete_id: copropriete_id,
+          date_ecriture: mouvement.date,
+          libelle: mouvement.libelle || 'Mouvement bancaire',
+          piece_ref: `MVT-${mouvement.id}`,
+          entite_type: 'mouvement_bancaire',
+          entite_id: mouvement.id,
         }
+        const isCredit = mouvement.type === 'credit'
+        ecritures.push({
+          ...common,
+          compte_code: '512',
+          debit: isCredit ? mouvement.montant : 0,
+          credit: isCredit ? 0 : mouvement.montant,
+        })
+        ecritures.push({
+          ...common,
+          compte_code: COMPTE_ATTENTE,
+          debit: isCredit ? 0 : mouvement.montant,
+          credit: isCredit ? mouvement.montant : 0,
+        })
       }
 
       // Delete existing + batch insert in a transaction

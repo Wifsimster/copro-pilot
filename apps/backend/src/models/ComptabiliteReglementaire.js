@@ -2,6 +2,23 @@ import knexDatabase from '../config/knex-database.js'
 
 const getDb = () => knexDatabase.getKnex()
 
+/**
+ * Payments of a copropriété: through their appel de fonds, or — when not
+ * linked to an appel — through a lot the owner holds in the copropriété.
+ */
+export function paiementsOfCopropriete(db, coproprieteId) {
+  return function () {
+    this.where('appels_fonds.copropriete_id', coproprieteId).orWhere(function () {
+      this.whereNull('paiements.appel_fonds_id').whereExists(
+        db('lots')
+          .select(db.raw('1'))
+          .whereRaw('lots.coproprietaire_id = paiements.coproprietaire_id')
+          .where('lots.copropriete_id', coproprieteId)
+      )
+    })
+  }
+}
+
 export class ComptabiliteReglementaireModel {
   // ─── Exercices comptables ───────────────────────────────────
 
@@ -140,6 +157,11 @@ export class ComptabiliteReglementaireModel {
     return db('ecritures_comptables').insert(dataArray).returning('*')
   }
 
+  static async getEcritureById(id) {
+    const db = getDb()
+    return db('ecritures_comptables').where('id', id).first()
+  }
+
   static async deleteEcriture(id) {
     const db = getDb()
     return db('ecritures_comptables').where('id', id).del()
@@ -235,9 +257,9 @@ export class ComptabiliteReglementaireModel {
     }
     // Produits: somme des paiements de l'annee
     const paiements = await db('paiements')
-      .join('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
-      .where('appels_fonds.copropriete_id', coproprieteId)
-      .andWhere('appels_fonds.annee', annee)
+      .leftJoin('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
+      .where(paiementsOfCopropriete(db, coproprieteId))
+      .whereRaw('EXTRACT(YEAR FROM paiements.date_paiement) = ?', [annee])
       .sum('paiements.montant as total_paiements')
       .first()
     return {
@@ -283,9 +305,9 @@ export class ComptabiliteReglementaireModel {
       )
     // Paiements: total paye par coproprietaire pour l'annee
     const payes = await db('paiements')
-      .join('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
-      .where('appels_fonds.copropriete_id', coproprieteId)
-      .andWhere('appels_fonds.annee', annee)
+      .leftJoin('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
+      .where(paiementsOfCopropriete(db, coproprieteId))
+      .whereRaw('EXTRACT(YEAR FROM paiements.date_paiement) = ?', [annee])
       .groupBy('paiements.coproprietaire_id')
       .select(
         'paiements.coproprietaire_id',

@@ -19,6 +19,7 @@ vi.mock('../../src/logger.js', () => ({
 const mockGetExerciceById = vi.fn()
 
 vi.mock('../../src/models/ComptabiliteReglementaire.js', () => ({
+  paiementsOfCopropriete: () => function () {},
   ComptabiliteReglementaireModel: {
     getExercicesByCopropriete: vi.fn(),
     getExerciceById: (...args) => mockGetExerciceById(...args),
@@ -31,6 +32,7 @@ vi.mock('../../src/models/ComptabiliteReglementaire.js', () => ({
     updateCompte: vi.fn(),
     getEcrituresByExercice: vi.fn(),
     getEcrituresByCompte: vi.fn(),
+    getEcritureById: vi.fn(),
     createEcriture: vi.fn(),
     deleteEcriture: vi.fn(),
     deleteEcrituresByExercice: vi.fn(),
@@ -65,6 +67,7 @@ function makeChain(resolvedValue) {
     andWhere: vi.fn().mockReturnThis(),
     whereNotNull: vi.fn().mockReturnThis(),
     whereNull: vi.fn().mockReturnThis(),
+    whereBetween: vi.fn().mockReturnThis(),
     join: vi.fn().mockReturnThis(),
     leftJoin: vi.fn().mockReturnThis(),
     insert: vi.fn(data => {
@@ -268,5 +271,74 @@ describe('ComptabiliteReglementaireService.genererEcrituresExercice', () => {
     expect(creditEcriture).toBeDefined()
     expect(debitEcriture.coproprietaire_id).toBe(50)
     expect(creditEcriture.coproprietaire_id).toBe(50)
+  })
+})
+
+describe('ComptabiliteReglementaireService bank movements', () => {
+  it('balances unreconciled movements against the 471 suspense account', async () => {
+    mockGetExerciceById.mockResolvedValue({
+      id: 1,
+      copropriete_id: 10,
+      annee: 2025,
+      date_debut: '2025-01-01',
+      date_fin: '2025-12-31',
+      statut: 'ouvert',
+    })
+    dbCallResults = [
+      [],
+      [],
+      [
+        { id: 1, type: 'debit', montant: 300, date: '2025-02-01' },
+        { id: 2, type: 'credit', montant: 120, date: '2025-03-01' },
+      ],
+    ]
+    const inserted = []
+    mockKnex.transaction.mockImplementation(async callback => {
+      const trx = vi.fn(() => {
+        const chain = makeChain([])
+        chain.insert = vi.fn(data => {
+          inserted.push(...data)
+          return { returning: vi.fn().mockResolvedValue(data) }
+        })
+        return chain
+      })
+      return callback(trx)
+    })
+
+    await comptabiliteReglementaireService.genererEcrituresExercice(1)
+
+    const sum = key => inserted.reduce((t, e) => t + e[key], 0)
+    expect(inserted).toHaveLength(4)
+    expect(sum('debit')).toBe(sum('credit'))
+    expect(inserted.find(e => e.entite_id === 1 && e.compte_code === '512'))
+      .toMatchObject({ credit: 300, debit: 0 })
+    expect(inserted.find(e => e.entite_id === 1 && e.compte_code === '471'))
+      .toMatchObject({ debit: 300, credit: 0 })
+  })
+})
+
+describe('ComptabiliteReglementaireService ecritures on closed exercice', () => {
+  const cloture = { id: 1, copropriete_id: 10, statut: 'cloture' }
+
+  it('refuses to create an ecriture', async () => {
+    mockGetExerciceById.mockResolvedValue(cloture)
+    await expect(
+      comptabiliteReglementaireService.createEcriture({ exercice_id: 1 })
+    ).rejects.toMatchObject({ status: 409 })
+  })
+
+  it('forces copropriete_id from the exercice', async () => {
+    const { ComptabiliteReglementaireModel } = await import(
+      '../../src/models/ComptabiliteReglementaire.js'
+    )
+    mockGetExerciceById.mockResolvedValue({ ...cloture, statut: 'ouvert' })
+    ComptabiliteReglementaireModel.createEcriture.mockResolvedValue({ id: 5 })
+    await comptabiliteReglementaireService.createEcriture({
+      exercice_id: 1,
+      copropriete_id: 99,
+    })
+    expect(ComptabiliteReglementaireModel.createEcriture).toHaveBeenCalledWith(
+      expect.objectContaining({ copropriete_id: 10 })
+    )
   })
 })
