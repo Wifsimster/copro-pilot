@@ -35,6 +35,17 @@ const ENTITY_MAP = {
   '/propositions-syndic': 'proposition_syndic',
   '/notifications': 'notification',
   '/gdpr': 'gdpr',
+  '/comptabilite': 'comptabilite',
+  '/compta-tresorerie': 'compta_tresorerie',
+  '/regularisations': 'regularisation',
+  '/reprise-gestion': 'reprise_gestion',
+  '/cycle-annuel': 'cycle_annuel',
+  '/tickets': 'ticket',
+  '/votes': 'vote',
+  '/procurations': 'procuration',
+  '/signatures': 'signature',
+  '/extranet': 'extranet',
+  '/user-management': 'user',
 }
 
 export function getEntityType(path) {
