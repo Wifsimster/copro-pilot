@@ -40,7 +40,7 @@ export class PaiementModel {
                     .orWhere('lots.copropriete_id', coproprieteId)
             })
             .groupBy('paiements.id', 'coproprietaires.nom', 'coproprietaires.prenom')
-            .orderBy(sortBy, sortOrder)
+            .orderBy(`paiements.${sortBy}`, sortOrder)
             .limit(limit)
             .offset(offset)
         return { data, total: parseInt(count) }
