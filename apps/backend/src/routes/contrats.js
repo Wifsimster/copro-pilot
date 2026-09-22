@@ -12,7 +12,7 @@ router.get('/prestataire/:prestataireId', requireAuth(), ContratController.getBy
 router.get('/echeances/:coproprieteId', requireAuth(), ContratController.getExpiringSoon)
 router.get('/:id', requireAuth(), ContratController.getById)
 router.post('/', requireAuth(), validate(contratSchema), ContratController.create)
-router.put('/:id', requireAuth(), validate(contratSchema), ContratController.update)
+router.put('/:id', requireAuth(), validate(contratSchema.partial()), ContratController.update)
 router.delete('/:id', requireAuth(), requireAdminForDelete, ContratController.delete)
 
 export default router

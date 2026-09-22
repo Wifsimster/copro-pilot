@@ -10,7 +10,7 @@ const router = Router()
 router.get('/copropriete/:coproprieteId', requireAuth(), IncidentController.getAllByCopropriete)
 router.get('/:id', requireAuth(), IncidentController.getById)
 router.post('/', requireAuth(), validate(incidentSchema), IncidentController.create)
-router.put('/:id', requireAuth(), validate(incidentSchema), IncidentController.update)
+router.put('/:id', requireAuth(), validate(incidentSchema.partial()), IncidentController.update)
 router.delete('/:id', requireAuth(), requireAdminForDelete, IncidentController.delete)
 
 export default router

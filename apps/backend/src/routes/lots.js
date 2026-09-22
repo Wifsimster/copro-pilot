@@ -12,7 +12,7 @@ router.get('/copropriete/:coproprieteId', requireAuth(), LotController.getAllByC
 router.get('/:id', requireAuth(), LotController.getById)
 router.get('/:id/cles-repartition', requireAuth(), LotController.getClesRepartition)
 router.post('/', requireAuth(), requireLotQuota(), validate(lotSchema), LotController.create)
-router.put('/:id', requireAuth(), validate(lotSchema), LotController.update)
+router.put('/:id', requireAuth(), validate(lotSchema.partial()), LotController.update)
 router.delete('/:id', requireAuth(), requireAdminForDelete, LotController.delete)
 
 export default router

@@ -30,7 +30,7 @@ router.post(
   validate(coproprieteSchema),
   CoproprieteController.create
 )
-router.put('/:id', requireAuth(), validate(coproprieteSchema), CoproprieteController.update)
+router.put('/:id', requireAuth(), validate(coproprieteSchema.partial()), CoproprieteController.update)
 router.delete('/:id', requireAuth(), requireAdminForDelete, CoproprieteController.delete)
 
 // Auto-relances
