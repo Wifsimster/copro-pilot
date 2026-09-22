@@ -414,6 +414,7 @@ Variables optionnelles (fonctionnalités avancées) :
 |---|---|---|
 | `PII_ENCRYPTION_KEY` | Clé AES-256-GCM pour chiffrer les champs IBAN (générer via `node scripts/generate-encryption-key.js`) | — (chiffrement désactivé) |
 | `METRICS_AUTH_TOKEN` | Bearer token requis pour accéder à l'endpoint `/metrics` | — (endpoint public) |
+| `TRUST_PROXY` | Nombre de proxys de confiance (ex. `1` derrière nginx/Traefik) pour que rate limiting et verrouillage voient l'IP réelle du client | — (pas de proxy) |
 | `YOUSIGN_API_KEY` | Clé API Yousign pour la signature électronique des documents | — |
 | `YOUSIGN_WEBHOOK_SECRET` | Secret de validation des webhooks Yousign | — |
 | `VITE_KOE_PROJECT_KEY` | Clé de projet Koe (widget support — bug reports, feature requests) — vide pour désactiver | — |
