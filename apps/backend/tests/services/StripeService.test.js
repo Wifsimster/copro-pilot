@@ -61,6 +61,9 @@ vi.mock('../../src/config/knex-database.js', () => ({
 const { stripeService } = await import(
   '../../src/services/StripeService.js'
 )
+const { extranetPaymentService } = await import(
+  '../../src/services/ExtranetPaymentService.js'
+)
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -108,5 +111,28 @@ describe('StripeService.createCheckoutSession', () => {
         'monthly'
       )
     ).rejects.toThrow(/No Stripe price/)
+  })
+})
+
+describe('StripeService.handleCheckoutCompleted (extranet payment)', () => {
+  const base = { id: 'cs_1', metadata: { type: 'coproprietaire_payment' } }
+
+  it('waits for SEPA funds before recording the payment', async () => {
+    const result = await stripeService.handleCheckoutCompleted({
+      ...base,
+      payment_status: 'unpaid',
+    })
+    expect(result).toBeNull()
+    expect(extranetPaymentService.handlePaymentSuccess).not.toHaveBeenCalled()
+  })
+
+  it('records the payment once paid', async () => {
+    await stripeService.handleCheckoutCompleted({
+      ...base,
+      payment_status: 'paid',
+    })
+    expect(extranetPaymentService.handlePaymentSuccess).toHaveBeenCalledWith(
+      'cs_1'
+    )
   })
 })

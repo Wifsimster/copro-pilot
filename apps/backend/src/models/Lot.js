@@ -29,7 +29,7 @@ export class LotModel {
             )
             .leftJoin('coproprietaires', 'lots.coproprietaire_id', 'coproprietaires.id')
             .where('lots.copropriete_id', coproprieteId)
-            .orderBy(sortBy, sortOrder)
+            .orderBy(`lots.${sortBy}`, sortOrder)
             .limit(limit)
             .offset(offset)
         return { data, total: parseInt(count) }

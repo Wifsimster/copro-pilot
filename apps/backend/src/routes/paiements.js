@@ -13,7 +13,7 @@ router.get('/appel-fonds/:appelFondsId', requireAuth(), PaiementController.getAl
 router.get('/solde/:coproprietaireId', requireAuth(), PaiementController.getSoldeCoproprietaire)
 router.get('/:id', requireAuth(), PaiementController.getById)
 router.post('/', requireAuth(), validate(paiementSchema), PaiementController.create)
-router.put('/:id', requireAuth(), validate(paiementSchema), PaiementController.update)
+router.put('/:id', requireAuth(), validate(paiementSchema.partial()), PaiementController.update)
 router.delete('/:id', requireAuth(), requireAdminForDelete, PaiementController.delete)
 
 export default router

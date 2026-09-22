@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { isAdmin, isAdminOnlyRoute } from '@/utils/roleAccess'
+import { canAccessRoute, isAdmin, isAdminOnlyRoute } from '@/utils/roleAccess'
 
 describe('isAdmin', () => {
   it('returns true for admin role', () => {
@@ -46,5 +46,13 @@ describe('isAdminOnlyRoute', () => {
 
   it('returns false for /dashboard route', () => {
     expect(isAdminOnlyRoute('/dashboard')).toBe(false)
+  })
+})
+describe('canAccessRoute /gestion-utilisateurs', () => {
+  it('matches the route guard (syndic and admin only)', () => {
+    expect(canAccessRoute('admin', '/gestion-utilisateurs')).toBe(true)
+    expect(canAccessRoute('syndic', '/gestion-utilisateurs')).toBe(true)
+    expect(canAccessRoute('user', '/gestion-utilisateurs')).toBe(false)
+    expect(canAccessRoute('coproprietaire', '/gestion-utilisateurs')).toBe(false)
   })
 })

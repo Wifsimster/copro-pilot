@@ -51,6 +51,19 @@ export function computeCashBasisStatement(mouvements) {
   }
 }
 
+/**
+ * Normalize a DATE value to 'YYYY-MM-DD'. node-postgres returns DATE
+ * columns as local-midnight Date objects, which don't compare with strings.
+ */
+export function toIsoDay(value) {
+  if (value instanceof Date) {
+    const mm = String(value.getMonth() + 1).padStart(2, '0')
+    const dd = String(value.getDate()).padStart(2, '0')
+    return `${value.getFullYear()}-${mm}-${dd}`
+  }
+  return String(value).slice(0, 10)
+}
+
 class ComptaTresorerieService {
   /**
    * Cash-basis statement for a single bank account, optionally filtered by
@@ -60,8 +73,9 @@ class ComptaTresorerieService {
     const mouvements =
       await MouvementBancaireModel.getAllByCompte(compteId)
     const filtered = mouvements.filter(m => {
-      if (from && m.date < from) return false
-      if (to && m.date > to) return false
+      const day = toIsoDay(m.date)
+      if (from && day < from) return false
+      if (to && day > to) return false
       return true
     })
     return computeCashBasisStatement(filtered)

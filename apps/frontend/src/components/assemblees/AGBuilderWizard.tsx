@@ -26,6 +26,7 @@ import {
   verifierDelaiConvocation,
   type TypeMajorite,
 } from '@/lib/agBuilder'
+import { toLocalIsoDate } from '@/utils/date'
 
 interface AGBuilderWizardProps {
   open: boolean
@@ -42,10 +43,10 @@ interface DraftResolution {
 const STEPS = ['Convocation', 'Ordre du jour', 'Vérification']
 
 function today() {
-  return new Date().toISOString().split('T')[0]
+  return toLocalIsoDate()
 }
 function inDays(n: number) {
-  return new Date(Date.now() + n * 86400000).toISOString().split('T')[0]
+  return toLocalIsoDate(new Date(Date.now() + n * 86400000))
 }
 
 export function AGBuilderWizard({

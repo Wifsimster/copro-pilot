@@ -2,6 +2,8 @@ import { create } from 'zustand'
 import { authClient } from '@/lib/auth-client'
 import { isAdmin as checkIsAdmin, canAccessRoute as checkCanAccessRoute } from '@/utils/roleAccess'
 import logger from '@/utils/logger'
+import { csrfHeaders, ensureCsrfToken } from '@/api/api'
+import { gdprApi } from '@/api/gdpr'
 import type { User, UserRole } from '@/types'
 
 interface AuthState {
@@ -75,6 +77,42 @@ function transformUser(sessionUser: SessionUser): User {
   }
 }
 
+const PENDING_CONSENTS_KEY = 'pending_gdpr_consents'
+const SIGNUP_CONSENT_TYPES = [
+  'terms_of_service',
+  'privacy_policy',
+  'data_processing',
+]
+
+function setPendingConsents(email: string) {
+  try {
+    localStorage.setItem(PENDING_CONSENTS_KEY, email.toLowerCase())
+  } catch {
+    // storage unavailable: consents can still be given from the profile
+  }
+}
+
+async function recordPendingConsents(email: string) {
+  let pending: string | null = null
+  try {
+    pending = localStorage.getItem(PENDING_CONSENTS_KEY)
+  } catch {
+    return
+  }
+  if (!pending || pending !== email.toLowerCase()) return
+  try {
+    await ensureCsrfToken()
+    await Promise.all(
+      SIGNUP_CONSENT_TYPES.map(consent_type =>
+        gdprApi.recordConsent({ consent_type, granted: true, version: '1.0' })
+      )
+    )
+    localStorage.removeItem(PENDING_CONSENTS_KEY)
+  } catch (err) {
+    logger.error('Failed to record GDPR consents:', err)
+  }
+}
+
 export const useAuthStore = create<AuthStore>((set, get) => ({
   user: null,
   isAuthenticated: false,
@@ -102,15 +140,17 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       if (result.data?.user) {
         const userData = transformUser(result.data.user as SessionUser)
         get().setAuth(userData)
+        await recordPendingConsents(email)
 
         // Check for pending plan from landing page signup flow
         const pendingPlan = sessionStorage.getItem('pending_plan')
         if (pendingPlan && ['essentiel', 'pro', 'entreprise'].includes(pendingPlan)) {
           sessionStorage.removeItem('pending_plan')
           try {
+            await ensureCsrfToken()
             const checkoutRes = await fetch('/api/stripe/checkout-session', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json', ...csrfHeaders() },
               credentials: 'include',
               body: JSON.stringify({ plan: pendingPlan }),
             })
@@ -147,28 +187,9 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         throw new Error(result.error.message || "Erreur lors de l'inscription")
       }
       if (result.data?.user) {
-        // Record GDPR consents (non-blocking but logged)
-        const consentTypes = [
-          'terms_of_service',
-          'privacy_policy',
-          'data_processing',
-        ]
-        Promise.all(
-          consentTypes.map(type =>
-            fetch('/api/gdpr/consents', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify({
-                consent_type: type,
-                granted: true,
-                version: '1.0',
-              }),
-            })
-          )
-        ).catch(err => {
-          logger.error('Failed to record GDPR consents:', err)
-        })
+        // No session until the e-mail is verified: consents given at
+        // signup are recorded on the first sign-in.
+        setPendingConsents(email)
 
         // Email verification is required — don't redirect, show pending message
         set({ emailVerificationPending: true })

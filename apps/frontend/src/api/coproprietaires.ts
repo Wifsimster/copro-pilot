@@ -6,8 +6,11 @@ export interface CoproprietaireWithLots extends Coproprietaire {
 }
 
 export const coproprietairesApi = {
-  getAll: () =>
-    api.get<{ data: Coproprietaire[] }>('/coproprietaires'),
+  getAll: (coproprieteId?: number | null) =>
+    api.get<{ data: Coproprietaire[] }>(
+      '/coproprietaires',
+      coproprieteId ? { copropriete_id: coproprieteId } : undefined
+    ),
 
   getById: (id: number) =>
     api.get<{ data: CoproprietaireWithLots }>(`/coproprietaires/${id}`),

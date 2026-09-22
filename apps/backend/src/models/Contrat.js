@@ -21,7 +21,7 @@ export class ContratModel {
       .select('contrats.*', 'prestataires.nom as prestataire_nom', 'prestataires.specialite as prestataire_specialite')
       .join('prestataires', 'contrats.prestataire_id', 'prestataires.id')
       .where('contrats.copropriete_id', coproprieteId)
-      .orderBy(sortBy, sortOrder)
+      .orderBy(`contrats.${sortBy}`, sortOrder)
       .limit(limit)
       .offset(offset)
     return { data, total: parseInt(count) }

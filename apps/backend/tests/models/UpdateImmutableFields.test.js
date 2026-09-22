@@ -60,6 +60,16 @@ const { LotModel } = await import('../../src/models/Lot.js')
 const { BudgetModel } = await import('../../src/models/Budget.js')
 const { AppelFondsModel } = await import('../../src/models/AppelFonds.js')
 const { RelanceModel } = await import('../../src/models/Relance.js')
+const { MouvementBancaireModel } = await import(
+  '../../src/models/MouvementBancaire.js'
+)
+const { FondsTravauxModel } = await import('../../src/models/FondsTravaux.js')
+const { CleRepartitionModel } = await import(
+  '../../src/models/CleRepartition.js'
+)
+const { ComptabiliteReglementaireModel } = await import(
+  '../../src/models/ComptabiliteReglementaire.js'
+)
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -174,5 +184,43 @@ describe('RelanceModel.update', () => {
     expect(lastUpdateData.type).toBe('mise_en_demeure')
     expect(lastUpdateData.montant_du).toBe(3500)
     expect(lastUpdateData.statut).toBe('envoyee')
+  })
+})
+
+describe('owner ids are immutable on other financial models', () => {
+  it('MouvementBancaireModel.update strips compte_id', async () => {
+    await MouvementBancaireModel.update(1, { compte_id: 999, libelle: 'X' })
+    expect(lastUpdateData.compte_id).toBeUndefined()
+    expect(lastUpdateData.libelle).toBe('X')
+  })
+
+  it('FondsTravauxModel.update strips copropriete_id', async () => {
+    await FondsTravauxModel.update(1, { copropriete_id: 999, solde: 10 })
+    expect(lastUpdateData.copropriete_id).toBeUndefined()
+    expect(lastUpdateData.solde).toBe(10)
+  })
+
+  it('CleRepartitionModel.update strips copropriete_id', async () => {
+    await CleRepartitionModel.update(1, { copropriete_id: 999, nom: 'A' })
+    expect(lastUpdateData.copropriete_id).toBeUndefined()
+    expect(lastUpdateData.nom).toBe('A')
+  })
+
+  it('updateExercice cannot reopen a closed exercice', async () => {
+    await ComptabiliteReglementaireModel.updateExercice(1, {
+      statut: 'ouvert',
+      notes: 'n',
+    })
+    expect(lastUpdateData.statut).toBeUndefined()
+    expect(lastUpdateData.notes).toBe('n')
+  })
+
+  it('updateCompte strips copropriete_id', async () => {
+    await ComptabiliteReglementaireModel.updateCompte(1, {
+      copropriete_id: 999,
+      libelle: 'L',
+    })
+    expect(lastUpdateData.copropriete_id).toBeUndefined()
+    expect(lastUpdateData.libelle).toBe('L')
   })
 })

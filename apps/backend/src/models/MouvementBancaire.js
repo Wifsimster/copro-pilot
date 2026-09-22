@@ -36,9 +36,18 @@ export class MouvementBancaireModel {
 
   static async update(id, data) {
     const db = getDb()
+    // Whitelist: compte_id is immutable (would move the movement to
+    // another copropriété's account)
+    const allowedFields = [
+      'date', 'libelle', 'montant', 'type', 'categorie', 'reference',
+      'paiement_id', 'rapproche',
+    ]
+    const sanitized = Object.fromEntries(
+      Object.entries(data).filter(([key]) => allowedFields.includes(key))
+    )
     const [result] = await db('mouvements_bancaires')
       .where('id', id)
-      .update({ ...data, updated_at: db.fn.now() })
+      .update({ ...sanitized, updated_at: db.fn.now() })
       .returning('*')
     return result
   }

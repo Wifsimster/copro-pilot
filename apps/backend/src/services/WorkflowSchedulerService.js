@@ -76,27 +76,43 @@ class WorkflowSchedulerService {
   async checkUnpaidCharges() {
     try {
       const db = getDb()
-      const impayes = await db('appels_fonds_lignes')
-        .select(
-          'appels_fonds_lignes.coproprietaire_id',
+      // Outstanding = amount called minus payments recorded against the
+      // same appel, per copropriétaire (a paid-up owner is not unpaid).
+      const dus = db('appels_fonds_lignes')
+        .select('appel_fonds_id', 'coproprietaire_id')
+        .sum({ du: 'montant' })
+        .groupBy('appel_fonds_id', 'coproprietaire_id')
+        .as('d')
+      const payes = db('paiements')
+        .select('appel_fonds_id', 'coproprietaire_id')
+        .sum({ paye: 'montant' })
+        .whereNotNull('appel_fonds_id')
+        .groupBy('appel_fonds_id', 'coproprietaire_id')
+        .as('p')
+      const impayes = await db
+        .from(dus)
+        .distinct(
+          'd.coproprietaire_id',
           'coproprietaires.nom',
           'coproprietaires.prenom',
           'coproprietes.id as copropriete_id',
           'coproprietes.nom as copropriete_nom'
         )
-        .join(
-          'appels_fonds',
-          'appels_fonds_lignes.appel_fonds_id',
-          'appels_fonds.id'
-        )
+        .join('appels_fonds', 'd.appel_fonds_id', 'appels_fonds.id')
         .join(
           'coproprietes',
           'appels_fonds.copropriete_id',
           'coproprietes.id'
         )
+        .leftJoin(payes, function () {
+          this.on('p.appel_fonds_id', 'd.appel_fonds_id').andOn(
+            'p.coproprietaire_id',
+            'd.coproprietaire_id'
+          )
+        })
         .leftJoin(
           'coproprietaires',
-          'appels_fonds_lignes.coproprietaire_id',
+          'd.coproprietaire_id',
           'coproprietaires.id'
         )
         .where('appels_fonds.statut', 'emis')
@@ -105,16 +121,7 @@ class WorkflowSchedulerService {
           '<',
           db.raw("NOW() - INTERVAL '30 days'")
         )
-        .groupBy(
-          'appels_fonds_lignes.coproprietaire_id',
-          'coproprietaires.nom',
-          'coproprietaires.prenom',
-          'coproprietes.id',
-          'coproprietes.nom'
-        )
-        .havingRaw(
-          'SUM(appels_fonds_lignes.montant) > 0'
-        )
+        .whereRaw('d.du - COALESCE(p.paye, 0) > 0.005')
 
       if (impayes.length > 0) {
         await this._createNotificationForSyndics({

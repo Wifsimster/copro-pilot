@@ -30,6 +30,16 @@ class GdprErasureService {
             updated_at: db.fn.now(),
           })
 
+        // Anonymize e-signature signatories (keeps the signature trail)
+        await trx('signature_signatories')
+          .where('coproprietaire_id', coproprietaire.id)
+          .update({
+            nom: 'ANONYMISE',
+            prenom: 'ANONYMISE',
+            // unique per (signature_request_id, email)
+            email: trx.raw("'anonymise-' || id || '@anonymized.local'"),
+          })
+
         // 3. Clear redundant PII in convocation recipients
         await trx('destinataires_convocation')
           .where('coproprietaire_id', coproprietaire.id)
@@ -95,12 +105,28 @@ class GdprErasureService {
       await trx('notifications').where('user_id', userId).del()
       await trx('gdpr_consents').where('user_id', userId).del()
 
+      // Pending OTP / reset tokens are keyed by e-mail
+      const user = await trx('user').where('id', userId).first('email')
+      if (user?.email) {
+        await trx('verification')
+          .whereRaw('position(? in identifier) > 0', [user.email])
+          .del()
+      }
+
+      // Credentials: password hash and OAuth tokens
+      await trx('account').where('userId', userId).del()
+
       // 5. Soft-delete user account
       await trx('user')
         .where('id', userId)
         .update({
           name: 'Compte supprime',
           email: `deleted-${userId}@anonymized.local`,
+          displayName: null,
+          givenName: null,
+          familyName: null,
+          image: null,
+          azureId: null,
           deletedAt: db.fn.now(),
           banned: true,
           banReason: 'Compte supprime sur demande RGPD',

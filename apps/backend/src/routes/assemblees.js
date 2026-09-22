@@ -19,7 +19,7 @@ router.post('/:id/generer-pv', requireAuth(), requirePlan('essentiel'), Assemble
 router.post('/', requireAuth(), requirePlan('essentiel'), validate(assembleeSchema), AssembleeGeneraleController.create)
 router.post('/resolutions', requireAuth(), requirePlan('essentiel'), AssembleeGeneraleController.createResolution)
 router.post('/presences', requireAuth(), requirePlan('essentiel'), AssembleeGeneraleController.setPresence)
-router.put('/:id', requireAuth(), requirePlan('essentiel'), validate(assembleeSchema), AssembleeGeneraleController.update)
+router.put('/:id', requireAuth(), requirePlan('essentiel'), validate(assembleeSchema.partial()), AssembleeGeneraleController.update)
 router.put('/resolutions/:resolutionId', requireAuth(), requirePlan('essentiel'), AssembleeGeneraleController.updateResolution)
 router.delete('/:id', requireAuth(), requirePlan('essentiel'), requireAdminForDelete, AssembleeGeneraleController.delete)
 router.delete('/presences/:presenceId', requireAuth(), requirePlan('essentiel'), requireAdminForDelete, AssembleeGeneraleController.deletePresence)

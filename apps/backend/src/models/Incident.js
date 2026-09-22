@@ -33,7 +33,7 @@ export class IncidentModel {
             .leftJoin('lots', 'incidents.lot_id', 'lots.id')
             .leftJoin('coproprietaires', 'incidents.signale_par_id', 'coproprietaires.id')
             .where('incidents.copropriete_id', coproprieteId)
-            .orderBy(sortBy, sortOrder)
+            .orderBy(`incidents.${sortBy}`, sortOrder)
             .limit(limit)
             .offset(offset)
         return { data, total: parseInt(count) }

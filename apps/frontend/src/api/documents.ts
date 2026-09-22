@@ -1,4 +1,4 @@
-import { api } from './api'
+import { api, csrfHeaders } from './api'
 import type { Document, ApiResponse } from '@/types'
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || '/api'
@@ -35,6 +35,7 @@ export const documentsApi = {
     const response = await fetch(`${API_BASE_URL}/documents/upload`, {
       method: 'POST',
       credentials: 'include',
+      headers: csrfHeaders(),
       body: formData,
     })
 
@@ -48,6 +49,10 @@ export const documentsApi = {
 
   getDownloadUrl: (id: number) =>
     `${API_BASE_URL}/documents/${id}/download`,
+
+  /** Owner-scoped download used by the extranet */
+  getExtranetDownloadUrl: (id: number) =>
+    `${API_BASE_URL}/extranet/documents/${id}/download`,
 
   update: (id: number, data: Partial<Document>) =>
     api.put<ApiResponse<Document>>(`/documents/${id}`, data),

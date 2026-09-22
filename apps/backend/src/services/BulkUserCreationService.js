@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import knexDatabase from '../config/knex-database.js'
-import { getAuth } from '../config/auth.js'
+import { getAuth, setUserPasswordHash } from '../config/auth.js'
 import { sendEmail } from '../utils/email.js'
 import {
   generateWelcomeEmail,
@@ -288,7 +288,6 @@ export class BulkUserCreationService {
    */
   static async setInitialPassword(user, newPassword) {
     const db = getDb()
-    const auth = getAuth()
 
     // Fetch the full user record to check mustChangePassword
     const fullUser = await db('user')
@@ -315,13 +314,7 @@ export class BulkUserCreationService {
       throw err
     }
 
-    // Set the new password via admin API
-    await auth.api.setUserPassword({
-      body: {
-        userId: user.id,
-        newPassword,
-      },
-    })
+    await setUserPasswordHash(user.id, newPassword)
 
     // Clear mustChangePassword and verify email
     await db('user')

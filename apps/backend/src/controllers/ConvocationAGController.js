@@ -137,6 +137,9 @@ export class ConvocationAGController {
             res.json({ data: result, message: 'Convocation envoyée avec succès' })
         } catch (error) {
             logger.error(`[ConvocationController] Error sending convocation: ${error.message}`)
+            if (error.status) {
+                return res.status(error.status).json({ error: error.message })
+            }
             res.status(500).json({ error: 'Impossible d\'envoyer la convocation' })
         }
     }

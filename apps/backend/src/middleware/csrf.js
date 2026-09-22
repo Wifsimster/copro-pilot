@@ -14,6 +14,7 @@ const MUTATING_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE']
  *
  * Excluded paths:
  * - /api/stripe/webhook (uses its own Stripe signature verification)
+ * - /api/signatures/webhook (Yousign HMAC signature verification)
  * - /api/auth/* (Better Auth handles its own security)
  */
 export const csrf = (req, res, next) => {
@@ -21,6 +22,14 @@ export const csrf = (req, res, next) => {
 
   // Exclude Stripe webhook (signature-based verification)
   if (path.startsWith('/api/stripe/webhook')) {
+    return next()
+  }
+
+  // Exclude Yousign webhook (HMAC signature verification)
+  if (
+    path.startsWith('/api/signatures/webhook') ||
+    path.startsWith('/api/v1/signatures/webhook')
+  ) {
     return next()
   }
 

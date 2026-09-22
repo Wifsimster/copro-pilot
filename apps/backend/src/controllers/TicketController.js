@@ -41,7 +41,7 @@ export class TicketController {
       // Set auteur_id from authenticated user
       const data = {
         ...req.body,
-        auteur_id: req.body.auteur_id || req.user?.id,
+        auteur_id: req.user.id,
       }
       const result = await ticketService.create(data)
       res.status(201).json({ data: result, message: 'Ticket créé avec succès' })
@@ -84,7 +84,7 @@ export class TicketController {
       }
       const data = {
         contenu,
-        auteur_id: req.body.auteur_id || req.user?.id,
+        auteur_id: req.user.id,
       }
       const result = await ticketService.addMessage(id, data)
       if (!result) return res.status(404).json({ error: 'Ticket non trouvé' })

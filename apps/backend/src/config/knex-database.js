@@ -1,6 +1,13 @@
 import knex from 'knex'
+import pg from 'pg'
 import logger from '../logger.js'
 import knexConfig from './knexfile.js'
+
+// Return DATE columns as 'YYYY-MM-DD' strings instead of local-midnight
+// Date objects, which serialize to timestamps (shifted a day when the
+// server isn't on UTC) and can't populate <input type="date">.
+const PG_DATE_OID = 1082
+pg.types.setTypeParser(PG_DATE_OID, value => value)
 
 const POOL_CHECK_INTERVAL_MS = 30_000
 const POOL_UTILIZATION_WARN_THRESHOLD = 0.8

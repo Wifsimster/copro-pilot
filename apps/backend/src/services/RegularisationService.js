@@ -156,20 +156,23 @@ class RegularisationService {
     const reg = await RegularisationModel.getById(regularisationId)
     if (!reg) throw new Error('Régularisation introuvable')
 
-    const existing = await db('appels_fonds')
-      .where('regularisation_id', regularisationId)
-      .first()
-    if (existing) {
-      throw new Error(
-        'Un appel de régularisation existe déjà pour cette régularisation.'
-      )
-    }
-
     const lots = await LotModel.getAllByCopropriete(reg.copropriete_id)
     const coproByLot = new Map(lots.map(l => [l.id, l.coproprietaire_id]))
     const { montant_total, lignes } = buildRegularisationAppel(reg, coproByLot)
 
     return db.transaction(async trx => {
+      // Lock the régularisation so a concurrent double-submit waits here
+      // and then sees the appel created by the first one.
+      await trx('regularisations').where('id', reg.id).forUpdate().first('id')
+      const existing = await trx('appels_fonds')
+        .where('regularisation_id', regularisationId)
+        .first('id')
+      if (existing) {
+        throw new Error(
+          'Un appel de régularisation existe déjà pour cette régularisation.'
+        )
+      }
+
       const [appel] = await trx('appels_fonds')
         .insert({
           copropriete_id: reg.copropriete_id,

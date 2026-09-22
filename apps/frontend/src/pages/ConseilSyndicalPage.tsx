@@ -33,7 +33,7 @@ export default function ConseilSyndicalPage() {
   const [editingMembre, setEditingMembre] = useState<MembreConseilSyndical | null>(null)
   const [deleteId, setDeleteId] = useState<number | null>(null)
 
-  const { data: coproprietaires } = useCoproprietaires()
+  const { data: coproprietaires } = useCoproprietaires(selectedCoproId)
   const { data: assemblees } = useAssembleesByCopropriete(selectedCoproId)
   const { data: membres, isLoading: loadingMembres } = useConseilSyndicalByCopropriete(selectedCoproId)
 

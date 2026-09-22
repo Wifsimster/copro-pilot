@@ -1,5 +1,5 @@
 import knexDatabase from '../config/knex-database.js'
-import { getAuth } from '../config/auth.js'
+import { getAuth, setUserPasswordHash } from '../config/auth.js'
 import { validatePasswordOWASP } from '../utils/password-validator.js'
 import { sendEmail } from '../utils/email.js'
 import { generateResetPasswordEmail } from '../utils/email-templates.js'
@@ -120,7 +120,7 @@ export class UserManagementService {
     const baseURL = process.env.BASE_URL || 'http://localhost:3000'
 
     try {
-      await auth.api.forgetPassword({
+      await auth.api.requestPasswordReset({
         body: {
           email: targetUser.email,
           redirectTo: `${baseURL}/reset-password`,
@@ -170,13 +170,7 @@ export class UserManagementService {
       throw err
     }
 
-    const auth = getAuth()
-    await auth.api.setUserPassword({
-      body: {
-        userId: targetUserId,
-        newPassword,
-      },
-    })
+    await setUserPasswordHash(targetUserId, newPassword)
 
     logger.info(
       `[UserManagement] Password set directly for ${targetUser.email} by admin ${requestingUser.email}`

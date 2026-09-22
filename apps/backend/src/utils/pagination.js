@@ -2,7 +2,11 @@ export function parsePaginationParams(query) {
   const page = Math.max(1, parseInt(query.page, 10) || 1)
   const limit = Math.min(100, Math.max(1, parseInt(query.limit, 10) || 20))
   const offset = (page - 1) * limit
-  const sortBy = query.sortBy || 'created_at'
+  // Only bare column names: models qualify them with their own table
+  const sortBy =
+    typeof query.sortBy === 'string' && /^[a-z_]+$/.test(query.sortBy)
+      ? query.sortBy
+      : 'created_at'
   const sortOrder = query.sortOrder === 'asc' ? 'asc' : 'desc'
   return { page, limit, offset, sortBy, sortOrder }
 }

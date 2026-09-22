@@ -38,6 +38,17 @@ export function createApp({ getDb, auth } = {}) {
 
   const isProduction = process.env.NODE_ENV === 'production'
 
+  // Behind a reverse proxy every client shares the proxy's IP, which
+  // collapses rate limiting and account lockout into one bucket. Opt in
+  // with TRUST_PROXY (hop count, e.g. 1, or an Express trust proxy value).
+  if (process.env.TRUST_PROXY) {
+    const hops = Number(process.env.TRUST_PROXY)
+    app.set(
+      'trust proxy',
+      Number.isInteger(hops) ? hops : process.env.TRUST_PROXY
+    )
+  }
+
   // Security headers
   app.use(
     helmet({
@@ -83,6 +94,17 @@ export function createApp({ getDb, auth } = {}) {
   app.post(
     '/api/stripe/webhook',
     express.raw({ type: 'application/json' })
+  )
+
+  // Yousign webhook HMAC is computed over the exact bytes received
+  app.post(
+    ['/api/signatures/webhook', '/api/v1/signatures/webhook'],
+    express.json({
+      limit: '1mb',
+      verify: (req, _res, buf) => {
+        req.rawBody = buf.toString('utf8')
+      },
+    })
   )
 
   // Body parsing middleware — parsed before accountLockout + Better Auth so

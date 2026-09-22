@@ -22,6 +22,7 @@ import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import { useCoproprietaires } from '@/hooks/useCoproprietaires'
 import type { Mutation, TypeMutation } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const schema = z.object({
   type: z.enum(['vente', 'donation', 'succession', 'autre']),
@@ -49,7 +50,7 @@ export function MutationFormDialog({ open, onOpenChange, lotId, onSubmit, isLoad
     resolver: zodResolver(schema),
     defaultValues: {
       type: (defaultValues?.type as FormData['type']) || 'vente',
-      date_mutation: defaultValues?.date_mutation || new Date().toISOString().split('T')[0],
+      date_mutation: defaultValues?.date_mutation || toLocalIsoDate(),
       ancien_proprietaire_id: defaultValues?.ancien_proprietaire_id || 0,
       nouveau_proprietaire_id: defaultValues?.nouveau_proprietaire_id || 0,
       notes: defaultValues?.notes || '',

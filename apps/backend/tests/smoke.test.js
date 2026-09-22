@@ -88,6 +88,17 @@ describe('Backend smoke tests', () => {
     })
   })
 
+  describe('Yousign webhook', () => {
+    it('is not blocked by CSRF protection', async () => {
+      const res = await request(app)
+        .post('/api/signatures/webhook')
+        .send({ event_name: 'ping' })
+        .set('Content-Type', 'application/json')
+
+      expect(res.status).not.toBe(403)
+    })
+  })
+
   // ─── Protected routes require authentication ────────────────────────
 
   describe('Protected routes return 401/503 without auth', () => {

@@ -22,6 +22,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { Assurance } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const assuranceSchema = z.object({
   compagnie: z.string().min(1, 'La compagnie est obligatoire'),
@@ -62,7 +63,7 @@ export function AssuranceFormDialog({
       compagnie: defaultValues?.compagnie || '',
       numero_police: defaultValues?.numero_police || '',
       type: defaultValues?.type || 'multirisque_immeuble',
-      date_debut: defaultValues?.date_debut || new Date().toISOString().split('T')[0],
+      date_debut: defaultValues?.date_debut || toLocalIsoDate(),
       date_fin: defaultValues?.date_fin || '',
       prime_annuelle: defaultValues?.prime_annuelle != null ? String(defaultValues.prime_annuelle) : '',
       franchise: defaultValues?.franchise != null ? String(defaultValues.franchise) : '',

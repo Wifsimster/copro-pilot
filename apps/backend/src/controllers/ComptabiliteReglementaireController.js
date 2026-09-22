@@ -174,6 +174,9 @@ export class ComptabiliteReglementaireController {
       res.status(201).json({ data: result, message: 'Écriture comptable créée avec succès' })
     } catch (error) {
       logger.error(`[ComptaReglCtrl] Error creating ecriture: ${error.message}`)
+      if (error.status) {
+        return res.status(error.status).json({ error: error.message })
+      }
       res.status(500).json({ error: 'Impossible de créer l\'écriture comptable' })
     }
   }

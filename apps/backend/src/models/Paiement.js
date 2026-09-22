@@ -11,8 +11,13 @@ export class PaiementModel {
             .leftJoin('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
             .leftJoin('lots', 'coproprietaires.id', 'lots.coproprietaire_id')
             .where(function () {
+                // Only fall back to the owner's lots for payments not tied
+                // to an appel: owners can hold lots in several copropriétés
                 this.where('appels_fonds.copropriete_id', coproprieteId)
-                    .orWhere('lots.copropriete_id', coproprieteId)
+                    .orWhere(function () {
+                        this.whereNull('paiements.appel_fonds_id')
+                            .where('lots.copropriete_id', coproprieteId)
+                    })
             })
             .groupBy('paiements.id', 'coproprietaires.nom', 'coproprietaires.prenom')
             .orderBy('paiements.date_paiement', 'desc')
@@ -25,8 +30,13 @@ export class PaiementModel {
             .leftJoin('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
             .leftJoin('lots', 'coproprietaires.id', 'lots.coproprietaire_id')
             .where(function () {
+                // Only fall back to the owner's lots for payments not tied
+                // to an appel: owners can hold lots in several copropriétés
                 this.where('appels_fonds.copropriete_id', coproprieteId)
-                    .orWhere('lots.copropriete_id', coproprieteId)
+                    .orWhere(function () {
+                        this.whereNull('paiements.appel_fonds_id')
+                            .where('lots.copropriete_id', coproprieteId)
+                    })
             })
             .countDistinct('paiements.id as count')
         const [{ count }] = await countQuery
@@ -36,11 +46,16 @@ export class PaiementModel {
             .leftJoin('appels_fonds', 'paiements.appel_fonds_id', 'appels_fonds.id')
             .leftJoin('lots', 'coproprietaires.id', 'lots.coproprietaire_id')
             .where(function () {
+                // Only fall back to the owner's lots for payments not tied
+                // to an appel: owners can hold lots in several copropriétés
                 this.where('appels_fonds.copropriete_id', coproprieteId)
-                    .orWhere('lots.copropriete_id', coproprieteId)
+                    .orWhere(function () {
+                        this.whereNull('paiements.appel_fonds_id')
+                            .where('lots.copropriete_id', coproprieteId)
+                    })
             })
             .groupBy('paiements.id', 'coproprietaires.nom', 'coproprietaires.prenom')
-            .orderBy(sortBy, sortOrder)
+            .orderBy(`paiements.${sortBy}`, sortOrder)
             .limit(limit)
             .offset(offset)
         return { data, total: parseInt(count) }

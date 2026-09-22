@@ -2,8 +2,11 @@ import { CoproprietaireModel } from '../models/Coproprietaire.js'
 import logger from '../logger.js'
 
 class CoproprietaireService {
-    async getAll() {
+    async getAll(coproprieteId) {
         try {
+            if (coproprieteId) {
+                return await CoproprietaireModel.getAllByCopropriete(coproprieteId)
+            }
             return await CoproprietaireModel.getAll()
         } catch (error) {
             logger.error(`[CoproprietaireService] Error getting all copropriétaires: ${error.message}`)

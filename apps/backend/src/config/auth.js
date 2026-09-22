@@ -182,3 +182,14 @@ export function getAuth() {
     }
     return authInstance
 }
+
+/**
+ * Set a user's credential password server-side.
+ * The admin plugin's setUserPassword endpoint requires an admin session,
+ * so callers that already enforced their own authorization use this.
+ */
+export async function setUserPasswordHash(userId, newPassword) {
+    const ctx = await getAuth().$context
+    const hash = await ctx.password.hash(newPassword)
+    await ctx.internalAdapter.updatePassword(userId, hash)
+}

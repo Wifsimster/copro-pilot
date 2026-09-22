@@ -9,6 +9,12 @@ import {
 } from './lre/convocationLre.js'
 import logger from '../logger.js'
 
+function httpError(status, message) {
+    const err = new Error(message)
+    err.status = status
+    return err
+}
+
 class ConvocationAGService {
     async getByAgId(agId) {
         try {
@@ -139,11 +145,25 @@ class ConvocationAGService {
             const db = knexDatabase.getKnex()
 
             const result = await db.transaction(async trx => {
-                // Update convocation status
+                // Only a draft/validated convocation of an upcoming AG can be
+                // sent: a resend would re-dispatch every (paid) LRE and move
+                // an AG already in progress back to 'convoquee'.
+                const ag = await trx('assemblees_generales')
+                    .where('id', convocation.ag_id)
+                    .first('statut')
+                if (!['planifiee', 'convoquee'].includes(ag?.statut)) {
+                    throw httpError(409, "L'assemblée générale n'est plus convocable")
+                }
+
+                // Conditional update so a concurrent double-submit sends once
                 const [updated] = await trx('convocations_ag')
                     .where('id', convocationId)
+                    .whereIn('statut', ['brouillon', 'validee'])
                     .update({ statut: 'envoyee', date_envoi: today, updated_at: trx.fn.now() })
                     .returning('*')
+                if (!updated) {
+                    throw httpError(409, 'Cette convocation a déjà été envoyée')
+                }
 
                 // Update AG status to convoquee and set date_convocation
                 await trx('assemblees_generales')

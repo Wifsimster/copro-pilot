@@ -10,6 +10,18 @@ export class CoproprietaireModel {
             .orderBy('nom', 'asc')
     }
 
+    static async getAllByCopropriete(coproprieteId) {
+        const db = getDb()
+        return db('coproprietaires')
+            .whereIn('id', function () {
+                this.select('coproprietaire_id')
+                    .from('lots')
+                    .where('copropriete_id', coproprieteId)
+                    .whereNotNull('coproprietaire_id')
+            })
+            .orderBy('nom', 'asc')
+    }
+
     static async getAllByCoproprietePaginated(coproprieteId, { limit, offset, sortBy, sortOrder }) {
         const db = getDb()
         const baseQuery = db('coproprietaires')

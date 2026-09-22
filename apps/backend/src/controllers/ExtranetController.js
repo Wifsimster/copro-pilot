@@ -1,3 +1,5 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import { extranetService } from '../services/ExtranetService.js'
 import logger from '../logger.js'
 
@@ -28,6 +30,38 @@ export class ExtranetController {
     } catch (error) {
       logger.error(`[ExtranetController] Error getting espace documents: ${error.message}`)
       res.status(500).json({ error: 'Impossible de récupérer les documents' })
+    }
+  }
+
+  static async downloadDocument(req, res) {
+    try {
+      const document = await extranetService.getSharedDocument(
+        req.user.id,
+        req.params.id
+      )
+      if (!document) {
+        return res.status(404).json({ error: 'Document non trouvé' })
+      }
+
+      // Prevent path traversal: ensure file is within uploads directory
+      const uploadsDir = path.resolve('uploads')
+      const resolvedPath = path.resolve(document.fichier_path)
+      if (!resolvedPath.startsWith(uploadsDir)) {
+        return res.status(403).json({ error: 'Accès au fichier non autorisé' })
+      }
+      if (!fs.existsSync(resolvedPath)) {
+        return res.status(404).json({ error: 'Fichier introuvable sur le serveur' })
+      }
+
+      res.setHeader('Content-Type', document.mime_type || 'application/octet-stream')
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="${encodeURIComponent(document.fichier_nom)}"`
+      )
+      fs.createReadStream(resolvedPath).pipe(res)
+    } catch (error) {
+      logger.error(`[ExtranetController] Error downloading document: ${error.message}`)
+      res.status(500).json({ error: 'Impossible de télécharger le document' })
     }
   }
 

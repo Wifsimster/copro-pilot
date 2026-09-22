@@ -6,6 +6,26 @@ const getDb = () => knexDatabase.getKnex()
 
 const MAX_PROCURATIONS_PAR_MANDATAIRE = 3
 
+/**
+ * A procuration can't change once the mandant or the mandataire has voted
+ * at this AG: the mandataire's weight is computed from active procurations
+ * at vote time, so a late change would count tantièmes twice.
+ */
+async function assertNoVotesYet(db, agId, coproprietaireIds) {
+  const vote = await db('votes_electroniques')
+    .join('resolutions', 'votes_electroniques.resolution_id', 'resolutions.id')
+    .where('resolutions.ag_id', agId)
+    .whereIn('votes_electroniques.coproprietaire_id', coproprietaireIds)
+    .first('votes_electroniques.id')
+  if (vote) {
+    const err = new Error(
+      'Des votes ont déjà été exprimés : la procuration ne peut plus être modifiée'
+    )
+    err.status = 409
+    throw err
+  }
+}
+
 class ProcurationService {
   async getByAg(agId) {
     try {
@@ -106,6 +126,8 @@ class ProcurationService {
         throw err
       }
 
+      await assertNoVotesYet(db, agId, [mandantId, mandataireId])
+
       // 3. Verify mandataire isn't already holding 3+ procurations
       const currentCount = await ProcurationModel.countActiveForMandataire(
         mandataireId,
@@ -162,6 +184,10 @@ class ProcurationService {
         err.status = 400
         throw err
       }
+      await assertNoVotesYet(getDb(), procuration.ag_id, [
+        procuration.mandant_id,
+        procuration.mandataire_id,
+      ])
       const result = await ProcurationModel.revoke(id)
       logger.info(
         `[ProcurationService] Procuration révoquée (ID: ${id}) par copro ${coproprietaireId}`

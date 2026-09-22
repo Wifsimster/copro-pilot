@@ -22,6 +22,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { Relance } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const relanceSchema = z.object({
   coproprietaire_id: z.coerce.number().min(1, 'Le copropriétaire est obligatoire'),
@@ -59,7 +60,7 @@ export function RelanceFormDialog({
     values: {
       coproprietaire_id: defaultValues?.coproprietaire_id ?? 0,
       type: defaultValues?.type || 'amiable',
-      date_relance: defaultValues?.date_relance || new Date().toISOString().split('T')[0],
+      date_relance: defaultValues?.date_relance || toLocalIsoDate(),
       montant_du: defaultValues?.montant_du ?? 0,
       mode_envoi: defaultValues?.mode_envoi || '',
       statut: defaultValues?.statut || 'brouillon',

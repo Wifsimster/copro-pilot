@@ -21,6 +21,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import type { MouvementBancaire } from '@/types'
+import { toLocalIsoDate } from '@/utils/date'
 
 const mouvementSchema = z.object({
   date: z.string().min(1, 'La date est obligatoire'),
@@ -57,7 +58,7 @@ export function MouvementBancaireFormDialog({
   const form = useForm<MouvementFormData>({
     resolver: zodResolver(mouvementSchema),
     defaultValues: {
-      date: defaultValues?.date || new Date().toISOString().split('T')[0],
+      date: defaultValues?.date || toLocalIsoDate(),
       libelle: defaultValues?.libelle || '',
       montant: defaultValues?.montant || 0,
       type: defaultValues?.type || 'credit',
