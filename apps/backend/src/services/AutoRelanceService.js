@@ -59,10 +59,13 @@ class AutoRelanceService {
           // Skip if fully paid
           if (unpaidBalance <= 0) continue
 
-          // 3. Check existing relances for this coproprietaire & copropriete
+          // 3. Relances already sent for this debt: only those issued
+          // since this appel fell due. Older ones concern debts that were
+          // settled and must not skip (or escalate) the amiable step.
           const existingRelances = await db('relances')
             .where('copropriete_id', coproprieteId)
             .where('coproprietaire_id', ligne.coproprietaire_id)
+            .where('date_relance', '>=', appel.date_echeance)
             .orderBy('created_at', 'desc')
 
           const hasAmiable = existingRelances.some(r => r.type === 'amiable')
