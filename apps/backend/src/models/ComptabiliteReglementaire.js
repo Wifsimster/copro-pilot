@@ -51,9 +51,14 @@ export class ComptabiliteReglementaireModel {
 
   static async updateExercice(id, data) {
     const db = getDb()
+    // Whitelist: statut/date_cloture only change through clotureExercice
+    const allowedFields = ['date_debut', 'date_fin', 'notes']
+    const sanitized = Object.fromEntries(
+      Object.entries(data).filter(([key]) => allowedFields.includes(key))
+    )
     const [result] = await db('exercices_comptables')
       .where('id', id)
-      .update({ ...data, updated_at: db.fn.now() })
+      .update({ ...sanitized, updated_at: db.fn.now() })
       .returning('*')
     return result
   }
@@ -104,9 +109,14 @@ export class ComptabiliteReglementaireModel {
 
   static async updateCompte(id, data) {
     const db = getDb()
+    // Whitelist: copropriete_id and code are immutable
+    const allowedFields = ['libelle', 'classe', 'type', 'actif']
+    const sanitized = Object.fromEntries(
+      Object.entries(data).filter(([key]) => allowedFields.includes(key))
+    )
     const [result] = await db('plan_comptable')
       .where('id', id)
-      .update({ ...data, updated_at: db.fn.now() })
+      .update({ ...sanitized, updated_at: db.fn.now() })
       .returning('*')
     return result
   }

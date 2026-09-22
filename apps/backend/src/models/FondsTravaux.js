@@ -30,9 +30,14 @@ export class FondsTravauxModel {
 
     static async update(id, data) {
         const db = getDb()
+        // Whitelist: copropriete_id is immutable
+        const allowedFields = ['annee', 'cotisation_annuelle', 'solde']
+        const sanitized = Object.fromEntries(
+            Object.entries(data).filter(([key]) => allowedFields.includes(key))
+        )
         const [result] = await db('fonds_travaux')
             .where('id', id)
-            .update({ ...data, updated_at: db.fn.now() })
+            .update({ ...sanitized, updated_at: db.fn.now() })
             .returning('*')
         return result
     }
