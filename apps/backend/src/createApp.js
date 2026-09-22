@@ -85,6 +85,17 @@ export function createApp({ getDb, auth } = {}) {
     express.raw({ type: 'application/json' })
   )
 
+  // Yousign webhook HMAC is computed over the exact bytes received
+  app.post(
+    ['/api/signatures/webhook', '/api/v1/signatures/webhook'],
+    express.json({
+      limit: '1mb',
+      verify: (req, _res, buf) => {
+        req.rawBody = buf.toString('utf8')
+      },
+    })
+  )
+
   // Body parsing middleware — parsed before accountLockout + Better Auth so
   // both can read req.body without consuming the underlying stream. Better
   // Auth's adapter (better-call) detects a pre-parsed req.body and re-stringifies

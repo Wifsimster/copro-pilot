@@ -279,6 +279,7 @@ class YousignService {
       return true
     }
     if (!signatureHeader) return false
+    const received = signatureHeader.replace(/^sha256=/, '')
     const expected = crypto
       .createHmac('sha256', secret)
       .update(rawBody)
@@ -286,7 +287,7 @@ class YousignService {
     try {
       return crypto.timingSafeEqual(
         Buffer.from(expected, 'hex'),
-        Buffer.from(signatureHeader, 'hex')
+        Buffer.from(received, 'hex')
       )
     } catch {
       return false
