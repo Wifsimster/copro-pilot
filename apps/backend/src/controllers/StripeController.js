@@ -149,6 +149,7 @@ export class StripeController {
     try {
       switch (event.type) {
         case 'checkout.session.completed':
+        case 'checkout.session.async_payment_succeeded':
           await stripeService.handleCheckoutCompleted(event.data.object)
           break
         case 'customer.subscription.updated':

@@ -135,27 +135,38 @@ class ExtranetPaymentService {
         throw httpError(403, 'Cette session de paiement ne vous appartient pas')
       }
 
-      // Idempotency: if a paiement already exists for this session
-      // (via the Stripe session id stored in reference), return it.
-      const existing = await this._findPaiementByStripeSessionId(sessionId)
-      if (existing) {
-        logger.info(
-          `[ExtranetPaymentService] Paiement already recorded for session ${sessionId} (id=${existing.id})`
-        )
-        return existing
-      }
-
       const montant = (session.amount_total || 0) / 100
 
-      const paiement = await paiementService.create({
-        coproprietaire_id: coproprietaireId,
-        appel_fonds_id: null,
-        montant,
-        date_paiement: new Date(),
-        mode: 'autre',
-        reference: sessionId,
-        notes: 'Paiement en ligne via Stripe (extranet copropriétaire)',
+      // Idempotency: the success redirect and the webhook can both land
+      // here at once. Serialize per session with an advisory lock so the
+      // existence check and the insert can't interleave.
+      const db = knexDatabase.getKnex()
+      const { paiement, created } = await db.transaction(async trx => {
+        await trx.raw('SELECT pg_advisory_xact_lock(hashtext(?))', [
+          sessionId,
+        ])
+        const existing = await trx('paiements')
+          .where('reference', sessionId)
+          .first()
+        if (existing) return { paiement: existing, created: false }
+        const inserted = await paiementService.create({
+          coproprietaire_id: coproprietaireId,
+          appel_fonds_id: null,
+          montant,
+          date_paiement: new Date(),
+          mode: 'autre',
+          reference: sessionId,
+          notes: 'Paiement en ligne via Stripe (extranet copropriétaire)',
+        })
+        return { paiement: inserted, created: true }
       })
+
+      if (!created) {
+        logger.info(
+          `[ExtranetPaymentService] Paiement already recorded for session ${sessionId} (id=${paiement.id})`
+        )
+        return paiement
+      }
 
       logger.info(
         `[ExtranetPaymentService] Paiement recorded for coproprietaire ${coproprietaireId} (montant=${montant} EUR, session=${sessionId})`
@@ -175,11 +186,6 @@ class ExtranetPaymentService {
   async _getCoproprietaireById(coproprietaireId) {
     const db = knexDatabase.getKnex()
     return db('coproprietaires').where('id', coproprietaireId).first()
-  }
-
-  async _findPaiementByStripeSessionId(sessionId) {
-    const db = knexDatabase.getKnex()
-    return db('paiements').where('reference', sessionId).first()
   }
 }
 

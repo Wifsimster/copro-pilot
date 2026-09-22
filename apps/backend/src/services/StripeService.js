@@ -160,6 +160,14 @@ class StripeService {
     try {
       // Extranet copropriétaire payment (one-off, mode: payment)
       if (session.metadata?.type === 'coproprietaire_payment') {
+        // SEPA debits complete the checkout before the funds clear; the
+        // payment is recorded on checkout.session.async_payment_succeeded.
+        if (session.payment_status !== 'paid') {
+          logger.info(
+            `[StripeService] Extranet payment pending for session ${session.id} (status=${session.payment_status})`
+          )
+          return null
+        }
         const paiement = await extranetPaymentService.handlePaymentSuccess(
           session.id
         )
