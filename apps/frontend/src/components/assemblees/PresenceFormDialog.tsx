@@ -20,6 +20,7 @@ import {
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormSection } from '@/components/ui/form-section'
 import { useCoproprietaires } from '@/hooks/useCoproprietaires'
+import { useCoproprieteStore } from '@/store/coproprieteStore'
 import type { PresenceAG } from '@/types'
 import {  } from 'react'
 
@@ -43,7 +44,8 @@ interface Props {
 }
 
 export function PresenceFormDialog({ open, onOpenChange, agId, onSubmit, isLoading, defaultValues, title = 'Ajouter une présence' }: Props) {
-  const { data: coproprietaires } = useCoproprietaires()
+  const coproprieteId = useCoproprieteStore(s => s.selectedCoproprieteId)
+  const { data: coproprietaires } = useCoproprietaires(coproprieteId)
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
     values: {

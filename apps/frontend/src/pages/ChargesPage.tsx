@@ -46,7 +46,7 @@ export default function ChargesPage() {
   const patchUi = (p: Partial<typeof ui>) => setUi(s => ({ ...s, ...p }))
   const { activeTab, showBudgetDialog, showAppelDialog, showFondsDialog, editingBudget, editingAppel, editingFonds, showPaiementDialog, editingPaiement, deleteTarget } = ui
 
-  const { data: coproprietaires } = useCoproprietaires()
+  const { data: coproprietaires } = useCoproprietaires(selectedCoproId)
   const { data: budgets, isLoading: loadingBudgets, isError: isErrorBudgets, error: errorBudgets } = useBudgetsByCopropriete(selectedCoproId)
   const { data: appels, isLoading: loadingAppels, isError: isErrorAppels, error: errorAppels } = useAppelsFondsByCopropriete(selectedCoproId)
   const { data: fondsTravaux, isLoading: loadingFonds, isError: isErrorFonds, error: errorFonds } = useFondsTravauxByCopropriete(selectedCoproId)

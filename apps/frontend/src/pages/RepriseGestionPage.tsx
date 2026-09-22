@@ -47,7 +47,7 @@ export default function RepriseGestionPage() {
   const importer = useImporterBalance()
   const saveSoldes = useSaveSoldes()
   const { data: lots } = useLotsByCopropriete(coproprieteId)
-  const { data: coproprietaires } = useCoproprietaires()
+  const { data: coproprietaires } = useCoproprietaires(coproprieteId)
 
   if (!coproprieteId) {
     return (

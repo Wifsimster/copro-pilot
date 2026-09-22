@@ -5,11 +5,17 @@ import type { Coproprietaire } from '@/types'
 // react-doctor-disable-next-line deslop/unused-export -- consumed via re-export/named-import that react-doctor does not trace
 export const COPROPRIETAIRES_QUERY_KEY = ['coproprietaires'] as const
 
-export function useCoproprietaires() {
+/**
+ * All owners, or only those holding a lot in `coproprieteId` when given
+ * (pickers for payments, AG presences, conseil syndical…).
+ */
+export function useCoproprietaires(coproprieteId?: number | null) {
   return useQuery({
-    queryKey: COPROPRIETAIRES_QUERY_KEY,
+    queryKey: coproprieteId
+      ? [...COPROPRIETAIRES_QUERY_KEY, 'copropriete', coproprieteId]
+      : COPROPRIETAIRES_QUERY_KEY,
     queryFn: async () => {
-      const response = await coproprietairesApi.getAll()
+      const response = await coproprietairesApi.getAll(coproprieteId)
       return response.data
     },
   })

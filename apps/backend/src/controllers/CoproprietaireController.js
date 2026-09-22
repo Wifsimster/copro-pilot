@@ -12,7 +12,7 @@ export class CoproprietaireController {
                 const { data, total } = await CoproprietaireModel.getAllByCoproprietePaginated(copropriete_id, params)
                 return res.json(paginatedResponse(data, total, params))
             }
-            const coproprietaires = await coproprietaireService.getAll()
+            const coproprietaires = await coproprietaireService.getAll(copropriete_id)
             res.json({ data: coproprietaires })
         } catch (error) {
             logger.error(`[CoproprietaireController] Error getting copropriétaires: ${error.message}`)
