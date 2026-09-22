@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { computeCashBasisStatement } from '../../src/services/ComptaTresorerieService.js'
+import {
+  computeCashBasisStatement,
+  toIsoDay,
+} from '../../src/services/ComptaTresorerieService.js'
 
 describe('computeCashBasisStatement', () => {
   it('sums recettes, dépenses and solde', () => {
@@ -50,5 +53,15 @@ describe('computeCashBasisStatement', () => {
       solde: 0,
       parCategorie: {},
     })
+  })
+})
+
+describe('toIsoDay', () => {
+  it('formats a pg DATE (local-midnight Date) as YYYY-MM-DD', () => {
+    expect(toIsoDay(new Date(2026, 0, 5))).toBe('2026-01-05')
+  })
+
+  it('truncates ISO strings to the day', () => {
+    expect(toIsoDay('2026-03-31T10:00:00Z')).toBe('2026-03-31')
   })
 })
