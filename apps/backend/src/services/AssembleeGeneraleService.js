@@ -44,7 +44,7 @@ class AssembleeGeneraleService {
             if (!existing) return null
             const result = await AssembleeGeneraleModel.update(id, data)
             logger.info(`[AGService] AG mise à jour (ID: ${id})`)
-            if (result.statut === 'terminee') {
+            if (result.statut === 'terminee' && existing.statut !== 'terminee') {
                 workflowEventService.onAssembleeTerminee(result).catch(err =>
                     logger.error(`[AGService] Workflow event error: ${err.message}`)
                 )
